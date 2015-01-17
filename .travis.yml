@@ -1,7 +1,5 @@
 language: ruby
-env:
-  global:
-    - secure: <REPLACE WITH GITHUB TOKEN>
-    - POST_BUILD=true
-script:
-    - ./build.sh
+rvm:
+  - 2.2.0
+sudo: false
+script: bundle exec rake deploy

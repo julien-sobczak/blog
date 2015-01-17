@@ -1,10 +1,6 @@
 # jekyll configuration
 
 title: "Jekyll-asciidoc-quickstart"
-pygments: true
-
-gems:
-  - jekyll-asciidoc
 
 asciidoctor:
   attributes:
