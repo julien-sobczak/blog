@@ -1,0 +1,17 @@
+= Blog Installation
+
+On Ubuntu/Debian, run the following commands before starting Jekyll :
+
+----
+$ sudo apt-get install ruby
+$ sudo apt-get -f install
+$ sudo apt-get install ruby
+$ sudo apt-get install ruby-dev
+$ bundle install
+----
+
+Than, launch Jekyll:
+
+----
+$ bundle exec jekyll serve
+----
