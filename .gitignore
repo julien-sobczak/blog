@@ -2,5 +2,6 @@
 /_site/
 /.bundle/
 /tmp/
+/.sass-cache/
 *.bundle
 Gemfile.lock

@@ -60,5 +60,38 @@
     }
 
 
-  
+    // Activate the sunshine effect on the main label list 
+    $('#labels .label').hover(
+      function() {
+        $(this).addClass('hover');
+      },
+      function() {
+        var label = $(this);
+        window.setTimeout(function() {
+          label.removeClass('hover');
+        }, 500);
+      }
+    );
+
+
+    // Spongbob easteregg
+    $(document).easteregg({
+      callback: function () {
+        console.log('ici!!!!!!!!!!!!!!!');
+        // Add a CSS class to trigger animations
+        $('.easter-egg-party').addClass('active').addClass('go');
+
+        var goBackToBlog = function() {
+          $('.easter-egg-party').removeClass('active').removeClass('go');
+          $(document).unbind('keydown', goBackToBlog);
+          $(document).unbind('click', goBackToBlog);
+        };
+
+        // Remove everything when any key is pressed
+        $(document).on('keydown', goBackToBlog);
+        $(document).on('click', goBackToBlog);
+      }
+    });
+
+
 })(jQuery); // End of use strict

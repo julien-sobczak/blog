@@ -1,0 +1,61 @@
+/*
+ * Our easter egg is composed of three elements:
+ * - The transparent water covers all the screen
+ * - The Bikini Bottom landscape arrives from the bottom of the screen
+ * - The yellow star show his head when everything is in place
+ */
+
+/* Hidden and position the backgrounds */
+#water, #easter-egg {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Configure the images for the backgrounds */
+#water {
+  background: url('../img/easter-egg/water-texture.jpg') no-repeat center bottom / cover rgba(0, 0, 0, 0);
+  z-index: 999;
+}
+#easter-egg {
+  background-image: url('../img/easter-egg/bikini-bottom.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 3000px;
+  z-index: 1000;
+}
+
+/* We place Bob outside the screen at the top */
+#spongebob {
+  position: absolute;
+  top: -1000px;
+  left: 20%;
+}
+
+/* The Konami was entered! Welcome to Bikini Bottom! */
+
+/* Display water progressively */
+#water.active {
+  visibility: visible;
+  opacity: 0.5;
+  transition: visibility 1s;
+}
+/* Display the landscape progressively */
+#easter-egg.active {
+  visibility: visible;
+  transition: opacity 1s;
+}
+/* Animate the landscape to come from the bottom */
+#easter-egg.active {
+  background-position: center bottom;
+  transition: background-position 1s;
+}
+/* Animate Spongebob to come from the top */
+#spongebob.active {
+  top: 0;
+  transition: top 1s;
+  transition-delay: 1s;
+}

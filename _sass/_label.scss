@@ -1,0 +1,261 @@
+
+
+/* Labels */
+
+#labels {
+  padding: 35px;
+  background: $color-base;
+  text-align: center;
+
+
+  h2 {
+    color: white;
+    margin-bottom: 35px;
+    text-align: left;
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .more {
+      margin-left: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 50%;
+      text-align: center;
+      vertical-align: middle;
+      padding-top: 18px;
+      text-shadow: -1px 1px 1px black;
+      color: white;
+      z-index: 99; // to pass over the label sunshine effect
+
+      &.unexpanded {
+        -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+                transform: rotate(0deg);
+        text-shadow: -1px 1px 1px black;
+        transition: all 1s;
+      }
+
+      &.expanded {
+        -webkit-transform: rotate(-180deg); /* Chrome, Safari, Opera */
+                transform: rotate(-180deg);
+        text-shadow: 1px -1px 1px black;
+        transition: all 1s;
+      }
+
+    }
+  }
+
+
+  .labels {
+    margin-top: 80px;
+    padding-left: 0;
+  }
+
+
+  .label-count {
+    display: inline-block;
+    color: $color-base;
+    font-weight: bold;
+    text-shadow: none;
+  }
+
+
+  @media (max-width: $screen-xsmall-max) {
+    padding: 10px;
+
+    h2 {
+      font-size: 24px;
+
+
+      .line {
+        width: 40px;
+      }
+
+      .more {
+        display: none;
+        width: 50px;
+        height: 50px;
+        padding-top: 12px;
+      }
+
+    }
+
+
+    .labels {
+      margin-top: 35px;
+      display: none;
+
+
+      li {
+        width: 125px;
+        height: 125px;
+
+
+        .label-icon {
+          top: 25px;
+        }
+
+
+        .label-text {
+          font-weight: 400;
+          bottom: 25px;
+        }
+
+
+        .sunshine {
+          background: url(../img/sunshine.png);
+          left: -28px;
+          top: -40px;
+          width: 205px;
+          height: 207px;
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+
+
+
+ul.labels {
+
+  /* List of available keywords */
+  $label-keywords: im-readin-it, im-watchin-it, im-tellin-it, im-inspectin-it, html5, agile, architecture, classics, big-data, build, computer-science, database, ddd, design-patterns, devops, essays, frameworks, gaming, hiring, java, javascript, kid-programming, languages, management, performance, php, refactoring, soa, testing, ux-design, web, reversing, bad-things, clean-code, design, delivery, popular, productivity, tools, team, requirements, cloud, tutorial, learning, blog, label;
+
+
+  list-style-type: none;
+
+
+  li {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+
+
+    .label {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      position: relative;
+
+
+      .label-icon {
+        position: absolute;
+        left: 50%;
+        margin-left: -35px;
+        top: 25px;
+        z-index: 5;
+
+
+
+
+        /* Common properties of each icon */
+        width: 70px;
+        height: 60px;
+        background-image: url('../img/labels-sprite.png');
+        background-position-x: 0;
+
+        /* Generate classes for each keyword */
+        $i: 0;
+        @each $label-keyword in $label-keywords {
+          &.label-#{$label-keyword}-icon.label-white-icon       { background-position:      0     (-60px * $i)  ; }
+          &.label-#{$label-keyword}-icon.label-black-icon       { background-position:  -70px     (-60px * $i)  ; }
+          &.label-#{$label-keyword}-icon.label-blue-icon        { background-position: -140px     (-60px * $i)  ; }
+          $i: $i + 1;
+        }
+
+      }
+      // We define a default icon
+      $index-default-label: 45;
+      .label-icon.label-white-icon { background-position: 0      (-60px * $index-default-label); }
+      .label-icon.label-black-icon { background-position: -70px  (-60px * $index-default-label); }
+      .label-icon.label-blue-icon  { background-position: -140px (-60px * $index-default-label); }
+
+
+      .label-text {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: white;
+        font-weight: 300;
+        font-size: 13px;
+        color: white;
+        text-shadow: 1px 1px black;
+        z-index: 5;
+
+        &.label-black-text { color: black; text-shadow: none; }
+        &.label-blue-text  { color: blue;  text-shadow: $color-base; }
+      }
+
+
+      .label-count {
+        color: rgba(65, 133, 244, 1);
+        display: inline-block;
+        font-size: 10px;
+        height: 18px;
+        border-radius: 9px;
+        background-color: rgba(255,255,255,0.8);
+        padding: 4px 4px;
+        min-width: 18px;
+        font-family: $font-basic;
+        margin-left: 5px;
+        z-index: 5;
+      }
+
+
+      .sunshine {
+        background: url(../img/sunshine-big.png);
+        position: absolute;
+        left: -75px;
+        top: -90px;
+        width: 300px;
+        height: 300px;
+        display: block;
+
+        opacity: 0;
+        transition-property: opacity;
+        transition-duration: 3s;
+      }
+
+
+      &.hover .sunshine {
+        opacity: 1;
+        transition-property: opacity;
+        transition-duration: 0.5s;
+      }
+
+      .eclipse {
+        overflow: hidden;
+        position: absolute;
+        display: block;
+        background-color: $color-base;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+
+        top: -100%;
+        transition-property: top;
+        transition-duration: 0.5s;
+      }
+
+      &:hover .eclipse {
+        top: 0;
+        transition-property: top;
+        transition-duration: 0.5s;
+      }
+
+    }
+
+  }
+
+}

@@ -697,7 +697,7 @@ footer img.footer-me {
 #page-post header.post-read .container::after, #page-post header.post-tell .container::after, #page-post header.post-inspect .container::after { /* TODO refactor */
   content: '';
   position: absolute;
-  z-index: 1000;
+  z-index: 750;
   right: 125px;
   top: 185px;
   width: 175px;
