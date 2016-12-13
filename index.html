@@ -1,0 +1,203 @@
+---
+layout: 'no'
+title: I'm lovin' I.T. by Julien Sobczak
+description: Diary of a Life Long Learner
+documentationExpanded: false
+postsExpanded: false
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{page.description}}">
+    <meta name="author" content="{{page.author}}">
+
+    <title>{{page.title}}</title>
+
+    <!-- Font-Awesome -->
+    <link href="{{page.root}}vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Asciidoctor assets -->
+    <link rel="stylesheet" href="{{page.root}}css/coderay.css"/>
+    <link rel="stylesheet" href="{{page.root}}css/asciidoctor.css"/>
+
+    <!-- Theme CSS -->
+    <link href="{{page.root}}css/normalize.css" rel="stylesheet">
+    <link href="{{page.root}}css/template.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+</head>
+
+<body id="page-home">
+
+    <!-- Navigation -->
+
+    <nav id="mainNav" class="navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle">
+              Menu <i class="fa fa-bars"></i>
+          </button>
+          <a class="navbar-brand" href="#page-top">I'm lovin' I.T.</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-collapse">
+          <ul class="nav navbar-nav">
+              <li class="page-scroll">
+                  <a href="#about-blog">About This Blog</a>
+              </li>
+              <li class="page-scroll">
+                  <a href="#about-me">About Me</a>
+              </li>
+          </ul>
+        </div>
+          </div>
+    </nav>
+
+    <!-- Header -->
+    <header id="page-top">
+      <div class="container">
+        <div id="logo">
+          <img src="{{page.root}}img/me-head.png">
+        </div>
+        <div class="intro-text">
+            <span class="name">I'm lovin' I.T.</span><span class="author manuscript">by Julien Sobczak, Programmer</span>
+            <hr class="star-light">
+            <span class="headline">Diary of a Life Long Learner</span>
+            <blockquote>
+              <q class="manuscript">Live as if you were to die tomorrow. Learn as if you were to live forever</q> — Gandhi
+            </blockquote>
+        </div>
+      </div>
+    </header>
+
+    <!-- Portfolio Grid Section -->
+    <section id="about-blog" class="widescreen">
+      <div class="container">
+        <div>
+          <h2>About this blog</h2>
+          <hr class="star-primary">
+        </div>
+      </div>
+      <div class="container">
+      <div class="categories">
+        <div>
+          <img src="{{page.root}}img/imreadinit-icon.png" />
+          <h3>I'm <span class="text-colored">read</span>in' I.T.</h3>
+          <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
+          <p>Latest books: <!-- FIXME dynamize--><a href="#">ScrumBan</a>, <a href="#">Remote</a>, <a href="#">Hadoop: The Definitive Guide</a> or see them <a href="#">all</a>!</p>
+        </div>
+        <!-- TODO
+          I'm doin' I.T.
+          Discover personal projects that could help you while learning
+          Highlighted project: evolutio. Your companion to read faster, retain more, or train your brain.
+        -->
+        <div>
+          <img src="{{page.root}}img/imtellinit-icon.png" />
+          <h3>I'm <span class="text-colored">tell</span>in' I.T.</h3>
+          <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
+          <p>Read the latest posts about <!-- FIXME  dynamize --> <a href="#">Anki SRS</a>, <a href="#">The importance of an actionable WHY</a>, and many <a href="#">other topics</a>.</p>
+        </div>
+        <div>
+          <img src="{{page.root}}img/iminspectinit-icon.png" />
+          <h3>I'm <span class="text-colored">inspect</span>in' I.T.</h3>
+          <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
+          <p>Discover the inner working of famous OSS projects: <!-- FIXME dynamize --> <a href="#">Spring Boot</a>, <a href="#">Mockito</a>, <a href="#">-prefix-free</a>, or check them <a href="#">all</a>!</p>
+        </div>
+      </div>
+      <a href="#" class="btn btn-lg btn-outline btn-outline-colored">
+          <i class="fa fa-list"></i> View All Posts
+      </a>
+      <!-- To Delete -->
+      <ul id="posts" class="posts nav">
+          {% for post in site.posts limit: 5 %}
+          <li><a href=".{{ post.url }}">{{ post.shortTitle }}</a></li>
+          {% endfor %}
+      </ul>
+      <!-- End of To Delete -->
+    </div>
+    </section>
+
+
+    <!-- About Section -->
+    <section class="colored" id="about-me" style="position:relative">
+      <div class="container">
+        <div>
+            <div>
+                <h2>About me</h2>
+                <hr class="star-light">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+              <p>My name is <strong>Julien Sobczak</strong>. <br/>I am a <strong>software developer</strong>.</p>
+              <p>Since 2008, I'm been working mainly as a Java Web Developer and now I'm focusing on the Big Data ecosystem.</p>
+              <p>I work for <a href="http://zenika.com/">Zenika</a>, a leading consulting company, ranked #4 on the Great Place to Work in France.</p>
+            </div>
+            <div class="col">
+              <p>I have a strong interest in everything that is related to <strong>developer productivity</strong>: deliberate practice, clean code, memory techniques, speed reading, sport programming, and so on.</p>
+              <p>The more I learn about my job, the more I realize how less I know but the more I like it, so I do my best to <strong>learn something new day everyday</strong>!<p>
+            </div>
+        </div>
+        <div>
+            <a href="#" class="btn btn-lg btn-outline">
+                <i class="fa fa-user"></i> View Full Profile
+            </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <img src="{{page.root}}img/me-torso.png" class="footer-me" />
+        <div class="footer-above">
+            <div class="footer-col">
+                <h3>Location</h3>
+                <p>Lille<br>France</p>
+            </div>
+            <div class="footer-col">
+                <h3>Around the Web</h3>
+                <ul class="list-inline">
+                    <li>
+                        <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-twitter"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-github"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-below">
+            <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+            <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+            <small class="copyright">Copyright &copy; Julien Sobczak 2016</small><br/>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="{{page.root}}vendor/jquery/jquery.min.js"></script>
+    <script src="{{page.root}}vendor/jquery/jquery.affix.js"></script>
+    <script src="{{page.root}}vendor/jquery/jquery.scrollspy.js"></script>
+
+    <!-- Asciidoctor assets -->
+    <script src="{{page.root}}js/vendor/modernizr.js"></script>
+    <script src="{{page.root}}js/toc.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="{{page.root}}js/behavior.js"></script>
+
+</body>
+
+</html>
