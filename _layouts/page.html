@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{{page.title}}</title>
+
+    {% include stylesheets.html %}
+
+</head>
+
+<body id="page-post">
+    {% include loader.html %}
+
+    <!-- Navigation -->
+
+    <nav id="mainNav" class="navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle">
+              Menu <i class="fa fa-bars"></i>
+          </button>
+          <a class="navbar-brand" href="#page-top">I'm lovin' I.T.</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-collapse">
+          <ul class="nav navbar-nav">
+              <li>
+                  <a href="#">I'm readin' I.T.</a>
+              </li>
+              <li>
+                  <a href="#">I'm tellin' I.T.</a>
+              </li>
+              <li>
+                  <a href="#">I'm inspectin' I.T.</a>
+              </li>
+              <li class="page-scroll">
+                  <a href="#">About Me</a>
+              </li>
+          </ul>
+        </div>
+          </div>
+    </nav>
+
+    {{content}}
+
+    {% include labels.html %}
+    {% include footer.html %}
+    {% include easter-egg.html %}
+    {% include libraries.html %}
+
+</body>
+
+</html>

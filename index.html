@@ -53,7 +53,7 @@ postsExpanded: false
     <header id="page-top">
       <div class="container">
         <div id="logo">
-          <img src="{{page.root}}img/me-head.png">
+          <img src="{{ '/img/me-head.png' | prepend: site.baseurl }}">
         </div>
         <div class="intro-text">
             <span class="name">I'm lovin' I.T.</span><span class="author manuscript">by Julien Sobczak, Programmer</span>
@@ -77,7 +77,7 @@ postsExpanded: false
       <div class="container">
       <div class="categories">
         <div>
-          <img src="{{page.root}}img/imreadinit-icon.png" />
+          <img src="{{ '/img/imreadinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">read</span>in' I.T.</h3>
           <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
           <p>Latest books: <!-- FIXME dynamize--><a href="#">ScrumBan</a>, <a href="#">Remote</a>, <a href="#">Hadoop: The Definitive Guide</a> or see them <a href="#">all</a>!</p>
@@ -88,13 +88,13 @@ postsExpanded: false
           Highlighted project: evolutio. Your companion to read faster, retain more, or train your brain.
         -->
         <div>
-          <img src="{{page.root}}img/imtellinit-icon.png" />
+          <img src="{{ '/img/imtellinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">tell</span>in' I.T.</h3>
           <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
           <p>Read the latest posts about <!-- FIXME  dynamize --> <a href="#">Anki SRS</a>, <a href="#">The importance of an actionable WHY</a>, and many <a href="#">other topics</a>.</p>
         </div>
         <div>
-          <img src="{{page.root}}img/iminspectinit-icon.png" />
+          <img src="{{ '/img/iminspectinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">inspect</span>in' I.T.</h3>
           <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
           <p>Discover the inner working of famous OSS projects: <!-- FIXME dynamize --> <a href="#">Spring Boot</a>, <a href="#">Mockito</a>, <a href="#">-prefix-free</a>, or check them <a href="#">all</a>!</p>

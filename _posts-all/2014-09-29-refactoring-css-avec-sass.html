@@ -1,0 +1,1445 @@
+---
+layout: post
+title: 'Refactoring CSS avec Sass'
+author: 'Julien Sobczak'
+date: '2014-09-29T22:52:00.000+02:00'
+categories: tell
+tags:
+- refactoring
+- web
+---
+
+<article class="post-tell">
+
+  <h1>Refactoring CSS avec Sass</h1>
+  <h2>Julien Sobczak</h2>
+
+<div class="post-menu">
+  <ul>
+    <li><a href="#RFCSS-bad-smells">Bad Smells</a>
+      <ul>
+        <li><a href="#RFCSS-duplicate-code">Duplicate Code</a></li>
+        <li><a href="#RFCSS-long-block-declaration">Long Block Declaration</a></li>
+        <li><a href="#RFCSS-large-file">Large File</a></li>
+        <li><a href="#RFCSS-divergent-change">Divergent Change</a></li>
+        <li><a href="#RFCSS-shotgun-surgery">Shotgun Surgery</a></li>
+        <li><a href="#RFCSS-comments">Comments</a></li>
+        <li><a href="#RFCSS-magic-numbers">Magic numbers</a></li>
+        <li><a href="#RFCSS-almost-identical">Almost Identical</a></li>
+        <li><a href="#RFCSS-color-explosion">Color Explosion</a></li>
+      </ul>
+    </li>
+    <li><a href="#RFCSS-catalog-refactoring">Catalog of Refactorings</a>
+      <ul>
+        <li><a href="#RFCSS-extract-constant">Extract Constant</a></li>
+        <li><a href="#RFCSS-extract-declaration-block">Extract Declaration Block</a></li>
+        <li><a href="#RFCSS-introduce-inheritance">Introduce Inheritance</a></li>
+        <li><a href="#RFCSS-extract-file">Extract File</a></li>
+        <li><a href="#RFCSS-inline-file">Inline File</a></li>
+        <li><a href="#RFCSS-introduce-nesting">Introduce Nesting</a></li>
+        <li><a href="#RFCSS-introduce-arithmetic">Introduce Arithmetic</a></li>
+        <li><a href="#RFCSS-introduce-conditional-branching">Introduce Conditional Branching</a></li>
+      </ul>
+    </li>
+    <li><a href="#RFCSS-references">Références</a></li>
+    <li><a href="#RFCSS-to-see">A voir également</a></li>
+  </ul>
+</div>
+
+
+<div class="post-content">
+
+
+<p class="intro">
+  <em>Avez-vous déjà mis bien plus de temps que vous ne l'imaginiez pour modifier une feuille de style ?
+    Vous êtes-vous déjà dis qu'une modification ne devrait pas être si périlleuse.
+    Derrière un langage si simple à prendre en main se cache un langage qui ne nous offre pas les moyens d'affronter la
+    complexité qui grandit en même temps que l'application.</em>
+</p>
+
+<p class="intro">
+  Grâce à l'aide d'extensions comme Sass, le développement CSS devient tout de suite plus professionnel.
+  On retrouve les concepts des autres langages (variables, méthodes, ...) et cela change radicalement
+  la situation.
+</p>
+
+<p class="intro">
+  Comment faire la transition de nos feuilles de style CSS pour les rendre plus maintenables ? Soit
+  les réécrire complètement. Soit suivre les refactorings présentés dans ce document pour progressivement arriver à
+  notre objectif, tout en ayant à chaque étape, une feuille de style opérationnelle.
+</p>
+
+
+
+<h3 id="RFCSS-bad-smells">Bad Smells</h3>
+
+<div class="licence">
+  <p>
+    Les Bad Smells sont fortement inspirées de celles présentes dans l'ouvrage référence de
+    Martin Fowler <a href="#RFCSS-references-fow1">[Fow1]</a>
+  </p>
+</div>
+
+
+<h4 id="RFCSS-duplicate-code">Duplicate Code</h4>
+
+<p>
+  S'il y a bien une chose que nous permet Sass, c'est de pouvoir respecter le principle Don't Repeat Yourself (DRY).
+</p>
+
+<p>
+  Bien souvent, les duplications de code sont le témoignage de négligences, mais quand il s'agit de CSS,
+  les duplications sont souvent inévitables.
+</p>
+
+<p>
+  La duplication la plus fréquente consiste à dupliquer la même valeur de propriété encore et encore. Un simple
+  <a href="#RFCSS-extract-constant">Extract Constant</a> suffit à ne définir cette valeur qu'une seule fois.
+</p>
+
+<p>
+  Vient ensuite une duplication tout aussi fréquente mais moins apparente, la duplication de plusieurs propriétés
+  CSS que l'on retrouve dans différents blocs. La solution consiste à appliquer soit
+  <a href="#RFCSS-extract-declaration-block">Extract Declaration Block</a>, soit
+  <a href="#RFCSS-introduce-inheritance">Introduce Inheritance</a>.
+</p>
+
+<p>
+  Enfin, les sélecteurs ne sont pas épargnés par toute cette duplication. Pour restreindre les déclarations CSS à
+  une partie de la page, pas d'autre solution que de préfixer à chaque fois par le sélecteur du parent et ainsi de
+  suite. <a href="#RFCSS-introduce-nesting">Introduce Nesting</a> supprime toute cette duplication et rend par la
+  même occasion nos feuilles de style bien plus lisible et évolutive.
+</p>
+
+
+<h4 id="RFCSS-long-block-declaration">Long Block Declaration</h4>
+
+<p>
+  L'impossibilité de factoriser des blocs de déclaration nous pousse soit à les dupliquer, soit à introduire une
+  nouvelle classe CSS sans véritable valeur sémantique (ex : <code>.rounded-box</code>).
+  Dans le premier cas, les blocs de déclaration s'allongent au risque de nuire à leur maintenabilité.
+  Un simple <a href="#RFCSS-extract-declaration-block">Extract Declaration Block</a> suffira à amincir
+  considérablement vos blocs.
+</p>
+
+
+<h4 id="RFCSS-large-file">Large File</h4>
+
+<p>
+  Plusieurs solutions existent pour diviser un fichier CSS. On peut inclure plusieurs feuilles à l'aide de la
+  balise HTML <code>link</code> ou utiliser la règle CSS <code>@import</code>. Les deux obligent le navigateur à
+  émettre une requête pour chaque feuille, ce qui augmente le temps de réponse, et aussi d'autres subtilités
+  (<a href="#RFCSS-references-sou1">[Sou1]</a>).
+</p>
+
+<p>
+  Une solution courante est de concaténer les feuilles de style lors de la construction du projet (maven, grunt,
+  ...). Appliquer <a href="#RFCSS-extract-file">Extract File</a> est souvent plus simple.
+</p>
+
+
+<h4 id="RFCSS-divergent-change">Divergent Change</h4>
+
+<p>
+  Difficile d'effectuer la moindre modification quand le code concerné est noyé par tout ce qui l'entoure.
+  Il est préférable de structure le code de manière à ce que chaque changement nous conduise à un point bien précis dans le code.
+</p>
+
+<p>
+  Divergent Change se produit quand un même fichier a beaucoup de raisons de changer. En séparant par exemple la
+  partie layout et les différentes parties du site, il devient facile de modifier le layout général, d'ajouter une
+  nouvelle page ou d'en supprimer une existante.
+</p>
+
+<p>
+  En appliquant <a href="#RFCSS-extract-file">Extract File</a>, chaque partie se retrouve dans sa propre feuille de
+  style (ex : layout, homepage, contact, product).
+</p>
+
+
+<h4 id="RFCSS-shotgun-surgery">Shotgun Surgery</h4>
+
+<p>
+  Shotgun Surgery est en quelque sorte l'inverse de Divergent Change. Divergent Change se produit quand une feuille
+  de style subit plusieurs types de changement alors que Shotgun Surgery se produit quand une modification implique
+  plusieurs feuilles de style. Idéalement, chaque modification ne porte que sur une seule feuille de style.
+</p>
+
+<p>
+  Plusieurs refactorings peuvent s'appliquer. <a href="#RFCSS-extract-constant">Extract Constant</a> permet de
+  condenser plusieurs valeurs vers une même déclaration. <a href="#RFCSS-inline-file">Inline File</a> permet de
+  regrouper deux feuilles de style très proches.
+</p>
+
+
+<h4 id="RFCSS-comments">Comments</h4>
+
+<p>
+  Les commentaires sont souvent nécessaires en CSS pour combler l'absence de variables, apportant avec elles la
+  sémantique derrière une valeur magique. Paradoxalement, on hésite à inclure des commentaires car ceux-ci
+  augmentent la taille des fichiers et se retrouvent inutilement dans le fichier téléchargé par le navigateur.
+</p>
+
+<p>
+  <a href="#RFCSS-extract-constant">Extract Constant</a> et <a href="#RFCSS-extract-declaration-block">Extract
+  Declaration Block</a> nous permettent de remplacer la plupart des commentaires par des noms tout aussi parlant, à
+  la différence que ces noms font désormais partie intégrante du code.
+</p>
+
+
+<h4 id="RFCSS-magic-numbers">Magic numbers</h4>
+
+<p>
+  En parcourant des feuilles de style, on découvre souvent des nombres (ex : unités en px) qui sont identiques ou
+  se ressemblent fortement. Le lien entre toutes ces valeurs n'est pas représenté explicitement. L'introduction de
+  constantes (<a href="#RFCSS-extract-constant">Extract Constant</a>) est le premier pas pour limiter cela mais
+  comment représenter que la taille est liée à tel autre élément. <a href="#RFCSS-introduce-arithmetic">Introduce
+  Arithmetic</a> propose de représenter ce lien sous forme d'une expression mathématique où l'on viendra souvent
+  réutiliser des constantes existantes.
+</p>
+
+
+<h4 id="RFCSS-almost-identical">Almost Identical</h4>
+
+<p>
+  Almost Identical représente une situation où de nombreux selecteurs et blocs de déclaration se suivent, se
+  ressemblent, mais ne sont pas identiques. L'utilisation de sprites CSS est l'exemple le plus parlant.
+  <a href="#RFCSS-introduce-conditional-branching">Introduce Conditional Branching</a> retire toute ressemblance et
+  rend clairement apparent les quelques différences grâce à l'introduction des structures de contrôles (if, for, ...)
+  incontournables dans les langages impératifs.
+</p>
+
+<p>
+  <a href="#RFCSS-extract-declaration-block">Extract Declaration Block</a> peut également servir à factoriser le
+  contenu des blocs de déclaration, notamment grâce à l'ajout de paramètres.
+</p>
+
+ <p>
+   <a href="#RFCSS-introduce-inheritance">Introduce Inheritance</a> doit être également considéré si les différents
+   sélecteurs partagent une relation d'héritage avec une classe commune.
+ </p>
+
+
+<h4 id="RFCSS-color-explosion">Color Explosion</h4>
+
+<p>
+  La plupart des sites repose sur un nombre restreint de couleurs : une couleur principale et quelques couleurs
+  secondaires. Ces couleurs sont souvent déclinées. Un bleu un peu plus clair par ici, un bleu un peu plus foncé par là.
+  Cette déclinaison se traduit par la définition de nouvelles couleurs et avec cette explosion de couleurs,
+  difficile de ne pas s'emmêler les pinceaux quand arrive le moment de changer nos quelques 2-3 couleurs de base.
+</p>
+
+<p>
+  En appliquant <a href="#RFCSS-extract-constant">Extract Constant</a> et <a href="#RFCSS-introduce-arithmetic">Introduce
+  Arithmetic</a>, on va définit nos couleurs de base que l'on déclinera ensuite au besoin grâce à l'utilisation de
+  fonctions permettant de mélanger des couleurs, les assombrir ou les éclaircir, etc.
+</p>
+
+
+
+<h3 id="RFCSS-catalog-refactoring">Catalog of Refactorings</h3>
+
+<div class="licence">
+  <p>Le catalogue qui suit respecte le format de l'ouvrage référence ayant introduit le concept.</p>
+</div>
+
+
+<h4 id="RFCSS-extract-constant">Extract Constant</h4>
+
+<p>
+  <em>La valeur d'une propriété se répète.</em>
+</p>
+
+<p>
+  <strong>Remplacer la valeur par une variable initialisée à cette même valeur.</strong>
+</p>
+
+{% highlight scss %}
+body {
+ font: 100% Helvetica, sans-serif;
+ color: #333;
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
+
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
+{% endhighlight %}
+
+<h5>Motivations</h5>
+
+<p>
+  Les motivations sont les mêmes que pour l'utilisation d'une constante dans un autre langage. Le code devient plus
+  parlant grâce au nom judicieux de la constante. Mais surtout, la maintenance devient triviale en cas de changement
+  de valeur.
+</p>
+
+<p>
+  Sass ne permet pas à proprement parlé la création de constantes mais uniquement de variables. Cela ne nous
+  empêche pas d'exploiter les variables comme on le ferait pour déclarer une constante en Javascript.
+</p>
+
+<p>
+  Sass introduit également la notion de portée : une variable ne sera accessible qu'au sein du bloc où elle est
+  déclarée (intéressant avec le Nesting). Une variable déclarée en dehors d'un bloc est considérée comme globale et
+  pourra toujours être accédée, sauf si masquée par une autre déclaration.
+</p>
+
+{% highlight scss %}
+$font: Arial, sans-serif;
+$primary-color: #333;
+
+article {
+  $font: Helvetica, sans-serif;
+  $secondary-color: #777;
+
+  // Could use $font, $primary-color and $secondary-color
+  // where $font = Helvetica, sans-serif
+}
+
+section {
+  // Coud use $font and $primary-color
+  // where $font = Arial, sans-serif
+}
+{% endhighlight %}
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>Créer une variable initialisée avec la valeur extraite</li>
+  <li>Remplacer les occurrences de cette valeur dans l'ensemble des feuilles de style
+    <ul>
+      <li>
+        Vérifier à chaque remplacement que la variable est accessible.
+        Le cas échéant, déplacer la variable au niveau du premier bloc parent commun.
+        Ne jamais réduire la portée de la variable pour ne pas impacter les remplacements précédents.
+      </li>
+    </ul>
+  </li>
+  <li>Compiler et tester</li>
+</ul>
+
+
+<h5>Exemples</h5>
+
+<h6>Exemple : (avec Nesting)</h6>
+
+{% highlight scss %}
+body {
+  font-family: Helvetica, sans-serif;
+
+  header {
+    h1 {
+      font-family: 'Cursive', sans-serif;
+    }
+  }
+
+  footer {
+    .footnote {
+      font-family: 'Cursive', sans-serif
+    }
+  }
+
+}
+{% endhighlight %}
+
+<p>
+  Cette feuille de style utilise deux polices différentes. Une par défaut (Helvetica) et une seconde manuscrite
+  pour mettre en avant quelques textes comme les titres ou les notes.
+</p>
+
+<p>
+  On constate que la police <code>'Cursive', sans-serif</code> est déclarée deux fois. On crée donc une variable
+  avec cette valeur :
+</p>
+
+{% highlight scss %}
+body {
+  font-family: Helvetica, sans-serif;
+
+  header {
+    h1 {
+      $font-manuscript: 'Cursive', sans-serif;
+      font-family: 'Cursive', sans-serif;
+    }
+  }
+
+  footer {
+    .footnote {
+      font-family: 'Cursive', sans-serif;
+    }
+  }
+
+}
+{% endhighlight %}
+
+<p>
+  On se lance ensuite dans les remplacements.
+</p>
+
+{% highlight scss %}
+body {
+  font-family: Helvetica, sans-serif;
+
+  header {
+    h1 {
+      $font-manuscript: 'Cursive', sans-serif;
+      font-family: $font-manuscript;
+    }
+  }
+
+  footer {
+    .footnote {
+      font-family: 'Cursive', sans-serif;
+    }
+  }
+
+}
+{% endhighlight %}
+
+<p>
+  La variable créée se trouve hors de portée de la deuxième occurrence. Nous devons donc remonter la déclaration
+  scope après scope jusqu'à trouver le premier qui satisfait les règles de visibilité.
+</p>
+
+{% highlight scss %}
+body {
+  $font-manuscript: 'Cursive', sans-serif;
+
+  font-family: Helvetica, sans-serif;
+
+  header {
+    h1 {
+      font-family: $font-manuscript;
+    }
+  }
+
+  footer {
+    .footnote {
+      font-family: $font-manuscript;
+    }
+  }
+
+}
+{% endhighlight %}
+
+<p>
+  La police Helvetica, sans-serif, bien qu'utilisée qu'une seule fois, gagnerait à être remplacée par une variable
+  pour rendre explicite qu'il s'agit de la police par défaut mais aussi pour centraliser les choix de polices (Une
+  modification est plus facile à faire si elle s'opère à un endroit bien défini). C'est ce que nous allons faire :
+</p>
+
+{% highlight scss %}
+body {
+  $font-default: Helvetica, sans-serif;
+  $font-manuscript: 'Cursive', sans-serif;
+
+  font-family: $font-default;
+
+  header {
+    h1 {
+      font-family: $font-manuscript;
+    }
+  }
+
+  footer {
+    .footnote {
+      font-family: $font-manuscript;
+    }
+  }
+
+}
+{% endhighlight %}
+
+
+
+
+<h4 id="RFCSS-extract-declaration-block">Extract Declaration Block</h4>
+
+<p>
+  <em>Plusieurs propriétés et leurs valeurs se répètent ou se ressemblent fortement.</em>
+</p>
+
+<p>
+  <strong>Extraire ces déclarations dans un mixin dont le nom reflète l'intention du mixin.</strong>
+</p>
+
+{% highlight scss %}
+.warning {
+  border-radius: 10px;
+  background-color: yellow;
+  text-align: center;
+}
+
+.note {
+  border-radius: 10px;
+  background-color: silver;
+  text-align: center;
+}
+
+.error {
+  border-radius: 10px;
+  background-color: red;
+  text-align: center;
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+@mixin information($background-color) {
+  border-radius: 10px;
+  background-color: $background-color;
+  text-align: center;
+}
+
+.warning { @include information(yellow); }
+.note    { @include information(silver); }
+.error   { @include information(red);    }
+}
+{% endhighlight %}
+
+
+<h5>Motivations</h5>
+
+<p>
+  Les motivations sont identiques à la création d'une méthode dans un autre langage : factoriser le code pour
+  n'avoir qu'un seul endroit à modifier (DRY). Cela permet également d'introduire de la sémantique à l'aide du nom
+  choisi.
+</p>
+
+<p>
+  Les mixins sont le terme choisi par Sass pour représenter ce qui se rapproche de nos méthodes en Java. Ce terme,
+  inspiré du langage Ruby. n'est pas surprenant puisque Sass a connu le succès à travers le framework Ruby on Rails.
+</p>
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>Créer un nouveau mixin et choisir un nom reflétant l'intention ou le but du mixin.
+    <ul>
+      <li>
+        S'il est difficile de trouver un nom, c'est peut-être un signe que le choix des déclarations extraites
+        n'est pas pertinent. Une déclaration est peut-être en trop. Les déclarations serait mieux réparties en deux
+        mixins, ...
+      </li>
+    </ul>
+  </li>
+  <li>Copier les déclarations retenues dans le mixin.</li>
+  <li>
+    Identifier si les déclarations contiennent des références à des variables. Il peut être nécessaire, surtout
+    pour maximiser la réusabilité du mixin, de déclarer ces variables comme paramètres.
+  </li>
+  <li>
+    Inspecter les déclarations en se demandant si une des valeurs mériterait d'être paramétrée (de manière à
+    également maximiser la réusabilité du mixin). Créer un paramètre pour chaque valeur identifiée.
+  </li>
+  <li>
+    Remplacer les déclarations extraites par une inclusion au mixin. Les éventuels arguments doivent coïncider
+    parfaitement avec les valeurs initiales.
+  </li>
+  <li>
+    Compiler et tester
+  </li>
+</ul>
+
+
+
+<h5>Exemples</h5>
+
+<h6>Exemple : Aucun paramètre</h6>
+
+{% highlight scss %}
+p {
+  font-family: 'Cursive', sans-serif;
+  line-height: 1.5em;
+  font-weight: 400;
+  color: white;
+}
+{% endhighlight %}
+
+<p>
+  Les trois premières sont nécessaires pour obtenir une police manuscrite. Créons donc notre mixin :
+</p>
+
+{% highlight scss %}
+@mixin manuscript {
+  font-family: 'Cursive', sans-serif;
+  line-height: 1.5em;
+  font-weight: 400;
+}
+p {
+  @include manuscript;
+
+  color: white;
+}
+{% endhighlight %}
+
+<h6>Exemple : CSS3 Polyfill</h6>
+
+{% highlight scss %}
+.box {
+  -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+      -ms-border-radius: 10px;
+          border-radius: 10px;
+}
+
+.panel {
+  -webkit-border-radius: 20px;
+     -moz-border-radius: 20px;
+      -ms-border-radius: 20px;
+          border-radius: 20px;
+}
+{% endhighlight %}
+
+<p>
+  Ce genre de code est devenu si habituel depuis l'arrivée du CSS3. Indispensable pour supporter les différentes
+  versions des navigateurs, cela n'en reste pas moins regrettable.
+</p>
+
+{% highlight scss %}
+@mixin border-radius($radius: 10px) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+.box   { @include border-radius(); } /* Exploit default value */
+.panel { @include border-radius(20px); }
+{% endhighlight %}
+
+
+
+<h4 id="RFCSS-introduce-inheritance">Introduce Inheritance</h4>
+
+<p><em>Un élément possède deux classes sont l'un est plus spécifique que l'autre.</em></p>
+<p><strong>Étendre la classe spécifique de la classe générale.</strong></p>
+
+{% highlight html %}
+<p class="error error-fatal">NullPointerException</p>
+{% endhighlight %}
+
+{% highlight css %}
+.error {
+  color: red;
+}
+.fatal-error {
+  font-weight: bold;
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight html %}
+<p class="error-fatal">NullPointerException</p>
+{% endhighlight %}
+
+{% highlight scss %}
+.error {
+  color: red;
+}
+.fatal-error {
+  @extend error;
+  font-weight: bold;
+}
+{% endhighlight %}
+
+
+<h5>Motivations</h5>
+
+<p>
+  Les classes CSS apportent de la sémantique à notre document (ex : footnote, warning, author, ...). Si on reprend
+  l'exemple, la classe <code>error</code> nous signale une erreur. La classe <code>error-fatal</code> va même plus
+  loin en nous indiquant que c'est une erreur fatale. D'un point de vue sémantique, seule cette dernière classe est
+  nécessaire. L'ajout de la classe <code>error</code> est nécessaire en CSS pour factoriser les déclarations
+  communes à tous les types d'erreur.
+</p>
+
+<p>
+  Sass propose un mécanisme d'héritage pour représenter les relations "est un" entre classes.
+</p>
+
+<p>
+  L'héritage ne doit pas être confondu avec les mixins, Tous deux permettent de factoriser une liste de
+  déclarations. Toutefois, les mixins sont mieux adaptés pour de la présentation (ex : rounded-box, manuscript, ...)
+  afin d'éviter l'ajout de classes sans sémantique dans notre document.
+</p>
+
+<p>
+  L'héritage apporte avec lui tout son lot de complexité, parfaitement décrite par le créateur du langage dans
+  <a href="{% post_url 2014-08-28-sass-and-compass-in-action %}">Sass and Compass in Action</a>.
+</p>
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>Identifier deux classes partageant une relation d'héritage au sein des pages HTML.</li>
+  <li>Etendre de la classe la plus générale dans chacune des définitions des classes plus spécifiques.</li>
+  <li>Supprimer la classe la plus générale uniquement dans les pages HTML et à condition qu'une des classes plus spécifiques soit présente sur cet même élément.</li>
+</ul>
+
+
+<h5>Exemples</h5>
+
+<h6>Exemple :</h6>
+
+{% highlight scss %}
+.note {
+  $note-size: 50px;
+
+  display: block;
+  width: $note-size;
+  height: $note-size;
+  background-image: url(notes-sprite.png);
+  background-color: blue;
+  border-radius: 50%;
+}
+
+.note-20 { background-position: 0 -50px;  }
+.note-19 { background-position: 0 -100px; }
+/* ... */
+{% endhighlight %}
+
+{% highlight html %}
+<span class="note note-20"></span>
+{% endhighlight %}
+
+<p>
+  Comme pour notre premier exemple, la classe <code>note</code> est redondante et n'apporte aucune valeur d'un
+  point de vue sémantique. Rendons la relation d'héritage explicite grâce à Sass.
+</p>
+
+{% highlight scss %}
+.note {
+  /* idem */
+}
+
+.note-20 { @extend note; background-position: 0 -50px;  }
+.note-19 { @extend note; background-position: 0 -100px; }
+/* ... */
+{% endhighlight %}
+
+{% highlight html %}
+<span class="note-20"></span>
+{% endhighlight %}
+
+
+
+<h4 id="RFCSS-extract-file">Extract File</h4>
+
+<p><em>La taille d'une feuille de style nuit à sa maintenabilité</em></p>
+<p>
+  <strong>Décomposer la feuille de style en plusieurs de manière à ce que
+  chaque modification entraîne des changements dans une seule feuille de style.</strong>
+</p>
+
+{% highlight scss %}
+/* style.css */
+body {
+  header  { /* ... */ }
+  section { /* ... */ }
+  aside   { /* ... */ }
+}
+
+.post {
+  h1, h2 { /* ... */ }
+  p      { /* ... */ }
+  quote  { /* ... */ }
+}
+
+#contact {
+  /* ... */
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+// style.scss
+@import "layout";
+@import "post";
+@import "content";
+
+// _layout.scss
+body {
+  header  { /* ... */ }
+  section { /* ... */ }
+  aside   { /* ... */ }
+}
+
+// _post.scss
+.post {
+  h1, h2 { /* ... */ }
+  p      { /* ... */ }
+  quote  { /* ... */ }
+}
+
+// _content.scss
+#contact {
+  /* ... */
+}
+{% endhighlight %}
+
+
+<h5>Motivations</h5>
+
+<p>
+  Les feuilles de style commencent toujours petites mais ne le restent guère longtemps. Avec le temps, il devient
+  de plus en plus difficile de localiser où les changements doivent être effectués.
+</p>
+
+<p>
+  De la même manière que l'on n'envisage pas de créer des classes Java de plusieurs milliers de lignes, pourquoi ne
+  pas en faire autant avec nos feuilles de style ? D'autant plus que des solutions ont toujours existé (plusieurs
+  balises <code>link</code> ou la règle <code>@import</code>).
+</p>
+
+<p>
+  Mais voilà, cette découpe est problématique pour les temps de réponse. Les deux solutions ne sont pas
+  transparentes pour la navigateur qui a conscience de chacun des fichiers qui doivent être récupérés
+  séparément.
+</p>
+
+<p>
+  Reste alors le recours à un outil de build (ex : grunt) pour concaténer l'ensemble des feuilles de style ou tout
+  simplement utiliser Sass qui reprend la syntaxe du <code>@import</code> et veille à inclure les fichiers
+  physiquement lors de la compilation vers CSS. (Sass appelle ces fichiers inclut des partials).
+</p>
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>Créer un nouveau fichier en veillant bien à préfixer d'un underscore.</li>
+  <li>Déplacer l'ensemble des sélecteurs/blocs de déclaration sélectionnés dans ce fichier.</li>
+  <li>Ajouter la règle @import suivi du nom du fichier sans le underscore et sans extension.</li>
+</ul>
+
+
+<h5>Exemples</h5>
+
+<h6>Exemple : Uniformisation</h6>
+
+<p>Voici la situation actuelle :</p>
+
+{% highlight html %}
+<!-- index.html -->
+<link rel="stylesheet" href="reset.css">
+<link rel="stylesheet" href="style.css">
+{% endhighlight %}
+
+{% highlight css %}
+// style.css
+@import 'layout.css';
+
+body {
+  /* ...*/
+}
+
+// layout.css
+header  { /* ... */ }
+section { /* ... */ }
+footer  { /* ... */ }
+{% endhighlight %}
+
+<p>Sass nous permet d'uniformiser tout cela, tout en améliorant les temps de réponse de notre page.</p>
+
+{% highlight html %}
+<!-- index.html -->
+<link rel="stylesheet" href="style.css"> <!-- Compiled stylesheet -->
+{% endhighlight %}
+
+{% highlight scss %}
+// style.scss
+@import 'reset';
+@import 'layout';
+
+body {
+  /* ...*/
+}
+
+// _reset.scss
+/* ... */
+
+// _layout.scss
+header  { /* ... */ }
+section { /* ... */ }
+footer  { /* ... */ }
+{% endhighlight %}
+
+
+
+
+<h4 id="RFCSS-inline-file">Inline File</h4>
+
+<p>
+  <em>Des changements dans une feuille de style sont toujours accompagnés de changements dans une autre feuille de style.</em>
+</p>
+<p>
+  <strong>Fusionner le contenu des deux feuilles de style.</strong>
+</p>
+
+{% highlight css %}
+// layout.css
+@import 'header.css';
+@import 'section.css';
+@import 'footer.css';
+
+// header.css
+header {
+  height: 200px;
+  text-align: center;
+}
+
+// section.css
+section {
+  padding: 15px 25px
+}
+
+// footer.css
+footer {
+  height: 100px;
+  text-align: center;
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+// layout.css
+header {
+  height: 200px;
+  text-align: center;
+}
+
+section {
+  padding: 15px 25px
+}
+
+footer {
+  height: 100px;
+  text-align: center;
+}
+{% endhighlight %}
+
+
+<h5>Motivations</h5>
+
+<p>
+  Le fameux Divide and Conquer a ses limites. A trop diviser, on arrive à un découpage qui manque de cohésion.
+  Si les modifications ne se résument jamais à une seule feuille de style, il y a fort à parier que le nombre de
+  feuilles de style est trop important.
+</p>
+
+<p>
+  Réintégrer ces feuilles de style dans d'autres nous permet de revenir à davantage de cchésion. Sass n'est pas
+  d'une grande utilité pour ce refactoring, présent par soucis de complétude avec les autres refactorings
+  décrits.
+</p>
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>Identifier la feuille de style la plus adaptée pour recopier le contenu de notre feuille de style.</li>
+  <li>Recopier l'intégralité du contenu en début de fichier si notre feuille de style était incluse avant ou en fin de fichier sinon.</li>
+  <li>Supprimer l'import de notre feuille de style avant de la supprimer physiquement.</li>
+</ul>
+
+
+
+<h4 id="RFCSS-introduce-nesting">Introduce Nesting</h4>
+
+<p><em>Les sélecteurs sont trop longs, trop répétitifs</em></p>
+<p><strong>Exploiter l'imbrication pour simplifier les sélecteurs et améliorer la lisibilité.</strong></p>
+
+{% highlight css %}
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav ul li { display: inline-block; }
+
+nav a {
+  display: block;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+nav {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li { display: inline-block; }
+
+  a {
+    display: block;
+    padding: 6px 12px;
+    text-decoration: none;
+  }
+}
+{% endhighlight %}
+
+
+<h5>Motivation</h5>
+
+<p>
+  La syntaxe CSS traite chaque sélecteur indépendamment. Malheureusement, en pratique, les sélecteurs sont souvent
+  liés entre eux mais impossible de faire ressortir ces liens.
+</p>
+
+<p>
+  Sass avec sa syntaxe Nesting nous épargne beaucoup de répétitions et facilite grandement la lecture. Cette
+  fonctionnalité mérite à elle seule l'utilisation de Sass.
+</p>
+
+<p>
+  Attention toutefois à ne pas reproduire à l'identique la structure HTML en CSS. N'oublions que Sass doit compiler
+  nos feuilles de style vers du CSS et que des sélecteurs trop précis peuvent dégrader les performances.
+</p>
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>Identifier un sélecteur ayant comme préfixe un autre sélecteur.</li>
+  <li>
+    Recopier le sélecteur (sans le préfixe) et l'ensemble de son bloc de déclarations à la fin du bloc de
+    déclaration du sélecteur parent.
+  </li>
+  <li>Supprimer la déclaration avec l'ancien sélecteur.</li>
+</ul>
+
+
+<h5>Exemples</h5>
+
+<h6>Exemple : Décomposition par page</h6>
+
+{% highlight css %}
+#posts            { padding: 15px; }
+#posts article h1 { font-weight: bold; }
+#posts article p  { margin-bottom: 2em; }
+#posts aside      { background-color: silver; }
+{% endhighlight %}
+
+<p>
+  L'utilisation du nesting améliore la clarté des feuilles de style. (Discutable sur cet exemple très simple)
+</p>
+
+{% highlight scss %}
+#posts {
+  padding: 15px;
+
+
+  article {
+
+    h1 {
+      font-weight: bold;
+    }
+
+    p {
+      margin-bottom: 2em;
+    }
+
+  }
+
+
+  aside {
+    background-color: silver;
+  }
+
+}
+{% endhighlight %}
+
+
+<h6>Contre exemple : Attention au CSS généré</h6>
+
+{% highlight scss %}
+#post, #index, #contact {
+  header, footer {
+    p {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+}
+{% endhighlight %}
+
+<p>
+  Compilé en CSS, cela devient moins séduisant, surtout pour inspecter avec Firebug ou autre...
+</p>
+
+{% highlight css %}
+#post header p, #post footer p, #index header p, #index footer p, #contact header p, #contact footer p {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+{% endhighlight %}
+
+
+
+<h4 id="RFCSS-introduce-arithmetic">Introduce Arithmetic</h4>
+
+<p><em>Un nombre magique ne parait pas si magique.</em></p>
+<p><strong>Remplacer ce nombre par une expression mathématique expliquant sa valeur.</strong></p>
+
+
+{% highlight scss %}
+#main{
+  width: 500px;
+  padding: 10px;
+
+  .cell {
+    width: 25px;
+    padding: 5px;
+  }
+}
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+$grid-cells: 20;
+$cell-width: 25px;
+
+#main{
+  $main-width: $grid-cells * $cell-width;
+  $main-padding: 10px;
+
+  width: $main-width;
+  padding: $main-padding;
+
+  .cell {
+    width: $cell-width;
+    padding: $main-padding / 2;
+  }
+}
+{% endhighlight %}
+
+
+<h5>Motivations</h5>
+
+<p>
+  Les nombres magiques sont omniprésents en CSS. Voir le lien entre deux nombres est loin d'être évident, surtout
+  lorsque c'est deux nombres sont présents dans deux feuilles de style différentes. Bien souvent, on change un des
+  nombres est le résultat n'est pas celui espéré. S'en suit alors une série de modifications qui visent à recalculer
+  les nombres liés.
+</p>
+
+<p>
+  Le CSS nous aide déjà grâce à l'utilisation de mesures relatives (pourcentage, em). Ex :
+</p>
+
+{% highlight css %}
+.circle {
+  width: 100px;
+  height: 100px;
+  border: 1px solid red;
+  border-radius: 50%; /* Changes on the diameter are automatically reflected */
+}
+{% endhighlight %}
+
+<p>
+  SASS va plus loin. Grâce à l'utilisation d'expressions, les calculs deviennent apparents. Grâce à l'utilisation
+  de variables (voir <a href="#RFCSS-extract-constant">Extract Constant</a>), ils deviennent encore plus
+  compréhensibles. Leur modification devient alors aisée.
+</p>
+
+<p>
+  <strong>Cela ne remet pas en cause l'utilisation d'unités relatives qui doit être privilégiées lorsque cela est applicable.</strong>
+</p>
+
+<p>
+  Sass supporte plusieurs types (booléen, string, nombre, couleur, liste) et propose même des fonctions.
+</p>
+
+
+<h5>Mechanics</h5>
+
+<ul>
+  <li>
+    Créer une variable (<a href="#RFCSS-extract-constant">Extract Constant</a>) contenant la valeur dont d'autres valeurs dépendent.
+  </li>
+  <li>Pour chaque variable dépendante
+    <ul>
+      <li>
+        Vérifier à chaque remplacement que la variable est accessible. Le cas échéant, déplacer la variable au
+        niveau du premier bloc parent commun. Ne jamais réduire la portée de la variable pour ne pas impacter les
+        remplacements précédents.
+      </li>
+      <li>
+        Remplacer l'ancienne valeur par une expression utilisant la variable précédemment créée.
+        <ul>
+          <li>
+            Attention à la priorité des opérateurs. Utiliser des parenthèses pour changer l'ordre d'évaluation ou
+            pour clarifier l'expression.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Compiler et tester</li>
+</ul>
+
+
+<h5>Exemples</h5>
+
+<h6>Exemple : Coloration tableau</h6>
+
+<p data-height="170" data-theme-id="0" data-slug-hash="wBMmVP" data-default-tab="result" data-user="julien-sobczak" class='codepen'>
+  See the Pen <a href='http://codepen.io/julien-sobczak/pen/wBMmVP/'>wBMmVP</a> by Julien Sobczak
+  (<a href='http://codepen.io/julien-sobczak'>@julien-sobczak</a>) on <a href='http://codepen.io'>CodePen</a>.
+</p>
+<script async src="http://assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>
+  L'arrivée du sélecteur <code>nth-child</code> nous épargne l'ajout de nombreuses classes CSS sans valeur sémantique :
+</p>
+
+{% highlight scss %}
+tr {
+
+  &:nth-child(2n) {
+    td {
+      background-color: #EEE;
+
+      &:nth-child(2n) {
+        background-color: #CCC;
+      }
+    }
+  }
+
+  &:nth-child(2n+1) {
+    td {
+      background-color: #AAA;
+
+      &:nth-child(2n) {
+        background-color: #888;
+      }
+    }
+  }
+}
+{% endhighlight %}
+
+<p>
+  4 couleurs sont nécessaires pour parvenir au résultat escompté. Deux d'entre elles correspondent aux couleurs
+  principales (celles à alterner). Les deux autres sont étroitement liées puisqu'elles représentent ces mêmes
+  couleurs avec de légères variations pour représenter le croisement des lignes et colonnes.
+</p>
+
+<p>
+  Modifier les couleurs de base nous obligent à recalculer les couleurs secondaires.
+</p>
+
+<p>
+  Comparons avec cette autre solution, reposant sur les expressions SASS permettant de créer de nouvelles couleurs
+  à partir d'existantes :
+</p>
+
+{% highlight scss %}
+$odd-row-color: silver;
+$even-row-color: gray;
+
+tr {
+
+  &:nth-child(2n) {
+    td {
+      background-color: $odd-row-color;
+
+      &:nth-child(2n) {
+        background-color: darken($odd-row-color, 20%);
+      }
+    }
+  }
+
+  &:nth-child(2n+1) {
+    td {
+      background-color: $even-row-color;
+
+      &:nth-child(2n) {
+        background-color: darken($even-row-color, 20%);
+      }
+    }
+  }
+}
+{% endhighlight %}
+
+<p>
+  La relation entre les couleurs devient de suite plus parlante et tenter différentes couleurs devient alors un
+  vrai plaisir.
+</p>
+
+
+<h4 id="RFCSS-introduce-conditional-branching">Introduce Conditional Branching</h4>
+
+<p><em>Beaucoup de duplications entre une suite de sélecteurs/blocs de déclarations.</em></p>
+<p><strong>Utiliser les structures de contrôles habituelles pour factoriser le code commun.</strong></p>
+
+{% highlight css %}
+.roti {
+  background-images: url(sprites.png);
+  width: 50px;
+  height: 50px;
+}
+.roti1 { background-position: 0      0; }
+.roti2 { background-position: 0  -50px; }
+.roti3 { background-position: 0 -100px; }
+.roti4 { background-position: 0 -150px; }
+.roti5 { background-position: 0 -200px; }
+{% endhighlight %}
+
+<p>=></p>
+
+{% highlight scss %}
+.roti {
+  background-images: url(sprites.png);
+  width: 50px;
+  height: 50px;
+}
+@for $i from 1 through 5 {
+  .roti#{$i} { background-position: 0 ($i - 1) * -50px; }
+}
+{% endhighlight %}
+
+
+<h5>Motivations</h5>
+
+<p>
+  Le CSS a beau être un langage déclaratif, il n'en reste pas moins que nos bonnes vieilles instructions de
+  contrôle héritées des langages impératifs se font parfois sentir absentes.
+</p>
+
+<p>
+  Même si les cas d'utilisation restent marginaux, nous verrons deux exemples où les structures de contrôle se
+  révèlent indispensables.
+</p>
+
+
+<h5>Exemple</h5>
+
+<h6>Exemple 1 : Les sprites</h6>
+
+<p>
+  Les sprites sont présentes dès la première règle du classique de Steve Souders,
+  <a href="{% post_url 2012-04-15-high-performance-web-sites %}">High Performance Web Sites</a>.
+  Leur impact sur les temps de réponse est conséquent. Là, où des dizaines de requêtes HTTP étaient nécessaires auparavant,
+  une seule suffit grâce à l'utilisation de sprites.
+</p>
+
+<p>
+  Côté CSS, cela est rendu possible grâce à la propriété <code>background-position</code>.
+</p>
+
+<p>
+  Prenons pour exemple le sprite suivant :
+</p>
+
+<img src="{{ '/posts_resources/2014-09-29-refactoring-css-avec-sass/sprite-example.png' | prepend: site.baseurl }}"/>
+
+
+<p>
+  Voici un exemple de code CSS nécessaire pour exploiter les différentes icônes.
+</p>
+
+{% highlight scss %}
+ul {
+    list-style-type: none;
+}
+
+li {
+  display: inline-block;
+  width:  100px;
+  height: 100px;
+  background-image: url(categories-sprite.png);
+}
+li.category-read    { background-position: 0      0; }
+li.category-watch   { background-position: 0 -100px; }
+li.category-tell    { background-position: 0 -300px; }
+li.category-inspect { background-position: 0 -400px; }
+// ...
+{% endhighlight %}
+
+<p>
+  Pour cet exemple, nous allons définir une variable pour contenir la liste de nos catégories, avant d'itérer
+  dessus pour générer l'ensemble des déclarations. Voici le résultat :
+</p>
+
+{% highlight scss %}
+ul {
+  $categories: read, watch, tell, inspect;
+
+  list-style-type: none;
+
+
+  li {
+    display: inline-block;
+    width: 70px;
+    height: 60px;
+    background-image: url(labels-sprite.png);
+  }
+
+  $i: 0;
+  @each $category in $categories {
+    li.category-#{$category} { background-position: 0 (-100px * $i); }
+    $i: $i + 1;
+  }
+
+}
+{% endhighlight %}
+
+<p>
+  Grâce à Sass et l'utilisation de structures de contrôle, notre application devient à la fois plus performante et
+  plus maintenable. L'ajout d'un nouveau libellé revient simplement à modifier notre variable.
+</p>
+
+
+
+<h3 id="RFCSS-references">Références</h3>
+
+<dl class="references">
+  <dt id="RFCSS-references-fow1">[Fow1]</dt>
+  <dd>Refactoring: Improving the Design of Existing Code</dd>
+  <dt id="RFCSS-references-sou1">[Sou1]</dt>
+  <dd><a href="http://www.stevesouders.com/blog/2009/04/09/dont-use-import/">don’t use @import</a></dd>
+</dl>
+
+
+<h3 id="RFCSS-to-see">A voir également</h3>
+
+<ul>
+  <li>
+    <a href="{% post_url 2006-01-15-refactoring-improving-design-of %}">Refactoring: Improving the
+      Design of Existing Code</a> pour découvrir le livre qui a introduit le terme Refactoring.
+  </li>
+  <li>
+    <a href="{% post_url 2014-08-28-sass-and-compass-in-action %}">Sass and Compass in Action</a>
+    pour aller plus loin avec Sass, découvrir ses quelques subtilités et les avantages à ajouter un framework comme
+    Compass afin de bénéficier de l'expérience de nombreux designers.
+  </li>
+</ul>
+
+
+
+  </div>
+</article>

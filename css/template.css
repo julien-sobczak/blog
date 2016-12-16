@@ -180,6 +180,7 @@ hr.star-primary:after {
   position: fixed;
   left: 0;
   right: 0;
+  top: 0;
   background: #2C3E50;
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-transform: uppercase;

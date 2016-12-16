@@ -44,7 +44,7 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
 
 ++++
 <figure class="illustration">
-  <img src="{{page.root}}img/Constructing_a_new_zeppelin_-uncovered_rear_frame.jpg" class="blur" />
+  <img src="{{ /img/Constructing_a_new_zeppelin_-uncovered_rear_frame.jpg' | prepend: site.baseurl }}" class="blur" />
   <figcaption>Construction of a new Zeppelin rear frame</figcaption>
 </figure>
 ++++

@@ -1,0 +1,860 @@
+---
+layout: post
+title: 'Implementing JUnit from Scratch'
+author: 'Julien Sobczak'
+date: '2014-10-06T22:23:00.000+02:00'
+categories: inspect
+tags:
+- java
+- frameworks
+- testing
+---
+
+<article class="post-inspect language-java">
+
+  <h1>Implementing JUnit from Scratch</h1>
+  <h2>Julien Sobczak</h2>
+
+  <div class="post-content">
+
+<blockquote>
+  <p>"Never in the field of software development have so many owed so much to so few lines of code" -
+  <em>Gerard Meszaros, auteur de XUnit Test Patterns</em></p>
+</blockquote>
+
+<p class="intro">
+  Selon <a href="http://www.takipiblog.com/we-analyzed-30000-github-projects-here-are-the-top-100-libraries-in-java-js-and-ruby/" target="_tab">
+  une étude de 2013</a>, JUnit est la librairie la plus utilisée en Java (à égalité avec Slf4j). On peut retracer les
+  racines du framework à <a href="http://www.xprogramming.com/testfram.htm" target="_tab">un papier de Kent Beck</a>
+  datant de 1989. La version SUnit sera véritablement publiée en 1994 par ce même Kent Beck qui sera également à
+  l’origine de la version Java (avec Eric Gamma). Si vous souhaitez en savoir plus sur l’histoire des tests, je vous
+  conseille ces deux très bons articles :
+  <a href="http://c2.com/cgi/wiki?TenYearsOfTestDrivenDevelopment" target="_tab">Ten Years Of Test Driven Development</a>
+  et <a href="http://shebanator.com/2007/08/21/a-brief-history-of-test-frameworks/" target="_tab">A Brief History of Test Frameworks</a>.
+</p>
+
+<p class="intro">
+  Place au code maintenant. Nous allons réécrire une version de JUnit de zéro, très proche du code de production,
+  même si quelques libertés seront nécessaires pour éviter à cet article de trop s’allonger. Les noms de classes/méthodes
+  respectent ceux de la librairie.
+</p>
+
+<div class="licence">
+  <p>
+    JUnit est publié sous <a href="https://www.eclipse.org/legal/epl-v10.html">licence Eclipse</a>.
+    Le code présenté dans cet article a été simplifié pour des raisons évidentes et n’a pas pour vocation à être utilisé
+    en dehors de ce contexte d’apprentissage. Cet article est basé sur la version 4.11 de JUnit.
+  </p>
+</div>
+
+
+<h3>Un premier exemple</h3>
+
+<p>Voici une suite de tests très simple.</p>
+
+{% highlight java %}
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import java.util.ArrayList;
+import org.junit.*;
+
+public class ArrayListTest {
+
+  private ArrayList<String> instance;
+
+  @Before
+  public void setUp() {
+    instance = new ArrayList<String>();
+  }
+
+  @Test
+  public void newArrayListsHaveNoElements() {
+    assertThat(instance.size(), is(0));
+  }
+
+  @Test
+  public void sizeReturnsNumberOfElements() {
+    instance.add("Item 1");
+    instance.add("Item 2");
+    assertThat(instance.size(), is(2));
+  }
+
+  @Test
+  @Ignore
+  public void removeDeletesTheGivenElement() {
+    instance.remove("Item 1"); // FIXME
+    assertThat(instance.size(), is(0));
+  }
+
+  @Test
+  public void duplicateElementsAreNotAllowed() {
+    instance.add("Item 1");
+    instance.add("Item 1");
+    assertThat(instance.size(), is(1));
+  }
+}
+{% endhighlight %}
+
+<p>
+  Lancés avec JUnit, ces tests échouent à cause du dernier test en erreur. L’objectif est maintenant de réussir à
+  ré-exécuter cette classe mais sans l'aide de la librairie JUnit.
+</p>
+
+
+<!-- --------------------------------------------- -->
+<!-- -- C'est parti ! ---------------------------- -->
+<!-- --------------------------------------------- -->
+<h3>C’est parti !</h3>
+
+<p>
+  Si on met de côté nos IDEs, le moyen le plus simple de <a href="https://github.com/junit-team/junit/wiki/Test-runners" target="_tab">lancer JUnit</a>
+  sur une classe donnée se résume à la ligne suivante :
+</p>
+
+{% highlight java %}
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+
+Result result = JUnitCore.runClasses(ArrayListTest.class);
+{% endhighlight %}
+
+<p>
+  Nous allons partir de cette même ligne et recoder chacune des classes. On commence donc par effacer les imports
+  et proposer une implémentation pour les deux classes concernées. (<code>Result</code> et <code>JUnitCode</code>)
+</p>
+
+<p>
+  La classe <code>Result</code> regroupe les informations qui vont nous permettre d’afficher le résultat de
+  l’exécution, soit Green, soit Red. On retrouve donc le nombre de tests exécutés et les échecs :
+</p>
+
+{% highlight java %}
+public class Result {
+    private int count;
+    private List<Failure> failures = new ArrayList<Failure>();
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<Failure> getFailures() {
+        return failures;
+    }
+}
+{% endhighlight %}
+
+<p>
+  Pour chaque échec, il est intéressant de connaître par exemple le nom du test et l’exception attrapée.
+  C’est ce que représente la classe <code>Failure</code> :
+</p>
+
+{% highlight java %}
+public class Failure {
+    private final Description description;
+    private final Throwable thrownException;
+
+    public Failure(Description description, Throwable thrownException) {
+        this.description = description;
+        this.thrownException = thrownException;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public Throwable getThrownException() {
+        return thrownException;
+    }
+
+}
+{% endhighlight %}
+
+<p>
+  Une <code>Description</code>, comme son nom l'indique, décrit un test donné, reprenant son nom, son annotation
+  (<code>@Test</code> avec l’exception attendue éventuellement), la suite auquel il appartient, etc.
+  Ici, on se contentera uniquement du nom mais on conservera l’abstraction représentée par <code>Description</code>.
+</p>
+
+{% highlight java %}
+public class Description {
+
+    private final String displayName;
+
+    public Description(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * Create a <code>Description</code> of a single test named <code>name</code>
+     * in the class <code>clazz</code>.
+     */
+    public static Description createTestDescription(Class<?> clazz, String name) {
+        return new Description(String.format("%s(%s)", name, clazz.getName()));
+    }
+
+}
+{% endhighlight %}
+
+<p>
+  C’en est terminé pour l’objet <code>Result</code>. Tournons nous à présent vers la seconde classe <code>JUnitCore</code>
+  qui joue le rôle de façade pour le reste de la librairie. Voici son implémentation.
+  On y retrouve les principales abstractions que l’on va ensuite décrire.
+</p>
+
+{% highlight java %}
+public class JUnitCore {
+
+    private RunNotifier notifier = new RunNotifier();
+
+    public static Result runClass(Class<?> testClass) {
+        return new JUnitCore().run(new OurSimpleClassRunner(testClass));
+    }
+
+    private Result run(Runner runner) {
+        Result result = new Result();
+        RunListener listener = result.createListener();
+        notifier.addListener(listener);
+        runner.run(notifier);
+        return result;
+    }
+
+}
+{% endhighlight %}
+
+<p>
+  La méthode <code>run</code> lève un peu plus le voile sur ce qui nous attend. Elle prend en entrée un <code>Runner</code>,
+  élément central de la librairie puisque c’est cette classe qui se charge d’exécuter les tests tout en nous
+  signalant sa progression à travers différents événements (lancement du test, test échoué, test terminé, ...). Il
+  existe de nombreuses implémentations de <code>Runner</code> pour, par exemple, supporter les tests JUnit 3,
+  <a href="https://github.com/junit-team/junit/wiki/Parameterized-tests" target="_tab">les tests paramétrés</a>,
+  <a href="https://github.com/junit-team/junit/wiki/Theories" target="_tab">les théories</a>, etc.
+  Il est tout à fait possible de créer son propre <code>Runner</code> comme l’ont fait Spring ou Mockito grâce à l’annotation
+  <a href="http://junit.sourceforge.net/javadoc/org/junit/runner/RunWith.html" target="_tab"><code>@RunWith</code></a>.
+  Tous ces runners respectent une interface similaire à :
+</p>
+
+{% highlight java %}
+public interface Runner {
+
+    /** Run the tests for this runner. */
+    void run(RunNotifier notifier);
+}
+{% endhighlight %}
+
+
+<div class="tip">
+  <p class="title">Comment les Runners nous communiquent-ils le résultat des tests ?</p>
+  <p>
+    La classe <code>RunNotifier</code> implémente <a href="http://en.wikipedia.org/wiki/Observer_pattern" target="_tab">
+    le pattern Observer</a>. Pour chaque événement possible, la classe <code>RunNotifier</code> propose une méthode
+    de notification appelée par le <code>Runner</code> (ex : <code>fireTestStarted</code>).
+    Chaque listener est alors prévenu et peut réagir en conséquence. Dans notre cas, c’est notre objet <code>Result</code>
+    qui va écouter ces événements et construire pas à pas le résultat final.
+  </p>
+</div>
+
+<p>
+  Voici l'implémentation de la classe <code>RunNotifier</code>.
+</p>
+
+{% highlight java %}
+public class RunNotifier {
+    private List<RunListener> listeners = new ArrayList<RunListener>();
+
+    public void addListener(RunListener listener) {
+        listeners.add(listener);
+    }
+
+    /** Invoke to tell listeners that an atomic test is about to start. */
+    public void fireTestStarted(final Description description) {
+        for (RunListener eachListener : listeners) {
+            eachListener.testStarted(description);
+        }
+    }
+
+    /** Invoke to tell listeners that an atomic test failed. */
+    public void fireTestFailure(Failure failure) {
+        for (RunListener eachListener : listeners) {
+            eachListener.testFailure(failure);
+        }
+    }
+
+    /** Invoke to tell listeners that an atomic test finished. */
+    public void fireTestFinished(final Description description) {
+        for (RunListener eachListener : listeners) {
+            eachListener.testFinished(description);
+        }
+    }
+}
+{% endhighlight %}
+
+
+<p>
+  Où <code>RunListener</code> correspond à la classe suivante :
+</p>
+
+{% highlight java %}
+public abstract class RunListener {
+
+    /** Called when an atomic test is about to be started. */
+    public void testStarted(Description description) {}
+
+    /** Called when an atomic test has finished, whether the test succeeds or fails. */
+    public void testFinished(Description description) {}
+
+    /** Called when an atomic test fails, or when a listener throws an exception. */
+    public void testFailure(Failure failure) {}
+
+}
+{% endhighlight %}
+
+<p>
+  Pour que le code compile à nouveau, nous devons revenir sur notre classe <code>Result</code> pour implémenter la
+  méthode <code>result.createListener()</code> :
+</p>
+
+{% highlight java linenos %}
+public class Result {
+    private int count;
+    private List<Failure> failures = new ArrayList<Failure>();
+
+    // ...
+
+    public RunListener createListener() {
+        return new Listener();
+    }
+
+    private class Listener extends RunListener {
+
+        @Override
+        public void testStarted(Description description) {
+        }
+
+        @Override
+        public void testFinished(Description description) {
+            count++;
+        }
+
+        @Override
+        public void testFailure(Failure failure) {
+            failures.add(failure);
+        }
+
+    }
+
+}
+{% endhighlight %}
+
+<dl class="source-explanations">
+  <dt>11</dt><dd>On écoute les événements reportés par le runner.</dd>
+  <dt>19</dt><dd>On mémorise chaque exécution de test.</dd>
+  <dt>24</dt><dd>On sauvegarde également chaque échec.</dd>
+</dl>
+
+
+<h4>Le coeur de JUnit : le Runner</h4>
+
+<p>
+  Cela nous conduit tout droit vers la dernière étape : l’implémentation du <code>Runner</code>.
+  L’implémentation standard actuelle est la classe <code>BlockJUnit4ClassRunner</code> qui hérite la plupart
+  des fonctionnalités de sa superclasse <code>ParentRunner</code>.
+  Elles deux représentent près de 1000 lignes sans compter les autres classes annexes.
+  Nous allons donc nous éloigner du code de production actuel tout en conservant le plus possible a logique.
+</p>
+
+<p>
+  Commençons par une première version supportant uniquement l’annotation <code>@Test</code> :
+</p>
+
+
+{% highlight java linenos %}
+public class OurSimpleClassRunner implements Runner {
+
+    private final Class<?> testClass;
+    private final TestIntrospector introspector;
+
+    public OurSimpleClassRunner2(Class<?> testClass) {
+        this.testClass = testClass;
+        this.introspector = new TestIntrospector(testClass);
+    }
+
+    public void run(RunNotifier notifier) {
+        List<Method> testMethods = introspector.getTestMethods(Test.class);
+
+        for (Method eachTestMethod : testMethods) {
+            invokeTestMethod(eachTestMethod, notifier);
+        }
+    }
+
+    private void invokeTestMethod(Method method, RunNotifier notifier) {
+        Description description =
+            Description.createTestDescription(testClass, method.getName());
+
+        try {
+            Object test = createTest();
+            notifier.fireTestStarted(description);
+
+            method.invoke(test);
+
+        } catch (Throwable t) {
+            Failure failure = new Failure(description, t);
+            notifier.fireTestFailure(failure);
+        } finally {
+            notifier.fireTestFinished(description);
+        }
+    }
+
+    private Object createTest() throws Exception {
+        return testClass.getConstructor().newInstance();
+    }
+
+}
+{% endhighlight %}
+
+<dl class="source-explanations">
+  <dt>12</dt><dd>On utilise une classe utilitaire pour connaître les méthodes de test à lancer.</dd>
+  <dt>25, 31, 33</dt><dd>On notifie à chaque étape de l'exécution.</dd>
+  <dt>38</dt><dd>On créée une nouvelle instance de notre classe de test avant chaque exécution de méthode
+  (voir explications plus bas).</dd>
+</dl>
+
+<p>
+  Reprenons plus en détails ces précédents points.
+</p>
+
+<p>
+  Le <code>Runner</code> utiliser une classe <code>TestIntrospector</code> pour extraire les méthodes de tests tout
+  en veillant à exclure les méthodes avec l’annotation <code>@Ignore</code>. Voici l’implémentation de cette classe
+  utilitaire (inspirée de la version 4.1 de JUnit) :
+</p>
+
+{% highlight java %}
+public class TestIntrospector {
+    private final Class< ?> testClass;
+
+    public TestIntrospector(Class<?> testClass) {
+        this.testClass = testClass;
+    }
+
+    public List<Method> getTestMethods(Class<? extends Annotation> annotationClass) {
+        List<Method> results = new ArrayList<Method>();
+        Method[] methods = testClass.getDeclaredMethods();
+        for (Method eachMethod : methods) {
+            Annotation annotation = eachMethod.getAnnotation(annotationClass);
+            if (annotation != null && !isIgnored(eachMethod)) {
+                results.add(eachMethod);
+            }
+        }
+        return results;
+    }
+
+    private boolean isIgnored(Method eachMethod) {
+        return eachMethod.getAnnotation(Ignore.class) != null;
+    }
+
+}
+{% endhighlight %}
+
+<div class="tip">
+  <p class="title">JUnit garantit-il l’ordre d’exécution des tests ?</p>
+  <p>
+    La réponse est oui mais pas l’ordre que l’on voudrait...
+    Comme pour notre code, JUnit utilise la méthode <code>java.lang.Class.getDeclaredMethods()</code>
+    pour extraire les méthodes annotées. La Javadoc est particulièrement explicite sur ce point :
+  </p>
+  <blockquote>
+    <p>"The elements in the array returned are not sorted and are not in any particular order"</p>.
+  </blockquote>
+  <p>
+    En pratique, l’ordre retourné correspondait à l’ordre des méthodes dans le source mais cela
+    <a href="https://wikis.oracle.com/display/GlassFish/Method+Ordering+from+Class.getMethods" target="_tab">change depuis Java 7</a>.
+    Pour garantir des tests reproductibles, JUnit impose un ordre par défaut (surchargeable).
+    Cela se passe dans le <code>Comparator</code> <code>org.junit.internal.MethodSorter.DEFAULT</code> :
+  </p>
+
+{% highlight java %}
+public static final Comparator<Method> DEFAULT = new Comparator<Method>() {
+    public int compare(Method m1, Method m2) {
+        int i1 = m1.getName().hashCode();
+        int i2 = m2.getName().hashCode();
+        if (i1 != i2) {
+            return i1 < i2 ? -1 : 1;
+        }
+        return NAME_ASCENDING.compare(m1, m2);
+    }
+};
+{% endhighlight %}
+
+  <p>
+    Basé avant tout sur le <code>hashCode</code> de la méthode <code>String</code>, l’ordre final n’est ni
+    alphabétique, ni celui dans notre code source, mais est prévisible, et c’est là l’essentiel.
+  </p>
+</div>
+
+<p>
+  L'autre point concerne la création d'une nouvelle instance avant chaque exécution de test. L’intérêt a été décrit
+  dans <a href="http://martinfowler.com/bliki/JunitNewInstance.html" target="_tab">un post de Martin Fowler</a> et
+  se comprend mieux à travers un exemple :
+</p>
+
+{% highlight java %}
+import static org.junit.Assert.*;
+import java.util.*;
+import org.junit.Test;
+
+public class WhyNewInstanceTest {
+
+    private List<String> list = new ArrayList<String>();
+
+    @Test
+    public void testFirst() {
+        list.add("one");
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testSecond() {
+        assertEquals(0, list.size());
+    }
+
+}
+{% endhighlight %}
+
+<p>
+  Avec JUnit, ces deux tests passent et ce, qu’importe l’ordre d’exécution. La création d’une nouvelle instance
+  pour chaque test garantit que ces tests travaillent sur deux listes différentes. Ce comportement n’a
+  malheureusement pas été repris dans NUnit pour cause d’incompréhension et impossible maintenant de revenir en
+  arrière sans causer de régressions.
+</p>
+
+<div class="congratulations">
+  <p class="title">Terminé !</p>
+  <p>
+    <strong>Moins de 300 lignes auront été nécessaires pour refaire tourner nos tests</strong>.
+    Le résultat est identique : autant de tests au vert et toujours un seul échec.
+  </p>
+  <p>
+    Le source complet est disponible <a href="https://github.com/julien-sobczak/junit-from-scratch">ici</a>.
+  </p>
+</div>
+
+<p>
+  Voici la version finale supportant également les annotations <code>@Before</code> et <code>@After</code> :
+</p>
+
+{% highlight java %}
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+public class JUnitLite {
+
+    public static void main(String[] args) throws Exception {
+
+        Result result = JUnitCore.runClass(ArrayListTest.class);
+        System.out.println(result);
+
+    }
+
+    public static class JUnitCore {
+
+        private RunNotifier notifier = new RunNotifier();
+
+        public static Result runClass(Class<?> testClass) {
+            return new JUnitCore().run(new OurSimpleClassRunner(testClass));
+        }
+
+        private Result run(Runner runner) {
+            Result result = new Result();
+            RunListener listener = result.createListener();
+            notifier.addListener(listener);
+            runner.run(notifier);
+            return result;
+        }
+
+    }
+
+
+    public interface Runner {
+
+        /** Run the tests for this runner. */
+        void run(RunNotifier notifier);
+    }
+
+
+    public static class TestIntrospector {
+        private final Class< ?> testClass;
+
+        public TestIntrospector(Class<?> testClass) {
+            this.testClass = testClass;
+        }
+
+        public List<Method> getTestMethods(Class<? extends Annotation> annotationClass) {
+            List<Method> results = new ArrayList<Method>();
+            Method[] methods = testClass.getDeclaredMethods();
+            for (Method eachMethod : methods) {
+                Annotation annotation = eachMethod.getAnnotation(annotationClass);
+                if (annotation != null && !isIgnored(eachMethod)) {
+                    results.add(eachMethod);
+                }
+            }
+            return results;
+        }
+
+        private boolean isIgnored(Method eachMethod) {
+            return eachMethod.getAnnotation(Ignore.class) != null;
+        }
+
+    }
+
+
+    public static class OurSimpleClassRunner implements Runner {
+
+        private final Class<?> testClass;
+        private final TestIntrospector introspector;
+        private final List<Method> beforeMethods;
+        private final List<Method> afterMethods;
+
+        public OurSimpleClassRunner(Class<?> testClass) {
+            this.testClass = testClass;
+            this.introspector = new TestIntrospector(testClass);
+            this.beforeMethods = introspector.getTestMethods(Before.class);
+            this.afterMethods = introspector.getTestMethods(After.class);
+        }
+
+        public void run(RunNotifier notifier) {
+            List<Method> testMethods = introspector.getTestMethods(Test.class);
+
+            for (Method eachTestMethod : testMethods) {
+                invokeTestMethod(eachTestMethod, notifier);
+            }
+        }
+
+        private void invokeTestMethod(Method method, RunNotifier notifier) {
+            Description description = Description.createTestDescription(testClass, method.getName());
+
+            try {
+                Object test = createTest();
+                notifier.fireTestStarted(description);
+
+                invokeBeforeMethods(test);
+                method.invoke(test);
+                invokeAfterMethods(test); // should be run in finally
+
+            } catch (Throwable t) {
+                Failure failure = new Failure(description, t);
+                notifier.fireTestFailure(failure);
+            } finally {
+                notifier.fireTestFinished(description);
+            }
+        }
+
+        private Object createTest() throws Exception {
+            return testClass.getConstructor().newInstance();
+        }
+
+        private void invokeBeforeMethods(Object test) throws Exception {
+            for (Method eachBeforeMethod : beforeMethods) {
+                eachBeforeMethod.invoke(test);
+            }
+        }
+
+        private void invokeAfterMethods(Object test) throws Exception {
+            for (Method eachAfterMethod : afterMethods) {
+                eachAfterMethod.invoke(test);
+            }
+        }
+
+    }
+
+
+
+    public static class Result {
+        private int count;
+        private List<Failure> failures = new ArrayList<Failure>();
+
+        public int getCount() {
+            return count;
+        }
+
+        public List<Failure> getFailures() {
+            return failures;
+        }
+
+
+        private class Listener extends RunListener {
+
+            @Override
+            public void testStarted(Description description) {
+            }
+
+            @Override
+            public void testFinished(Description description) {
+                count++;
+            }
+
+            @Override
+            public void testFailure(Failure failure) {
+                failures.add(failure);
+            }
+
+        }
+
+        public RunListener createListener() {
+            return new Listener();
+        }
+
+    }
+
+
+    public abstract static class RunListener {
+
+        /** Called when an atomic test is about to be started. */
+        public void testStarted(Description description) {}
+
+        /** Called when an atomic test has finished, whether the test succeeds or fails. */
+        public void testFinished(Description description) {}
+
+        /** Called when an atomic test fails, or when a listener throws an exception. */
+        public void testFailure(Failure failure) {}
+
+    }
+
+    public static class Failure {
+        private final Description description;
+        private final Throwable thrownException;
+
+        public Failure(Description description, Throwable thrownException) {
+            this.description = description;
+            this.thrownException = thrownException;
+        }
+
+        public Description getDescription() {
+            return description;
+        }
+
+        public Throwable getThrownException() {
+            return thrownException;
+        }
+
+    }
+
+
+    public static class Description {
+
+        private final String displayName;
+
+        public Description(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public static Description createTestDescription(Class<?> clazz, String name) {
+            return new Description(String.format("%s(%s)", name, clazz.getName()));
+        }
+
+    }
+
+
+    public static class RunNotifier {
+        private List<RunListener> listeners = new ArrayList<RunListener>();
+
+        public void addListener(RunListener listener) {
+            listeners.add(listener);
+        }
+
+        /** Invoke to tell listeners that an atomic test is about to start. */
+        public void fireTestStarted(final Description description) {
+            for (RunListener eachListener : listeners) {
+                eachListener.testStarted(description);
+            }
+        }
+
+        /** Invoke to tell listeners that an atomic test failed. */
+        public void fireTestFailure(Failure failure) {
+            for (RunListener eachListener : listeners) {
+                eachListener.testFailure(failure);
+            }
+        }
+
+        /** Invoke to tell listeners that an atomic test finished. */
+        public void fireTestFinished(final Description description) {
+            for (RunListener eachListener : listeners) {
+                eachListener.testFinished(description);
+            }
+        }
+    }
+
+}
+{% endhighlight %}
+
+<div class="tip">
+  <p class="title">Et les IDEs dans tout çà ?</p>
+  <p>
+    Prenons le cas d’Eclipse et de son plugin <a href="http://www.eclipse.org/jdt/" target="_tab">Java Development
+    Tools (JDT)</a> qui assure le support JUnit. Ce plugin réutilise la librairie JUnit et exploite le faible
+    couplage offert par la classe <code>RunNotifier</code>. Le plugin ajoute
+    <a href="http://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/tree/org.eclipse.jdt.junit4.runtime/src/org/eclipse/jdt/internal/junit4/runner/JUnit4TestListener.java" target="_tab">un listener</a>
+    qui va non seulement consolider le résultat des tests mais également mettre à jour la vue JUnit, etc.
+  </p>
+</div>
+
+<div class="experiment">
+  <p class="title">A vous de forker</p>
+  <p>
+    Voici quelques unes des libertés prises par notre implémentation :
+  </p>
+  <ul>
+    <li>
+      Le calcul du runner à utiliser est plus complexe qu’une simple instanciation.
+      Pour en savoir plus : <code>org.junit.runner.JUnitCore</code>,
+      <code>org.junit.runner.Computer</code>, <code>org.junit.runner.Request</code>.
+    </li>
+    <li>
+      Notre implémentation du runner, ne reflète pas la complexité des runners actuels qui doivent par exemple
+      supporter d’autres annotations comme <code>@BeforeClass</code> et <code>@AfterClass</code> mais aussi les
+      <a href="https://github.com/junit-team/junit/wiki/Assumptions-with-assume" target="_tab">Assumptions</a>, les
+      <a href="https://github.com/junit-team/junit/wiki/Categories" target="_tab">Categories</a>, ... Pourquoi ne
+      pas jeter un oeil au source pour découvrir comment ont été implémentées ces dernières évolutions.
+    </li>
+    <li>
+      Les tests peuvent également <a href="https://github.com/junit-team/junit/wiki/Developing-with-fast-tests" target="_tab">s’exécuter en parallèle</a>.
+      La plupart des classes présentées sont en réalité thread-safe. Quand les objets ne peuvent être immutables, c’est vers l’API <code>java.util.concurrent</code> que l’on se tourne :
+      <code>AtomicInteger</code>, <code>CopyOnWriteArrayList</code>, <code>Executors</code>, ...
+    </li>
+  </ul>
+</div>
+
+<div class="remember">
+  <p class="title">A Retenir</p>
+  <ul>
+    <li>
+      Seulement <strong>quelques lignes de code peuvent suffire à avoir un impact majeur</strong> dans le monde du développement.
+    </li>
+    <li>
+      La <strong>modélisation</strong> de toutes les abstractions (<code>Result</code>, <code>Failure</code>,
+      <code>Description</code>) offre un code <strong>simple à comprendre</strong>.
+    </li>
+    <li>
+      L'<strong>utilisation de design patterns</strong> apporte la <strong>souplesse</strong> nécessaire
+      pour l'utilisation de la librairie dans de nombreux contextes.
+    </li>
+  </ul>
+</div>
+
+  </div>
+  <div class="clearfix"></div>
+</article>

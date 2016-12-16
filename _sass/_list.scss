@@ -1,0 +1,317 @@
+@import url(http://fonts.googleapis.com/css?family=Lobster);
+@import url(http://fonts.googleapis.com/css?family=Pacifico);
+@import url(http://fonts.googleapis.com/css?family=Righteous);
+@import url(http://fonts.googleapis.com/css?family=Dancing+Script);
+
+.category-content {
+	margin-top: 150px;
+	padding: 30px;
+}
+
+.post-list {
+	max-width: 90%;
+	list-style: none;
+	margin: 30px auto;
+	padding: 0;
+}
+
+.post-list li {
+	display: block;
+	float: left;
+	padding: 7px;
+	width: 270px;
+	opacity: 0;
+}
+
+.post-list li.shown,
+.no-js .post-list li,
+.no-cssanimations .post-list li {
+	opacity: 1;
+}
+
+.post-list li a,
+.post-list li img {
+	outline: none;
+	border: none;
+	display: block;
+	max-width: 100%;
+}
+
+/* 6: flip (based on http://lab.hakim.se/scroll-effects/ by @hakimel) */
+.post-list {
+	-webkit-perspective: 1300px;
+	perspective: 1300px;
+}
+
+.post-list li.animate {
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-transform-origin: 0% 0%;
+	transform-origin: 0% 0%;
+	-webkit-transform: rotateX(-80deg);
+	transform: rotateX(-80deg);
+	-webkit-animation: flip-post-review .8s ease-in-out forwards;
+	animation: flip-post-review .8s ease-in-out forwards;
+}
+
+@-webkit-keyframes flip-post-review {
+	0% { }
+	100% { -webkit-transform: rotateX(0deg); opacity: 1; }
+}
+
+@keyframes flip-post-review {
+	0% { }
+	100% { -webkit-transform: rotateX(0deg); transform: rotateX(0deg); opacity: 1; }
+}
+
+
+
+.post-preview {
+    width: 250px;
+    margin: 10px;
+    float: left;
+    border: 10px solid #fff;
+    text-align: center;
+    box-shadow: 1px 1px 2px #a6a6a6;
+    cursor: default;
+}
+.post-preview:hover {
+    box-shadow: 3px 3px 6px #868686;
+}
+.post-preview .image {
+    overflow: hidden;
+    height: 150px;
+}
+.post-preview img {
+    display: block;
+    position: relative;
+    width: 100%;
+            filter: grayscale(100%) opacity(10%);
+       -moz-filter: grayscale(100%) opacity(10%);
+    -webkit-filter: grayscale(100%) opacity(10%);
+}
+.post-preview:hover img {
+            filter: none;
+       -moz-filter: none;
+    -webkit-filter: none;
+}
+
+.post-read-preview  .image { height: 150px; }
+.post-watch-preview .image { height: 100px; }
+.post-watch-preview .image { height: auto; }
+.post-watch-preview .image { height: auto; }
+
+
+
+
+.post-preview .title {
+  position: relative;
+  padding: 10px 5px;
+  min-height: 100px;
+}
+.post-preview .title::after {
+  content: '';
+  background-image: url(../img/icons-list-posts.png);
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  bottom: 0px;
+  right: 0;
+}
+ul.post-list li:nth-child(4n+0) .post-read-preview .title        { background-color: #EB5546; color: white;  }
+ul.post-list li:nth-child(4n+1) .post-read-preview .title        { background-color: #97BCB4; color: white;  }
+ul.post-list li:nth-child(4n+2) .post-read-preview .title        { background-color: #FFC33E; color: white;  }
+ul.post-list li:nth-child(4n+3) .post-read-preview .title        { background-color: #E4E1D0; color: black;  }
+ul.post-list li:nth-child(4n+0) .post-read-preview .title::after { background-position:      0 0; }
+ul.post-list li:nth-child(4n+1) .post-read-preview .title::after { background-position: -100px 0; }
+ul.post-list li:nth-child(4n+2) .post-read-preview .title::after { background-position: -200px 0; }
+ul.post-list li:nth-child(4n+3) .post-read-preview .title::after { background-position:  100px 0; }
+
+ul.post-list li:nth-child(4n+0) .post-watch-preview .title        { background-color: #E24F61; color: white;  }
+ul.post-list li:nth-child(4n+1) .post-watch-preview .title        { background-color: #70C6E7; color: white;  }
+ul.post-list li:nth-child(4n+2) .post-watch-preview .title        { background-color: #D43726; color: white;  }
+ul.post-list li:nth-child(4n+3) .post-watch-preview .title        { background-color: #E4E1D0; color: black;  }
+ul.post-list li:nth-child(4n+0) .post-watch-preview .title::after { background-position:      0 -100px; }
+ul.post-list li:nth-child(4n+1) .post-watch-preview .title::after { background-position: -100px -100px; }
+ul.post-list li:nth-child(4n+2) .post-watch-preview .title::after { background-position: -200px -100px; }
+ul.post-list li:nth-child(4n+3) .post-watch-preview .title::after { background-position:  100px -100px; }
+
+ul.post-list li:nth-child(4n+0) .post-tell-preview .title        { background-color: #62BCA0; color: white;  }
+ul.post-list li:nth-child(4n+1) .post-tell-preview .title        { background-color: #D65625; color: white;  }
+ul.post-list li:nth-child(4n+2) .post-tell-preview .title        { background-color: #62BCA0; color: white;  }
+ul.post-list li:nth-child(4n+3) .post-tell-preview .title        { background-color: #F0E5C7; color: black;  }
+ul.post-list li:nth-child(4n+0) .post-tell-preview .title::after { background-position:      0 -200px; }
+ul.post-list li:nth-child(4n+1) .post-tell-preview .title::after { background-position: -100px -200px; }
+ul.post-list li:nth-child(4n+2) .post-tell-preview .title::after { background-position:  100px -200px; }
+ul.post-list li:nth-child(4n+3) .post-tell-preview .title::after { background-position: -200px -200px; }
+
+ul.post-list li:nth-child(4n+0) .post-inspect-preview .title        { background-color: #FF3E7A; color: white;  }
+ul.post-list li:nth-child(4n+1) .post-inspect-preview .title        { background-color: #70C6E7; color: white;  }
+ul.post-list li:nth-child(4n+2) .post-inspect-preview .title        { background-color: #FFC33E; color: white;  }
+ul.post-list li:nth-child(4n+3) .post-inspect-preview .title        { background-color: #6A77AB; color: white;  }
+ul.post-list li:nth-child(4n+0) .post-inspect-preview .title::after { background-position:      0 -300px; }
+ul.post-list li:nth-child(4n+1) .post-inspect-preview .title::after { background-position: -100px -300px; }
+ul.post-list li:nth-child(4n+2) .post-inspect-preview .title::after { background-position: -200px -300px; }
+ul.post-list li:nth-child(4n+3) .post-inspect-preview .title::after { background-position:  100px -300px; }
+
+
+
+.post-preview .title h2 {
+  font-size: 20px;
+  text-shadow: 1px 1px 1px black;
+  margin: 0;
+  font-family: 'Lobster', cursive;
+  z-index: 10; // to be above icon ::before
+}
+
+ul.post-list li:nth-child(4n+0) .post-preview .title h2 {
+  font-family: 'Lobster', cursive;
+}
+ul.post-list li:nth-child(4n+1) .post-preview .title h2 {
+  font-family: 'Pacifico', cursive;
+}
+ul.post-list li:nth-child(4n+2) .post-preview .title h2 {
+  font-family: 'Righteous', cursive;
+}
+ul.post-list li:nth-child(4n+3) .post-preview .title h2 {
+  font-family: 'Dancing Script', cursive;
+  text-shadow: 1px 1px 1px white;
+}
+
+.post-preview .title h3 {
+  margin: 0; /* TODO delete with reset.css */
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-family: 'Roboto', Sans-Serif;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 300;
+  z-index: 10; // to be above icon ::before
+}
+.post-preview .title h4 {
+  margin: 0; /* TODO delete with reset.css */
+  margin-right: 80px;
+  margin-top: 10px;
+  font-family: 'Roboto', Sans-Serif;
+  font-size: 12px;
+  font-weight: 500;
+  font-style: italic;
+  color: black;
+}
+
+.post-preview .title nav {
+  margin-top: 15px;
+  margin-bottom: 25px;
+  margin-right: 80px;
+}
+
+/* Effect 5: same word slide in */
+/* http://tympanus.net/codrops/2013/08/06/creative-link-effects/ */
+.post-preview .title nav a {
+	overflow: hidden;
+  display: inline-block;
+	padding: 0 4px;
+	height: 2em;
+  padding: 5px 25px;
+  font-size: 15px;
+  background: black;
+  box-sizing: border-box;
+  color: white;
+}
+
+.post-preview .title nav a span {
+	position: relative;
+	display: inline-block;
+	-webkit-transition: -webkit-transform 0.3s;
+	-moz-transition: -moz-transform 0.3s;
+	transition: transform 0.3s;
+  box-sizing: border-box;
+}
+
+.post-preview .title nav a span::before {
+	position: absolute;
+	top: 100%;
+	content: attr(data-hover);
+	font-weight: 700;
+	-webkit-transform: translate3d(0,0,0);
+	-moz-transform: translate3d(0,0,0);
+	transform: translate3d(0,0,0);
+}
+
+.post-preview .title nav a:hover span,
+.post-preview .title nav a:focus span {
+	-webkit-transform: translateY(-100%);
+	-moz-transform: translateY(-100%);
+	transform: translateY(-100%);
+}
+
+
+
+
+
+.post-preview img {
+    transition: all 0.2s linear;
+}
+
+.post-preview:hover img {
+    transform: scale(1.1);
+}
+
+.post-preview .more {
+  background: white;
+  color: black;
+  max-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.post-preview:hover .more {
+  min-height: 30px;
+  max-height: 50px;
+  transition: all 0.2s;
+}
+
+.post-preview .note {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: url(../img/stars-sprite-20px.png);
+  width: 100px;
+  height: 20px;
+}
+
+/* Generate classes for each note out of 20 */
+$i: 0;
+
+@for $i from 0 through 20 {
+
+  .post-preview .note-#{$i}-20 {
+    $y: ceil($i / 2) * -20px;
+    background-position: 0 $y;
+  }
+
+}
+
+/* Generate classes for each note out of 5 */
+$i: 0;
+
+@for $i from 0 through 5 {
+
+  .post-preview .note-#{$i}-5 {
+    $y : $i * 2 * -20px;
+    background-position: 0 $y;
+  }
+
+}
+
+
+
+/* Blogger specific */
+
+.jump-link {
+  display: none;
+}
+
+.blog-feeds {
+  display: none;
+}
