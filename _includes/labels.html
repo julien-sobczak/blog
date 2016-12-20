@@ -1,15 +1,18 @@
 
 <section id="labels" class="labels">
+  <div class="container">
+
   <div>
     <h2>Tags</h2>
     <hr class="star-light">
   </div>
 
+
   <ul class="labels">
     <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
     <li>
       <div class="label">
-        <span class="sunshine"></span><a href="{{ '/tags/agile.html' | prepend: site.baseurl }}"><span class="label-icon label-agile-icon label-white-icon"></span><span class="label-text">People<span class="label-count">{{ site.tags.agile | size }}</span></span></a>
+        <span class="sunshine"></span><a href="{{ '/tags/agile.html' | prepend: site.baseurl }}"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">{{ site.tags.agile | size }}</span></span></a>
       </div>
     </li>
     <li>
@@ -153,7 +156,7 @@
     </li>
     <li>
       <div class="label">
-        <span class="sunshine"></span><a href="{{ '/tags/learning.html' | prepend: site.baseurl }}"><span class="label-icon label-learning-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">{{ site.tags.learning | size }}</span></span></a>
+        <span class="sunshine"></span><a href="{{ '/tags/learning.html' | prepend: site.baseurl }}"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">{{ site.tags.learning | size }}</span></span></a>
       </div>
     </li>
     <!-- People
@@ -163,11 +166,13 @@
       </div>
     </li>
     -->
+    <!-- Computer Science
     <li>
       <div class="label">
         <span class="sunshine"></span><a href="{{ '/tags/mathematics.html' | prepend: site.baseurl }}"><span class="label-icon label-mathematics-icon label-white-icon"></span><span class="label-text">Mathematics<span class="label-count">{{ site.tags.mathematics | size }}</span></span></a>
       </div>
     </li>
+    -->
     <!-- Too few
     <li>
       <div class="label">
@@ -196,7 +201,7 @@
     </li>
     <li>
       <div class="label">
-        <span class="sunshine"></span><a href="{{ '/tags/public-speaking.html' | prepend: site.baseurl }}"><span class="label-icon label-public-speaking-icon label-white-icon"></span><span class="label-text">Self-Help<span class="label-count">{{ site.tags.public-speaking | size }}</span></span></a>
+        <span class="sunshine"></span><a href="{{ '/tags/public-speaking.html' | prepend: site.baseurl }}"><span class="label-icon label-testing-icon label-white-icon"></span><span class="label-text">Self-Help<span class="label-count">{{ site.tags.public-speaking | size }}</span></span></a>
       </div>
     </li>
     <!-- Craftsmanship
@@ -227,11 +232,13 @@
       </div>
     </li>
     -->
+    <!-- Craftsmanship
     <li>
       <div class="label">
         <span class="sunshine"></span><a href="{{ '/tags/testing.html' | prepend: site.baseurl }}"><span class="label-icon label-testing-icon label-white-icon"></span><span class="label-text">Testing<span class="label-count">{{ site.tags.testing | size }}</span></span></a>
       </div>
     </li>
+    -->
     <li>
       <div class="label">
         <span class="sunshine"></span><a href="{{ '/tags/tools.html' | prepend: site.baseurl }}"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">{{ site.tags.tools | size }}</span></span></a>
@@ -250,4 +257,6 @@
       </div>
     </li>
   </ul>
+
+  </div>
 </section>
