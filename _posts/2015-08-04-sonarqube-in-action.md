@@ -5,9 +5,9 @@ author: Julien Sobczak
 date: '2015-08-04'
 categories: read
 tags:
-- tools
-- productivity
-- clean-code
+  - tools
+  - productivity
+  - clean-code
 image: 'http://d.gr-assets.com/books/1415174686l/23502608.jpg'
 read_authors: Patroklos P. Papapetrou
 read_note: 17

@@ -103,13 +103,6 @@ postsExpanded: false
       <a href="#" class="btn btn-lg btn-outline btn-outline-colored">
           <i class="fa fa-list"></i> View All Posts
       </a>
-      <!-- To Delete -->
-      <ul id="posts" class="posts nav">
-          {% for post in site.posts limit: 5 %}
-          <li><a href=".{{ post.url }}">{{ post.shortTitle }}</a></li>
-          {% endfor %}
-      </ul>
-      <!-- End of To Delete -->
     </div>
     </section>
 

@@ -1,23 +1,30 @@
 ---
-layout: page
+layout: 'page'
 ---
 
-<header class="post-title post-inspect">
+<header class="post-title post-{{ page.categories }}">
   <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
   <div class="container">
 
+      <div class="icon-category">
+      </div>
+
       <div class="metadata">
-        <span class="date">26 October 2016</span>
-        <a class="label" href="/tags/release">Java</a>
+        <span class="date">{{ page.date | date: '%B %d, %Y' }}</span>
+
+        {% for tag in page.tags %}
+          <a href="{{ '/tags/' tag | prepend: site.baseurl }}" class="label">{{ tag | capitalize }}</a>
+        {% endfor %}
+
         <ul class="language">
-          <li><a href="#">FR</a></li>
+          <!--<li><a href="#">FR</a></li>-->
           <li class="current-language"><a class="active" href="#">EN</a></li>
         </ul>
 
         <h2>{{page.title}}</h2>
         <p class="author-name">
           <span>By </span>
-          <a href="/blog/about-me">Julien Sobczak</a>
+          <a href="/blog/about-me">{{ page.author }}</a>
         </p>
 
         <p class="share-label">Share</p>
@@ -57,23 +64,17 @@ layout: page
 
   <div class="container">
 
+    {% if page.illustrationUrl %}
     <figure class="illustration">
       <img src="{{ page.illustrationUrl | prepend: site.baseurl }}" class="blur" />
       <figcaption>{{page.illustrationLegend}}</figcaption>
     </figure>
+    {% endif %}
 
     {{content}}
 
-    <div class="author-bio">
-      Author...
-    </div>
+    {% include my-bio.html %}
 
-  </div>
-</section>
-
-<!-- Portfolio Grid Section -->
-<section class="author">
-  <div class="container">
 
   </div>
 </section>

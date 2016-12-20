@@ -181,7 +181,7 @@ hr.star-primary:after {
   left: 0;
   right: 0;
   top: 0;
-  background: #2C3E50;
+  background: $color-gray;
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-weight: 700;
@@ -340,7 +340,7 @@ hr.star-primary:after {
   border: solid 2px white;
 }
 .btn-outline-colored {
-  background-color: #4185f4
+  background-color: #4185f4;
 }
 .btn-social {
   display: inline-block;
@@ -385,7 +385,7 @@ header {
   /*background-image: url("pattern.png"), linear-gradient(to right, rgb(69, 181, 255), rgb(255, 191, 92));*/
   /*background-image: url("pattern.png"), linear-gradient(to right, #4185f4, rgb(255, 191, 92));*/
   background-image: url("../img/pattern.png");
-  background-color: #4185f4;
+  background-color: $color-base;
   color: white;
   padding-top: 150px !important;
 }
@@ -394,7 +394,7 @@ header {
   /* Draw a round circle behind the logo: */
   width: 250px;
   height: 250px;
-  border: 1px solid #4185f4;
+  border: 1px solid $color-base;
   border-radius: 50%;
   background-color: #2C3E50;
   /* Center the logo */
@@ -446,7 +446,7 @@ section {
 }
 
 section .categories {
-  margin: 50px 0 20px;
+  margin: 50px 0 0;
   display: flex;
   flex-direction: column;
 }
@@ -471,8 +471,10 @@ section .categories p.manuscript {
   font-size: 150%;
 }
 section .categories p {
+  height: 90px;
   margin-top: 30px;
   margin-bottom: 30px;
+  font-size: 16px;
   text-align: center;
 }
 
@@ -511,6 +513,7 @@ section.colored a {
 /* - About Me */
 
 #about-me .row {
+  margin: 50px 0;
   padding: 0 50px;
   display: flex;
   flex-direction: column;
@@ -558,7 +561,7 @@ footer {
 
 footer img.footer-me {
   position: absolute;
-  display; none;
+  display: none;
   visibility: hidden;
 }
 
@@ -612,6 +615,7 @@ footer img.footer-me {
   color: #fff;
   font-size: 14px;
   font-weight: 300;
+  margin-right: 10px;
   text-transform: uppercase;
 }
 #page-post header .label {
@@ -619,7 +623,7 @@ footer img.footer-me {
   border-radius: 3px;
   font-size: 14px;
   font-weight: 600;
-  margin: 0 15px;
+  margin: 0 5px;
   padding: 2px 6px;
   color: white;
   text-transform: uppercase;
@@ -630,6 +634,7 @@ footer img.footer-me {
   display: inline-block;
   list-style-type: none;
   padding: 0;
+  margin-left: 10px;
 }
 #page-post header ul.language li {
   display: inline-block;
@@ -695,12 +700,9 @@ footer img.footer-me {
   font-size: 17px;
   line-height: 30px;
 }
-#page-post header.post-read .container::after, #page-post header.post-tell .container::after, #page-post header.post-inspect .container::after { /* TODO refactor */
-  content: '';
-  position: absolute;
-  z-index: 750;
-  right: 125px;
-  top: 185px;
+#page-post header.post-title .icon-category {
+  float: right;
+  margin-top: 30px;
   width: 175px;
   height: 175px;
   background-size: 150px 150px;
@@ -710,16 +712,45 @@ footer img.footer-me {
   border: 1px solid white;
   border-radius: 50%;
 }
-#page-post header.post-read .container::after {
+#page-post header.post-read .icon-category {
   background-image: url(../img/imreadinit-icon.png);
 }
-#page-post header.post-tell .container::after {
+#page-post header.post-tell .icon-category {
   background-image: url(../img/imtellinit-icon.png);
 }
-#page-post header.post-inspect .container::after {
+#page-post header.post-inspect .icon-category {
   background-image: url(../img/iminspectinit-icon.png);
 }
 
+
+
+.author-bio {
+  $color-local: #F6F6F6;
+
+  max-width: 900px;
+  min-height: 150px;
+  margin: 50px auto;
+  border-left: 10px solid $color-base;
+  border-radius: 10px;
+  padding: 20px 30px;
+  background-color: $color-local;
+  font-size: 20px;
+
+  img {
+    float: right;
+    border: 1px solid $color-local;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+  }
+
+  p.strong {
+     font-size: 120%;
+  }
+  p {
+    margin-right: 20px;
+  }
+}
 
 
 figure {
