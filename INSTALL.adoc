@@ -15,3 +15,5 @@ Than, launch Jekyll:
 ----
 $ bundle exec jekyll serve
 ----
+
+TODO complete Travis build
