@@ -24,13 +24,17 @@ layout: default
 
       {% for post in site.posts %}
 
-        {% if page.category == 'all' or post.categories contains page.category %}
+        {% if page.category == 'all' or post.category == page.category %}
 
           <li>
             <div class="post-preview post-{{post.categories}}-preview">
 
               <div class="title">
+                {% if post.shortTitle %}
+                <h3>{{ post.shortTitle }}</h3>
+                {% else %}
                 <h3>{{ post.title }}</h3>
+                {% endif %}
                 {% if post.categories == 'read' %}
                 <h3>{{ post.read_authors }}</h3>
                 {% elsif post.categories == 'watch' %}

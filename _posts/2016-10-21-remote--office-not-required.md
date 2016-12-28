@@ -1,0 +1,32 @@
+---
+layout: post-read
+title: "Remote: Office Not Required"
+author: Julien Sobczak
+date: '2016-10-21'
+category: read
+subject: Remote working
+headline: The perfect book to read while commuting in public transport
+note: 16
+tags:
+  - people
+  - productivity
+image: 'https://images.gr-assets.com/books/1363265098l/17316682.jpg'
+metadata:
+  authors: David Heinemeier Hansson, Jason Fried
+  publisher: "Random House Audio"
+  datePublished: '2013-10-29'
+  bookFormat: 'Audio'
+  isbn: '0804148996'
+  numberOfPages: 256
+links:
+  amazon: 'https://www.amazon.com/Remote-Office-Required-Jason-Fried/dp/0804137501/'
+  goodreads: 'https://www.goodreads.com/book/show/17316682-remote'
+---
+
+Jason Fried and David Heinemeier Hansson, founders of Basecamp (previously 37signals), used their experience to deliver an engaged and very practical book, explaining why companies should go remote.
+
+Using the same style as *Rework* (short book richly illustrated with memorable drawing), Remote is the perfect introduction to the subject, providing the upgrade the human mind need by illuminating the many benefits of remote work and tackling the common excuses (the most lengthy chapter but also the most useful one if you need to convince your employer). 
+
+The authors present powerful arguments but the only downside of this book is that it not sufficiently backed by research. Authors use commonsense and examples of successful companies to support the key points of the book.
+
+If you find your open-space counterproductive (and I know you do), and especially if you do a creative work, you should definitively read this book and recommend it to yours co-workers. If you search advices about how to manage a remote company, this is probably not the right book. Anyway, Remote will be a very pleasant reading.

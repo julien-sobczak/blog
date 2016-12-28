@@ -3,23 +3,24 @@ layout: post-read
 title: SonarQube In Action
 author: Julien Sobczak
 date: '2015-08-04'
-categories: read
+category: read
+subject: SonarQube
+headline: A thorough, in-depth guide to Code Inspection with SonarQube
+note: 17
 tags:
-  - tools
+  - tool
   - productivity
-  - clean-code
+  - craftsmanship
 image: 'http://d.gr-assets.com/books/1415174686l/23502608.jpg'
-read_authors: Patroklos P. Papapetrou
-read_note: 17
-read_roti: 4
-read_time: 12
-read_publisher: Manning Publications
-read_date_published: '2013-04-28'
-read_book_format: 'Paperback'
-read_number_of_pages: 392
-read_headline: A thorough, in-depth guide to Code Inspection with SonarQube
-link_goodreads: 'http://www.goodreads.com/book/show/16028082-sonar-in-action'
-link_amazon: 'http://www.amazon.com/SonarQube-Action-G-Ann-Campbell/dp/1617290955/'
+metadata:
+  authors: Patroklos P. Papapetrou
+  publisher: Manning Publications
+  datePublished: '2013-04-28'
+  bookFormat: 'Paperback'
+  numberOfPages: 392
+links:
+  goodreads: 'http://www.goodreads.com/book/show/16028082-sonar-in-action'
+  amazon: 'http://www.amazon.com/SonarQube-Action-G-Ann-Campbell/dp/1617290955/'
 ---
 
 Could a book about a graphical tool like SonarQube be enjoyable to read? The answer is yes. *SonarQube in Action* is not a succession of screenshots explaining what each menu entry does but a book about code quality: why the quality is not an option but an essential factor for a project be successful, what are the metrics to collect. The book is organized around the Seven Axes of Quality, which are: potential bugs, coding rules, tests, duplications, comments, architecture and design, and complexity. But of course, *SonarQube in Action* is also about how SonarQube helps us to track these metrics and watch their evolutions

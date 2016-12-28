@@ -3,23 +3,24 @@ layout: post-read
 title: Pragmatic Unit Testing in Java 8 with Junit
 author: Julien Sobczak
 date: '2015-06-15'
-categories: read
+category: read
+subject: JUnit
+headline: A quick introduction to the world of modern unit-testing.
+note: 14
 tags:
-- java
-- testing
+  - java
+  - framework
 image: 'http://d.gr-assets.com/books/1419183325l/23333089.jpg'
-read_authors: Jeff Langr, Andy Hunt, Dave Thomas
-read_note: 14
-read_roti: 3
-read_time: 5
-read_publisher: 'Pragmatic Bookshelf'
-read_date_published: '2015-03-19'
-read_book_format: 'Paperback'
-read_isbn: '1941222595'
-read_number_of_pages: 200
-read_headline: A quick introduction to the world of modern unit-testing.
-link_goodreads: 'http://www.goodreads.com/book/show/23333089-pragmatic-unit-testing-in-java-8-with-junit'
-link_amazon: 'http://www.amazon.com/Pragmatic-Unit-Testing-Java-JUnit/dp/1941222595/'
+metadata:
+  authors: Jeff Langr, Andy Hunt, Dave Thomas
+  publisher: 'Pragmatic Bookshelf'
+  datePublished: '2015-03-19'
+  bookFormat: 'Paperback'
+  isbn: '1941222595'
+  numberOfPages: 200
+links:
+  goodreads: 'http://www.goodreads.com/book/show/23333089-pragmatic-unit-testing-in-java-8-with-junit'
+  amazon: 'http://www.amazon.com/Pragmatic-Unit-Testing-Java-JUnit/dp/1941222595/'
 ---
 
 Should we still introduce Unit Tests twelve years after the publication of *Pragmatic Unit Testing in Java with JUnit* ?

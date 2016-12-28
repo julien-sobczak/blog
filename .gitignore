@@ -1,5 +1,6 @@
 *~
 /_site/
+/venv/
 /.bundle/
 /tmp/
 /.sass-cache/

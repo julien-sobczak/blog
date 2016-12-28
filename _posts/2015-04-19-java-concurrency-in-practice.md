@@ -3,23 +3,23 @@ layout: post-read
 title: Java Concurrency in Practice
 author: Julien Sobczak
 date: '2015-04-19'
-categories: read
+category: read
+subject: Concurrency
+headline: java.util.concurrent demystified by its creators. One of my top 3 most important book on the Java language.
+note: 19
 tags:
-- java
-- performance
+  - java
 image: 'http://d.gr-assets.com/books/1349044077l/127932.jpg'
-read_authors: Brian Goetz, Tim Peierls, Joshua Bloch, Joseph Bowbeer, David Holmes, Doug Lea
-read_note: 19
-read_roti: 5
-read_time: 15
-read_publisher: 'Addison-Wesley Professional'
-read_date_published: '2006-05-1'
-read_book_format: 'Paperback'
-read_isbn: '0321349601'
-read_number_of_pages: 403
-read_headline: java.util.concurrent demystified by its creators. One of my top 3 most important book on the Java language.
-link_goodreads: 'http://www.goodreads.com/book/show/127932.Java_Concurrency_in_Practice'
-link_amazon: 'http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/'
+metadata:
+  authors: Brian Goetz, Tim Peierls, Joshua Bloch, Joseph Bowbeer, David Holmes, Doug Lea
+  publisher: 'Addison-Wesley Professional'
+  datePublished: '2006-05-1'
+  bookFormat: 'Paperback'
+  isbn: '0321349601'
+  numberOfPages: 403
+links:
+  goodreads: 'http://www.goodreads.com/book/show/127932.Java_Concurrency_in_Practice'
+  amazon: 'http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/'
 ---
 
 Does anyone ever try to write concurrent code and looks their code does weird things in production, at the worst possible time, under heavy load? With *Java Concurrency in Practice*, this time is over, at least for us, the fortunate readers of this exceptional book.

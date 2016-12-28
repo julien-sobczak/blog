@@ -3,23 +3,24 @@ layout: post-read
 title: iBatis in Action
 author: Julien Sobczak
 date: '2015-07-02'
-categories: read
+category: read
+subject: iBatis
+headline: Still a good reference to understand concepts behind MyBatis.
+note: 12
 tags:
-- frameworks
-- java
+  - framework
+  - java
 image: 'http://d.gr-assets.com/books/1442410340l/332070.jpg'
-read_authors: Clinton Begin, Brandon Goodin, Larry Meadors
-read_note: 12
-read_roti: 3
-read_time: 7
-read_publisher: 'Manning Publications'
-read_date_published: '2007-01-17'
-read_book_format: 'Paperback'
-read_isbn: '1932394826'
-read_number_of_pages: 350
-read_headline: Still a good reference to understand concepts behind MyBatis.
-link_goodreads: 'http://www.goodreads.com/book/show/332070.iBatis_in_Action'
-link_amazon: 'http://www.amazon.com/iBatis-Action-Clinton-Begin/dp/1932394826/'
+metadata:
+  authors: Clinton Begin, Brandon Goodin, Larry Meadors
+  publisher: 'Manning Publications'
+  datePublished: '2007-01-17'
+  bookFormat: 'Paperback'
+  isbn: '1932394826'
+  numberOfPages: 350
+links:
+  goodreads: 'http://www.goodreads.com/book/show/332070.iBatis_in_Action'
+  amazon: 'http://www.amazon.com/iBatis-Action-Clinton-Begin/dp/1932394826/'
 ---
 
 Why read a book about a retired project today ? Because iBatis shares a lot with MyBatis, its successor : same developers and same initial codebase. This explains why no reference book was published about this new framework. So, *iBatis in Action*, written by the creators of the two frameworks, is probably the best resource if you want to have a solid knowledge about it.

@@ -1,0 +1,55 @@
+#!/bin/bash
+
+echo "                                   "      
+echo "  _ _ _     _                      "
+echo " | | | |___| |___ ___ _____ ___    "
+echo " | | | | -_| |  _| . |     | -_|   "
+echo " |_____|___|_|___|___|_|_|_|___|   "
+echo "                                   "
+echo "                                   "
+echo "    _                              "
+echo "   | |_ ___                        "
+echo "   |  _| . |                       "
+echo "   |_| |___|                       "
+echo "                                   "
+echo "                                   "
+echo "                     _   _         "
+echo "  _ _ ___ _ _ ___   | |_| |___ ___ "
+echo " | | | . | | |  _|  | . | | . | . |"
+echo " |_  |___|___|_|    |___|_|___|_  |"
+echo " |___|                        |___|"
+echo "                                   "      
+echo "                                   "      
+
+echo "(Activation pythonenv)"
+source venv/bin/activate
+
+function new_post {
+    echo "Type the Goodreads URL:"
+    read url
+    echo "Type the date (YYYY-MM-DD):"
+    read publication_date
+    python util/new-review-book.py -l -o './_posts/' -d $publication_date $url
+}
+
+
+
+echo "What you want to do:"
+PS3='Please enter your choice: '
+options=("New post" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "New post")
+            new_post
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo invalid option;;
+    esac
+done
+
+echo "(desactivate pythonenv)"
+deactivate
+exit 0

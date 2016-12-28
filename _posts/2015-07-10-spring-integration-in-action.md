@@ -3,24 +3,24 @@ layout: post-read
 title: Spring Integration in Action
 author: Julien Sobczak
 date: '2015-07-10'
-categories: read
+category: read
+subject: Spring Integration
+headline: The reference book about the reference implementation of EIPs. A journey through the framework for beginners and intermediate users.
+note: 16
 tags:
-- java
-- architecture
-- frameworks
+  - java
+  - framework
 image: 'http://d.gr-assets.com/books/1361784282l/9327132.jpg'
-read_authors: Mark Fisher, Jonas Partner, Marius Bogoevici, Iwein Fuld
-read_note: 16
-read_roti: 4
-read_time: 9
-read_publisher: 'Manning Publications'
-read_date_published: '2012-09-26'
-read_book_format: 'Paperback'
-read_isbn: '1935182439'
-read_number_of_pages: 368
-read_headline: The reference book about the reference implementation of EIPs. A journey through the framework for beginners and intermediate users.
-link_goodreads: 'http://www.goodreads.com/book/show/9327132-spring-integration-in-action'
-link_amazon: 'http://www.amazon.com/Spring-Integration-Action-Mark-Fisher/dp/1935182439/'
+metadata:
+  authors: Mark Fisher, Jonas Partner, Marius Bogoevici, Iwein Fuld
+  publisher: 'Manning Publications'
+  datePublished: '2012-09-26'
+  bookFormat: 'Paperback'
+  isbn: '1935182439'
+  numberOfPages: 368
+links:
+  goodreads: 'http://www.goodreads.com/book/show/9327132-spring-integration-in-action'
+  amazon: 'http://www.amazon.com/Spring-Integration-Action-Mark-Fisher/dp/1935182439/'
 ---
 
 You overcome the book *Enterprise Integration Patterns* (EIP)? Great! Now, you need a framework to help you implementing the patterns. Enter Spring Integration. Compared to its most serious competitor, Apache Camel, Spring Integration respects perfectly the EIP book. The notation and naming are preserved and you do not need to learn anything else, except Spring Integration.

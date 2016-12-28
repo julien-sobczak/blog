@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import codecs
-import urllib2
+import urllib.request
+from urllib.request import urlopen
 import re
+import os
 from optparse import OptionParser
 from datetime import date, datetime
 
@@ -49,9 +51,13 @@ class GoodreadsMetadataExtractor:
         :return: the BookMetadata object
         """
 
-        response = urllib2.urlopen(url)
+        for i in range(3):
+          try:
+            response = urlopen(url)
+          except:
+            print("Failed retrieving URL %s: Retrying..."  % url)
         if response.code != 200:
-            raise Exception("[%s] Invalid URL: %s" % (response.code, url))
+          raise Exception("[%s] Invalid URL: %s" % (response.code, url))
         source = response.read()
 
         return self.extracts(url, source)
@@ -89,7 +95,11 @@ class GoodreadsMetadataExtractor:
 
 
     def _format_type(self, soup):
-        return soup.find("span", { "itemprop": "bookFormatType" }).get_text().strip();
+        bookFormatType = soup.find("span", { "itemprop": "bookFormatType" })
+        if bookFormatType:
+          return bookFormatType.get_text().strip();
+        else:
+          return None
 
 
     def _number_of_pages(self, soup):
@@ -117,8 +127,22 @@ class GoodreadsMetadataExtractor:
 
         amazonVendorId = "1"
         urlRedirect = "https://www.goodreads.com/book_link/follow/" + amazonVendorId + "?book_id=" + bookId
+       
+        # Simulate a browser to avoid 503 response code 
+        headers = { 
+          'User-Agent': "Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0",
+          'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          'Accept-Language': "en-US,en;q=0.5",
+          'Accept-Encoding': "gzip, deflate"
+        }
+        req = urllib.request.Request(urlRedirect, headers=headers)
 
-        response = urllib2.urlopen(urlRedirect)
+        for i in range(3):
+          try:
+            response = urlopen(req)
+          except:
+            print("Failed retrieving URL %s: Retrying..." % urlRedirect)
+            pass
 
         if response.code != 200:
             raise Exception("[%s] Invalid url: " % (response.code, urlRedirect))
@@ -135,11 +159,11 @@ class GoodreadsMetadataExtractor:
         Remove unnecessary URL parameters. Ex:
         "http://www.amazon.com/gp/product/0321125215/ref=x_gr_w_bb?ie=UTF8&tag=httpwwwgoodco-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0321125215&SubscriptionId=1MGPYB6YW3HWK55XCGG2"
         """
-
-        indexOfRef = location.index("ref=")
-        if indexOfRef != -1:
-            location = location[:indexOfRef]
-
+        try:
+          indexOfRef = location.index("ref=")
+          location = location[:indexOfRef]
+        except e:
+          pass
         return location
 
 
@@ -196,14 +220,13 @@ class GoodreadsMetadataExtractor:
             return None
 
         # We extract publishing information
-        indexBy = publishingInformation.index("by")
-        if indexBy == -1:
-            return None
-
-        publisher = publishingInformation[indexBy+3:].strip()
-
-        return publisher
-
+        try:
+          indexBy = publishingInformation.index("by")
+          publisher = publishingInformation[indexBy+3:].strip()
+          return publisher
+        except:
+          pass 
+        return None
 
     def _publishing_date(self, soup):
         publishingInformation = self._get_publishing_information(soup)
@@ -212,21 +235,21 @@ class GoodreadsMetadataExtractor:
             return None
 
         # We extract publishing information
-        indexBy = publishingInformation.index("by")
-        if indexBy == -1:
-            return None
+        try:
+          indexBy = publishingInformation.index("by")
+          publishingDate = publishingInformation[len("Published"):indexBy].strip()
 
-        publishingDate = publishingInformation[len("Published"):indexBy].strip()
-
-        match = re.match("^(\w+)\s+(\d+).*\s+(\d+)$", publishingDate)
-        if match:
+          match = re.match("^(\w+)\s+(\d+).*\s+(\d+)$", publishingDate)
+          if match:
             monthName = match.group(1)
             day = match.group(2)
             year = match.group(3)
             publishingDate = "%s-%s-%s" % (year, GoodreadsMetadataExtractor.MONTHS[monthName], day)
             return publishingDate
-        else:
-            return None
+        except:
+          pass
+        
+        return None
 
 
     def _get_publishing_information(self, soup):
@@ -248,33 +271,34 @@ class BookReviewPost:
         result += "---\n"
 
         result += "layout: post-read\n"
-        result += "title: %s\n" % self.metadata.title
+        result += "title: \"%s\"\n" % self.metadata.title
         result += "author: Julien Sobczak\n"
         result += "date: '%s'\n" % self.publication_date
-        result += "categories: read\n"
+        result += "category: read\n"
+        result += "subject: ???\n"
+        result += "headline: ???\n"
+        result += "note: ???\n"
         result += "tags:\n"
-        result += "- ???\n"
+        result += "  - ???\n"
         if self.metadata.image:
             result += "image: '%s'\n" % self.metadata.image
-        result += "read_authors: %s\n" % self.metadata.author
-        result += "read_note: ???\n"
-        result += "read_roti: ???\n"
-        result += "read_time: ???\n"
+        result += "metadata:\n"
+        result += "  authors: %s\n" % self.metadata.author
         if self.metadata.publisher:
-            result += "read_publisher: '%s'\n" % self.metadata.publisher
+            result += "  publisher: \"%s\"\n" % self.metadata.publisher
         if self.metadata.publishing_date:
-            result += "read_date_published: '%s'\n" % self.metadata.publishing_date
+            result += "  datePublished: '%s'\n" % self.metadata.publishing_date
         if self.metadata.format_type:
-            result += "read_book_format: '%s'\n" % self.metadata.format_type
+            result += "  bookFormat: '%s'\n" % self.metadata.format_type
         if self.metadata.isbn10:
-            result += "read_isbn: '%s'\n" % self.metadata.isbn10
+            result += "  isbn: '%s'\n" % self.metadata.isbn10
         if self.metadata.number_of_pages:
-            result += "read_number_of_pages: %s\n" % self.metadata.number_of_pages
-        result += "read_headline: ???\n"
+            result += "  numberOfPages: %s\n" % self.metadata.number_of_pages
+        result += "links:\n"
         if self.metadata.amazon: # KO
-            result += "link_amazon: '%s'\n" % self.metadata.amazon
+            result += "  amazon: '%s'\n" % self.metadata.amazon
         if self.metadata.goodreads:
-            result += "link_goodreads: '%s'\n" % self.metadata.goodreads
+            result += "  goodreads: '%s'\n" % self.metadata.goodreads
 
         result += "---\n"
         result += "\n"
@@ -282,22 +306,24 @@ class BookReviewPost:
         return result
 
 
-    def create(self):
+    def create(self, outputFolder):
         content = self.creates()
 
         title = self.metadata.title.lower().replace(' ', '-').replace(',', '-').replace('_', '-').replace(':', '-')
-        filename = '../_posts/%s-%s.md' % (self.publication_date, title)
+        filename = os.path.join(outputFolder, '%s-%s.md' % (self.publication_date, title))
         f = codecs.open(filename, encoding='utf-8', mode='w')
         f.write(content)
         f.close()
 
-        print "New post created: %s" % filename
+        print("New post created: %s" % filename)
 
 
 
 
 usage = "usage: %prog [options] url"
 parser = OptionParser(usage=usage)
+parser.add_option("-o", "--output", dest="output_folder", metavar="/path/to/folder/", default="./",
+                  help="Where to save the output file")
 parser.add_option("-l", "--disable-follow", dest="follow_links", action="store_false", default=True,
                   help="Do not follow links on Goodreads.com")
 parser.add_option("-d", "--date", dest="publication_date", metavar="YYYY-MM-DD", default=date.today().isoformat(),
@@ -316,7 +342,7 @@ extractor = GoodreadsMetadataExtractor(follow_links=options.follow_links)
 metadata = extractor.extract(goodreads_url)
 
 post = BookReviewPost(metadata, publication_date=options.publication_date)
-post.create()
+post.create(options.output_folder)
 
 
 

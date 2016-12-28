@@ -3,23 +3,23 @@ layout: post-read
 title: "Jenkins: The Definitive Guide"
 author: Julien Sobczak
 date: '2015-05-05'
-categories: read
+category: read
+subject: Continuous Integration
+headline: Still the best introduction to the most popular CI Server but not a definitive guide.
+note: 12
 tags:
-- tools
-- delivery
+  - devops
 image: 'http://d.gr-assets.com/books/1328761496l/11709965.jpg'
-read_authors: John Ferguson Smart
-read_note: 12
-read_roti: 4
-read_time: 10
-read_publisher: O'Reilly
-read_date_published: '2011-07-01'
-read_book_format: 'Paperback'
-read_isbn: '1449305350'
-read_number_of_pages: 406
-read_headline: Still the best introduction to the most popular CI Server but not a definitive guide.
-link_goodreads: 'http://www.goodreads.com/book/show/11709965-jenkins'
-link_amazon: 'http://www.amazon.com/Jenkins-Definitive-John-Ferguson-Smart/dp/1449305350/'
+metadata:
+  authors: John Ferguson Smart
+  publisher: O'Reilly
+  datePublished: '2011-07-01'
+  bookFormat: 'Paperback'
+  isbn: '1449305350'
+  numberOfPages: 406
+links:
+  goodreads: 'http://www.goodreads.com/book/show/11709965-jenkins'
+  amazon: 'http://www.amazon.com/Jenkins-Definitive-John-Ferguson-Smart/dp/1449305350/'
 ---
 
 *Jenkins: The Definitive Guide* is the perfect introduction to Jenkins and the subject of continuous integration. The setup and basic configuration of the server are perfectly covered and all the most popular plugins are presented (Jenkins is so extensible that it uses plugins to do almost anything).

@@ -1,14 +1,10 @@
 ---
 layout: post
 title: Apache Zeppelin Under The Hood
-shortTitle: Apache Zeppelin
+category: inspect
+subject: Apache Zeppelin
 illustrationUrl: img/Constructing_a_new_zeppelin_-uncovered_rear_frame.jpg
 illustrationLegend: Construction of a new Zeppelin rear frame
-documentationExpanded: false
-comments: true
-postsExpanded: true
-excerpt: excerpt
-root: ../../../
 ---
 
 === Content

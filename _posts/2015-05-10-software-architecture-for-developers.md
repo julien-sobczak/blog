@@ -3,21 +3,21 @@ layout: post-read
 title: Software Architecture for Developers
 author: Julien Sobczak
 date: '2015-05-10'
-categories: read
+category: read
+subject: Definition of Architecture
+headline: Just enough architecture but too much repetitions. Great ideas delivered in a poor format.
+note: 9
 tags:
-- architecture
-- design-patterns
+  - architecture
 image: 'http://d.gr-assets.com/books/1341368491l/15734781.jpg'
-read_authors: Simon  Brown
-read_note: 9
-read_roti: 2
-read_time: 5
-read_publisher: 'Leanpub'
-read_date_published: '2012-06-22'
-read_book_format: 'ebook'
-read_number_of_pages: 206
-read_headline: Just enough architecture but too much repetitions. Great ideas delivered in a poor format.
-link_goodreads: 'http://www.goodreads.com/book/show/15734781-software-architecture-for-developers'
+metadata:
+  authors: Simon  Brown
+  publisher: 'Leanpub'
+  datePublished: '2012-06-22'
+  bookFormat: 'ebook'
+  numberOfPages: 206
+links:
+  goodreads: 'http://www.goodreads.com/book/show/15734781-software-architecture-for-developers'
 ---
 
 Who needs an Architect? More than 10 years after the classic paper written by Martin Fowler, we still try to find the definition of software architecture and the role of an architect. Simon Brown, as an independent consultant working on architecture stuffs since a long time, brings his extensive experience to answer these questions in a pragmatic way.

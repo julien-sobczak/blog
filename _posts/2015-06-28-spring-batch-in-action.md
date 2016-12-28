@@ -3,21 +3,20 @@ layout: post-read
 title: Spring Batch in Action
 author: Julien Sobczak
 date: '2015-06-28'
-categories: read
+category: read
+subject: Spring Batch
+headline: An in-depth guide to batch processing. Cover every aspect of Spring Batch.
 tags:
-- frameworks
-- java
+  - framework
+  - java
 image: 'http://d.gr-assets.com/books/1347812155l/11493933.jpg'
 read_authors: Arnaud Cogoluegnes, Thierry Templier, Gary Gregory, Olivier Bazoud
 read_note: 16
-read_roti: 5
-read_time: 12
 read_publisher: 'Manning Publications'
 read_date_published: '2011-10-07'
 read_book_format: 'Paperback'
 read_isbn: '1935182951'
 read_number_of_pages: 504
-read_headline: An in-depth guide to batch processing. Cover every aspect of Spring Batch.
 link_goodreads: 'http://www.goodreads.com/book/show/11493933-spring-batch-in-action'
 link_amazon: 'http://www.amazon.com/Spring-Batch-Action-Arnaud-Cogoluegnes/dp/1935182951/'
 ---

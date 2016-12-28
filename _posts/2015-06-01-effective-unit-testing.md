@@ -3,23 +3,23 @@ layout: post-read
 title: Effective Unit Testing
 author: Julien Sobczak
 date: '2015-06-01'
-categories: read
+category: read
+subject: Unit Testing
+headline: Learn unit testing through a catalog of bad Test smells.
+note: 16
 tags:
-- testing
-- java
-- clean-code
+  - java
+  - craftsmanship
 image: 'http://d.gr-assets.com/books/1359031267l/17282399.jpg'
-read_authors: Lasse Koskela
-read_note: 16
-read_roti: 5
-read_time: 6
-read_publisher: Manning
-read_date_published: '2013-02-16'
-read_book_format: 'Paperback'
-read_number_of_pages: 248
-read_headline: Learn unit testing through a catalog of bad Test smells.
-link_goodreads: 'http://www.goodreads.com/book/show/17282399-effective-unit-testing'
-link_amazon: 'http://www.amazon.com/Effective-Unit-Testing-guide-developers/dp/1935182579/'
+metadata:
+  authors: Lasse Koskela
+  publisher: Manning
+  datePublished: '2013-02-16'
+  bookFormat: 'Paperback'
+  numberOfPages: 248
+links:
+  goodreads: 'http://www.goodreads.com/book/show/17282399-effective-unit-testing'
+  amazon: 'http://www.amazon.com/Effective-Unit-Testing-guide-developers/dp/1935182579/'
 ---
 
 You begin to embrace unit testing but you feel your tests do not deliver all its promises? With *Effective Unit Testing*, you will learn how to write effective unit tests by learning to detect bad smells.
