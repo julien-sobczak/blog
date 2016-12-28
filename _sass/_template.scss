@@ -731,10 +731,12 @@ footer img.footer-me {
 }
 #page-post aside {
   width: 200px;
-  //opacity: 0;
   padding: $default-line-height 10px;
   text-align: center;
-  transition: opacity 1s linear;
+  transition: opacity 300ms linear;
+}
+#page-post aside.optional { // reveal on scroll (see JavaScript)
+  opacity: 0;
 }
 #page-post .aside-left {
   float: left;

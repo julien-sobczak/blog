@@ -86,7 +86,6 @@ if (postList) {
     // Spongbob easteregg
     $(document).easteregg({
       callback: function () {
-        console.log('ici!!!!!!!!!!!!!!!');
         // Add a CSS class to trigger animations
         $('.easter-egg-party').addClass('active').addClass('go');
 
@@ -125,22 +124,31 @@ if (postList) {
 
         if (sidebarTop < scrollTop) {
           stickySidebar.css('top', scrollTop - sidebarTop);
-          //if (scrollTop - sidebarTop > $(window).height() / 2) {
-          //  stickySidebar.css('opacity', "100");
-          //} else {
-          //  stickySidebar.css('opacity', "0");
-          //}
 
           // stop the sticky sidebar at the footer to avoid overlapping
-          var sidebarBottom = stickySidebar.offset().top + stickyHeight,
-              stickyStop = stickyContainer.offset().top + stickyContainer.outerHeight();
-          //if (stickyStop - ($(window).height() / 2) < sidebarBottom) {
-          //   stickySidebar.css('opacity', "0");
-          //}
-          if (stickyStop < sidebarBottom) {
-            var stopPosition = stickyContainer.outerHeight() - stickyHeight;
-            stickySidebar.css('top', stopPosition);
-          }
+          var stickyStop = stickyContainer.offset().top + stickyContainer.outerHeight();
+          stickySidebar.each(function() {
+            var eachStickySidebar = $(this);
+            var stickyHeight = eachStickySidebar.outerHeight();
+            var sidebarBottom = stickySidebar.offset().top + stickyHeight;
+            var optionalSidebar = eachStickySidebar.hasClass('optional');
+
+            if (optionalSidebar) {
+              if (scrollTop - sidebarTop > 100) {
+                eachStickySidebar.css('opacity', "100");
+              } else {
+                eachStickySidebar.css('opacity', "0");
+              }
+              if (stickyStop - ($(window).height() / 2) < sidebarBottom) {
+                eachStickySidebar.css('opacity', "0");
+              }
+            }
+
+            if (stickyStop < sidebarBottom) {
+              var stopPosition = stickyContainer.outerHeight() - stickyHeight;
+              eachStickySidebar.css('top', stopPosition);
+            }
+          });
         }
         else {
           stickySidebar.css('top', '0');
