@@ -102,11 +102,14 @@
  */
 
 body {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  //font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   overflow-x: hidden;
 }
 p {
   font-size: 20px;
+  line-height: 35px;
+  margin: 35px 0;
 }
 p.small {
   font-size: 16px;
@@ -722,33 +725,64 @@ footer img.footer-me {
   background-image: url(../img/iminspectinit-icon.png);
 }
 
+#page-post article {
+  width: 700px;
+}
+#page-post p.headline {
+  @extend .manuscript;
+  text-align: center;
+  font-size: 200%;
+}
+
+#page-post .note {
+  text-align: center;
+  margin: 40px 0;
+
+  i {
+    background-color: white;
+    padding: 5px;
+    margin: -2px;
+  }
+  hr {
+    border-bottom: 5px solid black;
+    margin-top: -25px;
+  }
+}
+
 
 
 .author-bio {
   $color-local: #F6F6F6;
 
-  max-width: 900px;
-  min-height: 150px;
-  margin: 50px auto;
-  border-left: 10px solid $color-base;
-  border-radius: 10px;
-  padding: 20px 30px;
+  min-height: 130px;
+  border-left: 6px solid $color-base;
+  border-radius: 4px;
+  padding: 10px 20px;
   background-color: $color-local;
-  font-size: 20px;
 
   img {
     float: right;
-    border: 1px solid $color-local;
+    border: 6px solid white;
     border-radius: 50%;
     width: 100px;
     height: 100px;
+    margin-left: 20px;
   }
 
-  p.strong {
+  p strong {
      font-size: 120%;
   }
   p {
-    margin-right: 20px;
+    margin: 10px 0;
+    margin-right: 40px;
+    font-size: 16px;
+    line-height: 150%;
+  }
+  a {
+    display: block;
+    margin: 15px;
+    font-size: 120%;
+    text-align: center;
   }
 }
 

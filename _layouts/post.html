@@ -64,6 +64,21 @@ layout: 'page'
 
   <div class="container">
 
+
+    <article>
+    <p class="headline">
+      {{ page.read_headline }}
+    </p>
+
+    <div class="note">
+      <i class="fa fa-star fa-3x" aria-hidden="true"></i>
+      <i class="fa fa-star fa-3x" aria-hidden="true"></i>
+      <i class="fa fa-star fa-3x" aria-hidden="true"></i>
+      <i class="fa fa-star-o fa-3x" aria-hidden="true"></i>
+      <i class="fa fa-star-o fa-3x" aria-hidden="true"></i>
+      <hr/>
+    </div>
+
     {% if page.illustrationUrl %}
     <figure class="illustration">
       <img src="{{ page.illustrationUrl | prepend: site.baseurl }}" class="blur" />
@@ -74,7 +89,7 @@ layout: 'page'
     {{content}}
 
     {% include my-bio.html %}
-
+    </article>
 
   </div>
 </section>
