@@ -103,4 +103,55 @@ if (postList) {
     });
 
 
+    // Make Aside sticky on blog post
+    var stickySidebar = $('.sticky');
+    var stickyContainer = $('.sticky-container');
+    if (stickySidebar.length > 0) {
+      var stickyHeight = stickySidebar.outerHeight(),
+          sidebarTop = stickySidebar.offset().top;
+      // Use the max height as reference
+      stickySidebar.each(function() {
+        var eachStickyHeight = $(this).outerHeight();
+        if (eachStickyHeight > stickyHeight) {
+          stickyHeight = eachStickyHeight;
+        }
+      });
+    }
+    var mainNav = $('#mainNav');
+    // on scroll move the sidebar
+    $(window).scroll(function () {
+      if (stickySidebar.length > 0) {
+        var scrollTop = $(window).scrollTop();
+
+        if (sidebarTop < scrollTop) {
+          stickySidebar.css('top', scrollTop - sidebarTop);
+          //if (scrollTop - sidebarTop > $(window).height() / 2) {
+          //  stickySidebar.css('opacity', "100");
+          //} else {
+          //  stickySidebar.css('opacity', "0");
+          //}
+
+          // stop the sticky sidebar at the footer to avoid overlapping
+          var sidebarBottom = stickySidebar.offset().top + stickyHeight,
+              stickyStop = stickyContainer.offset().top + stickyContainer.outerHeight();
+          //if (stickyStop - ($(window).height() / 2) < sidebarBottom) {
+          //   stickySidebar.css('opacity', "0");
+          //}
+          if (stickyStop < sidebarBottom) {
+            var stopPosition = stickyContainer.outerHeight() - stickyHeight;
+            stickySidebar.css('top', stopPosition);
+          }
+        }
+        else {
+          stickySidebar.css('top', '0');
+        }
+      }
+    });
+    // Do not forget to listen resize
+    $(window).resize(function () {
+      if (stickySidebar.length > 0) {
+        stickyHeight = stickySidebar.outerHeight();
+      }
+    });
+
 })(jQuery); // End of use strict

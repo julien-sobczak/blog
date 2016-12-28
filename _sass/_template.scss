@@ -96,7 +96,6 @@
 }
 
 
-
 /*
  * Start Bootstrap
  */
@@ -108,8 +107,8 @@ body {
 }
 p {
   font-size: 20px;
-  line-height: 35px;
-  margin: 35px 0;
+  line-height: $default-line-height;
+  margin: $default-line-height 0;
 }
 p.small {
   font-size: 16px;
@@ -572,7 +571,7 @@ footer img.footer-me {
   footer img.footer-me {
     visibility: visible;
     display: block;
-    top: 37px;
+    bottom: 135px;
     left: 50%;
     margin-left: -150px; /* Compensate 50% */
   }
@@ -725,9 +724,58 @@ footer img.footer-me {
   background-image: url(../img/iminspectinit-icon.png);
 }
 
+// Split main content into 3 columns including 2 sticky ones
 #page-post article {
-  width: 700px;
+  width: 650px;
+  margin: 0 auto;
 }
+#page-post aside {
+  width: 200px;
+  //opacity: 0;
+  padding: $default-line-height 10px;
+  text-align: center;
+  transition: opacity 1s linear;
+}
+#page-post .aside-left {
+  float: left;
+}
+#page-post .aside-right {
+  float: right;
+}
+
+#page-post .sticky {
+  position: relative;
+  top: 0;
+}
+
+#page-post aside span {
+  display: inline-block;
+  color: silver;
+  margin-bottom: $default-line-height;
+  font-size: 22px;
+}
+
+.aside-links ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.aside-links ul a {
+  color: grey;
+}
+.aside-links ul li {
+  margin: 0 0 $default-line-height;
+}
+.aside-links ul a:hover {
+  color: $color-base;
+  text-decoration: none;
+  transition: color 300ms linear;
+}
+.aside-picture img {
+  max-width: 90%;
+}
+
+
 #page-post p.headline {
   @extend .manuscript;
   text-align: center;
