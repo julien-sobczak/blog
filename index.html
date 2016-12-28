@@ -80,7 +80,7 @@ postsExpanded: false
           <img src="{{ '/img/imreadinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">read</span>in' I.T.</h3>
           <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
-          <p>Latest books: <!-- FIXME dynamize--><a href="#">ScrumBan</a>, <a href="#">Remote</a>, <a href="#">Hadoop: The Definitive Guide</a> or see them <a href="#">all</a>!</p>
+          <p>Latest books: <!-- FIXME dynamize--><a href="#">ScrumBan</a>, <a href="#">Remote</a>, <a href="#">Hadoop: The Definitive Guide</a> or see them <a href="{{ '/categories/read.html' | prepend: site.baseurl }}">all</a>!</p>
         </div>
         <!-- TODO
           I'm doin' I.T.
@@ -91,16 +91,16 @@ postsExpanded: false
           <img src="{{ '/img/imtellinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">tell</span>in' I.T.</h3>
           <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
-          <p>Read the latest posts about <!-- FIXME  dynamize --> <a href="#">Anki SRS</a>, <a href="#">The importance of an actionable WHY</a>, and many <a href="#">other topics</a>.</p>
+          <p>Read the latest posts about <!-- FIXME  dynamize --> <a href="#">Anki SRS</a>, <a href="#">The importance of an actionable WHY</a>, and many <a href="{{ '/categories/tell.html' | prepend: site.baseurl }}">other topics</a>.</p>
         </div>
         <div>
           <img src="{{ '/img/iminspectinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">inspect</span>in' I.T.</h3>
           <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
-          <p>Discover the inner working of famous OSS projects: <!-- FIXME dynamize --> <a href="#">Spring Boot</a>, <a href="#">Mockito</a>, <a href="#">-prefix-free</a>, or check them <a href="#">all</a>!</p>
+          <p>Discover the inner working of famous OSS projects: <!-- FIXME dynamize --> <a href="#">Spring Boot</a>, <a href="#">Mockito</a>, <a href="#">-prefix-free</a>, or check them <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}">all</a>!</p>
         </div>
       </div>
-      <a href="#" class="btn btn-lg btn-outline btn-outline-colored">
+      <a href="{{ '/categories/all.html' | prepend: site.baseurl }}" class="btn btn-lg btn-outline btn-outline-colored">
           <i class="fa fa-list"></i> View All Posts
       </a>
     </div>
@@ -128,7 +128,7 @@ postsExpanded: false
             </div>
         </div>
         <div>
-            <a href="#" class="btn btn-lg btn-outline">
+            <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" class="btn btn-lg btn-outline">
                 <i class="fa fa-user"></i> View Full Profile
             </a>
         </div>

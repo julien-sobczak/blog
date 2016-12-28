@@ -95,6 +95,24 @@ layout: 'page'
       <hr/>
     </div>
 
+    <!-- TODO pertinent?
+    <div class="likes">
+      <i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>
+      <ul>
+        <li>Reference</li>
+        <li>Well-Written</li>
+        <li>Content</li>
+      </ul>
+    </div>
+
+    <div class="dislikes">
+      <i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i>
+      <ul>
+        <li>Outdated</li>
+      </ul>
+    </div>
+    -->
+
     {% if page.illustrationUrl %}
     <figure class="illustration">
       <img src="{{ page.illustrationUrl | prepend: site.baseurl }}" class="blur" />
@@ -102,7 +120,9 @@ layout: 'page'
     </figure>
     {% endif %}
 
+    <div class="content">
     {{content}}
+    </div>
 
     {% include my-bio.html %}
     </article>

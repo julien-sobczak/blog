@@ -13,6 +13,8 @@ layout: default
       <h2>I'm tellin' I.T.</h2>
     {% elsif page.category == 'inspect' %}
       <h2>I'm inspectin' I.T.</h2>
+    {% else %}
+      <h2>All posts</h2>
     {% endif %}
     <hr class="star-primary">
   </div>
@@ -22,7 +24,7 @@ layout: default
 
       {% for post in site.posts %}
 
-        {% if post.categories contains page.category %}
+        {% if page.category == 'all' or post.categories contains page.category %}
 
           <li>
             <div class="post-preview post-{{post.categories}}-preview">

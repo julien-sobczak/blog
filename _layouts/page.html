@@ -26,23 +26,23 @@
           <button type="button" class="navbar-toggle">
               Menu <i class="fa fa-bars"></i>
           </button>
-          <a class="navbar-brand" href="#page-top">I'm lovin' I.T.</a>
+          <a class="navbar-brand" href="{{ '/index.html' | prepend: site.baseurl }}">I'm lovin' I.T.</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="navbar-collapse">
           <ul class="nav navbar-nav">
               <li>
-                  <a href="#">I'm readin' I.T.</a>
+                  <a href="{{ '/categories/read.html' | prepend: site.baseurl }}">I'm readin' I.T.</a>
               </li>
               <li>
-                  <a href="#">I'm tellin' I.T.</a>
+                  <a href="{{ '/categories/tell.html' | prepend: site.baseurl }}">I'm tellin' I.T.</a>
               </li>
               <li>
-                  <a href="#">I'm inspectin' I.T.</a>
+                  <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}">I'm inspectin' I.T.</a>
               </li>
               <li class="page-scroll">
-                  <a href="#">About Me</a>
+                  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
               </li>
           </ul>
         </div>
