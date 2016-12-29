@@ -472,13 +472,19 @@ section .categories h3 {
 }
 section .categories p.manuscript {
   font-size: 150%;
-}
-section .categories p {
   height: 90px;
   margin-top: 30px;
-  margin-bottom: 30px;
-  font-size: 16px;
+  margin-bottom: 50px;
   text-align: center;
+}
+section .categories ul {
+  // Put everything on the same line (simulate a paragraph)
+  font-size: 16px;
+  list-style-type: none;
+  li {
+    display: inline-block;
+    margin: 0 2px;
+  }
 }
 
 .text-colored {

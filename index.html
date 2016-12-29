@@ -80,7 +80,28 @@ postsExpanded: false
           <img src="{{ '/img/imreadinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">read</span>in' I.T.</h3>
           <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
-          <p>Latest books: <!-- FIXME dynamize--><a href="#">ScrumBan</a>, <a href="#">Remote</a>, <a href="#">Hadoop: The Definitive Guide</a> or see them <a href="{{ '/categories/read.html' | prepend: site.baseurl }}">all</a>!</p>
+          <ul>
+            <li>Latest books:</li>
+            {% assign count = 0 %}
+            {% for post in site.posts %}
+              {% if post.category == 'read' %}
+                {% assign count = count | plus: 1 %}
+                {% if count < 4 %} <!-- show only 3 last posts -->
+                <li>
+                  <a href="{{ post.url | prepend: site.baseurl }}">
+                    {% if post.shortTitle %}
+                      {{ post.shortTitle }}
+                    {% else %}
+                      {{ post.title }}
+                    {% endif %}
+                    ,
+                  </a>
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <li>or see them <a href="{{ '/categories/read.html' | prepend: site.baseurl }}">all</a>!
+          </ul>
         </div>
         <!-- TODO
           I'm doin' I.T.
@@ -91,13 +112,41 @@ postsExpanded: false
           <img src="{{ '/img/imtellinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">tell</span>in' I.T.</h3>
           <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
-          <p>Read the latest posts about <!-- FIXME  dynamize --> <a href="#">Anki SRS</a>, <a href="#">The importance of an actionable WHY</a>, and many <a href="{{ '/categories/tell.html' | prepend: site.baseurl }}">other topics</a>.</p>
+          <ul>
+            <li>Read the latest posts about</li>
+            {% assign count = 0 %}
+            {% for post in site.posts %}
+              {% if post.category == 'tell' %}
+                {% assign count = count | plus: 1 %}
+                {% if count < 4 %} <!-- show only 3 last posts -->
+                <li>
+                  <a href="{{ post.url | prepend: site.baseurl }}">{{ post.subject }},</a>
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <li>or see them <a href="{{ '/categories/tell.html' | prepend: site.baseurl }}">all</a>!
+          </ul>
         </div>
         <div>
           <img src="{{ '/img/iminspectinit-icon.png' | prepend: site.baseurl }}" />
           <h3>I'm <span class="text-colored">inspect</span>in' I.T.</h3>
           <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
-          <p>Discover the inner working of famous OSS projects: <!-- FIXME dynamize --> <a href="#">Spring Boot</a>, <a href="#">Mockito</a>, <a href="#">-prefix-free</a>, or check them <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}">all</a>!</p>
+          <ul>
+            <li>Discover the inner working of famous OSS projects:</li>
+            {% assign count = 0 %}
+            {% for post in site.posts %}
+              {% if post.category == 'inspect' %}
+                {% assign count = count | plus: 1 %}
+                {% if count < 4 %} <!-- show only 3 last posts -->
+                <li>
+                  <a href="{{ post.url | prepend: site.baseurl }}">{{ post.subject }},</a>
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <li>or see them <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}">all</a>!
+          </ul>
         </div>
       </div>
       <a href="{{ '/categories/all.html' | prepend: site.baseurl }}" class="btn btn-lg btn-outline btn-outline-colored">
@@ -124,7 +173,7 @@ postsExpanded: false
             </div>
             <div class="col">
               <p>I have a strong interest in everything that is related to <strong>developer productivity</strong>: deliberate practice, clean code, memory techniques, speed reading, sport programming, and so on.</p>
-              <p>The more I learn about my job, the more I realize how less I know but the more I like it, so I do my best to <strong>learn something new day everyday</strong>!<p>
+              <p>The more I learn about my job, the more I realize how less I know but the more I like it, so I do my best to <strong>learn something new everyday</strong>!<p>
             </div>
         </div>
         <div>
