@@ -824,6 +824,37 @@ footer img.footer-me {
   max-width: 90%;
 }
 
+#page-post .aside-menu {
+  margin-right: -300px;
+  width: 460px;
+  font-size: 16px;
+  text-align: left;
+  padding: 20px;
+  padding-top: 90px; // top menu is fixed and hide the menu otherwise
+  ul {
+    list-style-type: none;
+
+    li {
+      border-left: 5px solid white;
+      padding-left: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+
+      a {
+        color: #999 !important; // everything is link...
+      }
+    }
+    li.tocify-focus {
+      border-left: 5px solid $color-base;
+
+      a {
+        color: black !important; // everything is link...
+      }
+    }
+  }
+
+}
+
 
 #page-post p.headline {
   @extend .manuscript;

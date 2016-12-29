@@ -929,12 +929,12 @@ System.out.println("New message received: " + m);
 ----
 
 
-== `MessageEndpoint` Abstraction
+=== `MessageEndpoint` Abstraction
 
 We just have seen how to send and receive messages. In practice, we will not use the API directly. Messages comes from different sources (JMS, file, application...) and we do not want our application code tighly coupled with the Spring Integration API (not conform with the Spring philosophy). We use endpoints instead. Endpoints are used for many tasks: receive a message from an external resource (JMS broker), send messages to another applications (HTTP call), support complex flow with *Router*, *Filter*, *Bridge* and many other components. In this post, we will confine ourselves to just three endpoints: Service Activator, Proxy Gateway and Bridge. The first two ones are used to protect our code free from any Spring Integration dependency and the last one is is mainly used to write unit tests. Here we go!
 
 
-=== The class hierarchy
+==== The class hierarchy
 
 Unlike `Message` and `MessageChannel` interfaces, there isn't a `MessageEndpoint` interface. There is an `AbstractEndpoint` class but not all endpoints extend this class. Although there is a mapping one-one between the EIP patterns and the component names in Spring Integration, each endpoint does not necessarily have a corresponding class. Maybe a class diagram could help us make things clearer.
 
@@ -949,7 +949,7 @@ image::{{ '/posts_resources/2016-04-12-spring-integration-from-scratch/handlers.
 We will now describe each one of these classes.
 
 
-=== Message consumption
+==== Message consumption
 
 Regardless the channel type (Pollable vs Subscribable), we should execute some code when the Spring ApplicationContext starts. An endpoint linked to a `PollableChannel` should start a timer to periodically check if a new message is present. An endpoint linked to a `SubscribableChannel` should register itself as a subscribe to be notified when a new message arrives. To avoid duplicating this logic, we will create an abstract superclass `AbstractEndpoint`.
 
@@ -1313,7 +1313,7 @@ public interface MessageHandler {
 There is little to say about this interface. Let's see its implementations!
 
 
-=== Message production
+==== Message production
 
 Spring Integration provides abstract class for the all message producers to factorize common attributes and common methods. Here is its implementation:
 
@@ -1451,7 +1451,7 @@ Compared to the real code, this class ignores many concerns: methods on supercla
 We still have one endpoint to implement: the Proxy Gateway.
 
 
-=== The Proxy Gateway exception
+==== The Proxy Gateway exception
 
 Spring Integration follows the Enterprise Integration Patterns (EIP) book to the letter, with a few exceptions, as the Proxy Gateway. In messaging, a Gateway is a two-way component. For example, a JMS inbound gateway consumes a message on a queue, process it and publish another JMS message. The Proxy Gateway is an adaptation of this pattern. The Proxy Gateway is very convenient in practice because it keep our code loosely coupled to Spring Integration.
 
@@ -1773,7 +1773,7 @@ Clearly, this code lacks expressiveness and we understand why Spring Integration
 
 
 
-=== A little bit of XML sugar
+== A little bit of XML sugar
 
 Almost every Spring module comes with its own namespace to facilitate the configuration of common beans. Spring Integration is no exception (Spring Integration defines more than 30 namespaces, one for each supported technology!).
 
@@ -1789,7 +1789,7 @@ Creating new XML configuration extensions can be done by following these (relati
 What follows is a description of each of these steps.
 
 
-==== Authoring the schema
+=== Authoring the schema
 
 We start with authoring an XML Schema to describe the extension. What follows is the schema we’ll use to configure our simple use case.
 
@@ -1871,7 +1871,7 @@ We start with authoring an XML Schema to describe the extension. What follows is
 ----
 
 
-==== Coding a NamespaceHandler
+=== Coding a NamespaceHandler
 
 In addition to the schema, we need a `NamespaceHandler` that will parse all elements of this specific namespace Spring encounters while parsing configuration files. We just have to define a class implementing the `NamespaceHandler` interface and associate a `BeanDefinitionParser` for each element in our namespace:
 
@@ -1905,7 +1905,7 @@ Indeed, most of this work happens in the `NamespaceHandlerSupport` class. This c
 
 
 
-==== BeanDefinitionParser
+=== BeanDefinitionParser
 
 The `BeanDefinitionParser` is responsible for parsing one distinct top-level XML element defined in the schema. In the parser, we’ll have access to the XML element (and thus its subelements too) so that we can parse our custom XML content, as can be seen in the following example:
 
@@ -2178,11 +2178,11 @@ public class ConsumerEndpointFactoryBean implements SmartLifecycle, ... {
 We will not describe the remaining channels and endpoints. The code is very similar to the code presented here. (You could check the full source code [here](TODO))
 
 
-==== Registering the handler and the schema
+=== Registering the handler and the schema
 
 The coding is finished! All that remains to be done is to somehow make the Spring XML parsing infrastructure aware of our custom namespace. For our example, we need to write the following two files:
 
-===== 'META-INF/spring.handlers'
+==== 'META-INF/spring.handlers'
 
 [source,properties]
 ----
@@ -2193,7 +2193,7 @@ http\://my.springframework.org/schema/integration=\
 The first part (the key) of the key-value pair is the URI associated with your custom namespace extension, and needs to match exactly the value of the 'targetNamespace' attribute as specified in your custom XSD schema.
 
 
-===== 'META-INF/spring.schemas'
+==== 'META-INF/spring.schemas'
 
 [source,properties]
 ----
@@ -2263,7 +2263,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 
 
 
-==== Using a custom extension
+=== Using a custom extension
 
 Our own namespace could be used in the same way as we used the official namespace at the start of this post, except we should update the namespace URI:
 

@@ -162,4 +162,12 @@ if (postList) {
       }
     });
 
+
+     $("#toc").tocify({
+       "context": "#page-post article",
+       "scrollTo": 150,
+       "theme": "none",
+       "selectors": "h2,h3,h4"
+     });
+
 })(jQuery); // End of use strict
