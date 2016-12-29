@@ -1,4 +1,57 @@
 ---
 layout: post
 ---
-{{ content }}
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    <aside class="sticky aside-left aside-links optional"> <!-- Add optional class to appear on scroll -->
+      <span>Share</span>
+      <ul>
+        <li>
+          <a href="#">
+            <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-google-plus fa-1x" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-linkedin fa-1x" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-reddit fa-1x" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-facebook fa-1x" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <article>
+
+      {% if page.illustrationUrl %}
+      <figure class="illustration">
+        <img src="{{ page.illustrationUrl | prepend: site.baseurl }}" class="blur" />
+        <figcaption>{{page.illustrationLegend}}</figcaption>
+      </figure>
+      {% endif %}
+
+      <div class="content">
+      {{content}}
+      </div>
+
+      {% include my-bio.html %}
+    </article>
+
+  </div>
+</section>
