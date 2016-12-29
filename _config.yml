@@ -10,4 +10,5 @@ asciidoctor:
     - source-highlighter=coderay
     - icons=font
 
+exclude: [tmp]
 # end of configuration
