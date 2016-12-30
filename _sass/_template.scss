@@ -190,6 +190,7 @@ hr.star-primary:after {
   font-weight: 700;
   border: none;
   padding: 0 !important;
+  z-index: 999;
 }
 .navbar-default a {
   text-decoration: none !important;
@@ -825,14 +826,20 @@ footer img.footer-me {
 }
 
 #page-post .aside-menu {
-  margin-right: -300px;
-  width: 460px;
+  margin-right: -240px;
+  width: 400px;
   font-size: 16px;
   text-align: left;
   padding: 20px;
   padding-top: 90px; // top menu is fixed and hide the menu otherwise
   ul {
     list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    ul {
+      padding-left: 20px;
+    }
 
     li {
       border-left: 5px solid white;
@@ -1065,21 +1072,11 @@ figure img.in-view {
   color: inherit;
 }
 
-.note :not(pre) code, .caution :not(pre) code, .experiment :not(pre) code, .tip :not(pre) code, .remember :not(pre) code, .congratulations :not(pre) code {
-   text-shadow: none !important;
+.admonitionblock .listingblock {
+  padding: 0 20px;
+  background: white;
+  color: black !important;
 }
-.note :not(pre) code, .remember :not(pre) code, .tip :not(pre) code {
-   background-color: rgba(0,0,0,0.7);
-}
-.caution :not(pre) code, .experiment :not(pre) code, .remember :not(pre) code, .congratulations :not(pre) code {
-   background-color: rgba(255,255,255,0.8);
-}
-.note code            { color: #F6B92B !important; }
-.caution code         { color: #024F79 !important; }
-.experiment code      { color: #024F79 !important; }
-.congratulations code { color: #77B3D5 !important; }
-.tip code             { color: #F6B92B !important; }
-.remember code        { color: #8DD8F8 !important; }
 
 
 article {
@@ -1087,4 +1084,17 @@ article {
     margin-top: 2em;
     margin-bottom: 1em;
   }
+}
+
+
+
+
+// Model of post
+
+article.problem-solution {
+
+  .sect1 {
+    display: none;
+  }
+
 }

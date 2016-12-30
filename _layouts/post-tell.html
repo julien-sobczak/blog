@@ -41,7 +41,11 @@ layout: post
       <!-- Will be dynamically populated -->
     </aside>
 
+    {% if page.model %}
+    <article class="{{ page.model }}">
+    {% else %}
     <article>
+    {% endif %}
 
       {% if page.illustrationUrl %}
       <figure class="illustration">
