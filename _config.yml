@@ -2,7 +2,8 @@
 
 title: "Jekyll-asciidoc-quickstart"
 
-baseurl: /blog
+# Not required when using a custom domain name
+#baseurl: /blog
 
 asciidoctor:
   attributes:
