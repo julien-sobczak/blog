@@ -173,9 +173,11 @@ if (postList) {
 
     // Support problem-solution post model
     window._showAnswer = function(elt) {
+      $(elt).parent().hide(); // Hide the buttons of this part only
       $(elt).closest('.sect1').next('.sect1').fadeIn();
     };
     window._showAll = function(elt) {
+      $('.problem-solution-button').parent().hide(); // Hide all buttons
       $(elt).closest('.sect1').parent().find('.sect1').fadeIn();
     };
 
@@ -188,8 +190,8 @@ if (postList) {
         if (i < sections.length - 1 && $this.find('.caution')) { // Problem are presented as a caution admonitionblock
           $this.append(
             '<div style="text-align: center; margin: 30px 0">' +
-            '<a class="btn btn-lg btn-outline btn-outline-colored" onclick="_showAnswer(this)"><i class="fa fa-eye"></i> Show answer</a>' +
-            '<a class="btn btn-lg btn-outline btn-outline-colored" onclick="_showAll(this)"><i class="fa fa-list"></i> Show all</a>' +
+            '<a class="btn btn-lg btn-outline btn-outline-colored problem-solution-button" onclick="_showAnswer(this)"><i class="fa fa-eye"></i> Show answer</a>' +
+            '<a class="btn btn-lg btn-outline btn-outline-colored problem-solution-button" onclick="_showAll(this)"><i class="fa fa-list"></i> Show full post</a>' +
             '</div>');
         }
       })

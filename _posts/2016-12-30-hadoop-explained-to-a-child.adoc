@@ -78,6 +78,8 @@ Do you see how to apply the MapReduce framework to solve this problem?
 
 == MapReduce again
 
+image::mapreduce-words.png[width="600", align="center"]
+
 For each book, you need to write (on paper for example) the list of words with their count. Then, everyone brings their notes to the person responsible of aggregating everything together. So, each map task returns the count for each word. Then, the reduce task sum the count of each word returned by the 2 mappers.
 
 We could know define formally the Map and Reduce functions as follows:
