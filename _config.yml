@@ -2,6 +2,9 @@
 
 title: "Jekyll-asciidoc-quickstart"
 
+gems:
+  - jekyll-feed
+
 # Not required when using a custom domain name
 #baseurl: /blog
 
