@@ -860,6 +860,9 @@ footer img.footer-me {
     }
   }
 
+  .tocify-extend-page {
+    height: 0! important; // TODO find bug in JS tocify
+  }
 }
 
 
@@ -1045,19 +1048,23 @@ figure img.in-view {
   line-height: 1.6em;
 }
 
-.admonitionblock .title {
+.admonitionblock .content > .title {
   font-family: "Noto Serif","DejaVu Serif","Serif",serif;
   font-size: 150%;
   margin-bottom: 25px;
 }
 
-.note .title, .caution .title, .experiment .title, .tip .title, .congratulations .title {
+.note .content > .title,
+.caution .content > .title,
+.experiment .content > .title,
+.tip .content > .title,
+.congratulations .content > .title {
   color: white;
   text-shadow: 1px 1px black;
   border-bottom: 1px solid white;
 }
 
-.remember .title {
+.remember .content > .title {
   color: black;
   text-shadow: 1px 1px white;
   border-bottom: 1px solid black;
@@ -1076,6 +1083,13 @@ figure img.in-view {
   padding: 0 20px;
   background: white;
   color: black !important;
+}
+.admonitionblock .listingblock .title {
+  line-height: 1.45;
+  color: #333;
+  font-weight: 400;
+  margin-bottom: .25em;
+  margin-top: .25em;
 }
 
 
@@ -1097,4 +1111,50 @@ article.problem-solution {
     display: none;
   }
 
+}
+
+
+
+// Callout
+
+.conum[data-value] {
+	display:inline-block;
+	color:#fff !important;
+	background-color:rgba(0,0,0,0.8);
+	-webkit-border-radius:100px;
+	border-radius:100px;
+	text-align:center;
+	width:1.67em;
+	height:1.67em;
+	font-size:0.75em;
+	line-height:1.67em;
+	font-family:"Open Sans", "Sans", sans-serif;
+	font-style:normal;
+	font-weight:bold
+}
+.conum[data-value] * {
+	color:#fff !important
+}
+.conum[data-value]+b {
+	display:none
+}
+.conum[data-value]:after {
+	content:attr(data-value)
+}
+pre .conum[data-value] {
+	position:relative;
+	top:-0.125em
+}
+b.conum * {
+	color:inherit !important
+}
+.conum:not([data-value]):empty {
+	display:none
+}
+.colist {
+    margin-top: 15px;
+    font-size: 90%;
+}
+.colist td {
+  padding: 5px 10px;
 }
