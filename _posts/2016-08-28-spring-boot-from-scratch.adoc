@@ -26,11 +26,6 @@ ____________________________________________________________________
 - Create an uber-jar without using any Maven plugin.
 
 
-[CAUTION.license]
-https://github.com/spring-projects/spring-boot/blob/v1.3.3.RELEASE/[Spring Boot] is published under the https://opensource.org/licenses/Apache-2.0[licence Apache, Version 2.0]. The code presented in this post was simplified (robustness, performance, validation, etc) and should not be used outside of this context. This post is based on the version 1.3.3.RELEASE of Spring Boot.
-
-
-
 == Prerequisites
 
 We will follow the https://spring.io/guides/gs/spring-boot/[official Getting Started Guide "Building an Application with Spring Boot"] and explain the inner working of the framework by recoding its main features. The resulting code has no vocation to be use outside of this post. Let's go!
@@ -47,7 +42,7 @@ The tutorial is composed of only 3 files: a `pom.xml` to reference Spring Boot d
 http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>fr.imlovinit</groupId>
+    <groupId>com.juliensobczak</groupId>
     <artifactId>spring-boot-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -158,16 +153,16 @@ This diagram highlights the three parts that composed this article :
 - Packaging your Spring Boot Application, describes how the Spring Boot Maven plugin works under the hood to create the executable uber-jar.
 
 
-Depending your interest, you could safely jump from one part to another.
+According to your interest, you could safely jump from one part to another one.
 
 
 == Part 1: Creating your Spring Boot Application
 
 
-We all have lost a considerable time trying to understand why a dependency class could not be found, or trying to make two unrelated projects work together although they need two incompatible versions of the same library. Using Maven exclusions help but it is not a satisfactory solution. These dependency issues are known under the term https://en.wikipedia.org/wiki/Dependency_hell[Dependency Hell] to reflect the frustration of many software developers.
+We all have lost a considerable time trying to understand why a dependency class could not be found, or trying to make two unrelated projects work together although they need two incompatible versions of the same library. Using Maven exclusions helps but it is not a satisfactory solution. These dependency issues are known under the term https://en.wikipedia.org/wiki/Dependency_hell[Dependency Hell] to reflect the frustration of many software developers.
 
 
-Even the most simple Java program needs many dependencies. Here is the list of dependencies for our Getting Started example:
+Even the most simple Java program needs many dependencies. Here is the list of dependencies for the Getting Started example:
 
 ----
 fr.imlovinit:spring-boot-demo:jar:0.0.1-SNAPSHOT
@@ -199,7 +194,7 @@ fr.imlovinit:spring-boot-demo:jar:0.0.1-SNAPSHOT
      \- org.springframework:spring-expression:jar:4.2.5.RELEASE
 ----
 
-That's a lot of dependencies for such a simple project.
+That's a lot of dependencies for such a simple project!
 
 
 === Problem: I don't want to specify all of my dependencies!
@@ -364,9 +359,9 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 </project>
 ----
 
-The full source includes other Maven plugins to package a WAR (useful to deploy on a standalone server), to run the project directly from Maven (`maven-exec-plugin`), to include information about the last Git commit (`git-commit-id-plugin`), or an alternative to the `spring-boot-maven-plugin` based on the `maven-shade-plugin`
+The full source includes other Maven plugins to package a WAR (useful to deploy on a standalone server), to run the project directly from Maven (`maven-exec-plugin`), to include information about the last Git commit (`git-commit-id-plugin`), or an alternative to the `spring-boot-maven-plugin` based on the `maven-shade-plugin`.
 
-This pom is mainly used to declare the version of the Spring Framework and the version of the Spring Boot Maven Plugin (the subject of this post's second part). We notice another parent pom but be assured, this is the last pom of the hierarchy.
+This pom is mainly used to declare the version of the Spring Framework and the version of the Spring Boot Maven Plugin (the subject of the last part of this post). We notice another parent pom but be assured, this is the last pom of the hierarchy:
 
 [source,xml]
 ----
@@ -377,7 +372,7 @@ This pom is mainly used to declare the version of the Spring Framework and the v
 </parent>
 ----
 
-The project `spring-boot-dependencies` is also a project of type pom. This project aims to centralize all of the http://docs.spring.io/spring-boot/docs/1.3.3.RELEASE/reference/html/appendix-dependency-versions.html[dependency versions that are provided by Spring Boot]. This represents more than 400 dependencies (more than 2000 lines of code!). Here is a shortened version, adapted for our Hello World project:
+The project `spring-boot-dependencies` is also a project of type pom. This project aims to centralize all of the http://docs.spring.io/spring-boot/docs/1.3.3.RELEASE/reference/html/appendix-dependency-versions.html[dependency versions that are provided by Spring Boot]. This represents more than 400 dependencies (and more than 2000 lines of code!). Here is a shortened version, adapted for our *Hello World* project:
 
 [source,xml]
 ----
@@ -462,21 +457,17 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 </project>
 ----
 
-These dependencies are declared in the `<dependencyManagement>` and `<pluginManagement>` sections, so no dependency is directly inherited when using this parent POM. This only save you from specifying the version declaring a dependency in a `<dependencies>` section. But this is more than just a one-line saver. All the versions defined by Spring Boot are known to work seamlessly together! This solves the issue of https://en.wikipedia.org/wiki/Dependency_hell[dependency hell] where two libraries needs two incompatible versions of the same dependency.
+These dependencies are declared in the `<dependencyManagement>` and `<pluginManagement>` sections, so no dependency is directly inherited when using this parent POM. This only save you from specifying the version when declaring a dependency in a `<dependencies>` section, a good start to solve the https://en.wikipedia.org/wiki/Dependency_hell[dependency hell].
 
 
-Now that we know how the version of dependencies is determined, we should find how who is behind of all our dependencies.
-
-Given the output of the previous Maven dependency tree, we know the starters are responsible from these dependencies. But what is a exactly a Starter?
+Now that we know how the version of dependencies is determined, we should find who is behind these dependencies. Given the output of the previous Maven dependency tree, we know the starters are responsible from these dependencies. But what is a exactly a Starter?
 
 
 
 ==== The Starters
 
 
-According the official documentation, Spring Boot Starters are a set of convenient dependency descriptors that you can include in your application. You get a one-stop-shop for all the Spring and related technology that you need without having to hunt through sample code and copy paste loads of dependency descriptors.
-
-In our sample, we want to create a web application, so, we just include the `spring-boot-starter-web` dependency in our project.
+According the official documentation, Spring Boot Starters are a set of convenient dependency descriptors that you can include in your application. In our sample, we want to create a web application, so, we just include the `spring-boot-starter-web` dependency in our project.
 
 [source,xml]
 ----
@@ -495,7 +486,7 @@ spring-boot-starter-web
  \+ pom.xml
 ----
 
-That's all. Just one pom.xml (the file `spring.provides` could be ignored). So, let's see what contains this pom.xml:
+That's all. Just one `pom.xml` (the file `spring.provides` could be ignored for now). So, let's see what contains this `pom.xml`:
 
 [source,xml]
 ----
@@ -541,12 +532,12 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 </project>
 ----
 
-We finally find where our dependencies comes from. A starter exploit the `<dependencyManagement>` section defined previously to omit the version of the artifacts. We also see that a starter could reference other starters to inherit its dependencies transitively. For example, the starter Web depends on the starter Tomcat. The dependency `org.springframework.boot:spring-boot-starter` is important. All starters depends on it because this is the dependency who load the core Spring Boot dependency (presented in the last part of this article), containing in particular the annotation `@SpringBootApplication` we used on our main class `Application`.
+We finally find where our dependencies comes from. A starter exploit the `<dependencyManagement>` section defined previously to omit the version of the artifacts. We also see that a starter could reference other starters to inherit its dependencies transitively. For example, the starter Web depends on the starter Tomcat.
+
+The dependency `org.springframework.boot:spring-boot-starter` is important. All starters depends on it because this is the dependency who load the core Spring Boot dependency (presented in the following part), containing in particular the annotation `@SpringBootApplication` we used on our main class `Application`.
 
 
-
-So, the combination of the Parent POM and the Starters give us all the dependencies we need to write and compiles your application.
-But what happens when I run my application.
+So, the combination of the Parent POM and the Starters give us all the dependencies we need to write and compiles your application. But what happens when I run my application?
 
 
 == Part 2: Running your Spring Boot Application
@@ -606,8 +597,9 @@ public class HelloWorldConfiguration {
 }
 ----
 
-The code is concise thanks to the `@EnableWebMvc` annotation, who defines a instance of `RequestMappingHandlerMapping`, a list of `HttpMessageConverter` converters and many other beans.
-Before Spring Boot, this annotation was a great time-saver. The last thing we need to to is register the Spring MVC servlet:
+The code is concise thanks to the `@EnableWebMvc` annotation, who defines a instance of `RequestMappingHandlerMapping`, a list of `HttpMessageConverter` converters and many other beans. Before Spring Boot, this annotation was a great time-saver.
+
+The last thing we need to to is register the Spring MVC servlet:
 
 [source,java]
 ----
@@ -638,17 +630,18 @@ public class HelloWorldInitializer implements WebApplicationInitializer {
 }
 ----
 
-`AnnotationConfigWebApplicationContext` is created. It's `WebApplicationContext` implementation that looks for Spring configuration in classes annotated with `@Configuration` annotation. We help it by providing our configuration class directly with the method `register` before setting the `ServletContext` to link the `WebApplicationContext` to the lifecycle of `ServletContext`.
-`DispatcherServlet` is then created, initialized, mapped to `"/*"` and set to eagerly load on application startup. This configuration looks what we do when using the `web.xml` file instead.
+An instance of `AnnotationConfigWebApplicationContext` is created. This class is looking for Spring configuration in classes annotated with the `@Configuration` annotation. We help it by providing our configuration class directly with the method `register` before setting the `ServletContext` to link the `WebApplicationContext` to the lifecycle of `ServletContext`.
+`DispatcherServlet` is then created, initialized, mapped to `"/*"` and configured to run at application startup. This configuration does what we used to do into the common `web.xml` file.
 
 
-This basic example illustrates perfectly what we have to do each time we add a new Spring module or a new library to our classpath.
+This basic example illustrates perfectly what we have to do each time we add a new Spring module or a new library to our classpath. Just boring!
 
 
 How could we do to reduce this configuration to nothing?
 
 The first step is to define reusable `Configuration` classes that could be easily imported inside our application.
-If we look inside the source of the module https://github.com/spring-projects/spring-boot/tree/v1.3.3.RELEASE/spring-boot-autoconfigure[Spring Boot Autoconfigure], we find one packages for each Spring modules (batch, mvc, integration, ...) or supported technology (flyway, hazelcast, cassandra, ...) containing dozens of these `Configuration` classes. The content is very similar to the class we previously write:
+
+If we look inside the source of the module https://github.com/spring-projects/spring-boot/tree/v1.3.3.RELEASE/spring-boot-autoconfigure[Spring Boot Autoconfigure], we find one packages for each Spring modules (batch, mvc, integration, ...) or supported technology (flyway, hazelcast, cassandra, ...) containing dozens of these `Configuration` classes. The content is very similar to the class we previously wrote:
 
 [source,java]
 ----
@@ -706,9 +699,9 @@ public class Application {
 
 === Problem: I don't want to `@Import` Spring specific `Configuration` classes. I even do not know about them!
 
-The obvious approach is to automatically load all the classes. This is what Spring Boot does internally but don't panic, not all beans definitions will be loaded (we will talk about conditional beans in the next section).
+The obvious approach is for Spring Boot to automatically load all the classes. This is what Spring Boot does internally but don't panic, not all beans definitions will be loaded (we will talk about conditional beans in the next section).
 
-To avoid having a hundred of `@Import` declarations, Spring Boot exploits a particularity of this annotating. `@Import` allows as value an implementation of `ImportSelector`, in addition to the classic `@Configuration` class. The declaration of the `ImportSelector` interface follows:
+To avoid having a hundred of `@Import` declarations, Spring Boot exploits a particularity of this annotating. `@Import` allows as value an implementation of `ImportSelector`. The declaration of the `ImportSelector` interface follows:
 
 [source,java]
 ----
@@ -728,7 +721,7 @@ public interface ImportSelector {
 
 With this interface, we could easily load a set of `@Configuration` classes but we still don't know how to find them.
 
-The solution adopted by Spring Boot is to reuse a Spring Core properties files named spring.factories present under the META-INF folder. Spring Boot add a new property `org.springframework.boot.autoconfigure.EnableAutoConfiguration`. Here is an example:
+The solution adopted by Spring Boot is to reuse a Spring Core properties files named `spring.factories` present under the META-INF folder. Spring Boot add a new property `org.springframework.boot.autoconfigure.EnableAutoConfiguration`. Here is an example:
 
 [source,java]
 ----
@@ -739,14 +732,13 @@ o.s.boot.autoconfigure.web.WebMvcAutoConfiguration, \
 ...
 ----
 
-The file lists the configuration classes under the EnableAutoConfiguration key. All jar present in the classpath are checked by Spring Boot at startup even if Spring Boot provide a unique file containing for its own use.
-
+The file lists the configuration classes under the EnableAutoConfiguration key.
 
 [TIP]
 We still have not finished to cover Spring Boot but you already know how create your http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-custom-starter[own starter]. Just create a `Configuration` class and provide a spring.factories file to make your class a candidate to autoloading. That's all!
 
 
-The class `EnableAutoConfigurationImportSelector` load theses files and register the classes in the application context. This class implements `ImportSelector` to be used with the `@Import`.
+The class `EnableAutoConfigurationImportSelector` searches across the classpath and loads theses files and registers the classes in the application context. This class implements `ImportSelector` to be used with the `@Import`.
 
 [source,java]
 ----
@@ -788,12 +780,10 @@ public class EnableAutoConfigurationImportSelector
 }
 ----
 
-The class `SpringFactoriesLoader` is a wrapper around the spring.factories file and provide a method to extract a property value for a Class object. The fully qualified name of the given class is used as the property name. Note: This class is provided by Spring Core and is not Spring Boot specific.
+The class `SpringFactoriesLoader` is a wrapper around the `spring.factories` file and provides a method to extract a property value from a Class object. The fully qualified name of the given class is used as the property name. Note: This class is provided by Spring Core and is not Spring Boot specific.
 
 
-But, does it means that all the beans (Flyway, Spring Integration, ...) will be loaded even If I do not use the related projects?
-
-Let's reconsider the Spring MVC autoconfiguration class:
+Wait a minute. Does it means that all the beans (Flyway, Spring Integration, ...) will be loaded even If I do not use the related projects? Let's reconsider the Spring MVC autoconfiguration class:
 
 
 [source,java]
@@ -831,7 +821,7 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurerAdapter {
 
 The class `WebMvcConfigurerAdapter` is directly referenced by our configuration class. This class is defined by the Spring MVC project and as we have seen in the first part of this article, this dependency is inherited when using the Spring Boot Starter Web.
 
-Imagine for a moment that you are writing a command-line application. We do not have the starter web in your dependencies. At startup, if Spring Boot load the `WebMvcAutoConfiguration` class (and we just saw it does), the JVM will crash with a `NoClassDefFoundError` because the superclass `WebMvcConfigurerAdapter` is not on our classpath. So, how does Spring Boot to avoid this error?
+Imagine for a moment that you are writing a command-line application. We do not have the starter web in your dependencies. At startup, if Spring Boot load the `WebMvcAutoConfiguration` class (and we just saw it does), the JVM will crash with a `NoClassDefFoundError` because the superclass `WebMvcConfigurerAdapter` is not in our classpath. So, how does Spring Boot to avoid this error?
 
 Here is the solution:
 
@@ -1012,11 +1002,11 @@ public @interface SpringBootApplication {
 
 
 
-=== Problem: But sometimes I need to override auto-configured bean definitions?
+=== Problem: Sometimes I need to override auto-configured bean definitions?
 
-Spring Boot try to apply common defaults when defining beans but rapidly you need to tune this configuration. The good news is it is really easy to do: just defining a bean of the same type (or sometimes of the same name) in your configuration is enough for Spring Boot to detect it and not register its own bean.
+Spring Boot tries to apply common defaults when defining beans but sooner or later, you need to tune this configuration. The good news is it is really easy to do: just defining a bean of the same type (or sometimes of the same name) in your configuration is enough for Spring Boot to detect it and not register its own bean.
 
-Does the @Conditional annotation seems the right choice to you? Of course, it is! Spring Boot module makes heavy use of `@Conditional` annotation. We already saw the `@ConditionalOnClass` annotation. The other most used annotation is the `@ConditionalOnMissingBean` annotation, that only matches when the specified bean classes and/or names are not already contained in the `BeanFactory`. Rather than see the implementation of this annotation that is very close to the implementation of the `OnClassCondition` class, let's look at its use in the `WebMvcAutoConfiguration` class again:
+Spring Boot module makes heavy use of `@Conditional` annotation. We already saw the `@ConditionalOnClass` annotation. The other most used annotation is the `@ConditionalOnMissingBean` annotation, that only matches when the specified bean classes and/or names are not already contained in the `BeanFactory`. Rather than see the implementation of this annotation that is very close to the implementation of the `OnClassCondition` class, let's look at its use in the `WebMvcAutoConfiguration` class again:
 
 [source,java]
 ----
@@ -1044,7 +1034,7 @@ public class WebMvcAutoConfiguration {
 }
 ----
 
-With this class declaration, we have two possibilities if the default configuration does not fit your needs. We could simply define a bean of type `InternalResourceViewResolver`, for example in our main classs
+With this class declaration, we have two possibilities if the default configuration does not fit your needs. We could simply define a bean of type `InternalResourceViewResolver`, for example in our main class:
 
 [source,java]
 ----
@@ -1092,10 +1082,10 @@ That's all there is to change! We now have finished implementing the auto-config
 
 === Problem: I want to start my web application from a simple Main method!
 
-Popular Web containers like Tomcat and Jetty all supports an embedded mode. This mode let us start a web application without having to install a standalone server before. This is really great for testing and Spring Boot decides to go further by deploying your application along an embedded server, a must for your microservices, and a good alternative to concurrent product like DropWizard.
+Popular Web containers like Tomcat and Jetty all supports an embedded mode. This mode let us start a web application without having to install a standalone server before. This is really great for testing and Spring Boot decides to go further by deploying your application along an embedded server, a must for your microservices!
 
 
-Spring Boot supports running your application in an embedded server. This functionality is organized around the `EmbeddedServletContainer` abstraction:
+This functionality is organized around the `EmbeddedServletContainer` abstraction:
 
 
 [source,java]
@@ -1183,7 +1173,7 @@ public class EmbeddedServletContainerAutoConfiguration {
 }
 ----
 
-For this post, we will ignore these abstractions and create directly an instance of `TomcatEmbeddedServletContainer`. Internally, this class uses the Tomcat API to start a new server, register web components like servlets or filters. We will not go into detail about the different properties. Please refer to the Tomcat documentation for more information.
+For this post, to keep it simple, we create directly an instance of `TomcatEmbeddedServletContainer`. Internally, this class uses the Tomcat API to start a new server, register web components like servlets and filters. We will not go into detail about the different properties. Please refer to the Tomcat documentation for more information.
 
 Here is the implementation:
 
@@ -1334,11 +1324,11 @@ public class DispatcherServletAutoConfiguration {
 }
 ----
 
-We define two beans: the `DispatcherServlet`, and an anonymous class implementation of `ServletContainerInitializer`. This implementation retrieve the servlet and register it in the `ServletContext` object passed in parameter in the `onStartup` method. We configure the servlet to intercept all URLs starting from the root path. This class will be injected into the constructor of the previous `TomcatEmbeddedServletContainer` class.
+We define two beans: the `DispatcherServlet`, and an anonymous class implementing `ServletContainerInitializer`. This implementation retrieves the servlet and registers it in the `ServletContext` object passed in parameter to the `onStartup` method. We configure the servlet to intercept all URLs starting from the root path. This class will be injected into the constructor of the previous `TomcatEmbeddedServletContainer` class.
 
 
 
-So, we have an instance of Tomcat, we know how to register a servlet, but there is still one thing that is missing but required for any Spring Application: an application context.
+Let's recap! We have an instance of Tomcat, we know how to register a servlet, but there is still one thing that is missing but required for any Spring Application: an application context.
 
 The implementation to go when using Java Config is `AnnotationConfigWebApplicationContext`. But for Spring Boot, we need something more. We need to start a web server along the application context. To do this, Spring Boot decides to create a custom application context, `EmbeddedWebApplicationContext`, based on the superclass `GenericWebApplicationContext`, a subclass of `GenericApplicationContext`, suitable for web environments.
 
@@ -1434,7 +1424,7 @@ public class WebApplicationContextUtils {
 }
 ----
 
-In addition, we also register all others beans implementing the interface `EmbeddedServletContainer` present in the application context. If you remember, we declared only one bean of this type to register the `ServletDispatcher`.
+In addition, we also register all other beans implementing the interface `EmbeddedServletContainer` present in the application context. If you remember, we declared only one bean of this type to register the `ServletDispatcher`.
 
 
 The last thing to do is provide a facade to hide most of the Spring Boot internal code. This is the aim of the class `SpringApplication` that we used in our main method:
@@ -1548,13 +1538,12 @@ class Banner {
 }
 ----
 
-Under Eclipse, we just have to Right Click + "Run as Java Application" to starts the application and see the banner appearing in the console. But we have much more to see about Spring Boot. To be able to run your application from a simple main class is really great when developing in your IDE but if we want to deploy your application outside of your local machine, we need to package it. Fortunately, Spring Boot supports many options when it comes to packaging...
+Under Eclipse, we just have to Right Click + "Run as Java Application" to starts the application and see the banner appearing in the console. But there is much more to see about Spring Boot. Being able to run your application from a simple main class is really great when developing in your IDE but if we want to deploy our application outside of our local machine, we need to package it. Fortunately, Spring Boot supports many options when it comes to packaging...
 
 
 
 
 == Part 3: Packaging your Spring Boot Application
-
 
 
 === I want to package my web application as a single executable jar?
@@ -1660,9 +1649,9 @@ maven-shade-plugin-demo-0.0.1-SNAPSHOT
        \- <commons lang source>
 ----
 
-The Maven Shade Plugin expand all the dependency artefacts and repackage them together in a single archive. The META-INF files are merged together if necessary. The result looks like if we have coded all of these projects ourselves in our workspace.
+The Maven Shade Plugin expand all the dependencies and repackage them together in a single archive. The META-INF files are merged together if necessary. The result looks like if we have coded all of these projects ourselves in our workspace.
 
-Now, if we inspect a jar generated by Spring Boot, we observe Spring decide to use another approach.
+Now, if we inspect a jar generated by Spring Boot, we observe Spring uses another approach.
 
 ----
 spring-boot-demo.jar
@@ -1793,6 +1782,7 @@ This mojo asks Maven to inject three dependencies:
 - `project`: The instance of `MavenProject`. This object exposes a method to retrieve the list of dependencies of the project calculated by Maven (the same list as the effective pom).
 
 The two first properties determine the archive's filepath to create. In practice, the value will often be the absolute filepath of the target folder and the nane of the <artifactId>-<version>.jar.
+
 To be able to retrieve the list of dependencies through the `MavenProject` instance, we need to configure our Mojo using the attribute `requiresDependencyResolution` as follows:
 
 [source,java]
@@ -1802,9 +1792,9 @@ To be able to retrieve the list of dependencies through the `MavenProject` insta
     requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 ----
 
-The `requiresDependencyResolution` flags this Mojo as requiring the dependencies in the specified class path to be resolved before it can execute. With this attribute, we can now use the `getArtifacts()` method on `MavenProject` to collect the list of dependencies to include in the lib folder. This is the role of the method `getLibrary()`. The `Library` class is a simple POJO defined by Spring Boot that contains a `File` and its name. Then, we create a `Repackager` by passing it the target file name and the dependencies list.
+The `requiresDependencyResolution` flags indicates this Mojo needs the dependencies in the specified class path to be resolved before it can execute. With this attribute, we can now use the `getArtifacts()` method on `MavenProject` to collect the list of dependencies to include in the lib folder. This is the role of the method `getLibrary()`. The `Library` class is a simple POJO defined by Spring Boot that contains a `File` and its name. Then, we create an instance of `Repackager` by passing it the target file name and the dependencies list.
 
-Before showing the code of this `Repackager` class, we should consider we have a wrapper `JarWriter` around the `java.util.jar` package. The aim of class present in the source of Spring Boot is to hide the low-level I/O manipulation code required to create a valid https://en.wikipedia.org/wiki/Zip_(file_format)[Zip Archive]. Here is the API of this class:
+Before showing the code of this `Repackager` class, you probably notice the wrapper `JarWriter` around the `java.util.jar` package. The aim of class present in the source of Spring Boot is to hide the low-level I/O manipulation code required to create a valid https://en.wikipedia.org/wiki/Zip_(file_format)[Zip Archive]. Here is the API of this class:
 
 
 [source,java]
@@ -1854,7 +1844,7 @@ public class JarWriter {
 
 If you are interested, have a look at the https://github.com/spring-projects/spring-boot/blob/v1.3.3.RELEASE/spring-boot-tools/spring-boot-loader-tools/src/main/java/org/springframework/boot/loader/tools/JarWriter.java[source].
 
-The missing piece is still the `Repackager class`, but with such an utility class, its implementation follows naturally. The repackager's constructor accept the standard JAR file created by Maven. By default, the jar produces by the repackager have the same file path, so we need to check first and rename the original file to be able to create the final jar archive. Once the file is created, we add the manifest by calling the method `writeManifest()` on `JarWriter`, then the original jar content with the method `writeEntries()` before iterating over the libraries returned by Maven and calling the method `writeNestedLibrary()` for each of them. Here is the implementation:
+The missing piece is still the `Repackager class`, but with the `JarWriter` utility class, its implementation follows naturally. The repackager's constructor accepts the standard JAR file created by Maven. By default, the jar produced by the repackager have the same file path, so we need to check first and rename the original file to be able to create the final jar archive. Once the file is created, we add the manifest by calling the method `writeManifest()` on `JarWriter`, then the original jar content with the method `writeEntries()` before iterating over the libraries returned by Maven and calling the method `writeNestedLibrary()` for each of them. Here is the implementation:
 
 [source,java]
 ----
@@ -1946,7 +1936,7 @@ public class HelloWorld {
 }
 ----
 
-Before using ASM, we need to compile this class to generate the bytecode. ASM provides a class `asm.ClassReader` taking the compiled class as input. We could then register visitors (pattern https://en.wikipedia.org/wiki/Visitor_pattern[Visitor]) that will be called during the class analysis. Visitors should extends the class `asm.ClassVisitor` and override the methods that interest them (ex: `visitMethod` to be notified on each method declaration found in the class). Here is an example using ASM to list the attributes and methods of a class:
+First, we need to compile this class to generate the bytecode. ASM provides a class `asm.ClassReader` that takes the compiled class as input. We could then register visitors (see pattern https://en.wikipedia.org/wiki/Visitor_pattern[Visitor]) that will be called during the class analysis. Visitors should extends the class `asm.ClassVisitor` and override the methods that interest them (ex: `visitMethod` to be notified on each method declaration found in the class). Here is an example using ASM to list the attributes and methods of a class:
 
 [source,java]
 ----
@@ -1982,7 +1972,7 @@ Visit method <init>
 Visit method getMessage
 ----
 
-Now that we understand the working of the ASM library, let's see how Spring Boot does to find the main class. This is the role of the method `MainClassFinder.findSingleMainClass()`:
+Now we understand the API of the ASM library, let's see how Spring Boot does to find the main class. This is the role of the method `MainClassFinder.findSingleMainClass()`:
 
 [source,java]
 ----
@@ -2087,7 +2077,7 @@ public abstract class MainClassFinder {
 }
 ----
 
-We begin by searching all .class files and create an `InputStream` for each of them. Then, the method `isMainClass`. This method uses ASM like we did previously, registering its visitor represented by the inner class `MainMethodFinder`. The visitor need only to be notified when a new method is found, so it only overrides the method `visitMethod`. The remaining code is low-level ASM code to detect if it is the method main by checking the modifiers, the parameter types, and of course, the method name.
+We begin by searching all .class files and create an `InputStream` for each of them. Then, the method `isMainClass` is called. This method uses ASM like we did previously, registering its visitor represented by the inner class `MainMethodFinder`. The visitor needs only to be notified when a new method is found, so it only overrides the method `visitMethod`. The remaining code is low-level ASM code to detect if it is the method main by checking the modifiers, the parameter types, and of course, the method name.
 
 
 Our Maven plugin is now operational. We could update the pom of our project demo:
@@ -2099,8 +2089,8 @@ Our Maven plugin is now operational. We could update the pom of our project demo
     <build>
         <plugins>
             <plugin>
-                <groupId>fr.imlovinit</groupId>
-                <artifactId>spring-boot-lite-maven-plugin</artifactId>
+                <groupId>com.juliensobczak</groupId>
+                <artifactId>spring-boot-demo</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -2141,9 +2131,9 @@ We get an `NoClassDefFoundError` on `org.springframework.context.ApplicationCont
 
 === Spring Boot Loader
 
-The goal of the Loader is to bootstrap the application with all the dependencies present in the classpath. To do so, the Loader needs to create a custom `ClassLoader` that will try to load classes from the lib/ folder and then delegate to the original parent ClassLoader if the class could not be found For example, a class like `java.lang.IllegalArgumentException` will not be found in the lib folder but the parent class loader could load any class of the JRE.
+The goal of the Loader is to bootstrap the application with all the dependencies present in the classpath. To do so, the Loader needs to create a custom `ClassLoader` and loads classes from the lib/ folder and then delegate to the original parent ClassLoader if the class could not be found. For example, a class like `java.lang.IllegalArgumentException` will not be found in the lib folder but the parent class loader could load any class of the JRE.
 
-Let's decompose the class `JarLauncher`, probably the most complex piece of code of all this post.
+Let's decompose the class `JarLauncher`.
 
 [source,java]
 ----
@@ -2180,8 +2170,7 @@ public class JarLauncher {
 }
 ----
 
-The `JarLauncher` contains a `main` method that simply creates an instance of `JarLauncher` and call the method `launch`.
-This class is divided in three sections:
+The `JarLauncher` contains a `main` method that simply create an instance of `JarLauncher` and call the method `launch`. This class is divided in three sections:
 
 - Read the content of the launched JAR to find the dependencies in lib/ folder
 - Create the custom `ClassLoader` to check this folder first
@@ -2215,8 +2204,6 @@ public class JarFileArchive {
 ----
 
 How to retrieve the path of the Jar passed to the java command?
-
-TODO explain
 
 [source,java]
 ----
@@ -2318,7 +2305,7 @@ public class LaunchedURLClassLoader extends URLClassLoader {
 }
 ----
 
-The code begins with a guard condition to detect if the class was already loaded previously. The `resolveClass` method is misleadingly named and is used by a class loader to link a class. All `ClassLoader` follow these two step. If the class was not loaded, we go into the method `doLoadClass`. This method attempts to load classes from the URLs before delegating to the parent loader. Let's continue:
+The code begins with a guard condition to detect if the class was already loaded previously. The `resolveClass` method is misleadingly named and is used by a class loader to link a class. All `ClassLoader` follow these two steps. If the class was not loaded, we go into the method `doLoadClass`. This method attempts to load classes from the URLs before delegating to the parent loader. Let's continue:
 
 [source,java]
 ----
@@ -2474,7 +2461,7 @@ public class JarLauncher {
 }
 ----
 
-The `createClassLoader` retrieve the URLs (the URL of the JAR generated by Spring Boot and the URLs of each dependency) before instantiating the class loader. The code to retrieved the URLs simply uses the `JarFileArchive` API to traverse the nested archives and filter to keep all archives in the lib folder.
+The `createClassLoader` retrieves the URLs (the URL of the JAR generated by Spring Boot and the URLs of each dependency) before instantiating the class loader. The code to retrieve the URLs simply uses the `JarFileArchive` API to traverse the nested archives and filter to keep all archives in the lib folder.
 
 The method `startRunner` launch the application using the archive file's manifest (the Start-Class Attribute) to determine the main class, and using the fully configured class loader. We should ensure the runner is instantiated in the right class loader. This is the aim of the method `createMainMethodRunner` who use the reflection API to do the equivalent of `new MainMethodRunner(mainClass, args)`.
 
@@ -2482,10 +2469,10 @@ The method `startRunner` launch the application using the archive file's manifes
 The implementation of the loader is now completed. If we run the Maven command on your demo application:
 
 ----
-$ mvn clean spring-boot-lite:repackage
+$ mvn clean spring-boot-demo:repackage
 ----
 
-The executable JAR is still generated but if we launch it again, the application starts correctly:
+The executable JAR will be regenerated and if we launch it again, the application starts correctly:
 
 ----
 $ java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar
@@ -2538,14 +2525,14 @@ viewResolver
 ----
 
 
-We know why our compile compiles without having the declare all the dependencies, how Spring Boot Auto-configuration avoid us to declare boilerplate beans and how Spring Boot package our application as an executable jar archive.
+We’ve come a long way, and have a (almost) usable implementation of Spring Boot. We know why our code compiles without having the declare all the dependencies, how Spring Boot Auto-configuration avoids us to declare boilerplate beans and how Spring Boot package our application as an executable jar archive.
 
-We’ve come a long way, and have a (almost) usable implementation of Spring Boot. There is, of course, a lot more to cover than just this article. Why don't fork the project at your turn and see how the actuator works under the hood or how the command line tool does to create a full application with no need for a build file!
+There is, of course, a lot more to cover than just this article. Why don't fork the project at your turn and see how the actuator works under the hood or how the command line tool does to create a full application with no need for a build file!
 
 
 [TIP.admonitionblock.remember]
 .To remember
 - An uber-jar could be created using the Maven Shade Plugin. All jars are exploded and merged into a unique jar.
 - Spring keep dependencies in its own folder `lib/` at the root of the JAR hierarchy but need to code custom logic to create a `ClassLoader` at application startup.
-- Creating a new starter for Spring Boot is easy: one project containing only a `pom.xml` listing the required dependencies, and one project to contains the bean definitions inside a class annotated with `@AutoConfiguration`. (All in one single project is totally fine)
+- Creating a new starter for Spring Boot is easy: one project containing only a `pom.xml` listing the required dependencies, and one project to contains the bean definitions inside a class annotated with `@AutoConfiguration`. (everything in a single project is totally fine too)
 - Auto-configuration relies on a new feature of Spring Framework 4, the `@Conditional` annotation. Spring Boot extends this mechanism to add its own conditions to detect if a bean is already defined or if a class is present in the classpath.

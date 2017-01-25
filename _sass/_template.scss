@@ -9,7 +9,7 @@
  body {
 	/*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
   font-family: "Open Sans",sans-serif;
-  font-size: 20px;
+  font-size: 18px;
 	line-height: 1.5;
 	color: #333;
   position: relative; /* required for scrollspy plugin */
@@ -25,12 +25,12 @@
      margin-top: 20px;
      margin-bottom: 10px;
  }
- h1, .h1 { font-size: 36px; }
- h2, .h2 { font-size: 30px; }
- h3, .h3 { font-size: 24px; }
- h4, .h4 { font-size: 18px; }
- h5, .h5 { font-size: 14px; }
- h6, .h6 { font-size: 12px; }
+ h1, .h1 { font-size: 32px; }
+ h2, .h2 { font-size: 28px; }
+ h3, .h3 { font-size: 22px; }
+ h4, .h4 { font-size: 20px; }
+ h5, .h5 { font-size: 18px; }
+ h6, .h6 { font-size: 18px; }
 
  p {
      margin: 0 0 10px;
@@ -106,7 +106,7 @@ body {
   overflow-x: hidden;
 }
 p {
-  font-size: 20px;
+  font-size: 18px;
   line-height: $default-line-height;
   margin: $default-line-height 0;
 }
@@ -952,7 +952,7 @@ figure img.in-view {
 /* Asciidoc */
 
 .listingblock {
-  font-size: 17px; // Be sure to display 80 characters per line
+  font-size: 15px; // Be sure to display 80 characters per line
   border-top: 1px solid gray;
   border-bottom: 1px solid gray;
 }

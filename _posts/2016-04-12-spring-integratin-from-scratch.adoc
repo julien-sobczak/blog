@@ -12,13 +12,7 @@ tags:
 
 [CAUTION]
 .Note for the novice Spring Integration user
-This post assumes a basic comprehension of the Spring Integration Framework. If you just begin with Spring Integration, you could find the short book *Just Spring Integration* helpful to quickly grasp the core concepts, the different types of channel and their endpoints. Do not hesitate to refer to the official documentation if a term is new to you. Links will be provided along this post the first time a term is introduced.
-
-
-[quote, Gerard Meszaros, author of XUnit Test Patterns]
-____
-Never in the field of software development have so many owed so much to so few lines of code
-____
+This post assumes a basic comprehension of the Spring Integration Framework. If you just begin with Spring Integration, you could find the short book *Just Spring Integration* helpful to quickly grasp the core concepts, the different types of channel and their endpoints. Do not hesitate to refer to the official documentation if a term is new to you.
 
 
 [CAUTION.license]
@@ -29,7 +23,7 @@ https://github.com/spring-projects/spring-integration/tree/v4.2.5.RELEASE[Spring
 
 == A basic example
 
-To illustrate the inner working of Spring Integration, we will use the following basic example. This example is inspired from the official http://pivotal.io/academy[Spring Enterprise Training] and present common misunderstanding (message immutability, the Proxy Gateway, the different types of channels, the right use of gateway and service activator to keep our code free from dependencies on the Spring Integration API, ...)
+To illustrate the inner working of Spring Integration, we will use the following basic example. This example is inspired from the official http://pivotal.io/academy[Spring Enterprise Training] and highlights common misunderstandings (message immutability, the Proxy Gateway, the different types of channel, the right use of gateway and service activator to keep our code free from dependencies on the Spring Integration API, ...)
 
 [source,xml]
 ----
@@ -141,16 +135,16 @@ public class OrderTest {
 }
 ----
 
-We inject the Gateway implementation provided by Spring Integration in our test thanks to the @Autowired implementation. Then, we call the unique method in this interface to start the flow and check the confirmation number was correctly assigned on the returning object. We finish by checking the order is available in our `pollableChannel` to demonstrate the classic use of the Bridge endpoint when using the `MessagingTemplate` to test our code.
+We inject the Gateway implementation provided by Spring Integration in our test by using the @Autowired implementation. Then, we call the unique method offered by this interface to start the flow and check the confirmation number was correctly assigned on the returning object. We finish by checking the order is available in our `pollableChannel` to demonstrate the classic use of the Bridge endpoint when using the `MessagingTemplate` to test our code.
 
-When run, the test displays a similar message to the console:
+When run, the test displays a message similar to the following in the console:
 
 ----
 Received confirmation e393b760-5d97-42e3-9974-b504907b9e00 for order
 of product 1484
 ----
 
-We will not go further with our use of Spring Integration and remove the dependency from our `pom.xml`. We will implement the minimal code to make the test pass again, trying to stay as close as possible to the original implementation.
+We will not go further with our use of Spring Integration. Instead, we remove completely the dependency from our `pom.xml`. In this post, we will implement the minimal code to make the test pass again, trying to stay as close as possible to the original implementation.
 
 [source,xml]
 ----
@@ -173,7 +167,7 @@ As a messaging framework, Spring Integration could be described by three core ab
 
 === Message Abstraction
 
-A message, if you use JMS, Kafka, SOAP, and so on, is always identified by a payload representing the data we want to send, and a collection of headers (key-value), used by the messaging infrastructure to route the message among the different destinations. This way, a messaging framework does not have to concern itself with the content of the message (whose size varies compared to headers whose values are basic type).
+A message, if you use JMS, Kafka, SOAP, and so on, is always identified by a payload representing the data we want to send, and a collection of headers (key-value), used by the messaging infrastructure to route the message among the different destinations. This way, a messaging framework does not have to concern itself with the content of the message (whose size varies unlike headers whose values have simple type).
 
 NOTE: As of release 4.0, core Spring Integration interfaces migrated to a new project `spring-messaging` included in Spring Core. The aim is to reuse these abstractions in other modules using the concept of message too.
 
@@ -217,9 +211,7 @@ public class MessageHeaders implements Map<String, Object>, Serializable {
 
     /**
      * The key for the Message ID. This is an automatically generated UUID and
-     * should never be explicitly set in the header map <b>except</b> in the
-     * case of Message deserialization where the serialized Message's generated
-     * UUID is being restored.
+     * should never be explicitly set in the header map.
      */
     public static final String ID = "id";
 
@@ -269,26 +261,26 @@ public class MessageHeaders implements Map<String, Object>, Serializable {
     // Unsupported Map operations
 
     /**
-     * Since MessageHeaders are immutable, the call to this method
+     * Since MessageHeaders is immutable, the call to this method
      * will result in {@link UnsupportedOperationException}.
      */
     public Object put(String key, Object value) {
         throw new UnsupportedOperationException("MessageHeaders is immutable");
     }
 
-    // + Same for putAll, remove and clear operations
+    // + Same for putAll, remove, and clear operations
 
 }
 ----
 
 Several points are worth noting about this definition:
 
-- A message in Spring Integration is immutable (inherently thread-safe), so Spring Integration developers could write lock-free code. So, if we want to add a new header, we have to duplicate the message first.
+- A message in Spring Integration is immutable (inherently thread-safe), so Spring Integration developers could write lock-free code. If we want to add a new header, we have to duplicate the message first.
 
 - As each message has a unique ID, the duplication will create a new message with its own ID. Internally, Spring uses the class `java.util.Random` to generate them.
 
 
-The two abstractions (`Message` and `MessageHeaders`) are keys when using Spring Integration. Most of the time, the messages are already created by a Gateway or an Adapter, but sometimes we need to create a message ourselves (to customize the headers or for testing purpose). In this post, we have to provide an implementation. The main implementation of `Message` is the class `GenericMessage` but it is recommended to use the `MessageBuilder` API to construct the message. Here is an implementation of these classes:
+The two abstractions (`Message` and `MessageHeaders`) are core classes inside the Spring Integration source. Most of the time, the messages are already created by a Gateway or an Adapter, but sometimes we need to create a message ourselves (to customize the headers or for testing purpose). In this post, we have to provide an implementation. The main implementation of `Message` is the class `GenericMessage` but it is recommended to use the `MessageBuilder` API to construct the message. Here is an implementation of these classes:
 
 [source,java]
 ----
@@ -309,38 +301,20 @@ public class GenericMessage<T> implements Message<T>, Serializable {
 
     private final MessageHeaders headers;
 
-    /**
-     * Create a new message with the given payload.
-     * @param payload the message payload (never {@code null})
-     */
     public GenericMessage(T payload) {
         this(payload, new MessageHeaders(null));
     }
 
-    /**
-     * Create a new message with the given payload and headers.
-     * The content of the given header map is copied.
-     * @param payload the message payload (never {@code null})
-     * @param headers message headers to use for initialization
-     */
     public GenericMessage(T payload, Map<String, Object> headers) {
         this(payload, new MessageHeaders(headers));
     }
 
-    /**
-     * A constructor with the {@link MessageHeaders} instance to use.
-     * <p>Note: the given {@code MessageHeaders} instance is used
-     * directly in the new message, i.e. it is not copied.
-     * @param payload the message payload (never {@code null})
-     * @param headers message headers
-     */
     public GenericMessage(T payload, MessageHeaders headers) {
         Assert.notNull(payload, "Payload must not be null");
         Assert.notNull(headers, "MessageHeaders must not be null");
         this.payload = payload;
         this.headers = headers;
     }
-
 
     public T getPayload() {
         return this.payload;
@@ -439,7 +413,7 @@ public final class MessageBuilder<T> {
 }
 ----
 
-With the API `MessageBuilder`, it's easy to create new message:
+With the `MessageBuilder` fluent API, it's easy to create new message:
 
 [source,java]
 ----
@@ -461,7 +435,7 @@ Now that we know how to create a message, let's see how to send them between com
 
 === `MessageChannel` Abstraction
 
-Components exchange messages through what is called a `Channel`. A channel is used to send and/or receive message. Spring Integration defines many types of channels whose characteristics differ: does the receiver runs in the same thread as the sender (synchronous call), does multiples receivers could consumes a message (point-to-point vs publish-subscribe, does the receiver should wait for new message to arrive (passive endpoint) or does it should poll regularly for new message (active endpoint). To keep this post (relatively) short, we will implement the main ones:
+Components exchange messages through what is called a `Channel`. A channel is used to send and/or receive messages. Spring Integration defines many types of channel whose characteristics differ: does the receiver runs in the same thread as the sender (synchronous call), does multiples receivers could consumes a message (point-to-point vs publish-subscribe, does the receiver should wait for new message to arrive (passive endpoint) or does it should poll regularly for new message (active endpoint). To keep this post (relatively) short, we will implement the main ones:
 
 [cols="3*"]
 |===
@@ -511,11 +485,11 @@ public interface MessageChannel {
 }
 ----
 
-What could surprise you is that this interface defines only methods for sending messages. The answser depends on the channel type: PollableChannel or SubscribableChannel (must not be confused with PublishSubscribeChannel). Does the endpoint should poll to received a message (active endpoint) or does the channel should send the message to the receiver (passive endpoint). Let's draw a diagram to clarify the class hierarchy:
+What could surprise you is that this interface defines only methods for sending messages. Why? The answer depends on the channel type: `PollableChannel` or `SubscribableChannel` (must not be confused with `PublishSubscribeChannel`). Does the target endpoint should poll to received a message (active endpoint) or does the channel should send the message to the endpoint (passive endpoint). Let's draw a diagram to clarify the class hierarchy:
 
 image::{{ '/posts_resources/2016-04-12-spring-integration-from-scratch/channels.png' | prepend: site.baseurl}}[Channel implementations]
 
-For example, when using a `DirectChannel`, I should first subscribe to the channel to be notified automatically when a new message arrives. When using a QueueChannel, I do not have to subscribe but I should poll regularly (for example, every second) to check if a new message is present. Given the polling interval, there is a latency between the sending and the receiving of a message.
+For example, when using a `DirectChannel`, I should first subscribe to the channel to be notified automatically when a new message comes. When using a `QueueChannel`, I do not have to subscribe but I should poll regularly (for example, every second) to check if a new message is present. Given the polling interval, there is a latency between the sending and the receiving of a message.
 
 
 Here is the definitions of the interfaces `PollableChannel` and `SubscribableChannel`:
@@ -554,7 +528,7 @@ public interface SubscribableChannel extends MessageChannel {
 }
 ----
 
-Where `MessageHandler` is defined like:
+Where `MessageHandler` is defined like this:
 
 [source,java]
 ----
@@ -569,7 +543,7 @@ public interface MessageHandler {
 
 The `MessageHandler` interface will interest us later when we will implement our first endpoints. For now, let's focus on the channel implementations, starting with the `DirectChannel`.
 
-A `DirectChannel` is a Subscribable Point-to-Point channel. What it mean is that a `DirectChannel` should send the message to one of the registered handlers, in the same thread as the sender. Concretely, a `DirectChannel` is nothing more and nothing less than a method call:
+A `DirectChannel` is a Subscribable Point-to-Point channel. It means that a `DirectChannel` should send the message to one of the registered handlers, in the same thread as the sender. Concretely, a `DirectChannel` is nothing more and nothing less than a method call:
 
 [source,java]
 ----
@@ -633,7 +607,7 @@ public abstract class AbstractSubscribableChannel
 }
 ----
 
-We replaced favourably the `java.util.ArrayList` by an instance of `java.util.concurrent.CopyOnWriteArrayList`. This implementation is thread-safe and best suited for applications in which set sizes generally stay small, read-only operations vastly outnumber mutative operations, and you need to prevent interference among threads during traversal.
+We replaced favorably the `java.util.ArrayList` by an instance of `java.util.concurrent.CopyOnWriteArrayList`. This implementation is thread-safe and best suited for applications in which set sizes generally stay small, read-only operations vastly outnumber mutative operations, and you need to prevent interference among threads during traversal.
 
 
 The two remaining problems are solved by a code lightly more complex because we need to iterate over the handlers and correctly manage exceptions. Here is the final implementation of `DirectChannel`:
@@ -749,7 +723,7 @@ public class PublishSubscribeChannel extends AbstractSubscribableChannel {
 }
 ----
 
-Blocking the sender waiting for all handlers to process the message limits the scalability of our application. With Spring Integration, if a `TaskExecutor` is used, the actual handling of the message is performed asynchronously. With the standard Java Executor framework, it's easy to support this attribute:
+Blocking the sender waiting for all handlers to process the message limits the scalability of our application. With Spring Integration, if the `task-executor` attribute is used, the actual handling of the message is performed asynchronously. With the standard Java Executor framework, it's easy to support this attribute:
 
 [source,java]
 ----
@@ -790,7 +764,7 @@ public class PublishSubscribeChannel extends AbstractSubscribableChannel {
 }
 ----
 
-If an `Executor` is passed to the constructor, we use it to execute the handlers. According the concrete implementation (see `java.util.concurrent.Executors` for the available factory methods), the handers could be executed successively, or simultaneously using for example a pool of threads. If no executor is provided, we should conserve the synchronous behavior. To do that, we create a simple `Executor` implementation to execute the task in the same thread as the caller. With Java Lambda Expression, this definition is a one-liner.
+If an `Executor` is passed to the constructor, we use it to execute the handlers. According the concrete implementation (see `java.util.concurrent.Executors` for the available factory methods), the handers could be executed successively, or simultaneously using for example a pool of threads. If no executor is provided, we should conserve the synchronous behavior. To do that, we create a simple `Executor` implementation to execute the task in the same thread as the caller. With Java Lambda Expression, this definition is a one-liner:
 
 [source,java]
 ----
@@ -811,7 +785,7 @@ public class CallerRunsExecutor implements java.util.concurrent.Executor {
 ----
 
 
-One channel remains to define, the `QueueChannel`. The `QueueChannel` is by definition a asynchronous channel. Each new message is stored in a queue waiting for a handler to consume it. As the `DirectChannel`, multiple handlers could subscribe to the channel but only one should consume the message. So, we need a concurrent implementation of the `java.util.Queue` interface. We will use a `LinkedBlockingQueue`:
+One channel remains to define, the `QueueChannel`. The `QueueChannel` is by definition a asynchronous channel. Each new message is stored in a queue waiting for a handler to consume it. As for the `DirectChannel`, multiple handlers could subscribe to the channel but only one should consume the message. So, we need a concurrent implementation of the `java.util.Queue` interface. We will use a `LinkedBlockingQueue`:
 
 [source,java]
 ----
@@ -905,7 +879,7 @@ public class QueueChannel implements PollableChannel {
 }
 ----
 
-The implementation relies heavily on the API `BlockingQueue` to support the different possibilities: the sender wants to wait indefinitely, a given amount of time, or not at all. If the timeout exceeds or if a thread is interrupted, our code should respond properly, so we need to catch `InterruptedException` and returns that the operations could not be performed.
+The implementation relies heavily on the API `BlockingQueue` to support the different possibilities: the sender accepts to wait indefinitely, or a given amount of time, or not at all. If the timeout exceeds or if a thread is interrupted, our code should respond properly, so we need to catch `InterruptedException` and returns that the operations could not be performed.
 
 This concludes the channel implementations. Before delving into the next abstraction, let's recap what we have seen.
 
@@ -931,12 +905,12 @@ System.out.println("New message received: " + m);
 
 === `MessageEndpoint` Abstraction
 
-We just have seen how to send and receive messages. In practice, we will not use the API directly. Messages comes from different sources (JMS, file, application...) and we do not want our application code tighly coupled with the Spring Integration API (not conform with the Spring philosophy). We use endpoints instead. Endpoints are used for many tasks: receive a message from an external resource (JMS broker), send messages to another applications (HTTP call), support complex flow with *Router*, *Filter*, *Bridge* and many other components. In this post, we will confine ourselves to just three endpoints: Service Activator, Proxy Gateway and Bridge. The first two ones are used to protect our code free from any Spring Integration dependency and the last one is is mainly used to write unit tests. Here we go!
+We just have seen how to send and receive messages from a channel. In practice, we will not use these API directly. Messages comes from different sources (JMS, file, application...) and we do not want our application code tightly coupled with the Spring Integration API (the Spring philosophy). We use endpoints instead. Endpoints are used for many tasks: receive a message from an external resource (JMS broker), send messages to another applications (HTTP call), support complex flow with *Router*, *Filter*, *Bridge* and many other components. In this post, we will confine ourselves to just three endpoints: Service Activator, Proxy Gateway and Bridge. The first two ones are used to protect our code free from any Spring Integration dependency and the last one is mainly used when writing unit tests. Here we go!
 
 
 ==== The class hierarchy
 
-Unlike `Message` and `MessageChannel` interfaces, there isn't a `MessageEndpoint` interface. There is an `AbstractEndpoint` class but not all endpoints extend this class. Although there is a mapping one-one between the EIP patterns and the component names in Spring Integration, each endpoint does not necessarily have a corresponding class. Maybe a class diagram could help us make things clearer.
+Unlike `Message` and `MessageChannel` interfaces, there isn't a `MessageEndpoint` interface. There is an `AbstractEndpoint` class but not all endpoints extend this class. Although there is a one-to-one mapping between the EIP patterns and the component names in Spring Integration, each endpoint does not necessarily have a corresponding class. Maybe a class diagram could help us make things clearer.
 
 
 image::{{ '/posts_resources/2016-04-12-spring-integration-from-scratch/consumers.png' | prepend: site.baseurl}}[Message Consumers]
@@ -951,7 +925,7 @@ We will now describe each one of these classes.
 
 ==== Message consumption
 
-Regardless the channel type (Pollable vs Subscribable), we should execute some code when the Spring ApplicationContext starts. An endpoint linked to a `PollableChannel` should start a timer to periodically check if a new message is present. An endpoint linked to a `SubscribableChannel` should register itself as a subscribe to be notified when a new message arrives. To avoid duplicating this logic, we will create an abstract superclass `AbstractEndpoint`.
+Regardless the channel type (Pollable vs Subscribable), we should execute some code when the Spring ApplicationContext starts. An endpoint associated to a `PollableChannel` should start a timer to periodically check if a new message is present. An endpoint associated to a `SubscribableChannel` should register itself as a subscriber to be notified when a new message comes. To avoid duplicating this logic, we will create the abstract superclass `AbstractEndpoint`.
 
 [source,java]
 ----
@@ -1050,21 +1024,20 @@ public abstract class AbstractEndpoint implements SmartLifecycle {
 }
 ----
 
-This class implements `SmartLifecycle`. This interface is an extension of the `Lifecycle` interface for those objects that require to be started upon ApplicationContext refresh and/or shutdown. The `isAutoStartup()` return value indicates whether this object should be started at the time of a context refresh (`true` for our endpoints). With this hook, we can now implement the two main endpoint categories: `EventDrivenConsumer` and `PollingConsumer`.
+This class implements `SmartLifecycle`. This interface is an extension of the `Lifecycle` interface for those objects that require to be notified upon ApplicationContext starting/refresh/shutdown. The `isAutoStartup()` return value indicates whether this object should be started at the time of a context refresh (`true` for our endpoints). With this hook, we can now implement the two main endpoint types: `EventDrivenConsumer` and `PollingConsumer`.
 
 
 [TIP]
 .What about synchronization?
 ====
-This class demonstrates common multithreading idioms, not really required for our basic implementation, but a good opportunity to take a look at classic Spring code.
+This class demonstrates common multithreading idioms, not really required for our basic implementation, but a good opportunity to take a look at common Spring code.
 
-The *volatile* keyword tells the JVM that the variable will be updated by multiple threads and guarantees that reads and writes would be made directly to main memory, instead of to registers or the local processor cache. In Since Java 5, *volatile* reads and writes establish a happens-before relationship, much like acquiring and releasing a mutex (like a *synchronized* block), a guarantee for *double-checked locking* pattern to work in Java (more on this subject later). *volatile* variables are typically used for indicating that an important lifecycle
+The *volatile* keyword tells the JVM that the variable will be updated by multiple threads and guarantees that reads and writes would be made directly to main memory, instead of registers or local processor cache. Since Java 5, *volatile* reads and writes establish a happens-before relationship, much like acquiring and releasing a mutex (like a *synchronized* block), a guarantee for *double-checked locking* pattern to work in Java (more on this subject later). *volatile* variables are typically used for indicating that an important lifecycle
 event (such as initialization or shutdown) has occurred (as in our example).
 
 Check the http://www.ibm.com/developerworks/library/j-jtp03304/[excellent article] of Brian Goetz to know more about the *volatile* keyword.
 
-*volatile* variable are great for initializing variable but have no impact on the rest of the code. If we want to protect multiple threads from executing the `start()` method simultaneously, we have to have to resort to lock.
-In Java, we could declare our method as `synchronized` to declare an intrinsic lock or use an explicit lock, represented by the `java.util.concurrent.Lock` interface. `ReentrantLock` is the most widely used implementation class. This class implements the `Lock` interface in similar way as `synchronized` keyword (except the method does not have to be declared `synchronized` of course). Explicit locking is an alternative with advanced features for when intrinsic locking proves too limited.
+*volatile* variables are great for initializing flags but does not prevent multiple threads from executing the `start()` method simultaneously, we have to resort on locking. In Java, we could declare our method as `synchronized` to declare an intrinsic lock or use an explicit lock, represented by the `java.util.concurrent.Lock` interface. `ReentrantLock` is the most widely used implementation and acts similarly as the `synchronized` keyword. In the previous code, we could have use `synchronized` methods instead of explicit locking as the whole method is guarded by the lock. In practice, not all the method should be protected and using an explicit lock is often a good performance optimization.
 ====
 
 The first one we will implement is the `EventDrivenConsumer`:
@@ -1108,7 +1081,9 @@ public class EventDrivenConsumer extends AbstractEndpoint {
 }
 ----
 
-The code of a passive endpoint is really simple. We just have to subscribe to the channel when the ApplicationContext starts. The core logic will be present in the message handler. The code for the `PollingConsumer` is more complicated:
+The passive endpoint code is really simple. We just have to subscribe to the channel when the ApplicationContext starts. The core logic will be present in the message handler.
+
+The code for the `PollingConsumer` is more complicated:
 
 [source,java]
 ----
@@ -1252,7 +1227,7 @@ private class Poller implements Runnable {
 }
 ----
 
-The method to retrieve the message is similar to previous examples:
+The method to retrieve the message is similar to what we have done in previous examples:
 
 [source,java]
 ----
@@ -1315,7 +1290,7 @@ There is little to say about this interface. Let's see its implementations!
 
 ==== Message production
 
-Spring Integration provides abstract class for the all message producers to factorize common attributes and common methods. Here is its implementation:
+Spring Integration provides an abstract class extended by all message producers to factorize common attributes and common methods. Here is its implementation:
 
 [source,java]
 ----
@@ -1385,7 +1360,7 @@ public abstract class AbstractMessageProducingHandler
 }
 ----
 
-To see how this class is used by subclasses, let's consider the *Bridge* implementation. A `Bridge` simply the request message directly to the output channel without modifying it. The main purpose of this handler is to bridge a `PollableChannel` to a `SubscribableChannel` or vice-versa.
+To see how this class is used by subclasses, let's consider the *Bridge* implementation. A `Bridge` simply forward the input message directly to the output channel without modifying it. The main purpose of this handler is to bridge a `PollableChannel` to a `SubscribableChannel` or vice-versa.
 
 [source,java]
 ----
@@ -1446,14 +1421,14 @@ public class ServiceActivatingHandler extends AbstractMessageProducingHandler {
 }
 ----
 
-Compared to the real code, this class ignores many concerns: methods on superclass or methods accepting the `Message` are incompatible with our implementation and are ignored.
+Compared to the real code, this class ignores many concerns: methods defined by superclasses or methods accepting the `Message` class are ignored by our implementation.
 
 We still have one endpoint to implement: the Proxy Gateway.
 
 
 ==== The Proxy Gateway exception
 
-Spring Integration follows the Enterprise Integration Patterns (EIP) book to the letter, with a few exceptions, as the Proxy Gateway. In messaging, a Gateway is a two-way component. For example, a JMS inbound gateway consumes a message on a queue, process it and publish another JMS message. The Proxy Gateway is an adaptation of this pattern. The Proxy Gateway is very convenient in practice because it keep our code loosely coupled to Spring Integration.
+Spring Integration follows the Enterprise Integration Patterns (EIP) book to the letter, with just a few exceptions, as the Proxy Gateway. In messaging, a Gateway is a two-way component. For example, a JMS inbound gateway consumes a message on a queue, process it and publish another JMS message. The Proxy Gateway is an adaptation of this pattern. The Proxy Gateway is very convenient in practice because it keep our code loosely coupled.
 
 Let's go back to the example with the `OrderService` interface:
 
@@ -1509,7 +1484,7 @@ public class OrderServiceImpl implements OrderService {
 }
 ----
 
-When the message is called, a new message is creating containing the method parameter as the payload. A temporary channel is also defined in the header `replyChannel`. This channel will be used by the first endpoint producing a message who do not have the `output-channel` attribute specified. This behavior is implemented in the previously covered `AbstractMessageProducingHandler` class:
+When the message is called, a new message is created containing the method parameter as the payload. A temporary channel is also defined in the header `replyChannel`. This channel will be used by the first endpoint in the flow who do not have the `output-channel` attribute specified. This behavior is implemented in the previously covered `AbstractMessageProducingHandler` class:
 
 [source,java]
 ----
@@ -1530,7 +1505,7 @@ protected MessageChannel getReplyChannel(Message<?> message) {
 }
 ----
 
-The Gateway implementation ends by waiting a message from this temporary channel, before extracting the payload and returning it to the caller.
+The Gateway implementation ends by waiting a message listening to this temporary channel, before extracting the payload and returning it to the caller.
 
 The problem with this Gateway implementation is that the code is statically generated and highly coupled with our code (for example, the dependency on `Order`). A framework like Spring Integration needs a more flexible solution: the combination of a dynamic Proxy and a `FactoryBean` implementation to instantiate it.
 
@@ -1582,7 +1557,7 @@ public class OrderServiceFactoryBean implements FactoryBean<OrderService> {
 };
 ----
 
-When the ApplicationContext starts, Spring call the different implemented methods to register a new bean of type `OrderService`. If we combine this class with the proxy creation code, we obtain an implementation of the Gateway endpoint:
+When the ApplicationContext starts, Spring call the different methods to register a new bean of type `OrderService`. If we combine this class with the proxy creation code, we obtain an implementation of the Gateway endpoint:
 
 
 [source,java]
@@ -1900,14 +1875,14 @@ public class IntegrationNamespaceHandler extends NamespaceHandlerSupport {
 ----
 
 The observant reader will notice that there isn’t actually a whole lot of parsing logic in this class.
-Indeed, most of this work happens in the `NamespaceHandlerSupport` class. This class delegate to a `BeanDefinitionParser` when it needs to parse an element in the new namespace.
+Indeed, most of this work happens in the `NamespaceHandlerSupport` class. This Spring Core provided class does most of the work and delegates to a `BeanDefinitionParser` when it needs to parse an element in the new namespace.
 
 
 
 
 === BeanDefinitionParser
 
-The `BeanDefinitionParser` is responsible for parsing one distinct top-level XML element defined in the schema. In the parser, we’ll have access to the XML element (and thus its subelements too) so that we can parse our custom XML content, as can be seen in the following example:
+The `BeanDefinitionParser` is responsible for parsing one distinct top-level XML element defined in the schema. Inside the parser, we’ll have access to the XML element (and thus its subelements too) so that we can parse our custom XML content, as can be seen in the following example:
 
 [source,java]
 ----
@@ -1993,7 +1968,9 @@ public class ServiceActivatorParser extends AbstractBeanDefinitionParser {
 }
 ----
 
-The code code seems more complex but it is only because we need to register two beans: the service-activator handler (delegates to a bean) and a consumer (read new messages from the input channel). We have to use the `org.springframework.beans.factory.support.BeanDefinitionReaderUtils` class to generate a bean name to link the two beans together. The remaining code is classic `BeanDefinitionParser` code. What is interesting is how the consumer is instantiated. How to determine if we need to create an Event-Driven Consumer (to read from a PublishSubscribeChannel for example) or a Polling Consumer (to read from a QueueChannel for example). We can't. We need to report that decision for later when the application context will really start. So, we create an instance of `FactoryBean` (like the previous `GatewayProxyFactoryBean`). Here is its implementation:
+The code seems more complex but it is only because we need to register two beans: the service-activator handler (delegates to a bean) and a consumer (read new messages from the input channel). We have to use the `org.springframework.beans.factory.support.BeanDefinitionReaderUtils` class to generate a bean name to link the two beans together. The remaining code is classic `BeanDefinitionParser` code.
+
+What is interesting is how the consumer is instantiated. How to determine if we need to create an Event-Driven Consumer (to read from a PublishSubscribeChannel for example) or a Polling Consumer (to read from a QueueChannel for example). We can't. We need to report that decision for later when the application context will really start. So, we create an instance of `FactoryBean` (like the previous `GatewayProxyFactoryBean`). Here is its implementation:
 
 [source,java]
 ----
@@ -2117,8 +2094,9 @@ else if (channel instanceof PollableChannel) {
 ----
 
 
-This code presents a serious flaw. If we run our program now, the handler will never receive any message.
-Did you have an idea? If we go back in this post, the superclass of `PollingConsumer` and `EventDrivenConsumer`, `AbstractEndpoint`, implements the `SmartLifecycle` interface to auto-start the consumers. This only works on bean instantiated by Spring. In the previous code:
+This code presents a serious flaw. If we run our program now, the handler will never receive any message. Did you have an idea?
+
+If we go back in this post, the superclass of `PollingConsumer` and `EventDrivenConsumer`, `AbstractEndpoint`, implements the `SmartLifecycle` interface to auto-start the consumers. This only works on bean instantiated by Spring. In the previous code:
 
 [source,java]
 ----
@@ -2175,12 +2153,12 @@ public class ConsumerEndpointFactoryBean implements SmartLifecycle, ... {
 }
 ----
 
-We will not describe the remaining channels and endpoints. The code is very similar to the code presented here. (You could check the full source code [here](TODO))
+We will not describe the remaining channels and endpoints. The code is very similar to the code presented here. (You could check the full source code https://github.com/julien-sobczak/spring-integration-from-scratch[here]).
 
 
 === Registering the handler and the schema
 
-The coding is finished! All that remains to be done is to somehow make the Spring XML parsing infrastructure aware of our custom namespace. For our example, we need to write the following two files:
+The coding part is finished! All that remains to be done is to make the Spring XML parsing infrastructure aware of our custom namespace. For our example, we need to write the following two files:
 
 ==== 'META-INF/spring.handlers'
 
@@ -2203,7 +2181,7 @@ http\://my.springframework.org/schema/i...n/my-spring-integration.xsd=\
   my/springframework/integration/config/xml/my-spring-integration-1.0.xsd
 ----
 
-This file is needed to prevent Spring from absolutely having to access the Internet to retrieve the schema file. If you specify the mapping in this properties file, Spring will search for the schema on the classpath (in this case `my-spring-integration-1.0.xsd` in the `my.springframework.integration.config.xml` package).
+This file is needed to prevent Spring from connection to the Internet to retrieve the schema file. If you specify the mapping in this properties file, Spring will search for the schema on the classpath (in this case `my-spring-integration-1.0.xsd` in the `my.springframework.integration.config.xml` package).
 
 
 *Why should I not specify the version of the XSD ?*
@@ -2265,7 +2243,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 
 === Using a custom extension
 
-Our own namespace could be used in the same way as we used the official namespace at the start of this post, except we should update the namespace URI:
+Our namespace could be used in the same way as we used the official namespace at the start of this post, except we should update the namespace URI:
 
 [source,xml]
 ----
@@ -2310,17 +2288,17 @@ We re-run the test. Green. Done.
 
 [NOTE.congratulations.admonitionblock]
 .Congratulations!
-**The implementation of our own Spring Integration framework is finished.** We now have a basic but working solution implementating key components of the framework. The full code source of this post is available on https://github.com/julien-sobczak/spring-integration-from-scratch[GitHub].
+**The implementation of our own Spring Integration framework is finished.** We now have a basic but working solution implementing core components of the framework. The full code source of this post is available on https://github.com/julien-sobczak/spring-integration-from-scratch[GitHub].
 
 
 
 [TIP.remember.admonitionblock]
 .To remember
-- `volatile` variables are useful for initializing variables. `ReentrantLock` provides explicit locking mechanism similar to the `synchronized` keyword but more fine-grained.
+- `volatile` variables are useful for initializing variables. `ReentrantLock` provides explicit locking mechanism similar to the `synchronized` keyword but are more fine-grained.
 - Java `Executor` framework should be privileged instead of using directly the `Thread` API.
 - Creating a new XML namespace with Spring is easy. The parsing code is completely hidden behind well designed interfaces. Moreover, adding syntactic sugar increases the chance of adoption of a framework.
- - A `FactoryBean` instance could be used when creating an object from XML is too complicated.
- - The `SmartLifecycle` interface could be used to auto start-up your bean.
+- A `FactoryBean` instance could be used when creating an object in XML is too complicated.
+- The `SmartLifecycle` interface could be used to auto start-up your bean.
 
 
 [NOTE.experiment.admonitionblock]
