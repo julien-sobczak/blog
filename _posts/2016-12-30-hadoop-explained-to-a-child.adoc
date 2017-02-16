@@ -31,7 +31,7 @@ Imagine a giant toy box, filled to the brim with lego bricks. You could build al
 
 image::parallel-processing.png[width="600", align="center"]
 
-By splitting your lego Brick into more toy box, you could easily buy new inexpensive toy boxes if necessary. You should discover the concept of horizontal scaling. Moreover, with only one box, you have to count all of the pieces by yourself.
+By splitting your lego Brick into more toy box, you could easily buy a bunch of inexpensive toy boxes. In computing, this is called *horizontal scaling*. Moreover, if you keep all your Lego in a single box and you need to count them all, you have to it by yourself.
 
 [CAUTION]
 .Problem...
@@ -43,7 +43,7 @@ Now, with so many boxes, you could count the pieces a lot more quickly. Did you 
 
 image::mapreduce-lego.png[width="600", align="center"]
 
-Now you have many toy boxes to determine how many bricks you have, you do not have to count all these boxes alone. Why not invite your friends to help you to the task. That’s what we called parallel processing. How many of them ? As many as the number of toy boxes. Each friend counts the number of bricks in his designed box, tell you the result. You just have to sum the results to know the total count. You just apply the MapReduce framework ! Your friends represent the map task (“count the number of bricks in one box”) and you, the reduce task (“sum of the intermediary results”).
+To determine how many bricks you have, you have to count each box separately and add the results. The true difference is that you do not need to do that alone. Why not invite your friends to help you to the task? That’s what we called *parallel processing*. How many of them? As many as the number of toy boxes! Each friend counts the number of bricks in his attributed box, and tell you the result. Add these results to know the total count. It is just as simple as that. In Hadoop terminology, you have just applied the MapReduce framework! Your friends represent the map task (“count the number of bricks in one box”) and you, the reduce task (add the intermediary results”).
 
 [NOTE.experiment]
 .Show me the code!
@@ -68,7 +68,7 @@ This is only an informal definition of the MapReduce framework. To really grasp 
 
 image::problem-books.png[width="600", align="center"]
 
-We know want to count the word occurrences in Jules Verne’s books. Do you see how to apply the MapReduce framework for this task? Admit we have Twenty Thousand Leagues Under the Sea and Journey to the Center of the Earth at our disposition. All your friends except one has returned home.
+We know want to count the word occurrences in Jules Verne’s books. Do you see how to apply the MapReduce framework on this task? For simplicity, admit we have _Twenty Thousand Leagues Under the Sea_ and _Journey to the Center of the Earth at our disposition_. All your friends except one has returned home.
 
 [CAUTION]
 .Problem...
@@ -80,7 +80,7 @@ Do you see how to apply the MapReduce framework to solve this problem?
 
 image::mapreduce-words.png[width="600", align="center"]
 
-For each book, you need to write (on paper for example) the list of words with their count. Then, everyone brings their notes to the person responsible of aggregating everything together. So, each map task returns the count for each word. Then, the reduce task sum the count of each word returned by the 2 mappers.
+For each book, you need to write (on paper for example) the list of words with their count. Then, everyone brings their notes to the person responsible of aggregating everything together. So, each map task returns the count for each word and the reduce task add the count of each word returned by the two mappers.
 
 We could know define formally the Map and Reduce functions as follows:
 
@@ -116,7 +116,7 @@ function reduce(String word, List<Integer> partialCounts):
   emit (word, sum)
 ----
 
-Here, each book is split into words, and each word is counted by the map function, using the word as the result key. The framework puts together all the pairs with the same key and feeds them to the same call to reduce. Thus, this function just needs to sum all of its input values to find the total appearances of that word.
+Here, each book is decomposed into words, and each word is counted by the map function, using the word as the result key. Under the hood, the framework puts together all the pairs with the same key and feeds them to the same call to reduce. Thus, this function just needs to sum all of its input values to find the total appearances of that word.
 ====
 
 [TIP]
@@ -127,14 +127,14 @@ The “Word Count” problem is sometimes considered like the “Hello World” 
 
 [CAUTION]
 .Problem...
-Imagine the number of different words present in the books. The reduce task could take a very long time to finish. Do you see a way to accelerate considerably this task? (Hint: consider each kid acting as a mapper writes each word with its partial count on a separate post-it. In the current solution, every kid brings all of his post-its to the kid doing the reduce).
+Imagine the number of words present in the books. That's huge! The reduce task could take a very long time to finish. Do you see a way to accelerate considerably this task? (Hint: consider that each kid (mapper) writes each word with its partial count on a separate post-it. In the current solution, every kid brings all of his post-its to the kid doing the reduce).
 
 
 
 
 == Could you help me, please?
 
-Instead of sending all words to a unique person, you could easily distribute them among multiple persons (multiple reducers). The redistribution is called the shuffle.
+Instead of sending all the words to a single person, you could easily distribute them among multiple persons (multiple reducers). The redistribution is called the *shuffle*.
 
 When using only one reducer, the shuffle algorithm is simple: send every mapper output to the reducer. But when using multiple reducers, the algorithm could be more elaborate. For the problem at hand, we could say every word starting with the letter A-M will be sent to Youcef, while every word starting with the letter N-Z will be sent to Julien. This is an example of shuffling algorithm.
 
@@ -147,7 +147,7 @@ Summing the partial counts of every word is a challenging task even when using m
 
 == The Combiner
 
-Each friend could aggregates the results of the different books he reads and only bring this aggregated result. Instead of aggregating the result of each book individually, we could aggregate the result of each friend. If each friend is responsible of many books, that could make a great difference. The idea is named Combiner in the MapReduce framework, and will often correspond to the same process as the Reducer as in this example, but this is not required by the framework. The main difference is the Combiner is executed by the person in charge of the map task, while the Reducer is executed by another person. In practice, the Combiner limit the amount of data the Mappers have to send to the Reducer.
+Instead of sending the list of post-its, each friend could aggregate the results of the different books he reads and only bring this aggregated result. So, instead of aggregating the result of each book individually, we could aggregate the result of each friend. If each friend is responsible of many books, that could represent a huge difference. This idea is named a *Combiner* in the MapReduce framework, and will often correspond to the same logic as the Reducer (as in this example), but this is not required by the framework. The main difference is the Combiner is executed by the person in charge of the map task, while the Reducer is executed by another person. In practice, the Combiner limit the amount of data the Mappers have to send to the Reducer.
 
 We have now seen all the elements of the MapReduce framework. Let’s try to define it more formally.
 
@@ -240,9 +240,7 @@ public class WordCount {
 
 [CAUTION]
 .Problem...
-Now, let’s admit we don’t have the books at disposal but need to go at a library to find them. Ok, but what if the library is currently closed (or what happen if the library was damaged by natural disaster). Do you have a solution ?
-
-
+Now, let’s admit we don’t have the books at disposal but need to go to the library to find them. Ok, but what if the library is currently closed (or worse, what happen if the library was damaged by natural disaster and all the books are damaged). Do you have a solution ?
 
 
 
@@ -250,26 +248,24 @@ Now, let’s admit we don’t have the books at disposal but need to go at a lib
 
 image::duplicate.png[width="600", align="center"]
 
-We are lucky! We live in a big city where there is not one, but **many libraries**.
+We are lucky! We live in a big city where there is not one, but *many libraries*.
 
-Having **multiple copies** of the same books is really interesting in practice. If the book is borrowed by someone else, you could go the the other library to borrow another exemplary. Moreover, in today's business world, if you library have to close, there still exists a copy of the book available. If there was only one copy of the book and the person that has borrowed it never returned the book, or if the library burned tragically, you could lost valuable information. With the principle of redundancy, you are now **fault-tolerant**.
+Having *multiple copies* of the same books is really interesting in practice. If the book is borrowed by someone else, you could go to another library to borrow an exemplary. If there was only one library and one copy of the book and the person that has borrowed it never returned the book, you could lost valuable information. With the principle of redundancy, you are now *fault-tolerant*.
 
 [CAUTION]
 .Problem...
-So, you could send one of your friend to each opened library to read a subset of the Jules Verne’s books. But how to determine which library has such books? How to dispatch the books between all of your friends raise another question that will be answered next.
-
-
+You could dispatch your friend among the opened library to each read a subset of the Jules Verne’s books. But how to determine which library has such books?
 
 
 == Just “Google” It?
 
 image::google.png[width="500", align="center"]
 
-Imagine every library shares the same website where it registered all the available books. With such a website, you could easily determine where to send each one of your friends to be sure to not miss a book. The centralized “index” is called the **namenode** in Hadoop and every library represent a different **datanode** in Hadoop terminology. When you are searching after a book, you contact the namenode to known the list of datanodes having a copy of the desired book.
+Imagine every library shares the same website where you could discover all the available books. With such a website, you could easily determine where to send each one of your friends to be sure to not miss a book. This centralized “index” is called the *namenode* in Hadoop and every library represent a different *datanode* in Hadoop terminology. When you are searching after a book, you contact first the namenode to known the list of datanodes having a copy of the desired book.
 
 [CAUTION]
 .Problem...
-Consider the impact of having to process a book containing thousands of page against the impact of processing thousands of single independant page. Both are not really satisfying. If we try to solve our “word count” problem and one of the book is a very big book, this only book could slow down the whole process. At the opposite, if each person have to search about a sheet of paper, read it, before starting again to process the hundred remaining sheets of paper, that could be terribly inefficient. Have you an idea to keep processing time constant across multiple book sizes?
+Consider the impact of having to process a book containing thousand of pages against the impact of processing thousand of single independent page. Both are not really satisfying. If we try to solve our “word count” problem and one of the book is a very big book, this only book could slow down the whole process. At the opposite, if each person have to search after a sheet of paper, read it, before starting again to process the hundred remaining sheets of paper, that could be terribly inefficient. Have you an idea to keep the processing time constant across multiple book sizes?
 
 
 
@@ -278,18 +274,18 @@ Consider the impact of having to process a book containing thousands of page aga
 
 image::uniformize.png[width="500", align="center"]
 
-Use a fixed book size. Instead of storing the big book, split it up to multiple volumes (like an encyclopedia). Instead of storing short papers, condense related papers into a book-length format (like Springer editor’s books). In this way, you could assign multiple persons to parse a the big book: each person is assigned a given volume. In the same way, one person could efficiently parse a collection of papers condensed inside the same book, without having to wander desperately in the aisles of the library. This technique is called fixed-block size and has always been used by operating systems and Hadoop uses it too.
+Use a fixed book size. Instead of storing the big book, split it up to multiple volumes (like an encyclopedia). Instead of storing short papers, condense related papers into a book-length format (like Springer editor’s books). In this way, you could assign multiple persons to parse a really big book: each person is assigned a given volume. In the same way, one person could efficiently parse a collection of papers condensed inside the same book, without having to wander desperately in the aisles of the library. This technique is called *fixed-block size* and has always been used by operating systems and Hadoop uses it too.
 
-We have until now covered enough backgrounds to introduce the system at the heart of Hadoop: HDFS.
+We have now covered enough backgrounds to introduce the system at the heart of Hadoop: HDFS.
 
 [NOTE]
 .HDFS: a definition
 ====
 **HDFS**, stands for *Hadoop Distributed File System*, and is a **distributed, scalable file system**, used to store the large dataset processed by MapReduce jobs.
 
-HDFS stores large files (typically in the range of gigabytes to terabytes) across multiple machines called **datanodes**. In practice, each file is splitted into **fixed-size blocks** and this is these blocks that are automatically replicated. The block-size is considerably bigger than the block size used by the underlying operating system to minimize the associated network cost involved when moving a block from one machine to another one.
+HDFS stores large files (typically in the range of gigabytes to terabytes) across multiple machines called **datanodes**. In practice, each file is splitted into **fixed-size blocks** and these blocks that are automatically replicated. The block-size is considerably bigger than the block size used by the underlying operating system to minimize the network cost involved when moving a block from one machine to another one.
 
-Hadoop achieves reliability by replicating the data across multiple hosts. If one machine suddenly dies, HDFS automatically copy each of the blocks present on this machine to another machines using the other copies at its disposition. To determine which machine hold the copies of a file blocks, HDFS used a centralized index named the **namenode**.
+Hadoop achieves reliability by replicating the data across multiple hosts. If one machine suddenly dies, HDFS automatically copy each of the blocks present on this machine to the remaining machines using the other copies at its disposition. To determine which machine hold the copies of a file block, HDFS used a centralized index named the **namenode**.
 
 image::hdfs.gif[width="600", align="center"]
 ====
@@ -298,7 +294,7 @@ image::hdfs.gif[width="600", align="center"]
 [NOTE.experiment]
 .Show me the code!
 ====
-Hadoop includes various shell-like commands that directly interact with the Hadoop Distributed File System (HDFS). For example:
+Hadoop includes various shell-like commands to interact with the Hadoop Distributed File System (HDFS). For example:
 
 ----
 $ hadoop fs -mkdir /user/hadoop/dir1
@@ -308,9 +304,9 @@ $ hadoop fs -cat /user/hadoop/dir1/hadoopfile
 $ hadoop fs -rm /user/hadoop/dir1/hadoopfile
 ----
 
-In practice, various tools of the Hadoop ecosystem interact with HDFS through its Java API.
+In practice, numerous tools of the Hadoop ecosystem interact with HDFS through its Java API.
 
-Under the hood, the file system is not organized like that at all. If we admit the localfile’s size  is 1 GB and the block size is 128 MB, Hadoop will create 8 blocks and partitions them across the datanodes. Each datanode stores blocks as follows
+Under the hood, the file system is not organized like that at all. If we send a 1 GB file and the block size is 128 MB, Hadoop will create 8 blocks and partitions them across the datanodes. Each datanode stores blocks as follows
 
 ----
 ${dfs.datanode.data.dir}/
@@ -355,15 +351,15 @@ image::resource-sharing.png[width="400", align="center"]
 
 [CAUTION]
 .Problem...
-As Jules Verne’s adventures, our journey towards a comprehension of Hadoop also presents a number of challenges. The libraries where we have sent our friends have a limited number of places. If all the tables are busy, you need to wait until a table become available. No work could be done during that time. It’s hard to find a solution to this problem is the real world. Did you have any idea? (Hint: you could use any assumption)
+As Jules Verne’s adventures, our journey towards a comprehension of Hadoop also presents a certain number of challenges. The libraries have a limited number of places. If all the tables are busy, you need to wait until a table become available. No work could be done during that time. It’s hard to find a solution to this problem in the real world. Did you have any idea? (Hint: use your imagination)
 
 
 
 == YARN
 
-To understand the solution implemented by Hadoop, imagine there exists one person that know the capacity (how many tables are present) of each library. If everyone who need to access a book asks that person first, this person could efficiently dispatch them among all libraries. This person is named YARN and stands for Yet Another Resource Negotiator.
+To understand the solution implemented by Hadoop, imagine there exists one person that know the capacity (how many tables are present) for each library. If everyone who need to access a book asks that person first, this person could efficiently dispatch them among all libraries. This person is named *YARN* and stands for _Yet Another Resource Negotiator_.
 
-If we dives into details, YARN is composed of many components. If we go back to our library example, let’s say there exists a spy in each library that report to a common person everything that happens: when a table becomes free or busy, etc. This spy is called the Node Manager and there is one instance in each library. The Node Manager supervises containers (the table desks in our example) and reports to the Resource Manager (the person to whom the new job applications are sent).
+If we dives into details, YARN is composed of many components. If we go back to our library example, let’s say there exists a spy in each library that report to a central person everything that happens: when a table becomes free or busy, etc. This spy is called the *Node Manager* and there is one instance in each library. The Node Manager supervises *containers* (the table desks in our example) and reports to the *Resource Manager* (the person to whom the new job applications are sent).
 
 [NOTE]
 .YARN: a definition
@@ -378,7 +374,7 @@ The per-application ApplicationMaster is, in effect, a framework specific librar
 ====
 
 
-Let’s go back the lego bricks example. Imagine between each thing you build (a character, a house), you have to put all the bricks inside their box, even if they will be used to build the next thing. Ask any kid, that’s just boring (and counterproductive in the case of Hadoop as we will see)!
+Let’s go back to the Lego bricks example. Imagine between each construction you build (a character, a house), you have to put all the bricks inside their box, even if they will be used to build the next thing. Ask any kid, that’s just boring (and counterproductive in the case of Hadoop as we will see)!
 
 This limitation is due to the inner working of the MapReduce framework. MapReduce was designed to read input from HDFS and write output to HDFS. There is no state kept between two jobs. If you need to run two MapReduce jobs, you have to write the result of the first step on HDFS for the second step to able to find it.
 

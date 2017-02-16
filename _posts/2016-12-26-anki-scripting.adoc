@@ -15,12 +15,12 @@ toc: true
 
 == A look inside the Anki model
 
-This is the first part in this lengthy article on Anki and how to use it to create your flashcards programmatically. We will begin by presenting the inner model of Anki, how the different classes interact and when the database is updated when we are using the desktop application. In the next part, we will be doing the same without using the GUI but only the internal API of Anki. We will also cover how to script Anki to bulk load many cards, useful for example when you need to learn the 5000 most common words in a new language. But I will not say more here. Let's get started!
+This is the first part in this lengthy article on Anki and how to use it to create your flashcards programmatically. We will begin by presenting the inner model of Anki, how the different classes interact and when the database is updated when we are using the desktop application. In the next part, we will be doing the same thing without using the GUI, using only the internal API of Anki. We will also cover how to script Anki to bulk load flashcards, useful for example when you need to learn the 5000 most common words in a new language. Let's get started!
 
 
 === Anki Reverse Engineering
 
-A good start is to start cloning the official repository of Anki:
+A good start is to begin by cloning the official repository of Anki:
 
 ----
 $ git clone https://github.com/dae/anki.git
@@ -32,26 +32,24 @@ When the clone of the repository is finished, enter into this new directory `ank
 ==== Project organization
 
 Not all directories are pertinent for our analysis. Here is an annotated description of each folder:
+
 ----
 anki/          -> Main Anki logic. Contains the model and the SRS algorithm
   | importing/ -> Logic to import various file formats including Anki1, Anki2,
                   Supermemo (a paid Anki-like tool)
   | template/  -> Anki uses a modified version of Pystache to provide
                   Mustache-like syntax.
-                  The templating is using to render flashcards' content.
+                  The templating is using to render flashcard's content.
 aqt/           -> Contains Python scripts using PyQT to build the widgets,
                   dialogs and other graphical components
                   that composed the Anki Desktop Application.
 designer/      -> Contains PyQT 4 UI files created using Qt Designer.
                   These files are generated using the command pyuic4.
-oldanki/       -> This is libanki 1.2.11, for the sole purpose of fixing
-                  problems when upgrading. This directory could be ignored.
-tests/
+tests/         -> Unit tests based on the framework Nose
   | support/   -> Fixtures (anki and anki2 files, PNG media file, ...)
-thirdparty/    -> Unit tests based on the framework Nose
 tools/         -> Simple shell scripts to launch the tests or the UI generation
 Makefile       -> Basic build script to install or uninstall Anki
-                  (simply create folders and move files using mkdir
+                  (create folders and move files using mkdir
                   and mv Unix commands)
 ----
 
@@ -64,8 +62,6 @@ When you click on the Anki icon, the script `runanki.py` is executed. This scrip
 import aqt
 aqt.run()
 ----
-
-When you see this code, it is not apparent how Anki know where to find our database of cards.
 
 [TIP]
 .Where is stored my cards?
@@ -131,11 +127,11 @@ Now, we know where are stored our database, let's inspect the different files pr
  |   |                  (method calls) with their timestamp
  |   |- collection.media.db2: A SQLite database listing all of the media
  |   \- deleted.txt: a log of card deletions acting as the trash bin.
- |                   The file is always appended and never used directly by Anki
+ |                   The file is always appended by Anki but never read directly
  \- prefs.db: A SQLite database to contains your preferences.
 ----
 
-We see the principal files are instance of SQLite databases.
+The most important files are clearly the SQLite databases.
 
 [TIP]
 .What is SQLite?
@@ -157,7 +153,7 @@ Refer to the https://www.sqlite.org/[official documentation] for more informatio
 - A *apkg file* is just an archive (you could use 7zip or your favorite decompression utility to see its content) containing the anki2 file that we just described and a file media. This media file is a simple text file containing an empty JSON object. As mentioned inside the Preferences dialog, Medias are not backed up. We need to create a periodic backup of our Anki folder to be safe. If you use AnkiWeb, our media are already synchronized in the cloud but be careful, decks stored in your account may be archived and eventually deleted if they are not accessed for 3 months or longer. If you are not planning to study for a few months, the manual backup of the content on your own computer is still required.
 
 
-To understand Anki, we need at least a basic understanding of the data are organized so let's inspect the database to determine its schema and the different tables.
+To understand Anki, we need at least a basic understanding of how the data are organized. Let's inspect the database to determine its schema and the different tables.
 
 
 === Anki Database Schema
@@ -179,7 +175,7 @@ We will start from this description and complete where information is missing.
 
 image::sqlitebrowser-anki2-collection.png[width="750"]
 
-Here is the complete annotated schema. You could safely skim this part and use it as a reference. Note: the inner model in Python files is rarely documented.
+Here is the complete annotated schema. You could safely skim this part and use it as a reference. Note: the model in Python files is rarely documented.
 
 [source,sql]
 ----
@@ -776,7 +772,7 @@ CREATE TABLE meta (
 
 === Step by Step
 
-In this part, we will create a new deck and add a new card from scratch using a fresh anki installation.
+In this part, we will create through the GUI a new deck and add a new card. We use a fresh anki installation.
 
 [NOTE]
 .How to inspect database changes when using Anki?
@@ -800,11 +796,11 @@ sqlite>.dump
 By default, sqlite3 sends query results to standard output. So, we use the ".once" command to redirect query results to a file.
 (Use the ".output" option to redirect all commands and not just the next one). Check the official documentation for help about the CLI options: https://www.sqlite.org/cli.html
 
-With the generated dumps, we just have to compare the table data to determine what what exactly update by Anki. So, let's go!
+Then, use the generated dumps to compare the table data and determine what what exactly update by Anki.
 ====
 
 
-To force Anki to use a fresh installation, we will override the folder location to point to an empty directory (see http://ankisrs.net/docs/manual.html#startupopts for more information about the option -b)
+To force Anki to use a fresh installation, we will override the folder location to point to an empty directory (see http://ankisrs.net/docs/manual.html#startupopts for more information about the option `-b`)
 
 On Windows, just click right on the icon and update the target field to add the option. Ex:
 `"C:\Program Files (x86)\Anki\anki.exe" -b "D:\AnkiTmp"`
@@ -813,7 +809,7 @@ Relaunch Anki, select your language, and the home screen should appear, containi
 
 image::anki-home.png[]
 
-By default, Anki creates the default collection. This is the only row present in database at first:
+By default, Anki creates a default collection. This is the only row present in database at first:
 
 [source,sql]
 ----
@@ -870,14 +866,14 @@ def id(self, name, create=True, type=defaultDeck):
 
 image::anki-new_card.png[]
 
-Anki update the collection to add the new tag (field `tags`):
+Anki updates the collection to add the new tag (field `tags`):
 
 [source,sql]
 ----
 UPDATE col SET tags = '{"vocabulary": -1}' WHERE id = 1
 ----
 
-(-1 is used to tell Anki to synchronize this tag with the server on the next synchronization with AnkiWeb)
+(`-1` is used to tell Anki to synchronize this tag with the server on the next synchronization with AnkiWeb)
 
 Anki inserts a new row in the table `notes`:
 
@@ -959,7 +955,7 @@ Let's try a card of type "Reversed":
 
 image::anki-new_reversed_card.png[]
 
-Adding a reversed card does not change anything in the UI code. The only difference is the previous method `addNode` defined in `collection.py` will returned two cards instead of one in our first card example. In database, two rows will be added in the table `cards`:
+Adding a reversed card does not change anything in the UI code. The only difference is that the previous method `addNode` defined in `collection.py` will returned two cards instead of one in our first example. In database, two rows will be added in the table `cards`:
 
 [source,sql]
 ----
@@ -1043,10 +1039,12 @@ def autosave(self):
         self.save()
 ----
 
-This method `autosave` explain why Anki need to save when we quit the application. Anki does not save systematically after each command but wait 5 minutes between two saves to minimize the interaction with the database.
+This method `autosave` explain why Anki need to synchronize when we quit the application. Anki does not save systematically after each command but wait 5 minutes between two saves to minimize the interaction with the database.
 
 
-This marks the end of the reverse engineering of Anki. We have seen how Anki works under the hood when we add a new deck or a new card and what happens when we study. We understand the database schema and have touch the main API of Anki. In the next post, we are going to use this knowledge to create programmatically thousands of cards in less than one second without interacting with the Anki application!
+This marks the end of the reverse engineering of Anki. We have seen how Anki works under the hood -- when we add a new deck or a new card and what happens when we study. We understand the database schema and have a quick overview of the main API of Anki.
+
+In the next part, we are going to use this knowledge to create programmatically flashcards in record time, without interacting with the Anki application!
 
 
 
@@ -1056,23 +1054,23 @@ This marks the end of the reverse engineering of Anki. We have seen how Anki wor
 
 === Introduction
 
-Anki is an open-source solution, published on GitHub. Code source is accessible to anyone going on the repository. With minimal programming skills, it is easy to script Anki to add new flashcards. Several options are possible:
+Anki is an open-source solution, published on GitHub. The code source is accessible to anyone going on the repository. With minimal programming skills, it is easy to script Anki to add new flashcards. Several options are possible:
 
 - Insert data directly in the SQLite database used by Anki
 - Write a Python program to use the internal API of Anki
 
-This post will concentrate on the second option. The first option could be implemented based on the information published in the first post of this serie but is not the optimal solution (high coupling, necessity to specify all fields when most of them are useless for us). This solution was already partially http://decks.wikia.com/wiki/Anki_APKG_format_documentation[documented online]. The Python solution is more powerful. You could use a Python module to read a PDF or an Epub and generate the associated flashcards or you could use the Google Images API to retrieve funny pictures to integrate in our flashcards. The only limit is our imagination.
+This post will concentrate on the second option. The first option could be implemented based on the information published in the first part but is not the optimal solution (high coupling, necessity to specify all fields when most of them are useless for us). This solution was already partially http://decks.wikia.com/wiki/Anki_APKG_format_documentation[documented online]. The Python solution is more powerful. You could use a Python module to read a PDF or an Epub and generate the associated flashcards. You could use the Google Images API to retrieve funny pictures to integrate in our flashcards. The only limit is our imagination.
 
 
 === Python Scripting
 
-The Anki source is not intended to be reused in other program so the code is not packaged as Python module we could install as easily as:
+The Anki source is not intended to be reused in other program so the code is not packaged as a Python module we could install as easily as:
 
 ----
 $ pip install anki
 ----
 
-One solution is to clone the official repository and put our code along the Anki code source but this solution is not optimal. To decouple your from with the Anki Source, we could use Git submodules.
+One solution is to clone the official repository and put our code along the Anki code source but this solution is not optimal. To decouple our code from with the Anki Source, we could use a Git submodule.
 
 First, create new project:
 
@@ -1095,13 +1093,13 @@ $ ls
 anki
 ----
 
-Then, we need to download Anki dependencies. In this post, we will use https://pypi.python.org/pypi/pip[Pip], the recommended tool for installing Python packages. To avoid polluting existing Python projects you could have in local, we will use https://virtualenv.pypa.io/en/stable/[virtualenv].  The recommended way to do that in Python is to use virtualenv to isolate our project from other projects, so two projects could depend on conflicting version of the same dependency. To install virtualenv globally, run the following command:
+Then, we need to download Anki dependencies. In this post, we will use https://pypi.python.org/pypi/pip[Pip], the classic tool for installing Python packages. To avoid polluting existing Python projects you could have in local, we will use https://virtualenv.pypa.io/en/stable/[virtualenv]. The recommended way to do that in Python is to use virtualenv to isolate our project from other projects, so two projects could depend on conflicting version of the same dependency. To install virtualenv globally, run the following command:
 
 ----
 $ sudo pip install virtualenv
 ----
 
-NOTE: *virtualenv* is probably the only dependency you need to install globally. Once installed, add a new virtual environment to each Python project, so their dependencies get installed under their directory.
+NOTE: *virtualenv* is probably the only dependency you need to install globally when doing Python. Once installed, add a new virtual environment to each Python project, so their dependencies get installed under their directory.
 
 At the root of the repository, execute the following command to create a new virtual environment:
 
@@ -1161,7 +1159,9 @@ Train
 Computer
 ----
 
-Congratulations! You just have created your first Python script using the Anki API. As time passes, Anki source will evolved. To update our submodule, just change to the submodule directory and update the HEAD reference like any other repository. Do not forget to commit to update the reference maintained by the parent repository:
+Congratulations! You just have created your first Python script using the Anki API.
+
+As time passes, Anki source will be updated. To update our submodule, just move to the submodule directory and update the HEAD reference like any other repository. Do not forget to commit to update the reference maintained by the parent repository:
 
 ----
 $ cd anki
@@ -1315,7 +1315,7 @@ When running the program, a new file `index.html` is generated inside the target
 
 image::cards-export-HTML.png[]
 
-The code works but there remains a concern to address: the medias. Indeed, cards could references external resources like images or sounds all stored in a single folder `collection.media` under your profile directory. So, we need to extract there resources too and update the links inside the card text to reflect the new location.
+The code works but there remains a concern to address: the medias. Indeed, cards could reference external resources like images or sounds, all stored in a single folder `collection.media` under your profile directory. So, we need to extract there resources too and update the links inside the card text to reflect the new location.
 
 A basic strategy could be to duplicate the whole folder. To avoid copying resources from cards that we don't want to export, we will instead copy each file independently while processing the card. So, we need to update again the card processing code again:
 
@@ -1447,7 +1447,7 @@ angular.module('ankiApp', [])
 
 We iterate over the JSON array containing the cards we just created. When the user clicks on a card title, the method `select` defined in the controller is called. This method stores the selected card in the model. AngularJS refresh our page and the iframe is updated with the content of the selected flashcard. Last thing to notice, we only display the flashcards matching the query entered by the user in the search field.
 
-Let's add the final touch, the CSS:
+Let's add the "final touch", the CSS:
 
 [source,html]
 ----
@@ -1760,20 +1760,20 @@ index_file.close()
 
 == Case Study: Convert an EPUB to Flashcards
 
-*Let's me present you the context. We just bought a new https://www.amazon.fr/Harraps-Expressions-anglaises-Collectif/dp/2818704480[book to learn the common English expressions]. This book contains around 4000 expressions. If we consider it takes two minutes to create a flashcard, more than 100 hours will be required to overcome this daunting task. So, what can we do? One solution is to script the creation of the flashcards and this is exactly what we are going to do here.*
+_Let's me present you the context. We just bought a new https://www.amazon.fr/Harraps-Expressions-anglaises-Collectif/dp/2818704480[book to learn the common English expressions]. This book contains around 4000 expressions. If we consider it takes two minutes to create a flashcard, more than 100 hours will be required to overcome this daunting task. So, what can we do? One solution is to script the creation of the flashcards and this is exactly what we are going to do here._
 
-This post will be divided in two sections. In the first part of this post, we are going to create a small program to read an Epub file in Python. In the second part, we will extend this program to insert the content directly inside our Anki collection.
+This post will be divided in two sections. In the first part of this post, we are going to create a small program to read an Epub file in Python. In the second part, we will extend this program to insert the content directly into our Anki collection.
 
 [NOTE]
-.But does it not preferable to manually create the flashcards in order to retain more easily?
+.But does it not preferable to manually create the flashcards in order to better retain?
 ====
-Of course! Creating manually a flashcard is always better than automating its creation. When you enter the words on the keyboard, or when you search on Google Images a memorable picture, you create interactions inside your memory and this considerably help to start fixing this new information. The manual creation is perfectly fine when learning your first words in a new language because it is easy to find a great picture or a personal story about it. But here, we are interested in common expressions, phrases that often does not mean what common sense would say. Relevant memorable pictures are difficult to find, so creating the flashcards manually does not help that much to fix the information in your brain. It is better to spend the 100 or more hours on studying the flashcards than on creating them.
+Of course! Creating manually a flashcard is always better than automating its creation. When you enter the words on the keyboard, or when you search on Google Images a memorable picture, you create interactions inside your memory and this considerably help you to start fixing this new information. The manual creation is perfectly fine when learning your first words in a new language because it is easy to find a great picture or a personal story about it. Here, we are interested in common expressions, phrases that often does not mean what common sense would say. Relevant memorable pictures are difficult to find, so creating the flashcards manually does not help that much to fix the information in your brain. It is better to spend the 100 or more hours on studying the flashcards than on creating them.
 ====
 
 
 === Part I: Reading the Ebook (Epub)
 
-The book is available in ePub format. The term is short for *electronic publication*. EPUB 3 is currently the most portable ebook format (Amazon has its own proprietary format for its Kindle but every other software readers (Kobo, Bookeen, etc) supports this format.
+The book is available in ePub format. The term is short for _electronic publication_. EPUB 3 is currently the most portable ebook format (Amazon has its own proprietary format for its Kindle but every other software readers such as Kobo or Bookeen supports this format).
 
 For our task, we only need to know that an Epub is just a ZIP archive containing a website written in HTML5, including HTML files, images, CSS stylesheets, and other assets like video.
 
@@ -1833,13 +1833,13 @@ Apart from `mimetype` and `META-INF/container.xml`, the other files (HTML, CSS a
 </package>
 ----
 
-In the manifest section, we can see all web resources included in this epub. This is these files that interested us, in particular the HTML files. If you open the book with an ebook reader (your device or an application like Calibre), you could see the book content:
+In the manifest section, we can see all web resources included in this epub. This are these files that interested us, in particular the HTML files. If you open the book with an ebook reader (your device or an application like Calibre), you could see the book content:
 
 image::epub-preview.png[]
 
-If you want to know more about the Epub format, O'Reilly devoted whole http://shop.oreilly.com/product/0636920024897.do[books] on the subject.
+If you want to know more about the epub format, O'Reilly devoted whole http://shop.oreilly.com/product/0636920024897.do[books] on the subject.
 
-Let's see how the HTML looks like. The `Page_1.html` page contains only a picture with the cover of the book. We could ignore it. The next page `Page_2.html` is an example of page to parse to extract the English expressions. Here is an extract of this file:
+Let's see how the HTML looks like. The `Page_1.html` page contains only a picture with the cover of the book. We could ignore it. The next page `Page_2.html` is an example of page we need to parse to extract the English expressions. Here is an extract of this file:
 
 
 [source,xml]
@@ -1922,13 +1922,13 @@ If we simplify the HTML definition, we get something like this:
 
 We now have all the necessary information to begin our program. As usual, we will write our program in Python, the same language used by Anki.
 
-First, we need to open each html page and check if this page contains idioms or not:
+First, we need to open each HTML page and check if this page contains idioms or not:
 
 [source,python]
 ----
 import codecs
 
-for i in range(2, 3): # Only one page 2 exists in our demo ebook
+for i in range(2, 3): # Only page 2 exists in our demo ebook...
 
     # Read the page content
     f = codecs.open("myepub/OEBPS/Page_%s.html" % i, "r", "utf-8")
@@ -1946,11 +1946,11 @@ for i in range(2, 3): # Only one page 2 exists in our demo ebook
             process_block(soup, bloc)
 ----
 
-Then, for each bloc of idioms, the function `process_block` is called. This method takes two parameters:
+Then, for each block of idioms, the function `process_block` is called. This method takes two parameters:
 - the BeautifulSoup HTML parser,
 - the working HTML element
 
-As some idioms cross two pages, we need to keep the chapter number (idioms are grouped by general subjects), the category (each subject is divided into many related categories) and the current idiom to complete it when we will parsed the next page. To do so, we will use global variables (not good OO-design but a adequate choice for such a simple program). The code consists of a loop to iterate over paragraphs and uses the CSS classes to determine the type of the paragraph (idiom, example or warning). Here is the code:
+As some idioms cross two pages, we need to keep the chapter number (idioms are grouped by general subjects), the category (each subject is divided into many related categories) and the current idiom to complete it when we will parsed the next page. To do so, we will use global variables (not good OO-design but an adequate choice for such a simple program). The code consists of a loop to iterate over paragraphs and uses the CSS classes to determine the type of the paragraph (idiom, example or warning). Here is the code:
 
 [source,python]
 ----
@@ -2018,7 +2018,7 @@ def process_block(soup, bloc_element):
 
 To avoid being polluted with all the `span` tag present in the source (the original epub contains a lot more span!), we use the method `get_text()` of the Soup parser to only extract the raw text. If the paragraph is an idiom, we know the english and french translations are separated by the special character ●. If the paragraph is an example, we search after a phrase separator (dot, question mark, exclamation point, etc). If the paragraph is a warning, we just have the keep the whole text.
 
-For each idiom, we create a new object of type Idiom to group all the information about a given idiom. The collection of idioms is defined globally and will be reused in the second section of this blog post. Here is the definition of the class `Idiom`:
+For each idiom, we create a new object of type `Idiom` to group all the information about a given idiom. The collection of idioms is defined globally and will be reused in the second section of this blog post. Here is the definition of the class `Idiom`:
 
 
 [source,python]
@@ -2061,7 +2061,7 @@ Before importing a flashcard, we need to design the card template. By default, A
 
 image::english-card-type.png[]
 
-We have two solutions: either we create the card type manually using the Anki API directly in Python, or we create the card type through the GUI to benefit the direct feedback when defining the CSS declarations. We will choose the second solution but implementing the first one is relatively easy using code similar to the code we already wrote.
+We have two solutions: either we create the card type manually using the Anki API directly in Python, or create the card type through the GUI to benefit the direct feedback when defining the CSS declarations. We will choose the second solution but implementing the first one is relatively easy using code similar to the code we already wrote.
 
 So, run the Anki program, and go to *"Tools > Manage Note Types..."*, click on *"Add"*, and choose *"Clone: Basic (with reversed card)"* as the model to clone. Name our note type *Idiom*.
 
@@ -2218,7 +2218,7 @@ def highlight_qualifier(text):
 
 Rerun the program and open Anki again. You should see thousands of new card to study! (Go to *"Browse"* and select the *"idiom"* tag to see them all).
 
-Our case study is finally over. We have converted an ebook purchased online to thousands of flashcards with just one hundred line of code. In the next case study, we are going to create flashcards for the most common words in a language (in practice, the first step before learning idioms but this use case is more complex to automate, the reason why we invert the order in this post).
+Our case study is finished. We have converted an ebook purchased online to thousands of flashcards with just one hundred line of code. In the next case study, we are going to create flashcards for the most common words in a language (the first step in practice before learning idioms but this use case is far more complex to automate, the reason why we invert the order in this post).
 
 
 
@@ -2231,7 +2231,7 @@ In this post, we are targeting the English language and will use Wikipedia.
 
 === The frequency list
 
-Wikipedia currently offers multiple frequency lists based on different sources: films, project Gutenberg containing thousand of freely available classic romans, and even the integral of the Simpsons episodes. The lists are split in several pages (1-999, 1000-1999, and so on). By using the browser developer tool (Google Developer Tool on Chrome and Firebug on Firefox), we could easily extract the HTML to create a single HTML file containing the entire list. Here is a sample of the extracted list based on the project Gutenberg:
+Wikipedia currently offers multiple frequency lists based on different sources: films, project Gutenberg containing thousand of freely available classic romans, and even the integral of the Simpsons episodes. The lists are split in several pages (1-999, 1000-1999, and so on). By using the browser developer tool, we could easily extract the HTML to create a single HTML file containing the entire list. Here is a sample of the extracted list based on the project Gutenberg:
 
 [source,html]
 .40000_frequency_list_gutenberg.txt
@@ -2265,7 +2265,7 @@ Wikipedia currently offers multiple frequency lists based on different sources: 
 </table>
 ----
 
-NOTE: Like your browser, most HTML parsers are very tolerant concerning HTML syntax. We do not even have to create a perfectly valid HTML document to be able to parse it. We will continue to use the Python language in this post, and the most popular HTML parser is https://www.crummy.com/software/BeautifulSoup/bs4/doc/[BeautifulSoup].
+NOTE: Like your browser, most HTML parsers are very tolerant concerning HTML syntax. We don't need to create a perfectly valid HTML document to be able to parse it. We will continue to use the Python language, and its most popular HTML parser https://www.crummy.com/software/BeautifulSoup/bs4/doc/[BeautifulSoup].
 
 Here is a basic program to parse this HTML file and generate a csv file:
 
@@ -2291,7 +2291,7 @@ with open(html_file, 'r') as input_file:
       print(','.join(c.get_text() for c in cells))
 ----
 
-To convert an HTML file to a CSV file, launch the program using the command:
+To convert the previous HTML file to a CSV file, launch the program using the command:
 
 ----
 $ python html2csv.py 40000_frequency_list_gutenberg.html > \
@@ -2299,7 +2299,7 @@ $ python html2csv.py 40000_frequency_list_gutenberg.html > \
 ----
 
 
-Project Gutenberg is a wonderful place to find famous old roman but we could missed common usual words nowadays, so we do the same task with the TV frequency list. This results in two files `40000_frequency_list_gutenberg.csv` and `40000_frequency_list_tv.csv` having most of the words in common but with different rankings. We need to merge the two list. Here is a program that produces a unique CSV file containing two fields: the rank and the word.
+Project Gutenberg is a wonderful place to find famous old roman but we could miss usual words nowadays, so we do the same task with the TV frequency list. This results in two files `40000_frequency_list_gutenberg.csv` and `40000_frequency_list_tv.csv` having most of the words in common but with different rankings. We need to merge the two list. Here is a program that produces a unique CSV file containing two fields: the rank and the word.
 
 
 [source,python]
@@ -2385,7 +2385,7 @@ for word, ranks in frequencies.iteritems():
     frequencies_avg[word] = rank
 ----
 
-We still have not finished. If we look again at the output, we notice words sharing the same radical (ex: bill/bills, displease/displeased). These words could not be filtered as before but could only be removed at the end of the program (when we are sure we have found the different syntax). So, let's update our program to add the following code just before printing the result:
+We still have not finished. If we look again at the output, we notice words sharing the same radical (ex: bill/bills, displease/displeased). These words could not be filtered as before but could only be removed at the end of the program (when we are sure we have found the different syntaxes). So, let's update our program to add the following code just before printing the result:
 
 [source,python]
 ----
@@ -2427,7 +2427,7 @@ for word, rank in frequencies_avg_copy.iteritems():
 
 === The definitions
 
-When learning a new language, it is better to left out completely your tongue language of our flashcards. Popular flashcard application Memrise does exactly that. Instead, we will include the definition written in the same language as the word. To do so, we will use Wiktionary. Like its sister project Wikipedia, Wiktionary is run by the Wikimedia Foundation, and is edited collaboratively by volunteers. This dictionary is available in 172 languages and probably contains the most exhaustive list of words (500 000 words for the english dictionary!).
+When learning a new language, it is better to left out completely your tongue language of our flashcards. Popular flashcard application Memrise does exactly that. Instead, we will include the definitions written in the same language as the word. To do so, we will use Wiktionary. Like its sister project Wikipedia, Wiktionary is run by the Wikimedia Foundation, and is edited collaboratively by volunteers. This dictionary is available in 172 languages and probably contains the most exhaustive list of words (500 000 words for the english dictionary!).
 
 
 ==== Reading the data
@@ -2439,7 +2439,7 @@ Once downloaded, we extract the tar.gz archive to find a single XML file with a 
 
 ==== Parsing the Wiktionary dump
 
-We need to extract relevant information from this large file. Here is a preview of its content:
+We need to extract only the relevant information from this large file. Here is a preview of its content:
 
 {% raw %}
 [source,xml,subs="verbatim"]
@@ -2514,7 +2514,7 @@ is labelled &quot;fat '''free'''&quot;, meaning it contains no fat]]
 
 To parse such a large file, we need a XML parser that do not load the full file in memory. So, we will use a SAX Parser. Unlike a DOM parser, it is not possible to simply traverse the XML document to extract the relevant information. SAX Parsers are event-driven. We need to listen to each new tag, each character text, and so on. We also need to remember our position inside the file to answer question like "Does the text correspond to the title tag?".
 
-Here is the program to extract the id, title, and text and generate another XML file containing only the English word (the dictionary contains all dictionary written in English, such as the French -> English dictionary). The result is a file less than 300 Mb, that does not take 45 minutes to be parsed.
+Here is the program to extract the id, title, and text and generate another XML file containing only the English word (the dictionary contains all dictionary written in English, such as the French -> English dictionary). The result is a file less than 300 Mb, that does not take 45 minutes to be parsed...
 
 [source,python]
 .parse_wiktionary.py
@@ -2683,7 +2683,7 @@ This file could quickly be parsed (10s on my local machine). The next step is to
 
 ==== Parsing the x-wiki text to generate a JSON file
 
-The `<text>` tag contains a x-wiki document whose main syntax is defined http://platform.xwiki.org/xwiki/bin/view/Main/XWikiSyntax[here]. Wikipedia add a lot of semantic above this syntax through the use of numerous labels. I did not find a document to describe the Wiktionary special syntax, so we need to reverse engineer the format.
+The `<text>` tag contains a x-wiki document whose main syntax is defined http://platform.xwiki.org/xwiki/bin/view/Main/XWikiSyntax[here]. Wikipedia add a lot of semantic above this syntax through the use of numerous labels. I didn't find a document that describes the Wiktionary syntax, so we need to revert to reverse engineering.
 
 Here is an shortened example of a x-wiki document (about the word `keyboard`):
 
@@ -2769,10 +2769,10 @@ from the keyboard device.
 {% endraw %}
 <1> A wiktionary entry contains the text of multiple dictionaries (English-English, English-Dutch). Only the English-English dictionary is relevant when learning the English language.
 <2> A given word could be used as a noun, a verb, etc. We need to extract the definition for each type while keeping note of the type.
-<3> Label syntax such as {{t+|fr|clavier|m}} is used exhaustively inside the wiki text. Most of the content is present inside these labels but the syntax is not easily parsable.
+<3> Label syntax such as {{t+|fr|clavier|m}} is used exhaustively inside the wiki text. Most of the content is present inside these labels but the syntax is not easily parseable.
 <4> There are many translation blocks. Often, the first one is the only translation we are interested.
 
-On this example, the definitions are easily parsable but not all the words are so simple in practice. Consider the word 'car':
+On this example, the definitions are easily parseable but not all the words are so simple in practice. Consider the word 'car':
 
 image:wiktionary-car.png[width="750"]
 
@@ -2800,7 +2800,7 @@ unit in a [[railroad]] train.
 ----
 {% endraw %}
 <1> Quotes could be on a line starting with `#:`, be surrounded with `''`
-<2> While other quotes could be one a line containing a label with the attribute `passage` containing the quote text.
+<2> While other quotes could be on a line containing a label with the attribute `passage` containing the quote text.
 
 This is only one example of subtlety among many others. Wiktionary syntax is full of surprise but also full of interesting content.
 
@@ -3390,6 +3390,7 @@ In definitive, the assistant application reads the full JSON dictionary, exposes
         {
           "text" : "(heading) ''Effort.''",
           "include" : true,
+          "card": true,
           "quotations" : [
             {
               "text" : "Let's get to <em>work</em>.",
@@ -3404,7 +3405,7 @@ In definitive, the assistant application reads the full JSON dictionary, exposes
 }
 ----
 
-**Why saving we didn't create the flashcards directly inside the method 'save'?**
+**Why saving and not create the flashcards directly inside the method 'save'?**
 
 The problem is Anki exposes only its internal API written in Python. If the backend of our application was written in Python too, we could have create the flashcards at the same time. Here, we dump the result to a file that we will need to read by another program written in Python. This is task of the *Importer*.
 
@@ -3587,7 +3588,7 @@ And the back template:
 {% endraw %}
 
 
-===== Complete this sentence
+===== Complete this sentence...
 
 The `Card 4`, `Card 5`, and `Card 6` display a sentence with a missing word and the user should find it (the same concept as http://ankisrs.net/docs/manual.html#cloze[Cloze Deletion] in Anki):
 
@@ -4064,15 +4065,16 @@ python scripts/load_word.py \
   ~/Documents/Anki/User\ 1/
 ----
 
-Relaunch Anki. You should see new cards under the English deck. Congratulations! We just finished this post. We have seen how the internal API of Anki could be used in various scenario. The next step is to study all of these newly created cards!
+Relaunch Anki. You should see new cards under the English deck.
+
+Congratulations! We finally comes to the end of this lengthy post. We have seen how the internal API of Anki could be used in various scenarios. This is not complete, however. It remains the most important task -- study all of these newly created flashcards!
 
 
 [TIP.admonitionblock.remember]
 .To remember
-- Anki is written in Python.
-- Anki do not expose a REST Api. We need to interact directly with its internal Api.
+- Anki is written in Python and do not expose a REST Api. We need to interact directly with its internal Api.
 - Anki persists the flashcard texts in a SQL database. Media resources are persisted on disk along the database and are referenced directly inside the card text.
 - The Anki underlying model is partially documented. Use this post as a reference to determine the role of each field or property.
-- Creating flashcards manually is the recommended way to start learning as soon as possible when it comes to creating hundreds or thousand of flashcards, using a small program could be welcome.
-- Creating a flashcard programmatically is easy. The most difficult part is extracting the information you want to add (book, website, ...)
-- Basic programming competency is necessary to get started. Python is the most used language in the world to introduce new people to programming. You could find many resource online (MOOC, tutorial, ebook, blog) to get started. https://www.khanacademy.org/[Khan Academy] is a good start.
+- Creating flashcards manually is the recommended way to start learning but when it comes to creating hundreds or thousand of flashcards, using a small program could be welcome.
+- Creating a flashcard programmatically is relatively easy. The most difficult part is extracting the information you want to add (book, website, ...)
+- Basic programming competency is necessary to get started. The good news is that Python is the most used language in the world to introduce new people to programming. You could find many resource online (MOOC, tutorial, ebook, blog) to get started. https://www.khanacademy.org/[Khan Academy] is a good start.
