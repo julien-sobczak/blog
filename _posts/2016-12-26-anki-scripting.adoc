@@ -2299,7 +2299,11 @@ $ python html2csv.py 40000_frequency_list_gutenberg.html > \
 ----
 
 
-Project Gutenberg is a wonderful place to find famous old roman but we could miss usual words nowadays, so we do the same task with the TV frequency list. This results in two files `40000_frequency_list_gutenberg.csv` and `40000_frequency_list_tv.csv` having most of the words in common but with different rankings. We need to merge the two list. Here is a program that produces a unique CSV file containing two fields: the rank and the word.
+Project Gutenberg is a wonderful place to find famous old roman but we could miss usual words nowadays, so we do the same task with the TV frequency list. This results in two files `40000_frequency_list_gutenberg.csv` and `40000_frequency_list_tv.csv` having most of the words in common but with different rankings. We need to merge the two list.
+
+image::assistant-merge-frequency-lists.png[]
+
+Here is a small program to produce a unique CSV file containing only two fields: the rank and the word.
 
 
 [source,python]
@@ -2385,7 +2389,11 @@ for word, ranks in frequencies.iteritems():
     frequencies_avg[word] = rank
 ----
 
-We still have not finished. If we look again at the output, we notice words sharing the same radical (ex: bill/bills, displease/displeased). These words could not be filtered as before but could only be removed at the end of the program (when we are sure we have found the different syntaxes). So, let's update our program to add the following code just before printing the result:
+We still have not finished. If we look again at the output, we notice words sharing the same radical (ex: bill/bills, displease/displeased). These words could not be filtered as before but could only be removed at the end of the program (when we are sure we have found the different syntaxes).
+
+image::assistant-filter-words.png[]
+
+So, let's update our program to add the following code just before printing the result:
 
 [source,python]
 ----
@@ -2439,7 +2447,11 @@ Once downloaded, we extract the tar.gz archive to find a single XML file with a 
 
 ==== Parsing the Wiktionary dump
 
-We need to extract only the relevant information from this large file. Here is a preview of its content:
+The downloaded file contains every dictionary written in the english language (English => English, Spanish => English, ...). To avoid parsing the whole file many times, we need to extract only the relevant information.
+
+image::assistant-filter-english.png[]
+
+Here is a preview of its content:
 
 {% raw %}
 [source,xml,subs="verbatim"]
@@ -2512,9 +2524,9 @@ is labelled &quot;fat '''free'''&quot;, meaning it contains no fat]]
 ----
 {% endraw %}
 
-To parse such a large file, we need a XML parser that do not load the full file in memory. So, we will use a SAX Parser. Unlike a DOM parser, it is not possible to simply traverse the XML document to extract the relevant information. SAX Parsers are event-driven. We need to listen to each new tag, each character text, and so on. We also need to remember our position inside the file to answer question like "Does the text correspond to the title tag?".
+When parsing such a large file, we should be careful and not load the full file in memory. A solution is to use a SAX Parser. But unlike a DOM parser, it is not possible to simply traverse the XML document to extract the relevant information. SAX Parsers are event-driven. We need to listen to each new tag, each character text, and so on. We also need to remember our position inside the file to answer question such as "Does the text correspond to the title tag?".
 
-Here is the program to extract the id, title, and text and generate another XML file containing only the English word (the dictionary contains all dictionary written in English, such as the French -> English dictionary). The result is a file less than 300 Mb, that does not take 45 minutes to be parsed...
+Here is the program to extract the id, title, and text and generate another XML file containing only the English word. The result is a file less than 300 Mb, that does not take 45 minutes to be parsed...
 
 [source,python]
 .parse_wiktionary.py
@@ -2880,6 +2892,10 @@ Moreover, which type of notes should we create in Anki? The "Basic (with reverse
 All of these points highlight that we can not write a program to automatically take all the decisions for us. So, we will create a basic web application to display the definitions, the examples, and a list of candidate images retrieved from Google Images. Each of these elements will be accompanied with a checkbox to let us choose the most relevant definitions, examples and select the most memorable picture.
 
 ==== The Assistant
+
+The assistant reads the JSON dictionary file created previously, displays its content to the user and save a new annotated JSON file containing the choice made by the user. We will returned to this file next but for now.
+
+image::assistant-global.png[]
 
 Here is a screenshot of this application:
 
@@ -3545,7 +3561,7 @@ And the back template:
 
 The `Card 3` displays the translation of the word:
 
-image::vocabulary-note-cardX.png[]
+image::vocabulary-note-card3.png[]
 
 Where the front template is defined like this:
 
