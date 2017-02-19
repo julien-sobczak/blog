@@ -12,7 +12,7 @@ author: Julien Sobczak
 <head>
 
     {% include meta.html %}
-    
+
     <title>{{page.title}}</title>
 
     {% include stylesheets.html %}
@@ -85,11 +85,11 @@ author: Julien Sobczak
                 {% assign count = count | plus: 1 %}
                 {% if count < 4 %} <!-- show only 3 last posts -->
                 <li>
-                  <a href="{{ post.url | prepend: site.baseurl }}">
+                  <a href="{{ post.url | prepend: site.baseurl }}">
                     {% if post.shortTitle %}
-                      {{ post.shortTitle }}
+                      {{ post.shortTitle }}
                     {% else %}
-                      {{ post.title }}
+                      {{ post.title }}
                     {% endif %}
                     ,
                   </a>
@@ -117,7 +117,7 @@ author: Julien Sobczak
                 {% assign count = count | plus: 1 %}
                 {% if count < 4 %} <!-- show only 3 last posts -->
                 <li>
-                  <a href="{{ post.url | prepend: site.baseurl }}">{{ post.subject }},</a>
+                  <a href="{{ post.url | prepend: site.baseurl }}">{{post.subject}},</a>
                 </li>
                 {% endif %}
               {% endif %}
@@ -137,7 +137,7 @@ author: Julien Sobczak
                 {% assign count = count | plus: 1 %}
                 {% if count < 4 %} <!-- show only 3 last posts -->
                 <li>
-                  <a href="{{ post.url | prepend: site.baseurl }}">{{ post.subject }},</a>
+                  <a href="{{ post.url | prepend: site.baseurl }}">{{ post.subject }},</a>
                 </li>
                 {% endif %}
               {% endif %}
@@ -146,7 +146,7 @@ author: Julien Sobczak
           </ul>
         </div>
       </div>
-      <a href="{{ '/categories/all.html' | prepend: site.baseurl }}" class="btn btn-lg btn-outline btn-outline-colored">
+      <a href="{{ '/categories/all.html' | prepend: site.baseurl }}" class="btn btn-lg btn-outline btn-outline-colored">
           <i class="fa fa-list"></i> View All Posts
       </a>
     </div>

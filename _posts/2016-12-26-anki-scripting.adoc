@@ -2781,7 +2781,7 @@ from the keyboard device.
 {% endraw %}
 <1> A wiktionary entry contains the text of multiple dictionaries (English-English, English-Dutch). Only the English-English dictionary is relevant when learning the English language.
 <2> A given word could be used as a noun, a verb, etc. We need to extract the definition for each type while keeping note of the type.
-<3> Label syntax such as {{t+|fr|clavier|m}} is used exhaustively inside the wiki text. Most of the content is present inside these labels but the syntax is not easily parseable.
+<3> Label syntax such as {% raw %}{{t+|fr|clavier|m}}{% endraw %} is used exhaustively inside the wiki text. Most of the content is present inside these labels but the syntax is not easily parseable.
 <4> There are many translation blocks. Often, the first one is the only translation we are interested.
 
 On this example, the definitions are easily parseable but not all the words are so simple in practice. Consider the word 'car':

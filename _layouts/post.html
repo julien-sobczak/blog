@@ -13,7 +13,10 @@ layout: 'page'
         <span class="date">{{ page.date | date: '%B %d, %Y' }}</span>
 
         {% for tag in page.tags %}
-          <a href="{{ '/tags/' tag | prepend: site.baseurl }}" class="label">{{ tag | capitalize }}</a>
+          <a href="{{ '/tags/' | append: tag | prepend: site.baseurl }}"
+             class="label">
+            {{ tag | capitalize }}
+          </a>
         {% endfor %}
 
         <ul class="language">
@@ -24,7 +27,7 @@ layout: 'page'
         <h2>{{page.title}}</h2>
         <p class="author-name">
           <span>By </span>
-          <a href="/blog/about-me">{{ page.author }}</a>
+          <a href="/blog/about-me">{{page.author}}</a>
         </p>
 
         <p class="share-label">Share</p>
@@ -60,4 +63,4 @@ layout: 'page'
   </div>
 </header>
 
-{{ content }}
+{{ content }}
