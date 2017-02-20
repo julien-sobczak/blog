@@ -746,6 +746,22 @@ footer img.footer-me {
   background-image: url(../img/iminspectinit-icon.png);
 }
 
+@media (max-width: 800px) {
+  #page-post header {
+    padding: 100px 0 50px 0 !important;
+    margin: 0;
+  }
+
+  #page-post header .date {
+    display: block;
+    margin-bottom: 20px;
+  }
+  #page-post header ul.language,
+  #page-post header.post-title .icon-category {
+    display: none;
+  }
+}
+
 
 #page-post .likes, #page-post .dislikes {
   position: relative;
@@ -901,6 +917,12 @@ footer img.footer-me {
 
   .tocify-extend-page {
     height: 0! important; // TODO find bug in JS tocify
+  }
+}
+
+@media (max-width: 1200px) {
+  .tocify-extend-page {
+    display: none;
   }
 }
 

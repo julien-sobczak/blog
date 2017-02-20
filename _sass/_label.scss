@@ -21,49 +21,7 @@
     text-shadow: none;
   }
 
-
-  @media (max-width: $screen-xsmall-max) {
-    padding: 10px;
-
-    .labels {
-      margin-top: 35px;
-      display: none;
-
-
-      li {
-        width: 125px;
-        height: 125px;
-
-
-        .label-icon {
-          top: 25px;
-        }
-
-
-        .label-text {
-          font-weight: 400;
-          bottom: 25px;
-        }
-
-
-        .sunshine {
-          background: url(../img/sunshine.png);
-          left: -28px;
-          top: -40px;
-          width: 205px;
-          height: 207px;
-        }
-
-      }
-
-    }
-
-  }
-
 }
-
-
-
 
 
 ul.labels {
