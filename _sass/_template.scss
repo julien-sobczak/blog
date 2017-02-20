@@ -544,7 +544,6 @@ section.colored a {
 }
 #about-me .col {
   text-align: left;
-  width: 360px;
 }
 @media (min-width: 768px) {
   #about-me .row {
@@ -552,6 +551,7 @@ section.colored a {
   }
   #about-me .col {
     margin: 0 20px;
+    width: 360px;
   }
 }
 
@@ -807,7 +807,7 @@ footer img.footer-me {
 
 @media (max-width: 800px) {
   #page-post article {
-    max-width: 750px;
+    width: 100%;
   }
 }
 @media (max-width: 1200px) {
@@ -993,8 +993,22 @@ figure img.in-view {
 .listingblock {
   font-size: 15px; // Be sure to display 80 characters per line
   border-top: 1px solid gray;
-  border-bottom: 1px solid gray;
+
+  pre {
+    padding-bottom: 20px;
+  }
 }
+
+@media (min-width: 768px) {
+  .listingblock {
+    // replace scrollbar by a border
+    border-bottom: 1px solid gray;
+    pre {
+      padding-bottom: 0;
+    }
+  }
+}
+
 
 @import "https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400";
 .quoteblock {
@@ -1157,6 +1171,7 @@ article.problem-solution {
 .imageblock {
   text-align:center
 }
+
 
 
 // Callout
