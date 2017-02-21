@@ -3,9 +3,12 @@ layout: default
 ---
 
 
-<div id="blog-content" style="text-align: center;">
+<section class="category-content" style="text-align: center;">
 
-  <h3 id="tag-{{page.tag}}">{{page.tag_name}}</h3>
+  <div>
+    <h2>{{page.tag_name}}</h3>
+    <hr class="star-primary">
+  </div>
 
   <div id="post-list-container" style="text-align: center;">
     <ul class="post-list" id="post-list">
@@ -15,41 +18,7 @@ layout: default
       {% if post.tags contains page.tag %}
 
       <li>
-        <div class="post-preview post-{{post.categories}}-preview">
-
-          <div class="title">
-            <h2>{{ post.title }}</h2>
-            {% if post.categories == 'read' %}
-            <h3>{{ post.read_authors }}</h3>
-            {% elsif post.categories == 'watch' %}
-            <h3>{{ post.watch_speakers }}</h3>
-            {% endif %}
-            <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
-            <nav>
-              <a href="{{ post.url | prepend: site.baseurl }}"><span data-hover="Read">Read</span></a>
-            </nav>
-          </div>
-
-          {% if post.image %}
-          <div class="image">
-            <img class="ignore" src="{{ post.image }}">
-            {% comment %}
-              We excludes post image from the loader to avoid a long blank screen, waiting to download all 200+ book pictures...
-            {% endcomment %}
-          </div>
-          {% endif %}
-
-          {% if post.categories == 'read' %}
-          <div class="more">
-            <span class="note note-{{ post.read_note }}-20"></span>
-          </div>
-          {% elsif post.categories == 'watch' %}
-          <div class="more">
-            <span class="note note-{{ post.watch_note }}-5"></span>
-          </div>
-          {% endif %}
-
-        </div>
+        {% include post-preview.html %}
         <div style="clear: both;"></div>
       </li>
 
@@ -60,5 +29,4 @@ layout: default
     </ul>
   </div>
 
-</div>
-
+</section>

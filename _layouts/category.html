@@ -27,45 +27,7 @@ layout: default
         {% if page.category == 'all' or post.category == page.category %}
 
           <li>
-            <div class="post-preview post-{{post.categories}}-preview">
-
-              <div class="title">
-                {% if post.shortTitle %}
-                <h3>{{ post.shortTitle }}</h3>
-                {% else %}
-                <h3>{{ post.title }}</h3>
-                {% endif %}
-                {% if post.categories == 'read' %}
-                <h3>{{ post.read_authors }}</h3>
-                {% elsif post.categories == 'watch' %}
-                <h3>{{ post.watch_speakers }}</h3>
-                {% endif %}
-                <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
-                <nav>
-                  <a href="{{ post.url | prepend: site.baseurl }}"><span data-hover="Read">Read</span></a>
-                </nav>
-              </div>
-
-              {% if post.image %}
-              <div class="image">
-                <img class="ignore" src="{{ post.image }}">
-                {% comment %}
-                  We excludes post image from the loader to avoid a long blank screen, waiting to download all 200+ book pictures...
-                {% endcomment %}
-              </div>
-              {% endif %}
-
-              {% if post.categories == 'read' %}
-              <div class="more">
-                <span class="note note-{{ post.read_note }}-20"></span>
-              </div>
-              {% elsif post.categories == 'watch' %}
-              <div class="more">
-                <span class="note note-{{ post.watch_note }}-5"></span>
-              </div>
-              {% endif %}
-
-            </div>
+            {% include post-preview.html %}
             <div style="clear: both;"></div>
           </li>
 
