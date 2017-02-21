@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+
+"""
+Generate a new book review. Usage:
+
+$ python util/new-review-book.py --date 2016-12-17 --output _posts https://www.goodreads.com/book/show/27213329-grit
+
+"""
+
 from bs4 import BeautifulSoup
 import codecs
 import urllib.request

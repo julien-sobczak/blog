@@ -1,0 +1,49 @@
+---
+layout: post-read
+title: "Quiet: The Power of Introverts in a World That Can't Stop Talking"
+author: Julien Sobczak
+date: '2016-11-21'
+category: read
+subject: self-help
+headline: No other book  
+note: 19
+tags:
+  - self-help
+image: 'https://images.gr-assets.com/books/1328562861l/8520610.jpg'
+metadata:
+  authors: Susan Cain
+  publisher: "Crown Publishing Group/Random House, Inc."
+  datePublished: '2012-01-24'
+  bookFormat: 'Hardcover'
+  isbn: '0307352145'
+  numberOfPages: 337
+links:
+  amazon: 'https://www.amazon.com/gp/product/0307352145/'
+  goodreads: 'https://www.goodreads.com/book/show/8520610-quiet'
+---
+
+The book dispels the myth that you have to be extroverted to be happy and successful.
+
+A brillant, illuminating, and empowering book about understanding introversion.
+
+A thoroughly researched book on how introverts can lead effectively, give winning speeches, avoid burnout, and choose the right roles.
+
+Introverts should have been waiting for this book all their lives.
+
+Do pretend to be extrovert, society needs introverts, so everyone can benefit from the insights on this important book.
+
+A life-changing book that explains there really nothing wrong with being quiet, reflective, shy, and introverted, but there are distinct advantages to being this way.
+
+Highly readable page-turner.
+
+Several aspects of quiet are remarkable. First it is well informed by the research literature but not held captive by it. Second, it is exceptionally well written, and reader friendly.
+
+The single most important aspect of personality is where we fall on the introvert-extrovert spectrum. Our place on this continuum influences our choice of friends and mates, and how we make conversation, resolve differences, and show love.
+
+Introversion and extroversion are two of the most exhaustively researched subjects in personality psychology.
+
+It you are an introvert guy, this book will be a revolution for you.
+
+This book will benefit the extrovert too. Like the yin and the Yang, introvert and extrovert are the perfect complement.
+
+My only regret about Quiet : not have read years ago. It opens my eyes. It brings answers to long time question. And I'm sure, it will drive me in my future. Just read it. And read it again.
