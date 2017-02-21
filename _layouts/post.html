@@ -33,27 +33,27 @@ layout: 'page'
         <p class="share-label">Share</p>
         <ul class="share-links">
           <li>
-            <a href="http://www.facebook.com/sharer.php?u=http://www.imlovinit.fr/2015/03/building-microservices.html" target="_blank">
+            <a href="https://facebook.com/sharer.php?u={{ site.url }}{{ page.url }}" rel="nofollow" target="_blank" title="Share on Facebook">
               <i class="fa fa-facebook" aria-hidden="true"></i>
             </a>
           </li>
           <li>
-            <a href="https://plus.google.com/share?url=http://www.imlovinit.fr/2015/03/building-microservices.html" target="_blank">
+            <a href="https://plus.google.com/share?url={{ site.url }}{{ page.url }}" rel="nofollow" target="_blank" title="Share on Google+">
               <i class="fa fa-google-plus" aria-hidden="true"></i>
             </a>
           </li>
           <li>
-            <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://www.imlovinit.fr/2015/03/building-microservices.html" target="_blank">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ site.baseurl }}{{ page.url }}&amp;title={{ page.title }}" target="_blank">
               <i class="fa fa-linkedin" aria-hidden="true"></i>
             </a>
           </li>
           <li>
-            <a href="http://reddit.com/submit?url=http://www.imlovinit.fr/2015/03/building-microservices.html&amp;title=Simple Share Buttons" target="_blank">
+            <a href="https://www.reddit.com/submit?url={{ site.baseurl }}{{ page.url }}&amp;title={{ page.title }}" target="_blank">
               <i class="fa fa-reddit-alien" aria-hidden="true"></i>
             </a>
           </li>
           <li>
-            <a href="https://twitter.com/share?url=http://www.imlovinit.fr/2015/03/building-microservices.html&amp;text=Simple%20Share%20Buttons&amp;hashtags=simplesharebuttons" target="_blank">
+            <a href="https://twitter.com/intent/tweet?text={{ page.title }}&amp;url={{ site.url }}{{ page.url }}&amp;via={{ site.twitter_username }}&amp;related={{ site.twitter_username }}" rel="nofollow" target="_blank" title="Share on Twitter">
               <i class="fa fa-twitter" aria-hidden="true"></i>
             </a>
           </li>

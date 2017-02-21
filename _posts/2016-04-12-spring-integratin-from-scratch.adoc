@@ -5,6 +5,7 @@ author: 'Julien Sobczak'
 date: '2016-04-12 09:15:00.000+01:00'
 category: inspect
 subject: Spring Integration
+toc: true
 tags:
 - java
 - framework

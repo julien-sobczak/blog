@@ -6,42 +6,8 @@ layout: post
 
   <div class="container sticky-container">
 
-    <aside id="share" class="sticky aside-left aside-links optional"> <!-- Add optional class to appear on scroll -->
-      <span>Share</span>
-      <ul>
-        <li>
-          <a href="#">
-            <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-google-plus fa-1x" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-linkedin fa-1x" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-reddit fa-1x" aria-hidden="true"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-facebook fa-1x" aria-hidden="true"></i>
-          </a>
-        </li>
-      </ul>
-    </aside>
-
-    {% if page.toc %}
-    <aside id="toc" class="sticky aside-right aside-menu optional">
-      <!-- Will be dynamically populated -->
-    </aside>
-    {% endif %}
+    {% include aside-share.html %}
+    {% include aside-toc.html %}
 
     {% if page.model %}
     <article class="{{ page.model }}">
