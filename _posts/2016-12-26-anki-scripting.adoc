@@ -2912,11 +2912,12 @@ $ mvn clean package
 Then, run the following command to start the web application:
 
 ----
-$ java -jar target/anki-vocabulary-assistant-0.0.1.jar \
+$ java \
   -DdeveloperKey=<YOUR_DEVELOPER_KEY> \
   -Dcx=<YOUR_CONTEXT_KEY> \
   -DoutputDir="~/output/" \
-  -DdictionaryFile="anki-usecase-enfrequency/resources/mywiktionary.json"
+  -DdictionaryFile="anki-usecase-enfrequency/resources/mywiktionary.json" \
+  -jar target/anki-vocabulary-assistant-0.0.1.jar \
 ----
 
 [NOTE]
