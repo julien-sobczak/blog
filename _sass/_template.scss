@@ -861,6 +861,10 @@ $aside-width: 385px;
 #page-post .sticky {
   position: relative;
   top: 0;
+
+  > span {
+    display: block;
+  }
 }
 
 #page-post aside span {
@@ -888,7 +892,9 @@ $aside-width: 385px;
   transition: color 300ms linear;
 }
 .aside-picture img {
-  max-width: 90%;
+  max-width: 80%;
+  max-height: 300px;
+  margin: 0 auto;
 }
 
 #page-post .aside-menu {

@@ -26,7 +26,12 @@ layout: 'page'
 
         <h2>{{page.title}}</h2>
         <p class="author-name">
-          <span>By </span>
+          {% if page.category == 'read' %}
+            {% comment %} We explicit that the book was not written by the author of the review {% endcomment %}
+            <span>A review by </span>
+          {% else %}
+            <span>By </span>
+          {% endif %}
           <a href="/blog/about-me">{{page.author}}</a>
         </p>
 
