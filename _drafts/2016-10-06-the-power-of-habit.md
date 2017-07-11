@@ -5,7 +5,7 @@ author: Julien Sobczak
 date: '2016-10-06'
 category: read
 subject: Habits
-headline: Habits could be detrimental or positive.
+headline: Insightful but not the game changer I was expecting.
 note: 14
 tags:
   - productivity
@@ -23,7 +23,7 @@ links:
   goodreads: 'https://www.goodreads.com/book/show/12609433-the-power-of-habit'
 ---
 
-Kent Beck, world-renowned programmer once wrote, "I'm not a great programmer; I'm just a good programmer with great habit." But everyone knows by experience that it is so harder to adopt new habits and even more difficult to get rid of bad ones.
+Kent Beck, world-renowned programmer once wrote, "I'm not a great programmer; I'm just a good programmer with great habit." But everyone knows by experience that it is so hard to adopt new habits and even more difficult to get rid of bad ones.
 
 Charles Duhigg, through fascinating real stories, convinces us that changing habits is possible. But as giving up cigarettes is different from how you prioritize tasks at work, *The Power of Habit* does not try to deliver the secret formula for quickly changing any habit. There isn't one formula. There are thousands. So, this book delivers a framework for understanding how habits work and a guide to experimenting with how they might change.
 
@@ -31,4 +31,4 @@ Each chapter explains a different aspect of why habits exist and how they functi
 
 I really appreciate the appendix, which distill in a simple way the tactics that researchers have found for shaping habits within our own lives. A good place to start in complement to the deeper lessons from this book.
 
-In the end, despite the popularity of this book, I think there is room for another book on the subject. Maybe *Stick with It*, published in 2017 (5 years later) could fill this role. 
+In the end, despite the popularity of this book, I think there is room for another book on the subject. Maybe *Stick with It*, published in 2017 (5 years later) could fill this role.
