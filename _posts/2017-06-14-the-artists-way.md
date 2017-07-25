@@ -1,6 +1,7 @@
 ---
 layout: post-read
 title: "The Artist's Way: A Spiritual Path to Higher Creativity"
+shortTitle: The Artist's Way
 author: Julien Sobczak
 date: '2017-06-14'
 category: read
