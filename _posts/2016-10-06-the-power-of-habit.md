@@ -27,7 +27,7 @@ Kent Beck, world-renowned programmer once wrote, "I'm not a great programmer; I'
 
 Charles Duhigg, through fascinating real stories, convinces us that changing habits is possible. But as giving up cigarettes is different from how you prioritize tasks at work, *The Power of Habit* does not try to deliver the secret formula for quickly changing any habit. There isn't one formula. There are thousands. So, this book delivers a framework for understanding how habits work and a guide to experimenting with how they might change.
 
-Each chapter explains a different aspect of why habits exist and how they function, based on two or three stories (i.e. Michael Phelps, toothpaste). Overall, the book is good but I clearly preferred the first part on personal habits. As the book progresses through the habits of successful companies and the habits of the society, I felt less captivated, probably because I was less interested by these topics.   
+Each chapter explains a different aspect of why habits exist and how they function, based on two or three stories (from Michael Phelps to the toothpaste). Overall, the book is good but I clearly preferred the first part on personal habits. As the book progresses through the habits of successful companies and the habits of the society, I felt less captivated, probably because I was less interested by these topics.   
 
 I really appreciate the appendix, which distill in a simple way the tactics that researchers have found for shaping habits within our own lives. A good place to start in complement to the deeper lessons from this book.
 
