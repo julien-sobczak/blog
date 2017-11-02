@@ -19,6 +19,7 @@ metadata:
   numberOfPages: 432
 links:
   amazon: 'https://www.amazon.com/gp/product/0134494164/'
+  amazon_review: 'https://www.amazon.com/review/R2STBVB4KVSXM1/'
   goodreads: 'https://www.goodreads.com/book/show/18043011-clean-architecture'
 ---
 

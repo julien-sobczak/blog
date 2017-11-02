@@ -20,6 +20,7 @@ metadata:
   numberOfPages: 399
 links:
   amazon: 'https://www.amazon.com/gp/product/B0184N7WWS/'
+  amazon_review: 'https://www.amazon.com/review/RPV3UAI4Z475Z/'
   goodreads: 'https://www.goodreads.com/book/show/27858475-the-go-programming-language'
 ---
 

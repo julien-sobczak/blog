@@ -20,6 +20,7 @@ metadata:
   numberOfPages: 792
 links:
   amazon: 'https://www.amazon.com/gp/product/1491946008/'
+  amazon_review: 'https://www.amazon.com/review/RDC240CNBU0AQ/'
   goodreads: 'https://www.goodreads.com/book/show/22800567-fluent-python'
 ---
 

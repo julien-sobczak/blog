@@ -19,6 +19,7 @@ metadata:
   numberOfPages: 238
 links:
   amazon: 'https://www.amazon.com/gp/product/1101875321/'
+  amazon_review: 'https://www.amazon.com/review/R3QWN027LEK2TX/'
   goodreads: 'https://www.goodreads.com/book/show/26046333-designing-your-life'
 ---
 

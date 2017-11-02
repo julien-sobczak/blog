@@ -19,6 +19,7 @@ metadata:
   numberOfPages: 480
 links:
   amazon: 'https://www.amazon.com/gp/product/0133846830/'
+  amazon_review: 'https://www.amazon.com/review/R2KM3V3IJMJHJW/'
   goodreads: 'https://www.goodreads.com/book/show/22251127-reactive-messaging-patterns-with-the-actor-model'
 ---
 
