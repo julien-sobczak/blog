@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Jenkins: The Definitive Guide"
+title: "Book Review: Jenkins: The Definitive Guide"
+shortTitle: "Jenkins: The Definitive Guide"
 author: Julien Sobczak
 date: '2015-05-05'
 category: read

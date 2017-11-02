@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Learning Spark
+title: "Book Review: Learning Spark"
+shortTitle: Learning Spark
 author: Julien Sobczak
 date: '2015-07-05'
 category: read

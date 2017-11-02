@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "The Scrumban [R]Evolution: Getting the Most Out of Agile, Scrum, and Lean Kanban"
+title: "Book Review: The Scrumban [R]Evolution: Getting the Most Out of Agile, Scrum, and Lean Kanban"
 shortTitle: "The Scrumban [R]Evolution"
 author: Julien Sobczak
 date: '2016-11-21'

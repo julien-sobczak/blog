@@ -280,7 +280,8 @@ class BookReviewPost:
         result += "---\n"
 
         result += "layout: post-read\n"
-        result += "title: \"%s\"\n" % self.metadata.title
+        result += "title: \"Book Review: %s\"\n" % self.metadata.title
+        result += "shortTitle: \"%s\"\n" % self.metadata.title
         result += "author: Julien Sobczak\n"
         result += "date: '%s'\n" % self.publication_date
         result += "category: read\n"

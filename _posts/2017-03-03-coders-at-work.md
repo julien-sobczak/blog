@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Coders at Work: Reflections on the Craft of Programming"
+title: "Book Review: Coders at Work: Reflections on the Craft of Programming"
 shortTitle: Coders at Work
 author: Julien Sobczak
 date: '2017-03-03'

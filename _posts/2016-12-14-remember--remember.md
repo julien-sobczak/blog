@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Remember, Remember"
+title: "Book Review: Remember, Remember"
+shortTitle: "Remember, Remember"
 author: Julien Sobczak
 date: '2016-12-14'
 category: read

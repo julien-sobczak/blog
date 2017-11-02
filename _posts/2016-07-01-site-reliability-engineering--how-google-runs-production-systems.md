@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Site Reliability Engineering: How Google Runs Production Systems"
+title: "Book Review: Site Reliability Engineering: How Google Runs Production Systems"
 shortTitle: Site Reliability Engineering
 author: Julien Sobczak
 date: '2016-07-01'

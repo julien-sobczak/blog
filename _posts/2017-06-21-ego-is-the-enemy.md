@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Ego Is the Enemy"
+title: "Book Review: Ego Is the Enemy"
+shortTitle: "Ego Is the Enemy"
 author: Julien Sobczak
 date: '2017-06-21'
 category: read

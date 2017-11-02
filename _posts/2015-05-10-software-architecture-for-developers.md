@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Software Architecture for Developers
+title: "Book Review: Software Architecture for Developers"
+shortTitle: Software Architecture for Developers
 author: Julien Sobczak
 date: '2015-05-10'
 category: read

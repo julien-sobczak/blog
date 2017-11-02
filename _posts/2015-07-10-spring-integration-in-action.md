@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Spring Integration in Action
+title: "Book Review: Spring Integration in Action"
+shortTitle: Spring Integration in Action
 author: Julien Sobczak
 date: '2015-07-10'
 category: read

@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: iBatis in Action
+title: "Book Review: iBatis in Action"
+shortTitle: iBatis in Action
 author: Julien Sobczak
 date: '2015-07-02'
 category: read

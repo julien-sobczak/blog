@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Pragmatic Unit Testing in Java 8 with Junit
+title: "Book Review: Pragmatic Unit Testing in Java 8 with Junit"
+shortTitle: Pragmatic Unit Testing in Java 8 with Junit
 author: Julien Sobczak
 date: '2015-06-15'
 category: read

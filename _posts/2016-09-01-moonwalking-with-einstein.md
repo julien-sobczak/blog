@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Moonwalking with Einstein: The Art and Science of Remembering Everything"
+title: "Book Review: Moonwalking with Einstein: The Art and Science of Remembering Everything"
 shortTitle: Moonwalking with Einstein
 author: Julien Sobczak
 date: '2016-09-01'

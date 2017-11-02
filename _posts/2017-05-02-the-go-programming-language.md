@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "The Go Programming Language"
+title: "Book Review: The Go Programming Language"
+shortTitle: "The Go Programming Language"
 author: Julien Sobczak
 date: '2017-05-02'
 category: read

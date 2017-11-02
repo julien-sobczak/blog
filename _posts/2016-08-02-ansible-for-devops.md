@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Ansible for DevOps"
+title: "Book Review: Ansible for DevOps"
+shortTitle: "Ansible for DevOps"
 author: Julien Sobczak
 date: '2016-08-02'
 category: read

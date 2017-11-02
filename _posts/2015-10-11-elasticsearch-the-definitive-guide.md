@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Elasticsearch: The Definitive Guide"
+title: "Book Review: Elasticsearch: The Definitive Guide"
+shortTitle: "Elasticsearch: The Definitive Guide"
 author: Julien Sobczak
 date: '2015-10-11'
 category: read

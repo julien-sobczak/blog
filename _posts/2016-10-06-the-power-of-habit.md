@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "The Power of Habit: Why We Do What We Do in Life and Business"
+title: "Book Review: The Power of Habit: Why We Do What We Do in Life and Business"
+shortTitle: "The Power of Habit"
 author: Julien Sobczak
 date: '2016-10-06'
 category: read

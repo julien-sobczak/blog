@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: 'Building Microservices'
+title: 'Book Review: Building Microservices'
+shortTitle: 'Building Microservices'
 author: 'Julien Sobczak'
 date: '2015-03-20T09:00:00.002+02:00'
 category: read

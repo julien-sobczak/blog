@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka"
+title: "Book Review: Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka"
 shortTitle: "Reactive Messaging Patterns with the Actor Model"
 author: Julien Sobczak
 date: '2017-10-21'

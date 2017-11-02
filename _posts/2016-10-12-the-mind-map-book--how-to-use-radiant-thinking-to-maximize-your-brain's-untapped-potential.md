@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "The Mind Map Book: How to Use Radiant Thinking to Maximize Your Brain's Untapped Potential"
+title: "Book Review: The Mind Map Book: How to Use Radiant Thinking to Maximize Your Brain's Untapped Potential"
 shortTitle: The Mind Map Book
 author: Julien Sobczak
 date: '2016-10-12'

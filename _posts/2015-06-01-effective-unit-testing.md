@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Effective Unit Testing
+title: "Book Review: Effective Unit Testing"
+shortTitle: Effective Unit Testing
 author: Julien Sobczak
 date: '2015-06-01'
 category: read

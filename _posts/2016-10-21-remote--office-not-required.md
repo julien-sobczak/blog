@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Remote: Office Not Required"
+title: "Book Review: Remote: Office Not Required"
+shortTitle: "Remote"
 author: Julien Sobczak
 date: '2016-10-21'
 category: read
@@ -25,7 +26,7 @@ links:
 
 Jason Fried and David Heinemeier Hansson, founders of Basecamp (previously 37signals), used their experience to deliver an engaged and very practical book, explaining why companies should go remote.
 
-Using the same style as *Rework* (short book richly illustrated with memorable drawing), Remote is the perfect introduction to the subject, providing the upgrade the human mind need by illuminating the many benefits of remote work and tackling the common excuses (the most lengthy chapter but also the most useful one if you need to convince your employer). 
+Using the same style as *Rework* (short book richly illustrated with memorable drawing), Remote is the perfect introduction to the subject, providing the upgrade the human mind need by illuminating the many benefits of remote work and tackling the common excuses (the most lengthy chapter but also the most useful one if you need to convince your employer).
 
 The authors present powerful arguments but the only downside of this book is that it not sufficiently backed by research. Authors use commonsense and examples of successful companies to support the key points of the book.
 

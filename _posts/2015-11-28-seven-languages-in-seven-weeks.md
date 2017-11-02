@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Seven Languages in Seven Weeks"
+title: "Book Review: Seven Languages in Seven Weeks"
+shortTitle: "Seven Languages in Seven Weeks"
 author: Julien Sobczak
 date: '2015-11-28'
 category: read

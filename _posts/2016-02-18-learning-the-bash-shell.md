@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Learning the bash Shell"
+title: "Book Review: Learning the bash Shell"
+shortTitle: "Learning the bash Shell"
 author: Julien Sobczak
 date: '2016-02-18'
 category: read

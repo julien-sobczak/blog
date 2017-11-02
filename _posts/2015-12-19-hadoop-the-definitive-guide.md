@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Hadoop: The Definitive Guide"
+title: "Book Review: Hadoop: The Definitive Guide"
+shortTitle: "Hadoop: The Definitive Guide"
 author: Julien Sobczak
 date: '2015-12-19'
 category: read

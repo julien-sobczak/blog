@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Start with Why: How Great Leaders Inspire Everyone to Take Action"
+title: "Book Review: Start with Why: How Great Leaders Inspire Everyone to Take Action"
 shortTitle: Start with Why
 author: Julien Sobczak
 date: '2016-03-10'

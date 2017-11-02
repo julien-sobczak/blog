@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Hadoop Application Architectures: Designing Real-World Big Data Applications"
+title: "Book Review: Hadoop Application Architectures: Designing Real-World Big Data Applications"
 shortTitle: "Hadoop Application Architectures"
 author: Julien Sobczak
 date: '2016-08-24'

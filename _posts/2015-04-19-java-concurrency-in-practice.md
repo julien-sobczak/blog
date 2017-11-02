@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Java Concurrency in Practice
+title: "Book Review: Java Concurrency in Practice"
+shortTitle: Java Concurrency in Practice
 author: Julien Sobczak
 date: '2015-04-19'
 category: read

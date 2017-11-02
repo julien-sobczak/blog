@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "Building Applications on Mesos: Leveraging Resilient, Scalable, and Distributed Systems"
+title: "Book Review: Building Applications on Mesos: Leveraging Resilient, Scalable, and Distributed Systems"
 shortTitle: "Building Applications on Mesos"
 author: Julien Sobczak
 date: '2016-04-15'

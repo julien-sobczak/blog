@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "Pro Puppet"
+title: "Book Review: Pro Puppet"
+shortTitle: "Pro Puppet"
 author: Julien Sobczak
 date: '2016-07-21'
 category: read

@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: SonarQube In Action
+title: "Book Review: SonarQube in Action"
+shortTitle: SonarQube in Action
 author: Julien Sobczak
 date: '2015-08-04'
 category: read

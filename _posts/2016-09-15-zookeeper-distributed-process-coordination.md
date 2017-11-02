@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: "ZooKeeper: Distributed process coordination"
+title: "Book Review: ZooKeeper: Distributed process coordination"
+shortTitle: "ZooKeeper: Distributed process coordination"
 author: Julien Sobczak
 date: '2016-09-15'
 category: read

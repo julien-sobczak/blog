@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: 'Leading Change'
+title: 'Book Review: Leading Change'
+shortTitle: 'Leading Change'
 author: 'Julien Sobczak'
 date: '2015-03-13T09:00:00.002+02:00'
 category: read

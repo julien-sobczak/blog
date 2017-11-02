@@ -1,6 +1,6 @@
 ---
 layout: post-read
-title: "The Memory Book: The Classic Guide to Improving Your Memory at Work, at School, and at Play"
+title: "Book Review: The Memory Book: The Classic Guide to Improving Your Memory at Work, at School, and at Play"
 shortTitle: "The Memory Book"
 author: Julien Sobczak
 date: '2017-05-28'

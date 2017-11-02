@@ -1,6 +1,7 @@
 ---
 layout: post-read
-title: Spring Batch in Action
+title: "Book Review: Spring Batch in Action"
+shortTitle: Spring Batch in Action
 author: Julien Sobczak
 date: '2015-06-28'
 category: read
