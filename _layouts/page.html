@@ -4,11 +4,14 @@
 <head>
 
     {% include meta.html %}
-    
+
     <title>{{page.title}}</title>
 
     {% include stylesheets.html %}
 
+    {% if jekyll.environment == 'production' %}
+    {% include analytics.html %}
+    {% endif %}
 </head>
 
 <body id="page-post">
