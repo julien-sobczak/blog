@@ -9,6 +9,7 @@ tags:
   - learning
 ---
 
+[.lead]
 I love reading non fiction books, particularly while commuting. I (try to) start a new book every week -- a new language, a new framework, a new insight. There is so much to learn. But the truth is, after more than 300 books read in the last decade, I forgot (almost) everything.
 
 I am not saying that reading is a waste of time. Not at all! My readings have profoundly influenced my way of thinking, how I approach my career, and I feel very indebted to the authors that dedicated a part of their life to the task. What I am asking instead is: what could I have done to remember more?
@@ -18,9 +19,15 @@ I am not saying that reading is a waste of time. Not at all! My readings have pr
 
 Most of what we see, what we hear, or what we read does not survive after 30 seconds. Those rare items whose survive start a perilous journey into our long-term memory facing a sad reality: our memories decay with time. The more distant the exposure to a subject, the less likely we remember it. But some memories disappears slower. What makes these memories stand apart is they are memorable -- an interesting subject, a funny picture, a familiar face, a incredible news, a beautiful landscape -- the more memorable, the longer in the memory.
 
-In theory, our memory acts as a giant network where each neuron may be connected to up to 10,000 other neurons using synapses. In practice, it means if we want a given memory to stay for a long time, we better have to create connections with the most of existing memories. The importance of creating connections explains why seeing the Big Picture when learning something new is so important. Indeed, the Big Picture help us link new knowledge with existing ones, creating connections that strengthen the comprehension and the retention of new information. In the highly praised book *A Mind for Numbers*, author Barbara Oakley compares learning with building a wall. Do you imagine a wall having holes and no mortar to glue the different bricks would pass the test of time? Of course, no.
+In theory, our memory acts as a giant network where each neuron may be connected to up to 10,000 other neurons using synapses. In practice, it means if we want a given memory to stay for a long time, we better have to create connections with the most of existing memories. To do that, you need to arouse interest by choosing the best resources to learn. Every subject can be made passionate by choosing the right words, the right metaphors, the right examples. There is never a unique best resource. It depends on what you already know and what you want to learn. Do not read the reference book on a programming language if you just writing your first programs. Begin with a quickstart guide and when you are more comfortable about the syntax, read an advanced book to master the subtleties of the language.
 
-TIP: Remembering requires to develop a personal relation with the subject. Don't read a book because someone say you should. Be curious and follow your passion (but be conscious passions are not set in stone). What interest you the most at the present moment is what you will remember the best. And if something is very important, it will come back to haunt you anyway.
+The importance of creating connections explains also why seeing the Big Picture when learning something new is so important. Indeed, the Big Picture help us connect new knowledge with existing ones, and thus strengthen the comprehension and the retention of new informations. In the highly praised book *A Mind for Numbers*, author Barbara Oakley compares learning with building a wall. Do you imagine a wall having holes and no mortar to glue the different bricks would pass the test of time? You have to make sure the mortar is dry before laying new bricks.
+
+[TIP]
+.Key takeaway
+====
+*Remembering requires to develop a personal relation with the subject.* Don't read a book because someone say you should. Be curious and follow your passion (but be conscious passions are not set in stone). What interest you the most at the present moment is what you will remember the best. And if something is very important, it will come back to haunt you anyway.
+====
 
 
 ## Associations are keys
@@ -34,44 +41,50 @@ Creating associations is something we do constantly. Digits are used to represen
 
 Author ShaoLan Hsueh, with her book *Chineasy* gives us a formidable illustration of the key roles of associations. This mom of two British born children wanted to help them learn Chinese, one of the oldest written languages, and one of the most difficult to master, especially for Westerners. ShaoLan's method is to transform Chinese characters into charming pictograms that are easy to remember. Here are some examples:
 
-image:https://www.chineasy.com/wp-content/uploads/2017/05/person.svg
-image:https://www.chineasy.com/wp-content/uploads/2017/05/fire-1.svg
-image:https://www.chineasy.com/wp-content/uploads/2017/05/woman.svg
-image:https://www.chineasy.com/wp-content/uploads/2017/05/170619_learn_building_blocks-13.png
+image::https://www.chineasy.com/wp-content/uploads/2017/05/person.svg[Person,200,200]
+image::https://www.chineasy.com/wp-content/uploads/2017/05/fire-1.svg[Fire,200,200]
+image::https://www.chineasy.com/wp-content/uploads/2017/05/woman.svg[Woman,200,200]
+image::https://www.chineasy.com/wp-content/uploads/2017/05/170619_learn_building_blocks-13.png[Sun,200,200]
 
 Visualizations are also used by all memory champions, who among their achievements succeed in remembering the order of a shuffled deck of cards in less than 30 seconds. As using pure rote learning is doomed to failure, champions use associations. When you see the ace of diamond, they see Michael Jordan slam dunking a basketball. The two of club is Charlie Chaplin swinging with his cane. The jack of space could be the Joker in Batman laughing insanely. And so on. Memorizing the deck of cards just comes down to imagine a story using these associations. It could be Charlie Chaplin (two of club) laughing insanely (jack of space) before receiving a basketball (as of diamond). This basic technique known as the https://artofmemory.com/wiki/Person-Action-Object_(PAO)_System[PAO system] (Person-Action-Object) is commonly used in major competitions and is very similar to the techniques used in the Ancient Greece by orators to remember their speech.
 
 > ...[W]hen people say, "I forgot," they didn't, usually-what really happened was that they didn't remember in the first place.
 > Harry Lorayne, The Memory Book
 
-TIP: Associations transform memories from insignificant to memorable. If something is hard to learn, it is probably because you should learn it differently. Be imaginative. It's fun and it definitively works.
+[TIP]
+.Key takeaway
+====
+*Associations transform memories from insignificant to memorable.* If something is hard to learn, it is probably because you should learn it differently. Be imaginative. It's fun and it definitively works.
+====
 
-
-# Time always wins
+## Time always wins
 
 Memorable memories are not immune to decay, and with time, even the more memorable memory could become past memory. The solution is simple. We need to access the information before it disappears. By doing that, you are sending a clear message to your brain: "this is important to me." The following diagram illustrates the retention according the number of times an information is reviewed.
 
-http://www.ellaz.com/AIV/Memo%20Images/Forgetting%20Curve.jpg
+image::http://www.ellaz.com/AIV/Memo%20Images/Forgetting%20Curve.jpg[]
 
 The numbers are only for illustrative purpose. What is important to notice is that memory decays more and more slowly over the revisions. By reviewing the same information at precise interval, we could fix a memory for a very long time using only as few as 5 to 7 reviews. This is exactly what https://en.wikipedia.org/wiki/Spaced_repetition[Spaced Repetition] is about. This learning technique is commonly applied to retain indefinitely a large number of items in memory. It is, therefore, recommended when learning a new language and you face the problem of vocabulary acquisition. While a paper and a pencil could suffice to apply spaced repetitions, there exist spaced repetition softwares (SRS) to help us store items and reviewed them at the right time. The most popular application and the one I use is Anki.
 
 Used by polyglots and memory champions all across the globe, Anki is the most versatile application but not the sexiest one. Compared to specialized applications -- https://www.memrise.com/[Memrise] for vocabulary, https://www.duolingo.com/[Duolingo] for grammar, https://www.khanacademy.org/[Khan Academy] for science -- you have to create your flashcards from scratch with Anki (there exists shared decks but it's anecdotal). What seems a disadvantage at first is its biggest strength. It's take time but you have a total freedom, and as each person's memories are different, this makes a real difference. You choose what to learn, and how to learn it, using associations that make the most sense for you. Everything is stored in the same place.
 
-I have to confess, making Anki an habit is hard work. I started using it three years ago to learn design patterns, refactorings, and algorithms. It worked great during a few months, but then, I started missing the reviews. Very quickly, the number of cards to review was exploding. I almost abandoned but I was forgetting again. To regain interest, I added a lot of flashcards to learn programming languages, bash commands, english vocabulary, memory associations, and it works for me for more than one year. The more you put into Anki, the more valuable your review sessions are.
+I have to confess, making Anki an habit is hard work. I started using it three years ago to learn design patterns, refactorings, and algorithms. It worked great during a few months, but then, I started missing the reviews. Very quickly, the number of cards to review was exploding. I almost abandoned but I was forgetting again. To regain interest, I added a lot of flashcards to learn programming languages, bash commands, English vocabulary, memory associations, and it works for me for more than one year. The more you put into Anki, the more valuable your review sessions are.
 
-TIP: Accessing frequently an information in your memory is the best way to instruct our memory to keep if safe for a long time. Flashcards are our friends but like any habit, it's hard work. Find a use case and give it a try.
-
-
-# Conclusion
-
-Remembering becomes easier when acknowledging how the memory works. Nobody is good are rote learning. With good associations, a limitless curiosity, and an assiduity to test prior knowledge every day, remembering become accessible to everyone. It's only the first step. Once you know how to remember, the next step is to determine what to remember, a task far more difficult than it seems.
-
+[TIP]
+.Key takeaway
+====
+*Accessing frequently an information in your memory is the best way to instruct our memory to keep if safe for a long time.* Flashcards are our friends but like any habit, it's hard work. Find a use case and give it a try.
+====
 
 
-==================================================
+## Conclusion
+
+*Remembering becomes easier when acknowledging how the memory works*. Nobody is good at rote memorization. With good associations, a endless curiosity, and an assiduity to test prior knowledge every day, remembering become accessible to everyone. It's only the first step. *Once you know how to remember, the next step is to determine what to remember*, a task far more difficult than it seems.
 
 
-Human memory share some similarities with the computer memory. Take the example of a Java program. Each variable corresponds to a neuron and the references hold to this variables represent the synapses. Running in background of the JVM, the Garbage Collector inspects regularly this network of variables to find the ones who are not referenced any more to reclaim space. Even if one reference is enough to prevent the garbage collector from reclaiming a variable, the more objects holding a reference to this variable, the less likely the variable will be reclaimed.
+[NOTE.experiment.admonitionblock]
+.In practice
+====
+Here are some of the practices based on the principles presented in this post that I used. I urge you not follow them blindly. I'm constantly experimenting.
 
-
-If we pursue the comparison with the computing program, your memory acts as a cache where each entry has a given TTL (Time To Live) -- the more memorable a memory is, longer is the TTL. If this cache was implemented in Java, the Garbage Collector would generally wait the used memory reaches 80% of the total available space before reclaimed occupied space. That is different with our memory, which is a lot more aggressive, even if the space is almost infinite (the brain has 86,000,000,000 neurons footnote:[.footnote:[Clarification about this statement.]] so even if we learn something new every second until the end of your life, our brain will still be mostly empty). If an information is not accessed passed the TTL, it will be reclaimed without further delay.
+- TODO
+====
