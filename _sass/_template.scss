@@ -40,7 +40,11 @@
  h6, .h6 { font-size: 18px; }
 
  p {
-     margin: 0 0 10px;
+   margin: 0 0 10px;
+ }
+ .lead p {
+   font-style: italic;
+   font-size: 110%;
  }
 
  a {
