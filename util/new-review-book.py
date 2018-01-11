@@ -63,8 +63,9 @@ class GoodreadsMetadataExtractor:
         for i in range(3):
           try:
             response = urlopen(url)
-          except:
+          except e:
             print("Failed retrieving URL %s: Retrying..."  % url)
+            print(e)
         if response.code != 200:
           raise Exception("[%s] Invalid URL: %s" % (response.code, url))
         source = response.read()
@@ -146,20 +147,20 @@ class GoodreadsMetadataExtractor:
         }
         req = urllib.request.Request(urlRedirect, headers=headers)
 
-        for i in range(3):
-          try:
-            response = urlopen(req)
-          except:
-            print("Failed retrieving URL %s: Retrying..." % urlRedirect)
-            pass
+        try:
+          response = urlopen(req)
+        except:
+          print("Failed retrieving URL %s: Retrying..." % urlRedirect)
+          return None
+        else:
+          if not response or response.code != 200:
+              return None
 
-        if response.code != 200:
-            raise Exception("[%s] Invalid url: " % (response.code, urlRedirect))
+          location = response.geturl()
+          location = self._calculate_url_amazon(location)
+          return location
 
-        location = response.geturl()
-        location = self._calculate_url_amazon(location)
-
-        return location
+        return None
 
 
 
@@ -305,7 +306,7 @@ class BookReviewPost:
         if self.metadata.number_of_pages:
             result += "  numberOfPages: %s\n" % self.metadata.number_of_pages
         result += "links:\n"
-        if self.metadata.amazon: # KO
+        if self.metadata.amazon: 
             result += "  amazon: '%s'\n" % self.metadata.amazon
         if self.metadata.goodreads:
             result += "  goodreads: '%s'\n" % self.metadata.goodreads
