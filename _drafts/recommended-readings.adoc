@@ -1,0 +1,100 @@
+---
+layout: post-tell
+title: "10 Non-Techincal Books Every Developers Should Read"
+author: Julien Sobczak
+date: '2018-01-22'
+category: tell
+subject: Readings
+tags:
+  - reading
+---
+
+[quote,Italo Calvino, The Uses of Literature]
+____
+A classic is a book that has never finished saying what it has to say.
+____
+
+[role="license"]
+CAUTION: This list is not definitive. I will try to keep it up-to-date with my future readings but as there are so many books out there and so few time to devour them, excellent books will always be missing from this list.
+
+
+== Mindset
+
+image::https://images.gr-assets.com/books/1436227012l/40745.jpg[]
+
+
+
+link::({{ site.baseurl }}{% post_url 2016-12-31-mindset %})[Read my book review]
+
+
+== Designing Your Life
+
+image::[https://images.gr-assets.com/books/1469406987l/28814910.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2017-10-25-designing-your-life %}[Read my book review]
+
+
+== A Mind for Numbers, Barbara Oakley
+
+image::[https://images.gr-assets.com/books/1387148777l/18693655.jpg]
+
+
+
+
+== Grit
+
+image::[https://images.gr-assets.com/books/1457889762l/27213329.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2016-12-17-grit %}[Read my book review]
+
+
+== Peak
+
+image::[https://images.gr-assets.com/books/1445050174l/26312997.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[Read my book review]
+
+
+== Deep Work
+
+image::[https://images.gr-assets.com/books/1447957962l/25744928.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2017-11-14-deep-work %}[Read my book review]
+
+
+== The Power of Habits
+
+image::[https://images.gr-assets.com/books/1366758683l/12609433.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2016-10-06-the-power-of-habit %}[Read my book review]
+
+
+== Ego Is The Enemy
+
+image::[https://images.gr-assets.com/books/1459114043l/27036528.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book review]
+
+
+== Sapiens
+
+image::[https://images.gr-assets.com/books/1420585954l/23692271.jpg]
+
+This one is really far from other books in this post. _Sapiens_ is about our history. How our species has evolved until today? 
+
+
+link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]
+
+
+== Quiet
+
+image::[https://images.gr-assets.com/books/1328562861l/8520610.jpg]
+
+
+link:{{ site.baseurl }}{% post_url 2016-11-21-quiet %}[Read my book review]
