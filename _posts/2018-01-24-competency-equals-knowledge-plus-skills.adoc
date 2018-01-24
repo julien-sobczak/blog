@@ -2,7 +2,7 @@
 layout: post-tell
 title: "Competency = Knowledge + Skills"
 author: Julien Sobczak
-date: '2017-12-21'
+date: '2018-01-24'
 category: tell
 subject: Competency
 tags:
@@ -35,4 +35,4 @@ The principal risk about ignoring skills is known as the illusion of competence 
 
 On the opposite, ignoring knowledge altogether is not without consequences. It results in skills executed in a suboptimal manner. For example, you could be promoted manager due to strong communication skills, but if you fail to learn the theory behind Management 3.0, agile methodologies, the practices of lean manufacturing, the importance of quality, the influence of psychology, and so on, it will take you years of trial and error to improve your practices a little bit, or worse, to convince you that you are doing the right thing when you aren't.
 
-To conclude, developing knowledge is easy but developing skills is hard. It requires perseverance, commitment, concentration, and almost all, time. If you spend most of your time acquiring new knowledge - devouring books, consuming your feeds on Feedly, scrolling indefinitely your Tweeter Timeline, you may be not doing the right thing. In the end, it is always the right balance between knowledge and skill that makes the difference but keep in mind knowledge is often the easier part of the competency equation.
+To conclude, developing knowledge is easy but developing skills is hard. It requires perseverance, commitment, concentration, and almost all, time. If you spend most of your time acquiring new knowledge - devouring books, consuming your feeds on Feedly, scrolling indefinitely your Tweeter Timeline, you may be not doing the right thing. In the end, it is always the right balance between knowledge and skills that makes the difference but keep in mind knowledge is often the easier part of the competency equation.

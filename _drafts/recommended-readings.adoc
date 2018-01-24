@@ -1,6 +1,6 @@
 ---
 layout: post-tell
-title: "10 Non-Techincal Books Every Developers Should Read"
+title: "10 Non-Technical Books Every Developers Should Read"
 author: Julien Sobczak
 date: '2018-01-22'
 category: tell
@@ -86,7 +86,7 @@ link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book r
 
 image::[https://images.gr-assets.com/books/1420585954l/23692271.jpg]
 
-This one is really far from other books in this post. _Sapiens_ is about our history. How our species has evolved until today? 
+This one is really far from other books in this post. _Sapiens_ is about our history. How our species has evolved until today?
 
 
 link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]

@@ -2,7 +2,7 @@
 layout: post-tell
 title: "I started remembering the day I stopped trying"
 author: Julien Sobczak
-date: '2017-08-30'
+date: '2017-12-06'
 category: tell
 subject: Flashcards
 tags:
@@ -87,9 +87,9 @@ I have to confess, making Anki a habit is hard work. I started using it three ye
 ====
 Here are some of the practices based on the principles presented in this post that I used. I urge you not to follow them blindly. I'm constantly experimenting.
 
-- *I don't read several books on the same subject in a consecutive order*. I intertwine other books to let time for prior knowledge to mature and/or time to practice. 
+- *I don't read several books on the same subject in a consecutive order*. I intertwine other books to let time for prior knowledge to mature and/or time to practice.
 - *I read books more actively*. I begin by determining which knowledge I'm looking for. I use mindmapping to reflect on connections between facts (mainly when reading self-help books) and I create flashcards when I want something to stay in my memory for a long time (mainly when reading technical books.)
-- *I choose books more deliberately*. I favor books that help me to focus on the Big Picture (i.e. link:({{ site.baseurl }}{% post_url 2015-03-19-building-microservices %})[_Building Microservices_] before delving into a particular implementation.) 
+- *I choose books more deliberately*. I favor books that help me to focus on the Big Picture (i.e. link:({{ site.baseurl }}{% post_url 2015-03-19-building-microservices %})[_Building Microservices_] before delving into a particular implementation.)
 - *I don't read a reference book if I have not play with the technology first*. Also, I often start by reading a quickstart guide. All of this help me get context that my memory could use to create connections.
 - And above all, *I do not blame my memory for forgetting*. I blame myself.
 ====
