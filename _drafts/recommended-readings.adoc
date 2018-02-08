@@ -20,9 +20,9 @@ CAUTION: This list is not definitive. I will try to keep it up-to-date with my f
 
 == Mindset
 
-image::https://images.gr-assets.com/books/1436227012l/40745.jpg[]
+image::[https://images.gr-assets.com/books/1436227012l/40745.jpg]
 
-
+Nothing is more important than adopting the right mindset. If you think your abilities are finite, and no advance is possible once you have reached the limit, _Mindset_ will help you reconsider that. By adopting a growth mindset, limits become obstacles to be overcome, and success a reachable goal.
 
 link::({{ site.baseurl }}{% post_url 2016-12-31-mindset %})[Read my book review]
 
@@ -31,6 +31,7 @@ link::({{ site.baseurl }}{% post_url 2016-12-31-mindset %})[Read my book review]
 
 image::[https://images.gr-assets.com/books/1469406987l/28814910.jpg]
 
+Life is a perilous journey among an ocean of destinations. Contrary to popular misconceptions, there is not a clearly defined path we have to find to reach happiness. _Designing Your Life_ highlights there are many paths and multiple destinations we will have to follow during our life. As a developer, there is so many opportunities, so many roles to assume, so many decisions to take. Let _Designing Your Life_ help you reflect by asking you pertinent questions.
 
 link:{{ site.baseurl }}{% post_url 2017-10-25-designing-your-life %}[Read my book review]
 
@@ -39,6 +40,7 @@ link:{{ site.baseurl }}{% post_url 2017-10-25-designing-your-life %}[Read my boo
 
 image::[https://images.gr-assets.com/books/1387148777l/18693655.jpg]
 
+Developer is probably the most demanding job when it comes to learning -- new languages, new paradigms, new frameworks, new architectural styles, new editors, new hosting solutions --- to stay competitive, you have to learn, period. But if school taught us many things, it never took the time to learn us how to learn. With _A Mind for Numbers_, the reference book behind the MOOC _Learning How to Learn_ by the same author, you will learn why we fail to remember and what we can do instead to leverage our remarkable memory. It's definitely the perfect book to introduce yourself to the subject. 
 
 
 
@@ -46,6 +48,7 @@ image::[https://images.gr-assets.com/books/1387148777l/18693655.jpg]
 
 image::[https://images.gr-assets.com/books/1457889762l/27213329.jpg]
 
+_Mindset_ taught us adopting a growth mindset is imperative to tackle big challenges. But to solve them, we need a more systematic approach than just trying. _Grit_ condenses the research about expertise and shows that passion and perseverance are keys to reach the top. The book cites numerous other books including some presents in this list and is the perfect introduction on the subject of expertise before delving deeper with books like _Peak_ or _Flow_.
 
 link:{{ site.baseurl }}{% post_url 2016-12-17-grit %}[Read my book review]
 
@@ -54,6 +57,7 @@ link:{{ site.baseurl }}{% post_url 2016-12-17-grit %}[Read my book review]
 
 image::[https://images.gr-assets.com/books/1445050174l/26312997.jpg]
 
+There is always a shortest path to reach the top of a mountain. Deliberate practice is the best way to follow this path. Written by one of the two experts on the subject, _Peak_ develop the particular type of practice that help you move forward - doing baby steps outside of your comfort zone, and seeking feedback to focus on the hardest parts. As a programmer, we can constantly try new frameworks, or new languages, but does that make us really more competent. Probably not. We should stop learning different equivalent things and start learning complementary ones. 
 
 link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[Read my book review]
 
@@ -61,6 +65,8 @@ link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[Read my book review]
 == Deep Work
 
 image::[https://images.gr-assets.com/books/1447957962l/25744928.jpg]
+
+Deliberate practice required long interrupted time spent alone focusing on tough materials. 
 
 
 link:{{ site.baseurl }}{% post_url 2017-11-14-deep-work %}[Read my book review]
@@ -86,8 +92,7 @@ link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book r
 
 image::[https://images.gr-assets.com/books/1420585954l/23692271.jpg]
 
-This one is really far from other books in this post. _Sapiens_ is about our history. How our species has evolved until today?
-
+This one is really far from other books in this post. _Sapiens_ is about history, our history. To be honest, I have no particular interest in history. But _Sapiens_ does not relate it like a school textbook. Widely acclaimed, from Mark Zuckerberg, Bill Gales, amd Barack Obama, _Sapiens_ asks (and answers) the most relevant questions. For example, how our species reach the top of the food chain in such a short time? How culture and values transcend a huge number of persons to cooperate? If you have only a moderate interest for the subject, this book really deserves our attention.
 
 link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]
 
@@ -96,5 +101,6 @@ link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]
 
 image::[https://images.gr-assets.com/books/1328562861l/8520610.jpg]
 
+I can hardly say that _Quiet_ is a recommended reading for every developer, but if you ask me the book that influenced me the most, without a doubt, it would be _Quiet_. This book succeeds in highlighting the subtleties between the single personality trait that differentiate us the most. If you are introvert, forgot all other books of this list and go reading _Quiet_ without delay. It will transform your introversion in a strength even in our world that can't stop talking.
 
 link:{{ site.baseurl }}{% post_url 2016-11-21-quiet %}[Read my book review]
