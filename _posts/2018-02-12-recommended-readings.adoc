@@ -2,7 +2,7 @@
 layout: post-tell
 title: "10 Non-Technical Books Every Developer Should Read"
 author: Julien Sobczak
-date: '2018-01-22'
+date: '2018-02-12'
 category: tell
 subject: Readings
 tags:
@@ -40,7 +40,7 @@ link:{{ site.baseurl }}{% post_url 2017-10-25-designing-your-life %}[Read my boo
 
 image::https://images.gr-assets.com/books/1387148777l/18693655.jpg[A Mind for Numbers,200]
 
-Developer is probably the most demanding job when it comes to learning -- new languages, new paradigms, new frameworks, new architectural styles, new editors, new hosting solutions --- to stay competitive, you have to learn, period. But if school taught us many things, it never took the time to learn us how to learn. With _A Mind for Numbers_, the reference book behind the MOOC _Learning How to Learn_ by the same author, you will learn why we fail to remember and what we can do instead to leverage our remarkable memory. It's definitely the perfect book to introduce yourself to the subject.
+Developer is probably the most demanding job when it comes to learning -- new languages, new paradigms, new frameworks, new architectural styles, new editors, new hosting solutions --- to stay competitive, you have to learn, period. But if school taught us many things, it never took the time to teach us how to learn. With _A Mind for Numbers_, the reference book behind the MOOC _Learning how to learn_ by the same author, you will learn why we fail to remember and what we can do instead to leverage our remarkable memory. It's definitely the perfect book to introduce yourself to the subject.
 
 
 == Grit, by Angela Duckworth
@@ -65,7 +65,7 @@ link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[Read my book review]
 
 image::https://images.gr-assets.com/books/1447957962l/25744928.jpg[Deep Work,200]
 
-As outlined by _Peak_, deliberate practice requires long interrupted time spent alone, focusing on tough materials. Oddly, what is necessary to advance is something we can't do at work; instant messaging, social networks, loudy openspaces, are omnipresent to be sure we never spent too much time without being distracted. As a developer, working in such environment is really counterproductive, particularly in the long term. _Deep Work_ will reveal you the reasons and the strategy to regain your attention back.
+As outlined by _Peak_, deliberate practice requires long interrupted time spent alone, focusing on tough materials. Oddly, what is necessary to advance is something we can't do at work; instant messaging, social networks, noisy open spaces, are omnipresent to be sure we never spent too much time without being distracted. As a developer, working in such environment is really counterproductive, particularly in the long term. _Deep Work_ will reveal you the reasons and the strategy to regain your attention back.
 
 link:{{ site.baseurl }}{% post_url 2017-11-14-deep-work %}[Read my book review]
 
@@ -83,7 +83,7 @@ link:{{ site.baseurl }}{% post_url 2016-10-06-the-power-of-habit %}[Read my book
 
 image::https://images.gr-assets.com/books/1459114043l/27036528.jpg[Ego Is the Enemy,200]
 
-A successful career implies having achieved some long-term goals. When it comes to making decisions, your ego could very easily influence you and force you to privilege short-term goals, at the expense of your more valuable ambitions. _Ego Is the Enemy_ presents you two choices -- you can be someone or you can do something. Before answering hastily that question, I advice you to read that book first.
+A successful career implies having achieved some long-term goals. When it comes to making decisions, your ego could very easily influence you and force you to privilege short-term goals, at the expense of your more valuable ambitions. _Ego Is the Enemy_ presents you two choices -- you can be someone or you can do something. Before answering hastily that question, I advise you to read that book first.
 
 link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book review]
 
@@ -93,7 +93,7 @@ link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book r
 
 image::https://images.gr-assets.com/books/1420585954l/23692271.jpg[Sapiens,200]
 
-This one is really far from other books in this list. _Sapiens_ is about history, our history. To be honest, I have no particular interest in history. But _Sapiens_ does not relate it like a textbook. Widely acclaimed, from Mark Zuckerberg, Bill Gales, amd Barack Obama, _Sapiens_ asks (and answers) the most relevant questions. For example, how our species reach the top of the food chain in such a short time? How culture and values transcend a huge number of humans to cooperate? If you have only a moderate interest in the subject, this book really deserves our attention.
+This one is really far from other books in this list. _Sapiens_ is about history, our history. To be honest, I have no particular interest in history. But _Sapiens_ does not relate it like a textbook. Widely acclaimed, from Mark Zuckerberg, Bill Gales, and Barack Obama, _Sapiens_ asks (and answers) the most relevant questions. For example, how our species reach the top of the food chain in such a short time? How culture and values transcend a huge number of humans to cooperate? If you have only a moderate interest in the subject, this book really deserves our attention.
 
 link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]
 //////////////////////////
@@ -103,7 +103,7 @@ link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]
 
 image::https://images.gr-assets.com/books/1414947872l/10210821.jpg[Management 3.0,200]
 
-You can be the best developer in the world, you still need good management to do a good job. Indeed, studies showed that management is often the biggest obstacle to successful transformations. In _Management 3.0_, Jurgen Appelo brings decades of research in complexity theory to support a new style of management that help people foster and bring the most values to the company. Clearly, this is one of the most outstanding book that I had ever read. Everyone developer will be delighted by the content even if the book targets managers (of course.)
+You can be the best developer in the world, you still need good management to do a good job. Indeed, studies showed that management is often the biggest obstacle to successful transformations. In _Management 3.0_, Jurgen Appelo brings decades of research in complexity theory to support a new style of management that help people foster and bring the most values to the company. Clearly, this is one of the most outstanding book that I had ever read. Every developer will be delighted by the content even if the book targets managers (of course.)
 
 link:{{ site.baseurl }}{% post_url 2017-03-27-management-3-0 %}[Read my book review]
 
@@ -117,4 +117,4 @@ I can hardly say that _Quiet_ is a recommended reading for every developer, but 
 link:{{ site.baseurl }}{% post_url 2016-11-21-quiet %}[Read my book review]
 
 
-As mentioned at the start of this post, I will try to update this list (at least every year). 
+_This list is not definitive and will never be. Moreover, if everyone read the same books, everyone will think the same way, and that's just boring. In the end, read what inspires you the most and consider this list just as pointers to get you started._
