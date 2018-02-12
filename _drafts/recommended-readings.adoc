@@ -1,6 +1,6 @@
 ---
 layout: post-tell
-title: "10 Non-Technical Books Every Developers Should Read"
+title: "10 Non-Technical Books Every Developer Should Read"
 author: Julien Sobczak
 date: '2018-01-22'
 category: tell
@@ -18,89 +18,103 @@ ____
 CAUTION: This list is not definitive. I will try to keep it up-to-date with my future readings but as there are so many books out there and so few time to devour them, excellent books will always be missing from this list.
 
 
-== Mindset
+== Mindset, by Carol Dweck
 
-image::[https://images.gr-assets.com/books/1436227012l/40745.jpg]
+image::https://images.gr-assets.com/books/1436227012l/40745.jpg[mindset,200]
 
 Nothing is more important than adopting the right mindset. If you think your abilities are finite, and no advance is possible once you have reached the limit, _Mindset_ will help you reconsider that. By adopting a growth mindset, limits become obstacles to be overcome, and success a reachable goal.
 
 link::({{ site.baseurl }}{% post_url 2016-12-31-mindset %})[Read my book review]
 
 
-== Designing Your Life
+== Designing Your Life, by Bill Burnett & Dave Evans
 
-image::[https://images.gr-assets.com/books/1469406987l/28814910.jpg]
+image::https://images.gr-assets.com/books/1469406987l/28814910.jpg[Designing Your Life,200]
 
-Life is a perilous journey among an ocean of destinations. Contrary to popular misconceptions, there is not a clearly defined path we have to find to reach happiness. _Designing Your Life_ highlights there are many paths and multiple destinations we will have to follow during our life. As a developer, there is so many opportunities, so many roles to assume, so many decisions to take. Let _Designing Your Life_ help you reflect by asking you pertinent questions.
+Life is a perilous journey among an ocean of destinations. Contrary to popular misconceptions, there is not a clearly defined path we have to find to reach happiness. _Designing Your Life_ highlights there are many paths and multiple destinations we will have to follow during our life. As a developer, there is so many opportunities, so many roles to assume, so many decisions to take. Let _Designing Your Life_ help you reflect by asking you the most pertinent questions.
 
 link:{{ site.baseurl }}{% post_url 2017-10-25-designing-your-life %}[Read my book review]
 
 
-== A Mind for Numbers, Barbara Oakley
+== A Mind for Numbers, by Barbara Oakley
 
-image::[https://images.gr-assets.com/books/1387148777l/18693655.jpg]
+image::https://images.gr-assets.com/books/1387148777l/18693655.jpg[A Mind for Numbers,200]
 
-Developer is probably the most demanding job when it comes to learning -- new languages, new paradigms, new frameworks, new architectural styles, new editors, new hosting solutions --- to stay competitive, you have to learn, period. But if school taught us many things, it never took the time to learn us how to learn. With _A Mind for Numbers_, the reference book behind the MOOC _Learning How to Learn_ by the same author, you will learn why we fail to remember and what we can do instead to leverage our remarkable memory. It's definitely the perfect book to introduce yourself to the subject. 
+Developer is probably the most demanding job when it comes to learning -- new languages, new paradigms, new frameworks, new architectural styles, new editors, new hosting solutions --- to stay competitive, you have to learn, period. But if school taught us many things, it never took the time to learn us how to learn. With _A Mind for Numbers_, the reference book behind the MOOC _Learning How to Learn_ by the same author, you will learn why we fail to remember and what we can do instead to leverage our remarkable memory. It's definitely the perfect book to introduce yourself to the subject.
 
 
+== Grit, by Angela Duckworth
 
-== Grit
+image::https://images.gr-assets.com/books/1457889762l/27213329.jpg[Grit,200]
 
-image::[https://images.gr-assets.com/books/1457889762l/27213329.jpg]
-
-_Mindset_ taught us adopting a growth mindset is imperative to tackle big challenges. But to solve them, we need a more systematic approach than just trying. _Grit_ condenses the research about expertise and shows that passion and perseverance are keys to reach the top. The book cites numerous other books including some presents in this list and is the perfect introduction on the subject of expertise before delving deeper with books like _Peak_ or _Flow_.
+_Mindset_ taught us adopting a growth mindset is imperative to tackle big challenges. But to solve them, we need a more systematic approach than just trying. _Grit_ condenses the research about expertise and shows that passion and perseverance are keys to reach the top. The book cites numerous other books including some presents in this list and is the perfect introduction on the subject of expertise before diving deeper with books like _Peak_ or _Flow_.
 
 link:{{ site.baseurl }}{% post_url 2016-12-17-grit %}[Read my book review]
 
 
-== Peak
+== Peak, by K. Anders Ericsson
 
-image::[https://images.gr-assets.com/books/1445050174l/26312997.jpg]
+image::https://images.gr-assets.com/books/1445050174l/26312997.jpg[Peak,200]
 
-There is always a shortest path to reach the top of a mountain. Deliberate practice is the best way to follow this path. Written by one of the two experts on the subject, _Peak_ develop the particular type of practice that help you move forward - doing baby steps outside of your comfort zone, and seeking feedback to focus on the hardest parts. As a programmer, we can constantly try new frameworks, or new languages, but does that make us really more competent. Probably not. We should stop learning different equivalent things and start learning complementary ones. 
+There is always a shortest path to reach the top of a mountain. Deliberate practice is the best way to follow this path. Written by one of the two experts on the subject, _Peak_ develops the particular type of practice that help you move forward - doing baby steps outside of your comfort zone, and seeking feedback to focus on the hardest parts. As a programmer, we can constantly try new frameworks, or new languages, but does that make us really more competent. Probably not. We should stop learning different equivalent things and start learning complementary ones. A fascinating reading to debunk the myth of talent.
 
 link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[Read my book review]
 
 
-== Deep Work
+== Deep Work, by Cal Newport
 
-image::[https://images.gr-assets.com/books/1447957962l/25744928.jpg]
+image::https://images.gr-assets.com/books/1447957962l/25744928.jpg[Deep Work,200]
 
-Deliberate practice required long interrupted time spent alone focusing on tough materials. 
-
+As outlined by _Peak_, deliberate practice requires long interrupted time spent alone, focusing on tough materials. Oddly, what is necessary to advance is something we can't do at work; instant messaging, social networks, loudy openspaces, are omnipresent to be sure we never spent too much time without being distracted. As a developer, working in such environment is really counterproductive, particularly in the long term. _Deep Work_ will reveal you the reasons and the strategy to regain your attention back.
 
 link:{{ site.baseurl }}{% post_url 2017-11-14-deep-work %}[Read my book review]
 
 
-== The Power of Habits
+== The Power of Habits, by Charles Duhigg
 
-image::[https://images.gr-assets.com/books/1366758683l/12609433.jpg]
+image::https://images.gr-assets.com/books/1366758683l/12609433.jpg[The Power of Habits,200]
 
+_"`I'm not a great programmer;`"_, says Kent Beck, _"`I'm just a good programmer with great habits.`"_ To be proficient in our job, we don't need to work longer, we need to work better. Good habits are the cornerstone of productivity, but as everyone knows, changing habits is far more easily said than done. Consequently, this list would not have been complete without a book on the subject. _The Power of Habits_ is the most popular, and the only one I read, but have a look at newer publications first.
 
 link:{{ site.baseurl }}{% post_url 2016-10-06-the-power-of-habit %}[Read my book review]
 
 
-== Ego Is The Enemy
+== Ego Is the Enemy, by Ryan Holiday
 
-image::[https://images.gr-assets.com/books/1459114043l/27036528.jpg]
+image::https://images.gr-assets.com/books/1459114043l/27036528.jpg[Ego Is the Enemy,200]
 
+A successful career implies having achieved some long-term goals. When it comes to making decisions, your ego could very easily influence you and force you to privilege short-term goals, at the expense of your more valuable ambitions. _Ego Is the Enemy_ presents you two choices -- you can be someone or you can do something. Before answering hastily that question, I advice you to read that book first.
 
 link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book review]
 
 
-== Sapiens
+//////////////////////////
+== Sapiens, by Yuval Noak Harari
 
-image::[https://images.gr-assets.com/books/1420585954l/23692271.jpg]
+image::https://images.gr-assets.com/books/1420585954l/23692271.jpg[Sapiens,200]
 
-This one is really far from other books in this post. _Sapiens_ is about history, our history. To be honest, I have no particular interest in history. But _Sapiens_ does not relate it like a school textbook. Widely acclaimed, from Mark Zuckerberg, Bill Gales, amd Barack Obama, _Sapiens_ asks (and answers) the most relevant questions. For example, how our species reach the top of the food chain in such a short time? How culture and values transcend a huge number of persons to cooperate? If you have only a moderate interest for the subject, this book really deserves our attention.
+This one is really far from other books in this list. _Sapiens_ is about history, our history. To be honest, I have no particular interest in history. But _Sapiens_ does not relate it like a textbook. Widely acclaimed, from Mark Zuckerberg, Bill Gales, amd Barack Obama, _Sapiens_ asks (and answers) the most relevant questions. For example, how our species reach the top of the food chain in such a short time? How culture and values transcend a huge number of humans to cooperate? If you have only a moderate interest in the subject, this book really deserves our attention.
 
 link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[Read my book review]
+//////////////////////////
 
 
-== Quiet
+== Management 3.0, by Jurgen Appelo
 
-image::[https://images.gr-assets.com/books/1328562861l/8520610.jpg]
+image::https://images.gr-assets.com/books/1414947872l/10210821.jpg[Management 3.0,200]
 
-I can hardly say that _Quiet_ is a recommended reading for every developer, but if you ask me the book that influenced me the most, without a doubt, it would be _Quiet_. This book succeeds in highlighting the subtleties between the single personality trait that differentiate us the most. If you are introvert, forgot all other books of this list and go reading _Quiet_ without delay. It will transform your introversion in a strength even in our world that can't stop talking.
+You can be the best developer in the world, you still need good management to do a good job. Indeed, studies showed that management is often the biggest obstacle to successful transformations. In _Management 3.0_, Jurgen Appelo brings decades of research in complexity theory to support a new style of management that help people foster and bring the most values to the company. Clearly, this is one of the most outstanding book that I had ever read. Everyone developer will be delighted by the content even if the book targets managers (of course.)
+
+link:{{ site.baseurl }}{% post_url 2017-03-27-management-3-0 %}[Read my book review]
+
+
+== Quiet, by Susan Cain
+
+image::https://images.gr-assets.com/books/1328562861l/8520610.jpg[Quiet,200]
+
+I can hardly say that _Quiet_ is a recommended reading for every developer, but if you ask me the book that influenced me the most, without a doubt, it would be _Quiet_. This book succeeds in highlighting the subtleties of the personality trait that differentiate us the most. If you are introvert, forgot all other books of this list and go reading _Quiet_ without delay. It will transform your introversion in a strength to exploit even in a world that can't stop talking.
 
 link:{{ site.baseurl }}{% post_url 2016-11-21-quiet %}[Read my book review]
+
+
+As mentioned at the start of this post, I will try to update this list (at least every year). 
