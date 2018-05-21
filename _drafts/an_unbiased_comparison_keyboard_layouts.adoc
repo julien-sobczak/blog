@@ -1,0 +1,115 @@
+---
+layout: post-tell
+title: "An Unbiased Comparison of Keyboard Layouts: Qwerty vs Dvorak vs Colemak"
+author: Julien Sobczak
+date: '2018-05-01'
+category: tell
+subject: Touch Typing
+tags:
+  - productivity
+---
+
+Qwerty, Colemak, Dvorak: which is the best layout if we want to minimise the typing effort (i.e. the covered distance of our hands). As Colemak and Dvorak layouts are specifically designed to be more optimal (place most frequent keys on the home row), the question will be by how much? To answer this question, we will design an algorithm the estimate the distance from any text text (literature, source code, etc.).
+
+
+== Understand the hand movements
+
+To determine the covered distance by our hands while typing on a keyboard, we need to understand how our hands move to reach each key.
+
+In this post, we consider only compact Ansi keyboards (60% keyboard), so there is no numeric page, or FN row. Furthermore, we consider only the Qwerty layout.
+
+Initially, our index fingers should lie on the keys F and J respectively. These touches has a dump to easily locate them without looking at the keyboard.
+
+In this position, keys A, S, D, F and J, K, L, : are accessible without moving the hands:
+
+[Figure with 8 keys selected => use typio-keyboard]
+
+To reach the intermediary keys G and H, you need to move the index fingers or move your hands of the same distance. To understand the differences between the two approaches, imagine you need to type G, then A.
+
+With the first option, we first move your left index finger to the right without moving the hand position, so A could be pressed by the little finger without moving any finger (the index finger could even return to its initial position while pressing A).
+With the second option, we first move your left hand to the right to press G, before restoring the initial position to press A with the little finger. If we compare the distance between these two options, we notice both options requires the same distance (even if only two fingers move with the first option, compared to the full hand motion on the second option). For this analysis, we will choose the first option as it let us type faster (key `A` could be pressed as soon as `G` is released). In practice, this option is not always applicable. For example, if you want to press the key `+`, only extending your little finger in this direction could not be enough to reach the key, you have to move (slightly) your hand. In this case, we need to count a hand movement and a finger extension.
+
+For the distance value, we use the key as the unit. In the previous example, it means the distance is 2 (1 to reach the G, and 1 to reach the A). To convert the distance to a real distance, you just have to multiply by the standard spacing for keyboard keys, which is 3/4 inch (or 19.05mm). As our aim is to compare the distance between different layouts, we don't care about the physical distance.
+
+[Figure with index fingers above G and H]
+
+The time to enter a key depend on the row, hand, and finger of the key and the key where we come from. So, basically, we need to determine a function f(hl, h2, rl, r2, fl, f2) + e where  h, r, and f stand for hand, row, and finger, respectively, and e those factors that cannot be described in terms of the key pair (e could be negative as when preparing the following key with the other hand).
+
+
+https://www.quora.com/Do-you-always-have-to-return-every-finger-to-the-home-keys-when-touch-typing-every-single-time
+We aim to reach minimal distance. We not force the user to comeback to home row after each key (great when learning but not to reach fast typing). 
+
+
+In an exact analysis, it is not correct to handle even the finger component of both hands together, since the keyboard is not left-right symmetric in shape. But we shall ignore this fact for the present analysis.
+
+
+
+
+==========================
+
+In a http://delivery.acm.org/10.1145/2860000/2858233/p4262-feit.pdf[recent study], "...[Motion capture data exposes 3 predictors of high performance: 1) unambiguous mapping (a letter is consistently pressed by the same finger), 2) active preparation of upcoming keystrokes, and 3) minimal global hand motion." We will try as much as possible to reflect these three points in our calculation method. Moreover, we consider no time is spent looking at the keyboard, and that no mistakes are made while typing.
+
+
+1.Entropy of the finger-to-key mapping: faster typist press a key more consistently with the same finger.
+2. Motor preparation: moving towards the target key already during preceding keystrokes increases performance.
+3. Global hand motion: slower typists globally move their hands more, while fast typists keep them static.
+
+1. Hand alternation: fingers of different hands,
+2. Finger alternation: different fingers of the same hand,
+3. Same finger: typing different letters with the same finger,
+4. Letter repetition: pressing the same key twice.
+
+Global movement: of each hand, computed at each keypress as the average of the standard deviations of the x-, y- and zcoordinates of the two markers on the back of the hand.
+Distance to the next key: the average distance of the executing finger to its target at the time of the preceding keypress.
+Measures the preparation of upcoming keystrokes by moving a finger to to its target during the execution of a preceding keypress.
+
+
+=========================
+
+https://dl.acm.org/citation.cfm?doid=990174.990218
+Yuzuru Hiraga, Yoshihiko Ono, and others. 1980. An analysis of the standard English keyboard. In Proceedings of the 8th Conference on Computational Linguistics.
+Association for Computational Linguistics, 242–248
+
+"At the mental level, it is well known that typing is not a collection of individual letter typing but a typing of a longer pattern as a unit.". We called these units chunks. This explains why we are faster at typing common works (was) and syllabes (-tion, -tive) than purely random strings. This determinant characteristic will be omitted from this analysis. 
+
+http://delivery.acm.org/10.1145/1000000/990218/p242-hiraga.pdf?ip=212.234.38.108&id=990218&acc=OPEN&key=4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E6D218144511F3437&__acm__=1523628528_1d697bac5a99f7a286c840b6d226eca6
+
+
+
+
+Great schema
+http://www.datapointed.net/2010/01/typing-styles-compared/
+
+
+
+
+
+
+
+
+
+
+
+
+=========================
+Output of program:
+
+DISTANCE +
+
+Hand Distribution (Shift key not counted.
+- Left 48.0%
+- Right 35.9%
+- Space bar 16.1%
+
+Row Distribution (Space bar excluded.)
+- Top 0.1%
+- Upper 51.5%
+- Home 31.8%
+- Bottom 17.6%
+
+Finger Distribution (per hand)
+- Left Right
+- Index 37.2% 45.3%
+- Middle 34.8% 21.4%
+- Ring 14.0% 27.6%
+- Little 14.1% 5.7% 
