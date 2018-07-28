@@ -9,12 +9,22 @@ image:https://travis-ci.org/julien-sobczak/blog.svg?branch=master["Build Status"
 
 This blog is based on Jekyll, a ruby application. Run the following commands to configure the application:
 
+On Debian-based Linux:
+
 ```
 $ git clone https://github.com/julien-sobczak/blog.git
 $ cd blog
 # apt-get install ruby rubygems ruby-dev
 # gem install bundler
 $ bundle install
+```
+
+On MacOS:
+
+```
+# brew install ruby
+# gem install bundler
+$ bundle
 ```
 
 To launch the application locally:
