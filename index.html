@@ -87,11 +87,10 @@ author: Julien Sobczak
                 <li>
                   <a href="{{ post.url | prepend: site.baseurl }}">
                     {% if post.shortTitle %}
-                      {{ post.shortTitle }}
+                      {{ post.shortTitle }},
                     {% else %}
-                      {{ post.title }}
+                      {{ post.title }},
                     {% endif %}
-                    ,
                   </a>
                 </li>
                 {% endif %}
