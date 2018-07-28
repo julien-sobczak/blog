@@ -6,7 +6,7 @@ author: Julien Sobczak
 date: '2017-05-07'
 category: read
 subject: Systems Performance
-headline: ???
+headline: From black art to systematic approach
 note: 15
 tags:
   - performance
@@ -22,18 +22,14 @@ links:
   goodreads: 'https://www.goodreads.com/book/show/18058001-systems-performance'
 ---
 
-The main focus of this book is the study of systems performance, with tools, examples, and tunable parameters from Linux- and Solaris-based operating systems used as examples.
+> ... [T]here are known knowns; there are things we know we know. We also know there are known unknowns; that is to say we know there are some things we do not know. But there are also unknown unknowns – the ones we don't know we don't know....
 
-Many performance features for Linux covered in this book have been developed in the past five years 
+This quotation, from former *United States Secretary of Defense* Donald Rumsfeld, reveals the challenge of system performances. To properly investigate a problem, we need to get away from unknown unknowns, at the risk of investigating in the wrong direction.
 
-Does it cover the background behind each tool? (concept)  yes. Chapters 1 to 4 cover essential backgrounds and latter chapters focus on specific topics (CPU, memory, file system, disk, network, cloud). 
-Is that a reference book? Maybe not. Advanced performance analysis topics are summarized so that you are aware of their existence and can then study them from additional sources. Maybe yes. [This book has been written to provide value for many years, by focusing on background and methodologies for the systems performance analyst.] Chapters are splitted in two parts: theory and implementation. The latter will become out-of-date, but will still be useful as examples. 
-Does it help is Solving performance of Virtual Machine-based languages? 
+Even if it is a highly practical book, using tools from Linux- and Solaris- based operating systems, the book covers all the required background that is applicable to any system. The five main chapters about CPU, memory, file system, disk, and network, are divided in two parts: theory and practice.
 
-The author is the lead performance engineer at a cloud computing provider (Joyent), and writes the book primarily for systems administrators, but developers (DevOps or SRE)  will find the book valuable too. 
+The book, despite its size, is not a reference book. Advanced topics are summarized so that you are aware of their existence and can study them from additional resources. In the same way, commands used in the book are not presented in great details. This is something that surprises me at first. I was prepared for a lot more commands but the author succeeded in finding the right balance between command outputs and explanations. I astonished myself how much I was captivated by the book (system performance is not a subject for which I have a particular interest). 
 
-CPU, memory, file system, disk, network. Each chapter consists of five parts, the first three (concepts and architecture) providing the basis and the last two (commands and tuning) showing its practical application to Linux- and Solaris-based systems. 
+This is a really good book to start on the subject, particularly adapted for a developer with basic knowledge of Linux. However, this book will not help you to solve performance of Virtual machine-based languages. These virtual machines act as system of their own and whole books had been published on these topics instead.
 
-A straight to the goal style, a highly structured book. The perfect book to start on the subject of system performance. List many commands but not many examples of each of them. Do not contains too much commands (you will have to investigate by yourself but resources are numerous online). The DTrace use is a advanced. 
-
-The books ends with a case study that provides an over-the-shoulder view of how  performance engineers approaches an issue, and glues together the book content by showing how tools and metholodoes applies in practice. 
+What I like about is this book is it doesn't just help you to use the commands. It help you understand what to look for and how to retrieve the information using various tools. The author demonstrates system performance is not a black art, but the result of hard work. This book will not make you an expert but you will be in a far better position to diagnose problems with confidence. The last chapter is a case study that provides an over-the-shoulder view of how performance engineers approaches an issue, and glues together the book content by showing how tools and methodologies are applied in practice. I was bluffed!
