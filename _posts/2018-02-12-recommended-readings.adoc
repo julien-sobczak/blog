@@ -24,7 +24,7 @@ image::https://images.gr-assets.com/books/1436227012l/40745.jpg[mindset,200]
 
 Nothing is more important than adopting the right mindset. If you think your abilities are finite, and no advance is possible once you have reached the limit, _Mindset_ will help you reconsider that. By adopting a growth mindset, limits become obstacles to be overcome, and success a reachable goal.
 
-link::({{ site.baseurl }}{% post_url 2016-12-31-mindset %})[Read my book review]
+link:({{ site.baseurl }}{% post_url 2016-12-31-mindset %})[Read my book review]
 
 
 == Designing Your Life, by Bill Burnett & Dave Evans
