@@ -1,9 +1,9 @@
 ---
-layout: post-tell
+layout: post-write
 title: "Competency = Knowledge + Skills"
 author: Julien Sobczak
 date: '2018-01-24'
-category: tell
+category: write
 subject: Competency
 tags:
   - learning

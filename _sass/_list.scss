@@ -133,14 +133,14 @@ ul.post-list li:nth-child(4n+1) .post-watch-preview .title::after { background-p
 ul.post-list li:nth-child(4n+2) .post-watch-preview .title::after { background-position: -200px -100px; }
 ul.post-list li:nth-child(4n+3) .post-watch-preview .title::after { background-position:  100px -100px; }
 
-ul.post-list li:nth-child(4n+0) .post-tell-preview .title        { background-color: #62BCA0; color: white;  }
-ul.post-list li:nth-child(4n+1) .post-tell-preview .title        { background-color: #D65625; color: white;  }
-ul.post-list li:nth-child(4n+2) .post-tell-preview .title        { background-color: #62BCA0; color: white;  }
-ul.post-list li:nth-child(4n+3) .post-tell-preview .title        { background-color: #F0E5C7; color: white;  }
-ul.post-list li:nth-child(4n+0) .post-tell-preview .title::after { background-position:      0 -200px; }
-ul.post-list li:nth-child(4n+1) .post-tell-preview .title::after { background-position: -100px -200px; }
-ul.post-list li:nth-child(4n+2) .post-tell-preview .title::after { background-position:  100px -200px; }
-ul.post-list li:nth-child(4n+3) .post-tell-preview .title::after { background-position: -200px -200px; }
+ul.post-list li:nth-child(4n+0) .post-write-preview .title        { background-color: #62BCA0; color: white;  }
+ul.post-list li:nth-child(4n+1) .post-write-preview .title        { background-color: #D65625; color: white;  }
+ul.post-list li:nth-child(4n+2) .post-write-preview .title        { background-color: #62BCA0; color: white;  }
+ul.post-list li:nth-child(4n+3) .post-write-preview .title        { background-color: #F0E5C7; color: white;  }
+ul.post-list li:nth-child(4n+0) .post-write-preview .title::after { background-position:      0 -200px; }
+ul.post-list li:nth-child(4n+1) .post-write-preview .title::after { background-position: -100px -200px; }
+ul.post-list li:nth-child(4n+2) .post-write-preview .title::after { background-position:  100px -200px; }
+ul.post-list li:nth-child(4n+3) .post-write-preview .title::after { background-position: -200px -200px; }
 
 ul.post-list li:nth-child(4n+0) .post-inspect-preview .title        { background-color: #FF3E7A; color: white;  }
 ul.post-list li:nth-child(4n+1) .post-inspect-preview .title        { background-color: #70C6E7; color: white;  }

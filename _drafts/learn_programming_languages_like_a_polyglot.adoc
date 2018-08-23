@@ -1,9 +1,9 @@
 ---
-layout: post-tell
+layout: post-write
 title: "Learn Programming Languages Like a Polyglot"
 author: Julien Sobczak
 date: '2017-06-06'
-category: tell
+category: write
 subject: Polyglot Programing
 tags:
   - language

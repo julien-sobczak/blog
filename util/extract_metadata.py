@@ -118,7 +118,7 @@ def remove_xml_entities(content):
     entities["ucirc"] = "û" # U+00FB
     entities["uuml"] = "ü" # U+00FC
     entities["hellip"] = "…" # U+2026
-    entities["le"] = "≤" # U+2264 
+    entities["le"] = "≤" # U+2264
     entities["ge"] = "≥" # U+2265
 
     for entity in entities:
@@ -161,7 +161,7 @@ def prepend_metadata(content):
             label = label.get_text().strip()
             if label in tags:
                 metadata['tags'].append(tags[label])
-            elif label in [ "I'm readin' I.T.", "I'm watchin' I.T.", "I'm tellin' I.T.", "I'm inspectin' I.T." ]:
+            elif label in [ "I'm readin' I.T.", "I'm watchin' I.T.", "I'm writin' I.T.", "I'm inspectin' I.T." ]:
                 pass # ignore
             else:
                 raise Exception("Unknown tag <%s>" % label)
@@ -215,8 +215,8 @@ def prepend_metadata(content):
             metadata['watch_date'] = start_date.get('content')
 
 
-    elif article_type == 'post-tell':
-        metadata['category'] = 'tell'
+    elif article_type == 'post-write':
+        metadata['category'] = 'write'
         metadata['title'] = article.h1.get_text()
 
 

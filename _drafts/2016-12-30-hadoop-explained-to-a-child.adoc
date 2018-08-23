@@ -1,10 +1,10 @@
 ---
-layout: post-tell
+layout: post-write
 title: 'Hadoop Explained to A six year old'
 subtitle: 'A problem-solving approach'
 author: 'Julien Sobczak'
 date: '2016-12-30 09:15:00.000+01:00'
-category: tell
+category: write
 subject: Hadoop
 model: problem-solution
 tags:

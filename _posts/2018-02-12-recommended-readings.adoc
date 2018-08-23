@@ -1,9 +1,9 @@
 ---
-layout: post-tell
+layout: post-write
 title: "10 Non-Technical Books Every Developer Should Read"
 author: Julien Sobczak
 date: '2018-02-12'
-category: tell
+category: write
 subject: Readings
 tags:
   - reading

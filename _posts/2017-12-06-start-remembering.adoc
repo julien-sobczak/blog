@@ -1,9 +1,9 @@
 ---
-layout: post-tell
+layout: post-write
 title: "I started remembering the day I stopped trying"
 author: Julien Sobczak
 date: '2017-12-06'
-category: tell
+category: write
 subject: Flashcards
 tags:
   - learning

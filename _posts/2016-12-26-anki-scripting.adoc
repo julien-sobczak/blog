@@ -1,9 +1,9 @@
 ---
-layout: post-tell
+layout: post-write
 title: 'Anki Scripting 101: Automate your flashcards'
 author: 'Julien Sobczak'
 date: '2016-12-26 09:15:00.000+01:00'
-category: tell
+category: write
 subject: SRS
 tags:
 - java

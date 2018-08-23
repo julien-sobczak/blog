@@ -1,9 +1,9 @@
 ---
-layout: post-tell
+layout: post-write
 title: "An Unbiased Comparison of Keyboard Layouts: Qwerty vs Dvorak vs Colemak"
 author: Julien Sobczak
 date: '2018-05-01'
-category: tell
+category: write
 subject: Touch Typing
 tags:
   - productivity
@@ -37,7 +37,7 @@ The time to enter a key depend on the row, hand, and finger of the key and the k
 
 
 https://www.quora.com/Do-you-always-have-to-return-every-finger-to-the-home-keys-when-touch-typing-every-single-time
-We aim to reach minimal distance. We not force the user to comeback to home row after each key (great when learning but not to reach fast typing). 
+We aim to reach minimal distance. We not force the user to comeback to home row after each key (great when learning but not to reach fast typing).
 
 
 In an exact analysis, it is not correct to handle even the finger component of both hands together, since the keyboard is not left-right symmetric in shape. But we shall ignore this fact for the present analysis.
@@ -70,7 +70,7 @@ https://dl.acm.org/citation.cfm?doid=990174.990218
 Yuzuru Hiraga, Yoshihiko Ono, and others. 1980. An analysis of the standard English keyboard. In Proceedings of the 8th Conference on Computational Linguistics.
 Association for Computational Linguistics, 242–248
 
-"At the mental level, it is well known that typing is not a collection of individual letter typing but a typing of a longer pattern as a unit.". We called these units chunks. This explains why we are faster at typing common works (was) and syllabes (-tion, -tive) than purely random strings. This determinant characteristic will be omitted from this analysis. 
+"At the mental level, it is well known that typing is not a collection of individual letter typing but a typing of a longer pattern as a unit.". We called these units chunks. This explains why we are faster at typing common works (was) and syllabes (-tion, -tive) than purely random strings. This determinant characteristic will be omitted from this analysis.
 
 http://delivery.acm.org/10.1145/1000000/990218/p242-hiraga.pdf?ip=212.234.38.108&id=990218&acc=OPEN&key=4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E6D218144511F3437&__acm__=1523628528_1d697bac5a99f7a286c840b6d226eca6
 
@@ -112,4 +112,4 @@ Finger Distribution (per hand)
 - Index 37.2% 45.3%
 - Middle 34.8% 21.4%
 - Ring 14.0% 27.6%
-- Little 14.1% 5.7% 
+- Little 14.1% 5.7%
