@@ -19,6 +19,7 @@ metadata:
   numberOfPages: 288
 links:
   amazon: 'https://www.amazon.com/gp/product/0241302013/'
+  amazon_review: 'https://www.amazon.com/review/R1NYM0UPQXE6A4/'
   goodreads: 'https://www.goodreads.com/book/show/34879265-the-little-book-of-lykke'
 ---
 

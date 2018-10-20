@@ -20,6 +20,7 @@ metadata:
   numberOfPages: 160
 links:
   amazon: 'https://www.amazon.com/gp/product/0761169253/'
+  amazon_review: 'https://www.amazon.com/review/R2SY8Y6Y3JROI0/'
   goodreads: 'https://www.goodreads.com/book/show/13099738-steal-like-an-artist'
 ---
 

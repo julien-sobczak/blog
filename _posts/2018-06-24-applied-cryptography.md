@@ -20,6 +20,7 @@ metadata:
   numberOfPages: 784
 links:
   amazon: 'https://www.amazon.com/gp/product/0471128457/'
+  amazon_review: 'https://www.amazon.com/review/R18ORY0UVA3FOT/'
   goodreads: 'https://www.goodreads.com/book/show/351301.Applied_Cryptography'
 ---
 

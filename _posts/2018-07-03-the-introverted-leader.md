@@ -20,6 +20,7 @@ metadata:
   numberOfPages: 168
 links:
   amazon: 'https://www.amazon.com/gp/product/1609942000/'
+  amazon_review: 'https://www.amazon.com/review/R7W180B8BIJX7/'
   goodreads: 'https://www.goodreads.com/book/show/16056951-the-introverted-leader'
 ---
 

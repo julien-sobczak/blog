@@ -18,6 +18,7 @@ metadata:
   numberOfPages: 562
 links:
   amazon: 'https://www.amazon.com/s/'
+  amazon_review: 'https://www.amazon.com/review/R34HPJHT4Y1FAG/'
   goodreads: 'https://www.goodreads.com/book/show/23463279-designing-data-intensive-applications'
 ---
 
