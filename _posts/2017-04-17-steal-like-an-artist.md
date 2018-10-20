@@ -6,7 +6,7 @@ author: Julien Sobczak
 date: '2017-04-17'
 category: read
 subject: Creativity
-headline: ???
+headline: The hidden face of creativity
 note: 17
 tags:
   - creativity

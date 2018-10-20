@@ -7,7 +7,7 @@ date: '2018-10-05'
 category: read
 subject: Introversion
 headline: The struggle of anxiety to succeed as an introvert
-note: 13
+note: 14
 tags:
   - self-help
 image: 'https://images.gr-assets.com/books/1500881894l/33914043.jpg'
@@ -18,6 +18,7 @@ metadata:
   isbn: '006266610X'
   numberOfPages: 304
 links:
+  amazon: 'https://www.amazon.com/Hiding-Bathroom-Introverts-Roadmap-Getting/dp/0062666088/'
   goodreads: 'https://www.goodreads.com/book/show/33914042-hiding-in-the-bathroom'
 ---
 

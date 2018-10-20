@@ -19,10 +19,11 @@ metadata:
   numberOfPages: 222
 links:
   amazon: 'https://www.amazon.com/gp/product/0993088147/'
+  amazon_review: 'https://www.amazon.com/review/RZ11UNHVLIPG/'
   goodreads: 'https://www.goodreads.com/book/show/36118272-humans-vs-computers'
 ---
 
-With *Humans vs Computers*, you will discover the importance of software quality through the consequences of its absence. All developers without exception are subject to the kind of bugs presented in this surprising book. The author did an impressive work to collect the vast collection of true stories, most having make the front page of newspapers. There are not the kind of bugs you could easily catch with a solid suite of automated tests - cultural differences, hidden biais, poor process automation, or the subtleties of commonalities (time, postal address, name) - with always the same result, we are  disconcerted by the (often disastrous) consequences.
+With *Humans vs Computers*, you will discover the importance of software quality through the consequences of its absence. All developers without exception are subject to the kind of bugs presented in this surprising book. The author did an impressive work to collect the vast collection of true stories, most having make the front page of newspapers. There are not the kind of bugs you could easily catch with a solid suite of automated tests - cultural differences, hidden biais, poor process automation, or the subtleties of commonalities (time, postal address, name) - with always the same result, we are disconcerted by the (often disastrous) consequences.
 
 I really like this book, so much I couldn't put it down. It's one of the few books I felt disappointed when I turned the last page. The idea of this book is excellent. The stories are funny, captivating, each more surprising than the last. I would like every developer reads this book, but as it's not technical at all (contains no code), every software users will be delighted, astonished, bewildered, entertained by it.
 

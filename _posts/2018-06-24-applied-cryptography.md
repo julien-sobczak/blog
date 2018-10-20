@@ -6,7 +6,7 @@ author: Julien Sobczak
 date: '2018-06-24'
 category: read
 subject: Cryptography
-headline: The classic. Still useful to master the foundations of the discipline.
+headline: A classic still useful to master the foundations of the discipline
 note: 17
 tags:
   - security
@@ -29,7 +29,7 @@ This 20th anniversary edition is nothing more than the second edition (published
 
 With almost a thousand pages, the book was aimed to be a reference on protocols and algorithms, privileging exhaustivity to readability (I've rarely seen a the table of contents and a bibliography so huge, proof of a daunting work). It was also the first book to present the subject to non-mathematicians.
 
-Chapters are organized along the protocols, the techniques, and the algorithms. Algorithms does not mean source code. Algorithms are presented using historical fact, description, figures, examples, and an analysis of variants and their security strength.
+Chapters are organised along the protocols, the techniques, and the algorithms. Algorithms does not mean source code. Algorithms are presented using historical fact, description, figures, examples, and an analysis of variants and their security strength.
 
 Developers will find the first two parts particularly valuable, especially the chapters about keys (answer questions such as how long a key should be, how to store keys, how to exchange keys). The book perfectly introduces the terminology, the concepts, the type of attacks and so much more. The third part is by far the largest and could be skimmed, while the last part presenting real-world applications gives move context but is slightly outdated. For a most recent (and more compact) publication co-authored by Bruce Schneier, check *Cryptography Engineering: Design Principles and Practical Applications*.
 

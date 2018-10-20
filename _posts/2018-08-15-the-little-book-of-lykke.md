@@ -6,7 +6,7 @@ author: Julien Sobczak
 date: '2018-08-02'
 category: read
 subject: Happiness
-headline: This book was an happy surprise to me
+headline: This book was a happy surprise to me
 note: 17
 tags:
   - life
@@ -28,7 +28,7 @@ The author goes beyond the specificities of each country and tries to capture th
 
 As a developer in a world full of opportunities, favorable to career development, we can become ambitious and lose sight of the fact that no achievement will bring us happiness for a long time. This book helps reconsider money, relationships, health, freedom, trust, kindness in the light of happiness. Everyone will find valuable insights in this book.
 
-*The Little Book of Hygge* by the same author was pleasant to read. *The Little Book o Lykke* was insightful. I have no doubt the next one will be even better.
+*The Little Book of Hygge* by the same author was pleasant to read. *The Little Book of Lykke* was insightful. I have no doubt the next one will be even better.
 
 
 
