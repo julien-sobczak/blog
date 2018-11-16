@@ -25,6 +25,10 @@ layout: 'page'
         </ul>
 
         <h2>{{page.title}}</h2>
+        {% if page.subtitle %}
+          <h3>{{ page.subtitle }}</h3>
+        {% endif %}
+
         <p class="author-name">
           {% if page.category == 'read' %}
             {% comment %} We explicit that the book was not written by the author of the review {% endcomment %}

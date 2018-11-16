@@ -1,0 +1,185 @@
+---
+layout: post-write
+title: "Why I Read Books?"
+subtitle: "9 reasons why you should start reading nonfiction books"
+author: Julien Sobczak
+date: '2018-11-16'
+category: write
+subject: Books
+tags:
+  - learning
+toc: true
+---
+
+
+[quote, My grandfather]
+____
+You can read anything you want, but you should always read something, every day.
+____
+
+[.lead]
+I have an addiction. If I add up the total weight of the books I’ve read, I literally read a ton of books (a book weight averages between 10 ounces for a book like _Quiet_ and 3 pounds for Tanenbaum’s textbooks).footnote:[In fact, this is partially true, because nowadays, I use mainly my e-reader, which is a safer alternative when falling asleep while reading.]
+
+[.lead]
+In the last two decades, I sinked into hundreds of thousands of pages, exploring the fantastic universe of Jules Verne, sharing the life of Albert Einstein, reviewing decades of researches about expertise, rationality, meditation, and also diving into the technical details of languages, frameworks, software architectures to help me in my job of developer. So many books, and so many reasons to open them.
+
+== A little about history
+
+Books played an important role in human history. Around 130 million books have been published so far (the equivalent of 5000 lives of reading, provided that you devote all your time to this endeavor). But even if we read an infinitesimal part of this vast source of knowledge (an avid reader will probably read a few thousands books in his or her whole life), books deeply affect us. Books make us a different person. It should come as no surprise that books are one of the most popular source of quotes.
+
+[quote,Thomas Jefferson, 3rd president of the United States]
+____
+I cannot live without books.
+____
+
+[quote,Abraham Lincoln, 16th President of the United States]
+____
+Books serve to show a man that those original thoughts of his aren’t very new after all.
+____
+
+[quote,Theodore Roosevelt, 26th President of the United States]
+____
+Books are almost as individual as friends.
+____
+
+[quote,Barack Obama, 44th President of the United States]
+____
+Reading is the gateway skill that makes all other learning possible.
+____
+
+There are two possible explanations. Either the job of president of the United States is the most boring job in the world, or there are hidden benefits to reading.
+
+This book addiction doesn't stop to US presidents. In fact, reading is probably the single pastime successful people have in common. footnoteref:[success,The Reading Habits of Ultra-Successful People, by Andrew Merle, https://www.huffingtonpost.com/andrew-merle/the-reading-habits-of-ult_b_9688130.html] Jeff Bezos launches Amazon as online book shop, reflecting his passion for reading. footnote:[The fact that millions of books are in print was also the guarantee that no physical store will be able to compete with Amazon. http://www.businessinsider.fr/us/how-amazon-decided-to-sell-books-2018-4] Mark Zuckerberg started the year 2005 with the https://www.facebook.com/ayearofbooks/[New Year's resolution] to read two books per month. Elon Musk growns up as a "bookwormy" kid, reading as many as two books per day. footnoteref:[success] footnote:[5 Billionaires Who Credit Their Success to Reading, by James Paine, https://www.inc.com/james-paine/5-billionaires-who-credit-their-success-to-reading.html] https://www.gatesnotes.com/[Bill Gates' blog] regularly praises fascinating books. The list could go on forever. footnoteref:[famous,15 Famous Readers Who Share Your Passion For Literature, by Sadie Trombetta, https://www.bustle.com/p/15-famous-readers-who-share-your-passion-for-literature-7679559] Despite busy schedules, highly successful entrepreneurs, politicians, researchers, devote a considerable time to reading, favoring especially nonfiction books (biographies, researcher's publications, anthropology books, etc.).
+
+There is no doubt they all have good reasons to read, but as I can't speak for them, I will instead present you the reasons that motivate me to read.
+
+== I read to feel knowledgeable
+
+[quote,Tomie dePaola,American writer and illustrator]
+____
+Reading is important, because if you can read, you can learn anything about everything and everything about anything.
+____
+
+We, humans, are born as very curious creatures. Children loves to learn new things, but adults often stop learning, as there is no teacher to guide us any more. Books are a wonderful way to learn. I use books as my main source of information and books have never failed to surprise me. Here are some examples of what I learned:
+
+* What role sleep plays in the record of longevity in the Greek island of Ikaria. (link:{{ site.baseurl }}{% post_url 2018-04-01-why-we-sleep %}[see the book])
+* Why choosing NULL for a licence plate is a really bad idea. (link:{{ site.baseurl }}{% post_url 2018-05-14-humans-vs-computers %}[see the book])
+* Why pursuing career advancement will never bring happiness in the long term. (link:{{ site.baseurl }}{% post_url 2018-08-15-the-little-book-of-lykke %}[see the book])
+* Why leading organizations are often managed by introverts. (link:{{ site.baseurl }}{% post_url 2016-11-21-quiet %}[see the book])
+* How trust and humility are crucial ingredients for a company to innovate. (link:{{ site.baseurl }}{% post_url 2018-10-20-creativity-inc %}[see the book])
+* Why some children abandon a problem after just a few minutes when others try harder. (link:{{ site.baseurl }}{% post_url 2016-12-31-mindset %}[see the book])
+* How popular storage databases work under the hood. (link:{{ site.baseurl }}{% post_url 2018-02-25-designing-data-intensive-applications %}[see the book])
+* Why copying other people's work is unavoidable, despite what school is trying to teach us. (link:{{ site.baseurl }}{% post_url 2017-04-17-steal-like-an-artist %}[see the book])
+* Why having reached so fast the top of the food pyramid is not a good thing. (link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[see the book])
+* How expertise has nothing to do with innate talent. (link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[see the book])
+* Why forgetting is vital to our memory, even if I can't exactly remember why. (https://www.amazon.com/Mind-Numbers-Science-Flunked-Algebra/dp/039916524X[see the book])
+
+Books are incredible. Instead of learning by instruction from a present teacher, I learn by discovery from an absent teacher, the book author. Books let me decide what to learn and when to do it. I'm free to pursue any interest in any direction at any time. Reading is freedom.
+
+Nonetheless, books alone will never make me really competent. Practice play an important role to convert knowledge into skills. Both are link:{{ site.baseurl }}{% post_url 2018-01-24-competency-equals-knowledge-plus-skills %}[complementary]. Practices let me perfect my comprehension and exposes me to new problems, new questions, that invite me to read other books. It a virtuous circle. The more I know about a subject, the more I find it interesting, and the more I read about it.
+
+
+== I read to feel ignorant
+
+[quote,Unknown author]
+____
+Reading can seriously damage your ignorance.
+____
+
+While this could seems at first counterintuitive, the truth is the more you read, the more you realize the immensity of knowledge.
+
+Every book brings me something new, and let me see how much I am ignorant on a subject (not sure I will convince someone to read books with such an argument but that's true). I usually finished a book with of list of two or three additional books that I would like to read. There is no end in reading, like there is no end in knowledge. Even if that could seem discouraging, it's not. It shows me that while I will stay curious to learn, there will be something new to learn. Reading is the fuel that keeps my curiosity running.
+
+
+== I read to feel less ignorant
+
+[quote,Donald Rumsfeld,Former US Secretary of Defense]
+____
+There are things we know we know. We also know there are known unknowns; that is to say we know there are some things we do not know. But there are also unknown unknowns – the ones we don't know we don't know.
+____
+
+Books clearly help me to transform some of these unknown unknowns into known unknowns. There will always be things that I will not be aware of. It's an evidence. But by diversifying my readings, I become more aware of my ignorance. I use books to enrich my toolbox to avoid seeing every problem like a nail to hit with a hammer. Even If reading alone will not make proficient in using any of these tools, I know they exist and could choose the most relevant one for the task at hand.
+
+
+== I read to stay open-minded
+
+[quote,Epictetus,Greek philosopher]
+____
+You can't learn if you think you already know.
+____
+
+I read books on subject that I'm using at work, to feel more comfortable with my favorite programming language, to discover frameworks to not reinvent the wheel, or to apply patterns, techniques, principles for a more sustainable architecture. But I also read books on programming languages that I will probably never use in enterprise (e.g., pure functional languages like Haskell, logic programming using Prolog). I read books on low-level programming (e.g., embedded systems, UNIX programming) even if most of my code happens higher in the stack. I read books on UX Design even if my jobs of backend developer does not allow me to design UIs. And so on. Seeking depth of expertise and breadth of knowledge is commonly called by recruiters a T-shaped developer, and has many more advantages than just filling your LinkedIn inbox.
+
+As aforementioned, reading challenges my ignorance. After reading hundred of books, I'm just unable to say sentences like _"This is how things should be done"_, even when I have firm beliefs. Reading is, without a doubt, the best strategy to avoid preconceptions and to stay open-minded.footnote:[I have to confess that I often fails to act open-minded when facing stubborn people convinced of their ideas. Even if there are always many ways to tackle a problem, there is definitively some ways that are just wrong for a given context. I still struggle in these situations.]
+
+
+== I read to challenge myself
+
+[quote,Barbara Oakley,A Mind For Numbers]
+____
+It's not what you know; it's how you think
+____
+
+Our way of thinking is heavily influenced by our prior experiences: what we hear, what we see, what we do, where we live, with whom we relate? All this contributes and shapes our mindset.
+
+Reading a book is the best way that I found to expose myself to an another point of view. __"... [B]ooks have an extraordinary power to take you out of yourself and into someone else's mindset"__, said https://www.ted.com/talks/ann_morgan_my_year_reading_a_book_from_every_country_in_the_world#t-588599[Ann Morgan], who challenged herself to read a book from every country in the world, __"...[y]ou look at the world through different eyes."__ Indeed, to think differently, we need to listen from different persons and as the Complementary Law says: _"Any two points of view are complementary."_
+
+For this purpose, I had always tried to intersperse my technical readings with non-technical books on almost any subject: learning, eating, health, psychology, habits, economy, mathematics, biographies, etc. The books that most inspired me are all among these readings. Slowly, I reversed the equation, and now, I try hard to intersperse technical readings among the vast diversity of non-technical readings.
+
+I'm convinced that you cannot be stuck in a fixed mindset if you read a lot of diversified books. Moreover, I often force myself to read several books on the same subject, to contrast different opinions, and also to use repetitions to remember more efficiently (in the same way that If you read the same book twice, you will discover new things that you miss on your first reading).
+
+
+== I read to get ideas
+
+[quote,Oprah Winfrey]
+____
+You must feed your mind with reading material, thoughts, and ideas that open you to new possibilities.
+____
+
+Ideas could come from nowhere, while jogging, or in the middle of the night, but the truth is, great ideas happen only in a prepared mind. Our brain is a champion to mix unrelated facts in a new way but to succeed, we need to feed him. The brain is a voracious creature, that need to be constantly refilled with new information.
+
+Reading is a good way to dump a vast amount of knowledge into this giant reservoir, a kind a food for thought that increase considerably the chances a new idea pop up. This point probably explain why inspirational leaders such as Bill Gates, Elon Musk, read a lot. The more you read, the more you are prepared for new ideas.
+
+
+== I read to avoid mistakes
+
+[quote,Bernard M. Baruch,American financier]
+____
+Most of the successful people I’ve known are the ones who do more listening than talking.
+____
+
+It is widely acknowledged that the best way to learn is to make mistakes. This explains why so many companies foster a blameless culture among employees. But if learning from his or her own mistakes is valuable, learning about other mistakes is even more valuable.
+
+Reading is about learning from the experience of others. A book is a one-way conversation between two strangers, the writer and the reader. Books like _Peak_, or the autobiography of _Steve Jobs_ (there are just a few examples among so many other titles), condense decades of lessons learned the hard way, and now easily accessible by devoting only a few hours of our time. I don't think of a more profitable way to spent time (at least concerning learning).
+
+[quote,The Dalai Lama]
+____
+When you talk, you are only repeating what you already know. But if you listen, you may learn something new.
+____
+
+By learning from other mistakes, you do less mistakes (a blameless culture company is not an excuse to repeat avoidable mistakes). And by doing less mistakes, you are able to tackle bigger problems, and thus, get more satisfaction from your job.
+
+It is even truer if you job affects directly other people. Don't wait for failure. Be proactive and seek knowledge before you need it. Professional life is too short to hope making enough mistakes to reach top performance, particularly if you are surgeon. Be humble and stand on the shoulders of giants.
+
+
+== I read to save time
+
+[quote,Frank Zappa,American musician, composer, activist and filmmaker]
+____
+So many books, so little time.
+____
+
+Reading is a huge time saver. This could seem paradoxical since people often pretend not to have enough time to read. In practice, I often see people stuck on a problem for long hours (e.g., stupid bugs, framework quirks, rough understanding of underlying concepts), and sometimes, end up with an inappropriate solution that will cost time (and money) in the long run. You could choose to ignore reading because you don't have the time, but inevitably, you will spent a lot more time by not doing it. It is like avoiding a refactoring because of time pressure. We know the result.
+
+
+== I read because it's a duty
+
+[quote,Abby Marks-Beale,10 Days to Faster Reading]
+____
+If you ask anyone who is prominent in their field to discuss how they got to where they are right now, I can almost guarantee you that their path to success included a lot of reading.
+____
+
+I really think everyone should read nonfiction books, at least one in a few months. For me, I see reading as a duty, to be able to create a bigger impact in my work, to appreciate more fully my life and the diversity of the world. There are so many benefits I get from reading, more than what I could write in a blog post. In the end, reading is maybe a duty, but an enjoyable one. I read because I learned to love books. It is as simple as that.
+
+I will close this article with a quotation from world-renowned businessman Warren Buffet, who is famous for reading around 500 pages every day. _"That’s how knowledge works. It builds up, like compound interest,"_ he said. _"All of you can do it, but I guarantee not many of you will do it.”_.footnoteref:[famous] Will you?
+

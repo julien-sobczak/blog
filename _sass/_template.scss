@@ -808,6 +808,9 @@ footer img.footer-me {
   float: right;
 }
 
+#page-post header h3 {
+  font-family: 'Nothing You Could Do', cursive;
+}
 
 // Split main content into 3 columns including 2 sticky ones
 #page-post article {
@@ -972,39 +975,53 @@ $aside-width: 375px;
 
 
 .author-bio {
-  $color-local: #F6F6F6;
-
-  min-height: 130px;
-  border-left: 6px solid $color-base;
-  border-radius: 4px;
+  position: relative;
+  min-height: 110px;
+  border-left: 8px solid $color-gray;
+  border-right: 8px solid $color-gray;
   margin-top: 70px;
+  font-family: "Montserrat";
   padding: 10px 20px;
-  background-color: $color-local;
+  padding-bottom: 40px;
+  background-color: $color-base;
+  color: white;
 
   img {
     float: right;
-    border: 6px solid white;
-    border-radius: 50%;
+    box-shadow: -8px 8px $color-gray;
     width: 100px;
     height: 100px;
+    margin-top: 10px;
     margin-left: 20px;
   }
 
   p strong {
-     font-size: 120%;
-     font-style: normal;
+    font-size: 120%;
+    font-style: normal;
+    border-bottom: 6px dotted $color-gray;
   }
   p {
-    margin: 10px 0;
+    margin: 20px 0;
     margin-right: 40px;
     font-size: 16px;
     line-height: 150%;
   }
   a {
-    display: block;
-    margin: 15px;
-    font-size: 120%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 0;
+    font-size: 90%;
+    text-transform: uppercase;
+    font-weight: 600;
     text-align: center;
+    background-color: $color-gray;
+    color: $color-base;
+  }
+  a:hover {
+    color: white;
+    text-decoration: none;
   }
 }
 
@@ -1194,7 +1211,10 @@ article {
   }
 }
 
-
+#footnotes .footnote {
+  font-size: 75%;
+  margin: 20px 15px;
+}
 
 
 // Model of post
@@ -1204,15 +1224,12 @@ article.problem-solution {
   .sect1 {
     display: none;
   }
-
 }
-
 
 
 .imageblock {
-  text-align:center
+  text-align: center;
 }
-
 
 
 // Callout
