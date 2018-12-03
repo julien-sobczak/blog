@@ -4,7 +4,7 @@ title: "An Unbiased Comparison of Keyboard Layouts: Qwerty vs Dvorak vs Colemak"
 author: Julien Sobczak
 date: '2018-05-01'
 category: write
-subject: Touch Typing
+subject: "Touch Typing"
 tags:
   - productivity
 ---
@@ -22,7 +22,7 @@ Initially, our index fingers should lie on the keys F and J respectively. These 
 
 In this position, keys A, S, D, F and J, K, L, : are accessible without moving the hands:
 
-[Figure with 8 keys selected => use typio-keyboard]
+//[Figure with 8 keys selected => use typio-keyboard]
 
 To reach the intermediary keys G and H, you need to move the index fingers or move your hands of the same distance. To understand the differences between the two approaches, imagine you need to type G, then A.
 
@@ -31,7 +31,7 @@ With the second option, we first move your left hand to the right to press G, be
 
 For the distance value, we use the key as the unit. In the previous example, it means the distance is 2 (1 to reach the G, and 1 to reach the A). To convert the distance to a real distance, you just have to multiply by the standard spacing for keyboard keys, which is 3/4 inch (or 19.05mm). As our aim is to compare the distance between different layouts, we don't care about the physical distance.
 
-[Figure with index fingers above G and H]
+//[Figure with index fingers above G and H]
 
 The time to enter a key depend on the row, hand, and finger of the key and the key where we come from. So, basically, we need to determine a function f(hl, h2, rl, r2, fl, f2) + e where  h, r, and f stand for hand, row, and finger, respectively, and e those factors that cannot be described in terms of the key pair (e could be negative as when preparing the following key with the other hand).
 
@@ -44,8 +44,7 @@ In an exact analysis, it is not correct to handle even the finger component of b
 
 
 
-
-==========================
+////
 
 In a http://delivery.acm.org/10.1145/2860000/2858233/p4262-feit.pdf[recent study], "...[Motion capture data exposes 3 predictors of high performance: 1) unambiguous mapping (a letter is consistently pressed by the same finger), 2) active preparation of upcoming keystrokes, and 3) minimal global hand motion." We will try as much as possible to reflect these three points in our calculation method. Moreover, we consider no time is spent looking at the keyboard, and that no mistakes are made while typing.
 
@@ -82,15 +81,6 @@ http://www.datapointed.net/2010/01/typing-styles-compared/
 
 
 
-
-
-
-
-
-
-
-
-
 =========================
 Output of program:
 
@@ -113,3 +103,5 @@ Finger Distribution (per hand)
 - Middle 34.8% 21.4%
 - Ring 14.0% 27.6%
 - Little 14.1% 5.7%
+
+////
