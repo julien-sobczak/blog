@@ -10,7 +10,6 @@ tags:
 unofficialTags:
   - flashcards
 toc: true
-published: false
 ---
 
 ++++
