@@ -9,6 +9,9 @@ subject: Concurrency
 headline: java.util.concurrent demystified by its creators. One of my top 3 most important book on the Java language.
 note: 19
 tags:
+  - languages
+  - computer-science
+unofficialTags:
   - java
 image: 'http://d.gr-assets.com/books/1349044077l/127932.jpg'
 metadata:

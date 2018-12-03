@@ -9,6 +9,8 @@ subject: Creativity
 headline: The hidden face of creativity
 note: 17
 tags:
+  - self-help
+unofficialTags:
   - creativity
 image: 'https://images.gr-assets.com/books/1404576602l/13099738.jpg'
 metadata:

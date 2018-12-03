@@ -7,8 +7,9 @@ category: inspect
 subject: Spring Boot
 toc: true
 tags:
-- java
-- framework
+  - frameworks
+unofficialTags:
+  - java
 ---
 
 

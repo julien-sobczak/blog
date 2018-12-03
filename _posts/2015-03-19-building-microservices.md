@@ -10,6 +10,7 @@ headline: "An essential contribution to know if you should build microservices a
 note: 17
 tags:
   - architecture
+  - devops
 image: 'http://d.gr-assets.com/books/1403186979l/22512931.jpg'
 metadata:
   authors: 'Sam Newman'

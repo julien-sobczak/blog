@@ -19,6 +19,13 @@ layout: 'page'
           </a>
         {% endfor %}
 
+        {% for tag in page.unofficialTags %}
+          <span
+            class="label">
+            {{ tag | capitalize }}
+          </span>
+        {% endfor %}
+
         <ul class="language">
           <!--<li><a href="#">FR</a></li>-->
           <li class="current-language"><a class="active" href="#">EN</a></li>

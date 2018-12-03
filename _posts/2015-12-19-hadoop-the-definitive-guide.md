@@ -10,6 +10,8 @@ headline: Excellent style, clear and understandable examples. Useful both as a g
 note: 15
 tags:
   - data
+unofficialTags:
+  - big-data
 image: 'https://images.gr-assets.com/books/1470664545l/31372333.jpg'
 metadata:
   authors: Tom White

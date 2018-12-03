@@ -9,7 +9,8 @@ subject: iBatis
 headline: Still a good reference to understand concepts behind MyBatis.
 note: 12
 tags:
-  - framework
+  - frameworks
+unofficialTags:
   - java
 image: 'http://d.gr-assets.com/books/1442410340l/332070.jpg'
 metadata:

@@ -7,7 +7,9 @@ category: inspect
 subject: Font Awesome
 toc: true
 tags:
-- web
+  - framworks
+unofficialTags:
+  - web
 ---
 :imagesdir: /posts_resources/2017-06-25-font-awesome/
 

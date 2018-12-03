@@ -10,7 +10,9 @@ headline: Better than the official documentation to get started but not so much 
 note: 10
 tags:
   - data
-  - framework
+  - frameworks
+unofficialTags:
+  - big-data
 image: 'http://d.gr-assets.com/books/1380034125l/17318146.jpg'
 metadata:
   authors: Mark Hamstra, Matei Zaharia

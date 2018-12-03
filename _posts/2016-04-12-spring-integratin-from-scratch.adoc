@@ -7,8 +7,9 @@ category: inspect
 subject: Spring Integration
 toc: true
 tags:
-- java
-- framework
+- frameworks
+unofficialTags:
+  - java
 ---
 
 [CAUTION]

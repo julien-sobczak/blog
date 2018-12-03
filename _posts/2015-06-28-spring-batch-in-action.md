@@ -8,7 +8,8 @@ category: read
 subject: Spring Batch
 headline: An in-depth guide to batch processing. Cover every aspect of Spring Batch.
 tags:
-  - framework
+  - frameworks
+unofficialTags:
   - java
 image: 'http://d.gr-assets.com/books/1347812155l/11493933.jpg'
 read_authors: Arnaud Cogoluegnes, Thierry Templier, Gary Gregory, Olivier Bazoud

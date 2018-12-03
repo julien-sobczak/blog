@@ -9,6 +9,8 @@ subject: Happiness
 headline: This book was a happy surprise to me
 note: 17
 tags:
+  - human
+unofficialTags:
   - life
 image: 'https://images.gr-assets.com/books/1497866764l/34879265.jpg'
 metadata:

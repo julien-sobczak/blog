@@ -9,6 +9,9 @@ subject: Cryptography
 headline: A classic still useful to master the foundations of the discipline
 note: 17
 tags:
+  - classics
+  - computer-science
+unofficialTags:
   - security
   - cryptography
 image: 'https://images.gr-assets.com/books/1387734235l/351301.jpg'

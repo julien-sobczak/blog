@@ -11,7 +11,6 @@ note: 15
 tags:
   - learning
   - productivity
-  - tool
   - self-help
 image: 'https://images.gr-assets.com/books/1442851303l/80762.jpg'
 metadata:
@@ -34,7 +33,7 @@ Tony Buzan is a pioneer in brain demystification, the initiator of international
 - Division 4 explores the many distinct tasks which can be successfully accomplished using Mind Maps: making choices, organizing ideas, creative thinking, and brainstorming.
 - Division 5 explores the many practical ways in which you can use Map Mapping skills (at work or in your personal life).
 
-Each division contains many short chapters that could be read in 10 minutes each. The argumentation is good but as the book progresses, repetitions increases and my attention was considerably decreased. The first half of the book was a very enjoyable reading but the second half (mainly the last division about uses) is better left as a reference to find advices on how to use Mind Maps in different contexts.  
+Each division contains many short chapters that could be read in 10 minutes each. The argumentation is good but as the book progresses, repetitions increases and my attention was considerably decreased. The first half of the book was a very enjoyable reading but the second half (mainly the last division about uses) is better left as a reference to find advices on how to use Mind Maps in different contexts.
 
 One of the great things about this book is the many examples of Mind Maps, created by people of different age, origin, and social background. A good illustration of what can be done with the technique and a great source of inspiration.
 

@@ -10,6 +10,8 @@ headline: The struggle of anxiety to succeed as an introvert
 note: 14
 tags:
   - self-help
+unofficialTags:
+  - introversion
 image: 'https://images.gr-assets.com/books/1500881894l/33914043.jpg'
 metadata:
   authors: Morra Aarons-Mele

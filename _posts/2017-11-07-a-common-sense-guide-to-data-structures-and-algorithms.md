@@ -10,6 +10,8 @@ headline: A common sense guide on trivial data structures and algorithms
 note: 9
 tags:
   - computer-science
+unofficialTags:
+  - algorithms
 image: 'https://images.gr-assets.com/books/1490789883l/34695800.jpg'
 metadata:
   authors: Jay Wengrow

@@ -9,7 +9,7 @@ subject: Leadership
 headline: An idea so simple, yet so powerful. A must-have book!
 note: 17
 tags:
-  - people
+  - human
   - management
 image: 'https://images.gr-assets.com/books/1360936414l/7108725.jpg'
 metadata:

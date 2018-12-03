@@ -7,6 +7,8 @@ category: write
 subject: Flashcards
 tags:
   - learning
+unofficialTags:
+  - flashcards
 ---
 
 [.lead]

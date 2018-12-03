@@ -9,6 +9,8 @@ subject: Software Quality
 headline: Sometimes code behaves as planned but not as expected by users.
 note: 19
 tags:
+  - craftsmanship
+unofficialTags:
   - quality
 image: 'https://images.gr-assets.com/books/1503610919l/36118272.jpg'
 metadata:

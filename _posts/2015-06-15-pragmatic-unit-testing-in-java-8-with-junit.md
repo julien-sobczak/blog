@@ -9,8 +9,10 @@ subject: JUnit
 headline: A quick introduction to the world of modern unit-testing.
 note: 14
 tags:
+  - craftsmanship
+  - frameworks
+unofficialTags:
   - java
-  - framework
 image: 'http://d.gr-assets.com/books/1419183325l/23333089.jpg'
 metadata:
   authors: Jeff Langr, Andy Hunt, Dave Thomas

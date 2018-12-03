@@ -9,7 +9,8 @@ subject: Golang
 headline: The K&R of the Go programming language
 note: 17
 tags:
-  - language
+  - languages
+unofficialTags:
   - go
 image: 'https://images.gr-assets.com/books/1447908133l/27858475.jpg'
 metadata:

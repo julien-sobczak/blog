@@ -10,6 +10,7 @@ headline: Still the best introduction to the most popular CI Server but not a de
 note: 12
 tags:
   - devops
+  - tools
 image: 'http://d.gr-assets.com/books/1328761496l/11709965.jpg'
 metadata:
   authors: John Ferguson Smart

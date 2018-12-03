@@ -10,7 +10,6 @@ headline: The Memory Palace illustrated through advanced use cases. No explanati
 note: 14
 tags:
   - learning
-  - memory
 image: 'https://images.gr-assets.com/books/1349917314l/5149957.jpg'
 metadata:
   authors: Ed Cooke

@@ -9,8 +9,7 @@ subject: SonarQube
 headline: A thorough, in-depth guide to Code Inspection with SonarQube
 note: 17
 tags:
-  - tool
-  - productivity
+  - tools
   - craftsmanship
 image: 'http://d.gr-assets.com/books/1415174686l/23502608.jpg'
 metadata:

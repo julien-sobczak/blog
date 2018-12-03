@@ -9,8 +9,9 @@ subject: Unit Testing
 headline: Learn unit testing through a catalog of bad Test smells.
 note: 16
 tags:
-  - java
   - craftsmanship
+unofficialTags:
+  - testing
 image: 'http://d.gr-assets.com/books/1359031267l/17282399.jpg'
 metadata:
   authors: Lasse Koskela

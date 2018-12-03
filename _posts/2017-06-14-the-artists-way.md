@@ -10,6 +10,7 @@ headline: Literally, the Bible of Creativity. Go[o]d or Evil?
 note: 8
 tags:
   - self-help
+unofficialTags:
   - creativity
 image: 'https://images.gr-assets.com/books/1440952332l/615570.jpg'
 metadata:
@@ -35,4 +36,4 @@ The book is divided in twelve week-courses, each section dealing with some speci
 
 I also found the book takes too much time to really start. The author decides to add context to the book by explaining its origin and history. On a positive note, the book is full of quotations, which support the ideas and demonstrate that the subject was profoundly researched by its author.
 
-If reading the "AA guide" of creativity does not scared you, and if the inner artist in you need some help to get started, the book deserves your attention. If you are more confident and seeks advices on artist's practices, this is not the right book. *Steal Like An Artist* or *Daily Rituals: How Artists Work* is a good start.  
+If reading the "AA guide" of creativity does not scared you, and if the inner artist in you need some help to get started, the book deserves your attention. If you are more confident and seeks advices on artist's practices, this is not the right book. *Steal Like An Artist* or *Daily Rituals: How Artists Work* is a good start.

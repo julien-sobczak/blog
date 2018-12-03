@@ -9,8 +9,9 @@ subject: Spring Integration
 headline: The reference book about the reference implementation of EIPs. A journey through the framework for beginners and intermediate users.
 note: 16
 tags:
+  - frameworks
+unofficialTags:
   - java
-  - framework
 image: 'http://d.gr-assets.com/books/1361784282l/9327132.jpg'
 metadata:
   authors: Mark Fisher, Jonas Partner, Marius Bogoevici, Iwein Fuld

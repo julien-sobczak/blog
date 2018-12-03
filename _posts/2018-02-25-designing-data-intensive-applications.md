@@ -9,8 +9,8 @@ subject: Data
 headline: Undeniably one of the best books published in the last years
 note: 19
 tags:
-  - Data
-  - Architecture
+  - data
+  - architecture
 image: 'https://images.gr-assets.com/books/1415816873l/23463279.jpg'
 metadata:
   authors: Martin Kleppmann

@@ -9,8 +9,9 @@ subject: Python
 headline: Every language deserves a book like that
 note: 15
 tags:
+  - languages
+unofficialTags:
   - python
-  - language
 image: 'https://images.gr-assets.com/books/1442848456l/22800567.jpg'
 metadata:
   authors: Luciano Ramalho

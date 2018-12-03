@@ -9,8 +9,9 @@ subject: Apache Mesos
 headline: Valuable advices targeted to Mesos framework developers delivered in a poorly edited book
 note: 8
 tags:
-  - data
+  - devops
   - architecture
+unofficialTags:
 image: 'https://images.gr-assets.com/books/1450041191l/27015346.jpg'
 metadata:
   authors: David Greenberg

@@ -9,6 +9,8 @@ subject: Linux
 headline: Should be titled "Become a Linux superuser"
 note: 6
 tags:
+  - computer-science
+unofficialTags:
   - Linux
 image: 'https://images.gr-assets.com/books/1416182343l/19484963.jpg'
 metadata:

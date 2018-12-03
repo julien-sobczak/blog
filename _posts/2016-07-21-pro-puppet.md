@@ -10,6 +10,7 @@ headline: A messy collection of advanced Puppet code. Valuable information deliv
 note: 5
 tags:
   - devops
+  - tools
 image: 'https://images.gr-assets.com/books/1379334130l/17919001.jpg'
 metadata:
   authors: Spencer Krum, William Van Hevelingen, Ben Kero, James Turnbull, Jeffrey McCune

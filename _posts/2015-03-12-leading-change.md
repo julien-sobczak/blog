@@ -10,6 +10,7 @@ headline: "Eight steps to considerably increase your chance of success. Useful t
 note: 15
 tags:
   - people
+  - management
 image: 'https://images.gr-assets.com/books/1427779756l/51370.jpg'
 metadata:
   authors: 'John P. Kotter'

@@ -10,6 +10,7 @@ headline: The timeless way of building software
 note: 17
 tags:
   - architecture
+  - craftsmanship
 image: 'https://images.gr-assets.com/books/1471680093l/18043011.jpg'
 metadata:
   authors: Robert C. Martin
@@ -27,7 +28,7 @@ Uncle Bob tackles the delicate subject of software architecture using the same r
 
 What makes this book stand apart from other similar books is the author's unique experience, having written code for more than half a century, for various kinds of application (firmware, distributed systems, batch processing, GUI, frameworks, etc.), in various languages (assembler, C, C++, Java) and using various paradigms. Despite all of this, Uncle Bob claims the essence of programming is still the same as it was when Alan Turing wrote the first machine code in 1946. But now, we have a grasp of the timeless rules that make software works. This is what this book is about.
 
-This contrasts heavily with the book *Software Architecture for Developers* where Simon Brown, who, by the way, wrote a short chapter in this book, adds new notation around his C4 model. *Clean Architecture* does not provide nothing new, and discusses the old principles like SOLID in a new light. And it rocks! I really liked reading this book.   
+This contrasts heavily with the book *Software Architecture for Developers* where Simon Brown, who, by the way, wrote a short chapter in this book, adds new notation around his C4 model. *Clean Architecture* does not provide nothing new, and discusses the old principles like SOLID in a new light. And it rocks! I really liked reading this book.
 
 What is not this book is a presentation of common architecture styles (hexagonal, microservices, SOA, etc.), even if the book uses them to illustrate architecture principles on which these styles are strongly based.
 

@@ -1,13 +1,15 @@
 ---
 layout: post-write
-title: 'Anki Scripting 101: Automate your flashcards'
+title: 'Anki Scripting: Automate your flashcards'
 author: 'Julien Sobczak'
 date: '2016-12-26 09:15:00.000+01:00'
 category: write
 subject: SRS
 tags:
-- java
-- framework
+  - tools
+  - learning
+unofficialTags:
+  - flashcards
 toc: true
 ---
 :imagesdir: /posts_resources/2016-12-26-anki-scripting/

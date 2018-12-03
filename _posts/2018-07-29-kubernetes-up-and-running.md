@@ -9,6 +9,8 @@ subject: Kubernetes
 headline: The perfect recipe for a technical book
 note: 17
 tags:
+  - devops
+unofficialTags:
   - reliability
 image: 'https://images.gr-assets.com/books/1515495557l/26759355.jpg'
 metadata:

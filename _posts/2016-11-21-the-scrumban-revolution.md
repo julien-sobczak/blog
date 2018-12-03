@@ -9,8 +9,9 @@ subject: Scrumban Methodology
 headline: An important subject delivered in a very disorganized verbose book. Recommended for the more adventurous reader.
 note: 1
 tags:
+  - management
+unofficialTags:
   - agile
-  - people
 image: 'https://images.gr-assets.com/books/1437508857l/25953144.jpg'
 metadata:
   authors: Ajay Reddy
@@ -39,6 +40,6 @@ As an example of disorganization, there is just one lengthy appendix to cover un
 
 At the end, I recommend this book to the experienced agile coach armed a solid knowledge of Scrum and Kanban to be able to read between the lines to find out what Scrumban is about.
 
-Please take note that my review only concerns the book. Scrumban is a breath of fresh air in current agile world but if we want a true adoption of the methodology, I regret *The Scrumban [R]Evolution* is not a catalyst for people to embrace Scrumban.  
+Please take note that my review only concerns the book. Scrumban is a breath of fresh air in current agile world but if we want a true adoption of the methodology, I regret *The Scrumban [R]Evolution* is not a catalyst for people to embrace Scrumban.
 
 In addition to the book, the author created a well-designed online tool named "getscrumban" to introduce Scrumban concepts to newcomers. A good starting point if you plan to tackle the book.

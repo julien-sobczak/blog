@@ -9,6 +9,8 @@ subject: Linux
 headline: Very concise explanations + an exhaustive list of topics = a voluminous reference book
 note: 16
 tags:
+  - computer-science
+unofficialTags:
   - linux
 image: 'https://images.gr-assets.com/books/1513487692l/36014120.jpg'
 metadata:

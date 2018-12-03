@@ -9,8 +9,9 @@ subject: Shell Programming
 headline: Every technology needs its reference book and it makes me no doubt that bash has found its one
 note: 15
 tags:
-  - productivity
-  - tool
+  - tools
+unofficialTags:
+  - linux
 image: 'https://images.gr-assets.com/books/1328834519l/299534.jpg'
 metadata:
   authors: Cameron Newham, Bill Rosenblatt

@@ -9,6 +9,8 @@ subject: memory
 headline: A highly practical book to use memory techniques in our everyday life
 note: 13
 tags:
+  - learning
+unofficialTags:
   - memory
 image: 'https://images.gr-assets.com/books/1388186863l/349426.jpg'
 metadata:

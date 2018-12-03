@@ -10,7 +10,8 @@ headline: A good complement to Quiet to improve your leadership at work
 note: 14
 tags:
   - self-help
-  - psychology
+unofficialTags:
+  - introversion
 image: 'https://images.gr-assets.com/books/1354900257l/16056951.jpg'
 metadata:
   authors: Jennifer B. Kahnweiler

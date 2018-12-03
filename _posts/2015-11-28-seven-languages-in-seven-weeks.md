@@ -10,7 +10,7 @@ headline: A pleasant reading to sharpen your programming skills and broaden your
 note: 17
 tags:
   - craftsmanship
-  - language
+  - languages
 image: 'https://images.gr-assets.com/books/1348558067l/7912517.jpg'
 metadata:
   authors: Bruce A. Tate
