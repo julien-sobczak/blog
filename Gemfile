@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'ruby_dep', '~> 1.5.0'
 gem 'jekyll', '~> 3.3.1'
 gem 'jekyll-feed', '~> 0.8.0'
 gem 'asciidoctor', '~> 1.5.0'
