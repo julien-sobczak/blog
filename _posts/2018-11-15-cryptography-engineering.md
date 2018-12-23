@@ -22,6 +22,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/0470474246/'
   goodreads: 'https://www.goodreads.com/book/show/7602360-cryptography-engineering'
+  amazon_review: 'https://www.amazon.com/review/R2HUVCUNQTOAOH/'
 ---
 
 This book is not about deciphering the working of existing protocols. This book presents what is really needed to get a solid comprehension of the principles behind cryptography. To quote the authors: “We wrote it because people who want to learn how to design cryptographic systems must learn it somewhere, and we didn't know of any other suitable books.”
