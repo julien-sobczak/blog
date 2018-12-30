@@ -22,6 +22,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/0399588949/'
   goodreads: 'https://www.goodreads.com/book/show/34962306-meditation-for-fidgety-skeptics'
+  amazon_review: 'https://www.amazon.com/review/R2MGJNU35H23KL/'
 ---
 
 Embark for a crazy journey on a bus, travelling across the United States, with a TV presenter and his masterful meditation teacher, to uncover the beliefs that prevent normal people -- students, cops, housewives, prisoners -- to meditate, or at least, to stop trying.
