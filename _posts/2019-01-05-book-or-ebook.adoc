@@ -10,7 +10,6 @@ tags:
   - learning
 unofficialTags:
   - reading
-published: false
 ---
 
 [quote,Stephen Fry, English comedian, actor, writer, presenter, and activist]
