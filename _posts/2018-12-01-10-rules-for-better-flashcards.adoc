@@ -152,7 +152,7 @@ Programs are written in languages that have precise grammar rules, like in Engli
 
 This flashcard is based on a quiz present in a certification book and has many flaws:
 
-* As it tests different syntax rules, there is not a single answer. You can be right for the first option and wrong for the two last options. A good flashcard should have a unique valid answer. You can't be partially good or partially wrong.
+* As it tests different syntax rules, there is not a single answer. You can be right for the first option and wrong for the two last options. A good flashcard should have a unique valid answer. You can't be partially right or partially wrong.
 * Consequently, you will need to revise the whole flashcards even if you already know the answer for most of the options, losing precious seconds that can be devoted to more tricky flashcards.
 
 === Example (refactored)
@@ -525,7 +525,7 @@ Yes
 A file is splittable if you can read only a part of it without having to read the full content. Not all file formats are splittable. For example, you need to uncompress a zip file entirely even to read a single file present in the archive.
 ====
 
-The problem with flashcards like these is you are not learning really practical information. Being able to answer _yes_ or _no_ is not going to take you very far. Compare with this flashcard:
+The problem with flashcards like those is you are not learning really practical information. Being able to answer _yes_ or _no_ is not going to take you very far. Compare with this flashcard:
 
 ++++
 <div class="flashcard flashcard-front flashcard-ok">
@@ -541,7 +541,7 @@ bzip2 contains a list of independently compressed blocks. You can uncompress onl
 
 If you can answer this flashcard, you know for sure if the bzip2 format is splittable or not, and you can also explain why.
 
-+++<span class="flashcard-advantage">Advantage</span>+++: Flashcards asking for closed questions are not funny. Using open questions help you learn a little more, and overall, can make a great difference. But don't be too general… (see the rule _Specific is better than general_).
++++<span class="flashcard-advantage">Advantage</span>+++: Flashcards asking for closed questions are not funny. Open questions helps you learn a little more, and overall, can make a great difference. But don't be too general… (see the rule _Specific is better than general_).
 
 
 == Subtle is better than obvious
@@ -837,7 +837,7 @@ I use italics to differentiate examples from definitions. I follow this conventi
 
 === Illustrate to avoid wordy descriptions
 
-A picture is worth a thousand words. Indeed, adding a (basic) schema can be a huge time saver. No need to read long paragraph. Just have a look at the schema to understand the concept.
+A picture is worth a thousand words. Indeed, adding a (basic) schema can be a huge time saver. No need to read long paragraphs. Just have a look at the schema to understand the concept.
 
 === Example
 
@@ -901,7 +901,7 @@ Nevertheless, some subjects like vocabulary makes good candidates for sharing (l
 
 == Afterword
 
-As there isn't a unique way of learning, there should not be a unique way to create flashcards. In this post, I tried to expose what I learned from the numerous mistakes I made. There are surely more mistakes I will do. So, try what makes sense to you and experiment by yourself.
+As there isn't a unique way of learning, there shouldn't be a unique way to create flashcards. In this post, I have tried to expose what I learned from the numerous mistakes I made. There are surely more mistakes I will do. So, try what makes sense to you and experiment by yourself.
 
 [TIP.remember.admonitionblock]
 .A good flashcard...
