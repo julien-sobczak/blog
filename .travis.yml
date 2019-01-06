@@ -3,7 +3,7 @@ rvm:
 - 2.2.5
 sudo: false
 before_install:
-  - gem install ruby_dep
+  - gem install ruby_dep bundler
 script: JEKYLL_ENV=production bundle exec rake deploy
 env:
   global:
