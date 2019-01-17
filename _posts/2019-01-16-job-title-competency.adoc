@@ -21,7 +21,7 @@ ____
 These last years, we have seen a proliferation of new job titles to describe the same, unchanged activity -- making lines of code come alive. DevOps Engineer, Backend Developer, Technical Architect, Developer, Tech Lead, IT Consultant, Hacker, Senior Fellow, Senior Big Data Engineer, Software Developer, Java EE Expert, Programmer, and so on. What can we learn from a job title? Should we care about it? Should we move to another position?
 
 
-== Why we need job titles?
+== Why do we need job titles?
 
 Organizations, large or small, need structure to bring order to chaos. Job titles contribute to this structure, defining the role each one of its members is playing. Large organizations use usually well-defined job titles, with a clear progression, and a beautiful organization chart, whereas small organizations use more informal job titles to strengthen their differences. There is no hard rules about job titles, especially about software development. So, in practice, we often change job titles when we are changing jobs, at least concerning our employment contract. On social networks,  it is not uncommon for developers to use a different position. At the beginning of our career, we generally use very precise description of what we do (e.g., Junior Frontend Web Developer), but slowly we acknowledge that we are programmers first (programmers, coders, and developers, are interchangeable), and in the end, our job titles gets shorter.
 
