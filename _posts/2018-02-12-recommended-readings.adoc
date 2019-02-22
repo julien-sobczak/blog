@@ -58,7 +58,7 @@ link:{{ site.baseurl }}{% post_url 2016-12-17-grit %}[Read my book review]
 
 image::https://images.gr-assets.com/books/1445050174l/26312997.jpg[Peak,200]
 
-There is always a shortest path to reach the top of a mountain. Deliberate practice is the best way to follow this path. Written by one of the two experts on the subject, _Peak_ develops the particular type of practice that help you move forward - doing baby steps outside of your comfort zone, and seeking feedback to focus on the hardest parts. As a programmer, we can constantly try new frameworks, or new languages, but does that make us really more competent. Probably not. We should stop learning different equivalent things and start learning complementary ones. A fascinating reading to debunk the myth of talent.
+There is always a shortest path to reach the top of a mountain. Deliberate practice is the best way to follow this path. Written by one of the two experts on the subject, _Peak_ develops the particular type of practice that help you move forward - doing baby steps outside of your comfort zone, and seeking feedback to focus on the hardest parts. As a programmer, we can constantly try new frameworks, or new languages, but does that make us really more competent? Probably not. We should stop learning different equivalent things and start learning complementary ones. A fascinating reading to debunk the myth of talent.
 
 link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[Read my book review]
 
@@ -76,7 +76,7 @@ link:{{ site.baseurl }}{% post_url 2017-11-14-deep-work %}[Read my book review]
 
 image::https://images.gr-assets.com/books/1366758683l/12609433.jpg[The Power of Habits,200]
 
-_"`I'm not a great programmer;`"_, says Kent Beck, _"`I'm just a good programmer with great habits.`"_ To be proficient in our job, we don't need to work longer, we need to work better. Good habits are the cornerstone of productivity, but as everyone knows, changing habits is far more easily said than done. Consequently, this list would not have been complete without a book on the subject. _The Power of Habits_ is the most popular, and the only one I read, but have a look at newer publications first.
+_"I'm not a great programmer;"_, says Kent Beck, _"I'm just a good programmer with great habits."_ To be proficient in our job, we don't need to work longer, we need to work better. Good habits are the cornerstone of productivity, but as everyone knows, changing habits is far more easily said than done. Consequently, this list would not have been complete without a book on the subject. _The Power of Habits_ is the most popular, and the only one I read, but have a look at newer publications first.
 
 link:{{ site.baseurl }}{% post_url 2016-10-06-the-power-of-habit %}[Read my book review]
 
@@ -85,7 +85,7 @@ link:{{ site.baseurl }}{% post_url 2016-10-06-the-power-of-habit %}[Read my book
 
 image::https://images.gr-assets.com/books/1459114043l/27036528.jpg[Ego Is the Enemy,200]
 
-A successful career implies having achieved some long-term goals. When it comes to making decisions, your ego could very easily influence you and force you to privilege short-term goals, at the expense of your more valuable ambitions. _Ego Is the Enemy_ presents you two choices -- you can be someone or you can do something. Before answering hastily that question, I advise you to read that book first.
+A successful career implies having achieved some long-term goals. When it comes to making decisions, your ego could easily influence you and force you to privilege short-term goals, at the expense of your more valuable ambitions. _Ego Is the Enemy_ presents you two choices -- you can be someone or you can do something. Before answering hastily that question, I advise you to read that book first.
 
 link:{{ site.baseurl }}{% post_url 2017-06-21-ego-is-the-enemy %}[Read my book review]
 
