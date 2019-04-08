@@ -1,0 +1,164 @@
+---
+layout: post-inspect
+title: "How to Name Your Project?"
+subtitle: "10 Strategies Inspired by the Stories Behind the Names of OSS Projects, Tech Companies, Programming Languages, and much more"
+author: Julien Sobczak
+date: '2019-04-07'
+category: inspect
+subject: Naming
+toc: true
+---
+
+[quote,Phil Karlton]
+____
+There are only two hard things in Computer Science: cache invalidation and naming things.
+____
+
+
+[.lead]
+It's hard to name a variable. What about naming a project? Even if you've find a name that sounds great, how to be sure it's a good name. In this post, I researched the origin of the most popular tech companies, OSS projects, and programming languages to find patterns you could use to name your next project using a better strategy than just hope. Ready for namestorming?
+
+
+== 1. Make It Eloquent
+
+When naming something, the first idea is often to find a descriptive name to capture what this is all about. *Microsoft* was born for developing **SOFT**ware for **MICRO**computer, *Facebook* was at first an online version of the university student catalogues, named Face Books, *PayPal* is a service to “pay your pal” through peer to peer money transfers, and *LinkedIn* allows you to get linked in(to) your professional network. When you hear a name like these for the first time, you immediately get a clear idea of what the company does.
+
+Some OSS projects use the same strategy, trying to describe what the library or framework does. *jQuery* lets you query DOM elements from JavaScript code. *TensorFlow* derives its name from the operations that neural networks perform on multidimensional data arrays, which are referred to as tensors. *React* got its name from the one-way reactive data flow, one of the core concepts behind it. This strategy may help users find your project using their favorite search engine or through the search bar on GitHub when using keywords, but overall, this strategy is not popular among OSS projects, neither among programming languages.
+
+
+== 2. Make It Nonsense
+
+[quote,Doug Cutting,Creator of Hadoop]
+____
+The rules of names for software is they're meaningless because sometimes the use of a particular piece of software drifts, and if your name is too closely associated with that, it could end up being wrong over time.
+____
+
+A descriptive name may not be the best option in the long term. To avoid being stuck with a inadequate name, a good strategy is to use a totally unrelated name, even if in practice, there is always a story behind these names. Steve Jobs chose *Apple* because apples were omnipresent on his fruitarian diet, and he thought the name sounded "fun, spirited and not intimidating.” *Etsy* name was found when Rob Kalin was watching an Italian movie where _etsi_ is said a lot, as it means "oh, yes." *Yahoo*'s founders said they selected the name because they liked the word's general definition, as in Gulliver's Travels by Jonathan Swift: "rude, unsophisticated, uncouth."
+
+This strategy is popular in the OSS landscape. *Hadoop* is the name of the stuffed yellow elephant toy of Doug Cutting's kid. *Laravel* comes from the world of Narnia, the classic written by C.S. Lewis, where Cair Paravel is the name of the castle where kings and queens live. Laravel rhymes with Paravel and was sounding good.
+
+When pursuing this strategy, the "Follow your passion" advice may be helpful. *Homebrew* was named because its creator liked the beer theme. This MacOS tool could have been named after the Homebrew Computer Club, where the young Steve Wozniak was spending his time, but that's not the real story. *Python* creator found his inspiration in the famous British comedy group Monty Python, of which he was a big fan. *django* is named after guitarist Django Reinhardt, the favorite artist of the framework co-creator. *Arduino* derives its name from the co-founder's favorite bar in Ivrea, Italy, where they used to meet. Consequently, if you decide to use this nonsense strategy, start by looking around you for ideas.
+
+
+== 3. Open Your Dictionary
+
+Dictionaries are full of distinct words and are a good source of inspiration for finding a project name.
+
+_You may use a dictionary to find a catchy word_. *Google* originated from a misspelling of the word _gogole_, the number 1 followed by a hundred 0’s. *Nest* captures the company’s mission to build simple, human, cosy things for a thoughtful home, the place where we nest. *Square* was initially called _Squirrel_, before Jack Dorsey picked up a dictionary and looked for words starting with _Sq_. *Bootstrap* is used to quickly start a new website. *Rust* is named after a fungus that is robust, distributed, and parallel, and is also a substring of _robust_.
+
+_You may use a dictionary to find synonyms_. *Tinder* was found using a thesaurus on the fire theme (romantic relationships often start with a fire), and means dry material such as wood or grass that burns easily. *Discourse* is an English word, synonym with _speech_. *Ruby* creators were inspired by _Perl_, the language Ruby was trying to "replace", so they searched among jewelries, like _ruby_ or _coral_.
+
+_You may use a dictionary to find foreign words_. In Mandarin, *Hulu* means the holder of precious things, or interactive recording; both definitions are relevant to the mission of the streaming platform. *Zipkin* results from the employees' ideas threw at Google translate. One of them was the word _Harpoon_, commonly used to kill whales, or _zipkin_ in Azerbaijani. *Kubernetes* originates from Greek, meaning helmsman or pilot, and is the root of governor and cybernetic. *Ubuntu* is an ancient African word meaning "humanity to others", translating the mission of Ubuntu to conquer the desktop world. *Logo* programming language derives from _logos_, which means _word_ in Greek, and reflects that _Logo_ is not a numerically-oriented language, and more oriented toward education.
+
+_You may use a dictionary to find historical words_. *Yeoman* is a servant in a royal or noble household, in the same way that the project was created to assist you in your development tasks. *Baidu* was inspired by a poem written more than 800 years ago during China's Song Dynasty. *Kafka* creator once said: "...[S]ince Kafka was a system optimized for writing using a writer's name would make sense. I had taken a lot of lit classes in college and liked Franz Kafka." *Rosetta Stone* was named after the stone retrieved in Egypt that was used to decipher hieroglyphs. The name certainly fits, as Rosetta Stone products helps millions of users learn foreign languages. *Ada* was chosen in homage to the first computer programmer in history, Ada Lovelace. Similarly, *Haskell* was chosen in homage to the logician Haskell Curry, and *Pascal* in homage to Blaise Pascal, a French philosopher who invented one of the first calculators, the pascaline. And *Tesla* to honor Nikola Tesla, the Serbian-American inventor who created the AC electric motor.
+
+In addition, many language names were derived from previous projects. *C++* and *D* programming languages are derived from *C*, which is derived from the language *B*, which is derived from *BCPL* language (first letter), which is derived from *CPL*, which stands for _Combined Programming Language_, or _Christopher's Programming Language_, or _Cambridge Plus London_, because its development was supported from there. Similarly, *Clojure* references three other languages: _c_ (C#), _l_ (Lisp) and _j_ (Java). *Scheme*, as a LISP-variant, followed the convention introduced by the previous variants _Planner_ and _Conniver_, but as the OS that was used to run the first Scheme program supported only six characters for the filename, _Schemer_ was shortened to _Scheme_.
+
+
+== 4. Use Metaphors
+
+A descriptive name often sounds boring. To avoid falling into this trap, metaphors can be used to find catchy names that are more suggestive than descriptive. This strategy is by far the most popular one, and is often used in complement with the previous strategy.
+
+Many company names are based on metaphors. The objective of a company is to make a concrete impact in our world, and metaphors are able to capture efficiently the global mission. Jeff Bezos was looking for a brand name that would align with his vision. He picked up a dictionary and scanned word after word, page after page, until finding the word *Amazon*, the largest river in the world. *Alibaba* is easy to spell, and world-wide known through the folk tale. Alibaba opens sesame for small-to-medium-sized companies. *Google* chose a large number as his name to describe the vast information the company succeeded in organizing. To find the name *Twitter*, Jack Dorsey explained they tried to capture the physical sensation that you’re buzzing your friend’s pocket. They initially thought at _twitch_, and looked in the dictionary for words around it to find the word _twitter_, "a short burst of inconsequential information," and "chirps from birds." A good metaphor for the product.
+
+The metaphor strategy is popular for applications too. *Trello* is based on his initial codename _trellis_, because a trellis is typically used to support the growth of trees or plants. When using *Digg*, links are buried and people have to vote on them to “dig” them up.
+
+This strategy is also omnipresent for OSS projects. *Polymer* references a large molecule composed of many repeated subunits, similar to web components that let you build UI from smaller components. Reusing the same metaphor, Google published a few collections of components named _iron_ and _platinum_, both examples of chemical elements. *Ansible* refers to the fictional instantaneous hyperspace communication, as featured in Ender's Game, capable of near-instantaneous communication with every devices, over any distance or obstacle whatsoever with no delay, even between star systems. Very useful when configuring a large pool of machines! *Chef* works with "recipes" to configure servers. *Docker* is named after the job of unloading and carrying containers from ships. *CockroachDB*, being the most scalable, resilient database, is named after the animal because cockroaches colonize the available resources and are nearly impossible to kill.
+
+HashiCorp is a good example of company that relies exclusively on metaphors to name its projects. *Vagrant* describes a person without a settled home who wanders from place to place, like a VM on your workstation. *Consul* describes the Roman role, acting as an authoritative representant. *Terraform* means "`to make like earth`", turning another planet (think cloud provider) into a place where human can live (think your programs can run).
+
+If you still haven't consider using metaphors, you probably should. Using metaphors is the most prolific way to generate suggestive and compelling names.
+
+
+== 5. Make It Funny
+
+Humor is subjective, so this strategy is risky. You would probably not opt for a funny company name, because serious is required when doing business, but this strategy is anyway a workable approach, and if you are not prepared to use it for a project name, you can still use this strategy for less important names, like release names. The project name *Traefik* describes precisely its routing role, acting as a load balancer, but the French team decided to use French cheese names for its major releases (Reblochon, Camembert, Morbier, Raclette, etc.).
+
+In practice, few OSS projects adopted this strategy even if you don’t need a ridiculous name to be funny. *Mockito* is a play on mojitos, a type of drink, and the project documentation contains a lot of references to drinking. *Reddit* is a play-on-words with the phrase "read it", i.e., "I read it on Reddit." It turned out that _Reddit_ means “render” in Latin, which can also mean "to submit for consideration or approval." *Ruby on Rails* wanted to put the development on rails for his users. *John the Ripper*, the most popular password-cracker tool, is named after his ancestor _Cracker Jack_, and is also a reference to the unidentified serial killer _Jack the Ripper_.
+
+Sometimes, a project name results from an anecdote. Linus Torvalds used to called *Git*, "the stupid content tracker", and settle on _git_, which is an English slang for a stupid or unpleasant person. Torvalds said: "I'm an egotistical bastard, and I name all my projects after myself." First 'Linux', now 'git'.  *Java* was selected during a meeting among various options -- Silk, DNA, and Java --  the last won and was probably inspired from Java coffee, said to be popular with Sun's engineers.  When *Spring Framework* was launched in 2002, it represented a fresh start after the “winter” of traditional J2EE, a long period of overly complex standards.  *Red Hat* refers to a red Cornell University lacrosse cap, which co-founder Marc Ewing wore at his job helping students in the computer lab at Carnegie Mellon. Students were told: "If you need help, look for the guy in the red hat." To explain the origin of the name *MailChimp*, Ben Chestnut said: “We … had this philosophy when it came to our web design projects: '`If all else fails, add a monkey. Clients love monkeys.`'”
+
+
+== 6. Use Multiple Words
+
+If one word is not enough to communicate your idea, you may try to add a few more words, but don’t go too far. Names using more than two words are very rare, so you must pay attention to avoid verbose names (or use one of the next strategies).
+
+We’ve already talked about *Facebook* and *LinkedIn* but we may find other examples. *Tencent* derives its name from the fusion of the Chinese characters _Teng_ and _Xun_ which means something like “galloping fast information”. *Snapchat* describes the intention of sending short snaps that disappear. *DropBox* lets you drop your documents into a virtual box. There is no mystery with *EverNote*. *YouTube* consists of “You” because you generate the content, and “Tube” as it refers to pre-LCD display monitors, which used cathode ray “tubes” to deliver images. *AirBnb* stands for __Air__Bed & Breakfast because, the founders got the idea to use airbeds (air-mattresses) in their living room to host guests when hotels were full during popular events.
+
+This strategy is surprisingly uncommon among OSS projects, and almost nonexistent among programming languages (if we omit languages using the suffix _script_). When opting for this strategy, remember than the domain name will be longer, which means more characters to type for customers or users. There are many techniques used to shorten names and we will talk about them with the next strategies.
+
+
+== 7. Shorten Using a Portmanteau
+
+[quote, Wikipedia]
+____
+A portmanteau word is a linguistic blend of words, in which parts of multiple words or their phones (sounds) are combined into a new word. Examples include smog, coined by blending smoke and fog, or motel, by blending motor and hotel.
+____
+
+Portmanteau word is a common technique.
+
+Companies use it. *Microsoft* (SOFTware for MICROprocessors), *Pinterest* (pinboard and interest), *Ebay* (Echo Bay from the origin company name), *Mozilla* (Mosaic and Godzilla), *Netflix* (Internet and  flicks, a synonym for movie), *Expedia* (exploration and speed), *MailChimp* (mail and chimpanzee), *Quora* (Question _or_ Answer), *Instagram* (instant camera and telegram), *Spotify* (spot and identify), *SpaceX* (Space E**x**ploration Technologies Corporation).
+
+OSS projects use this strategy too. *Redis* means **RE**mote **DI**ctionary **S**erver. *Debian* combines the first name of Murdock's girlfriend, Debra Lynn and his own name, Ian. *PostgreSQL* is a follow-up to the "In**gres**" database system (Post-ingres).
+
+Even programming languages use this strategy. *Scala* stands for scalable language, and *Erlang* stands for Ericsson Language, even if in both cases, the origin is not so simple. *Scala* is the Italian word for stairs or ladders, which is appropriate since Scala “helps you ascend to a better programming language”. *Erlang* was inspired by A. K. Erlang, a Danish mathematician whose work on queuing and networks is very relevant to telephone companies. Other examples include older languages such as *FORTRAN* (**FOR**mula **TRAN**slation), *ALGOL* (**ALGO**rithmic **L**anguage), and *LISP* (**LIS**t **P**rocessor).
+
+
+== 8. Shorten Using an Acronym
+
+[quote, Acronym, Oxford Dictionary]
+____
+An abbreviation formed from the initial letters of other words and pronounced as a word (e.g. ASCII, NASA ).
+____
+
+Acronyms are popular, especially among programming languages. If you can't find a good name, use multiple words to describe your project and concatenate the initial letters of each of them. A very simple strategy.
+
+*TED* began in 1984 as a conference where **T**echnology, **E**ntertainment and **D**esign converged.
+
+*npm* stands for the _Node Package Manager_. *sbt* stands for _Scala Build Tool_. *BIND* DNS server stands for _Berkeley Internet Name Domain_, reflecting the application's use within the University of California. *CouchDB* stands for _cluster of unreliable commodity hardware_.
+
+*AWK* derives from the initial letter of its creators: Alfred **A**ho, Peter **W**einberger, and Brian **K**ernighan. *COBOL* for _**CO**mmon **B**usiness **O**riented **L**anguage_. *SQL* for _Structured Query Language_. And the ultimate acronym, *APL* for _A Programming Language_.
+
+Sometimes, acronyms are devised retrospectively to fit a word, to find meaning where there was none. We called them backronyms, a blend of "backward" and "acronym" (another example of portmanteau).
+
+*Yahoo* is a backronym for _Yet Another Hierarchically Organized Oracle_ or _Yet Another Hierarchical Officious Oracle_. *Perl* should have been named *Pearl*, but a programming language was already using this name, _Process and Experiment Automation Realtime Language_. Various backronyms were invented after Perl was named: the most popular, _Practical Extraction and Report Language_, or the less gracious, _Pathologically Eclectic Rubbish Lister_. *BASIC* now stands for _Beginner's All-purpose Symbolic Instruction Code_.
+
+Some acronyms are not obvious and may be safely classified in this category. *Slack* stands for _Searchable Log of All Conversation and Knowledge_. There even exist names that started as acronyms, and was later converted to backronyms. *PHP* was created by Rasmus Lerdorf to maintain his **p**ersonal **h**ome**p**age, and now stands for _PHP: hypertext preprocessor_ (a meta-backronym).
+
+
+== 9. Make It Unique
+
+A common requirement for a good name is to be unique, a new word that will be easy to find with search engines.
+
+Rich Hickey, creator of the Closure language, said: “The name was chosen to be unique." In a similar way, Guido van Rossum, creator of the Python language, wanted something "short, unique, and slightly mysterious", even if Python is not a totally new word.
+
+Portmanteaus and acronyms are probably the easier ways to create a unique name. *Microsoft*, *Pinterest*, *Mozilla*, *Netflix*, *Expedia*, *Instagram* are good examples. But there are many other possibilities to make a name unique.
+
+*Tencent* rewrote the Chinese characters _Teng_ and _Xun_ to get a name pronounceable in most spoken languages. *Google* inverted two letters of the word _googol_ (the inversion results from a typo when checking the domain name, but at the end, Larry Page decided he liked this spelling better). *Netflix* changed the word _flicks_ into _flix_, preserving the sound. *Imgur* also keeps the sounds, _img_ for image, and _ur_ for your. *MailChimp* shortened the word _chimpanzee_ to use the common short form _chimp_. *Digg* appended a new silent letter. *Waze* is a play on the word _ways_ in the same way that *Reddit* is a play on words _I read it on reddit_. *Bazel* is an anagram of _Blaze_, the proprietary build solution used at Google. *Linux* reuses its creator's first name Linus, and switch a letter to reference the UNIX and Minux operating systems. *Forth* stands for a _fourth_ generation language, but due to a 5-character restriction on filename, the _u_ was dropped. *Perl* first name was _Pearl_ but the _a_ was dropped to make the name unique.
+
+In most of these examples, the renaming tries to preserve the original sounding of the name using various techniques. Removing, inverting, adding letters, or changing completely the letters while preserving the pronunciations, are the most common ways to make unique names from common names.
+
+In practice, a unique name should not be a strong requirement. Many names are not new, often present in the dictionary, but with time, their popularity succeeds in making the project the first result on Google. *Docker* is a good example but we may also cite *Apple*, *Alibaba*, *Slack*, *Atom*, *Kafka*, *Rails*, *Vagrant*, *Apache*, *Julia*, *Rust*, *Ruby*. All ranked first on Google, despite their common name.
+
+There is, however, a reason in the quest of uniqueness that is omnipresent among all names: the domain name. Every project needs a website, and every website needs a domain name. They are a countless number of projects that was renamed due to the domain name restriction: *Trello* (Trellis initially), *MailChimp* (ChimpMail initially), *Yelp* (Yocal initially), *GoDaddy* (BigDaddy initially), *jQuery* (jSelect initially), *Flickr* (Flicker initially), *Ruby on Rails* (Rails initially), *Java* (Oak initially), are just a few examples.
+
+Another popular technique to make the name unique is to add a suffix like DB (*CockroachDB*), SQL (*PostgreSQL*), App (*WhatsApp*). Moreover, the suffix adds meaning to your name. For example, the suffix DB is commonly used by storage systems, and independently of the name, when you hear a new project name ending with DB, you immediately know we are talking about a storage solution. Another related technique is to append words such as `get`, `app`, `try` only for the domain name. *Buffer* was initially accessible using the domain `bufferapp.com` before getting the domain `buffer.com`.
+
+
+== 10. Change Your Mind
+
+We've just seen in the last strategy that selecting a domain name for your project often force you to change the name to find an available domain name. This is by far the most common cause of renaming. Nonetheless, many projects got a new name just before getting really famous. Maybe the old name was not enough pertinent, original, or memorable. Anyway, choosing a name should not be considered definitive. Many framework creators change their mind during the development of their project, and there are many examples of rebranding in the commercial landscape.
+
+The initial name of *Atom* was _Atomicity_, named by Chris Wanstrath. His dream was to use web technologies to build something as customizable as Emacs. Atomicity was launched right from a terminal at first, and `atomicity` is a long name to type, so `atom` finally prevails, in the same way that you can launch Textmate with the command `mate`. The first name of *Symfony* was Sensio Framework, named after the company behind the framework, and all source code files were prefixed with `sf`. After a brainstorming, it was decided to use _Symfony_ as it was matching this prefix. *Amazon* was named at first Cadabra.com as in “abra cadabra.” but too close from _cadaver_, not the kind of name that would have go so far. The first version of *Snapchat* was named _Picaboo_, but growth was too slow, and the name was already used by another company. *Stripe* was founded around an API and was called `/dev/payments` but the name presented several problems, one of them is the name looked pretty ridiculous to anyone who didn't see the association with device nodes on Linux.
+
+
+== Conclusion
+
+There’s no magic formula to name your project. Most of the strategies presented here are not incompatible. You may use a metaphor and add variation to make the name unique (*Traefik*, *Digg*, *Waze*). You may select several descriptive words and compose them into an original acronym. But you may also ignore all of the presented strategies. Indeed, there shouldn't be a unique recipe to follow. Use the strategies as inspiration to generate ideas. We need memorable names. We don't care how they pop into your mind. When you have find a good name, don't forget to check its uniqueness. http://ivantomic.com/projects/ospnc/[Open Source Project Name Checker] searches the major code hosting services so you can quickly see if your desired name is already in use. If it's not, repeat the process until finding the final name, but remember, nothing is really definitive about naming. Start by building a great project, and only then find it a good name.
+
+
+== Additional Resources
+
+* http://ivantomic.com/projects/ospnc Open Source Project Name Checker, check the uniqueness of a name.
+* https://www.rewindandcapture.com/ How Brands Got Their Names.
+* https://acronymify.com/ Simply enter your words to generate a list of possible acronyms or portmanteaus.
