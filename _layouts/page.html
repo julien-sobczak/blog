@@ -20,6 +20,11 @@
     <!-- Navigation -->
 
     <nav id="mainNav" class="navbar-default">
+
+      {% if page.category == 'write' or page.category == 'inspect' %}
+      <div id="reading-bar"></div>
+      {% endif %}
+
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle">

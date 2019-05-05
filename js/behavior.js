@@ -68,6 +68,26 @@ if (postList) {
       });
     }
 
+    // Reading progress bar
+    // Inspired by https://codepen.io/haroldjc/pen/GZaqWa
+    var readingBar = document.getElementById("reading-bar");
+    addEventListener("scroll", function(event) {
+      var total = document.body.scrollHeight - window.innerHeight;
+      var percent = (window.scrollY / total) * 100;
+
+      if (percent > 5) {
+        readingBar.style.width = percent + "%";
+      } else {
+        readingBar.style.width = "0%";
+      }
+
+      if (percent == 100) {
+        readingBar.className = "finished";
+      } else {
+        readingBar.className = "";
+      }
+    });
+
 
     // Activate the sunshine effect on the main label list
     $('#labels .label').hover(

@@ -636,10 +636,20 @@ footer img.footer-me {
 
 
 
-
-
-
-
+/* Reading progress indicator */
+#reading-bar {
+  background: #4185f4;
+  width: 0%;
+  height: 5px;
+  transition: all .3s ease;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#reading-bar.finished {
+  display: none;
+}
 
 
 /* *****************************************
