@@ -11,6 +11,8 @@ tags:
 unofficialTags:
   - reading
 toc: true
+recommendations:
+  - 2019-01-05-book-or-ebook
 ---
 
 

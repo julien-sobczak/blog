@@ -7,6 +7,8 @@ category: write
 subject: Pull Learning
 tags:
   - learning
+recommendations:
+  - 2019-01-16-job-title-competency
 ---
 
 [quote,Henry Ford]

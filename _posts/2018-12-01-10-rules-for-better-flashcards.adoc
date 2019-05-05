@@ -10,6 +10,8 @@ tags:
 unofficialTags:
   - flashcards
 toc: true
+recommendations:
+  - 2018-12-30-should-i-create-a-flashcard
 ---
 
 ++++

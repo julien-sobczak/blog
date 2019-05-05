@@ -9,6 +9,8 @@ tags:
   - learning
 unofficialTags:
   - reading
+recommendations:
+  - 2018-11-16-why-i-read-books
 ---
 
 [quote,Abraham Lincoln]

@@ -10,6 +10,9 @@ tags:
   - learning
 unofficialTags:
   - reading
+recommendations:
+  - 2018-11-16-why-i-read-books
+  - 2018-12-11-do-not-follow-book-recommendations
 ---
 
 [quote,Stephen Fry, English comedian, actor, writer, presenter, and activist]
