@@ -1,0 +1,359 @@
+---
+layout: post-write
+title: "The Power of Metaphors in Learning"
+subtitle: "Why Do Great Teachers Abuse Metaphors"
+author: Julien Sobczak
+date: '2019-08-29'
+category: write
+subject: Metaphors
+toc: true
+tags:
+  - learning
+---
+:imagesdir: /posts_resources/2019-08-29-the-power-of-metaphors-in-learning/
+
+[quote]
+____
+Human life is a journey.
+____
+
+[quote, Merriam-Webster Dictionary]
+____
+Metaphor: A figure of speech in which a word or phrase literally denoting one kind of object or idea is used in place of another to suggest a likeness or analogy between them.
+____
+
+[.lead]
+Metaphors are everywhere. But metaphors are so ubiquituous we often fail to notice them. My initial idea for this article was to demonstrate how metaphors are useful when learning. I researched on the subject and quickly came to this conclusion: metaphors are not useful, they are indispensable. We speak, understand, learn, and reason with metaphors. Since I started writing this article, I came across hundreds of metaphors -- in books, in TV series, in conversations. I learned to notice them again, and I hope this article will help you see the metaphors under a new light.
+
+== A Few Examples
+
+Metaphors can be found in the literature, but this is just the tip of the iceberg. We find them also:
+
+* In *songs*.footnote:[10 Great Metaphors from Popular Music, Literary Devices: https://literarydevices.net/10-great-metaphors-from-popular-music/]
++
+[quote, The Eagles, Hotel California]
+____
+Welcome to the *Hotel California*
+Such a lovely *place* (Such a lovely place)
+Such a lovely *face*
+They livin’ it up at the Hotel California
+What a nice surprise (what a nice surprise)
+____
++
+The Eagles compare the brittle, temporary celebrity so many people are pursuing in Hollywood to a short-stay in a hotel. No one knows how long they are going to be famous, so they have to make the most out of it.
++
+* In *movies*.footnote:[Metaphors in Movies, Literary Devices: https://literarydevices.net/metaphors-in-movies/]
++
+_The Truman Show_ title is a play word with a "True Man”, the main character living a true, artificial life until finding the stairs representing freedom. Other films such as _Inception_, _Groundhog Day_, _Avatar_, _The Shining_ are good examples too. I particularly enjoyed Pixar’s _Inside Out_. _“The movie is a metaphor for human emotions and intellectual feelings. Each color represents one emotion that we feel similar to how the main character Riley’s emotions depend on the emotions or actions of Joy, Fear, Anger, Disgust, and Sadness who live in Headquarters, a metaphor for the brain and advise her through everyday life.”_ Similarly, in _Ralph Breaks the Internet_, the two main characters are evolving in a physical, fictional world where we retrieve everything that makes Internet such a particular place, but in a world close to our real-world, where network packets transit in aerial highways.
++
+* In *quotes*.
++
+[quote, Albert Einstein, Physicist]
+All religions, arts and sciences are branches of the same tree.
++
+[quote, William Shakespeare, Poet]
+All the world’s a stage, and all the men and women merely players.
++
+[quote, Vincent Van Gogh, Painter]
+Conscience is a man’s compass.
++
+[quote, Ansel Adams, Photographer]
+The negative is the equivalent of the composer’s score, and the print the performance.
++
+* And also in *presidential speeches, cartoons, TV series, advertisements, comedy shows, symbols*, and even in *dream interpretions*!
+
+But a metaphor can be as simple as _Love is a journey_, _Love is a garden_, _Love is an experiment_, and we often use this strategy with kids -- _The classroom was a zoo_, _You are my sunshine_, _Life is a rollercoaster_ footnote:[Metaphor Examples for Kids, Your Dictionary: https://examples.yourdictionary.com/metaphor-examples-for-kids.html] -- complex notions expressed using simple words kids can understand.
+
+These examples demonstrate you can’t escape metaphors. But why are they so effective?
+
+
+== A Little Theory
+
+The title of this article could have been called _The Power of Metaphors, Similes, and Analogies in Learning_, but usually, the shorter, the better. We should, however, explain the differences between these figures of speech before going any further.
+
+[TIP]
+.Metaphor, Simile, or Analogy?
+====
+[quote, Dr Mardy Grothe, Metaphors Be With You]
+____
+If a metaphor says A is B and a simile says A is like B, then an analogy says A is to B as C is to D.
+____
+
+To illustrate this short definition, Mardy Grothe uses a quotation written by Rudyard Kipling: _“Words are, of course, the most powerful drug used by mankind.”_ The metaphor is _A word is a drug_. A simile would say, _A word is like a drug_, and an analogy would say, _Words are to the mind as drugs are to the body_. Similarly, _hard as a rock_ is a simile, and _reading is to the mind what exercise is to the body_ is an analogy.
+
+(For simplicity, I will use the term "metaphor" for the rest of this article to refer to both metaphors and its like-minded cousins).
+====
+
+Metaphors are a way to talk about one thing by describing something else. In fact, similes and analogies are metaphors that admit explicitly this comparison. Someone might say that metaphors are unproductive since they define a word using a different word, but that is exactly the reason why they are working, to the sole condition you are already familiar with the second word (the comparison). For example, the metaphor _Life is a journey_ is meaningful only if you have already traveled to a different place.
+
+In essence, one domain of experience (the source) is used to understand another domain of experience (the target). On the previous example, _Journey_ is the source domain and _Life_ is the target domain. The key point to remember is familiarly is essential to good metaphors. To create a powerful metaphor, you must find something that is broadly understood like the human body (the _heart_ of the problem), the wellness (a _healthy_ society), the nature (the _fruit_ of her labor), the domain of construction (to be _in ruins_ financially), the money (_spend_ time), the food (a _recipe_ for success), the weather (a _foggy_ idea). They all serve as good source domains that can be used to explain abstract target domains like love, relationship, time, life, and so much more.
+
+The familiarity principle explains why metaphors are so efficient. Our brain operates using associations, interconnecting neurons together to form a giant network of knowledge. Learning is essentially connecting something new with something old. In the same way, metaphors use something we already know to understand something we ignore. Our brain is alike a metaphor machine. He loves making associations and using metaphors is the best way to play with him.
+
+In the TED animation https://ed.ted.com/lessons/jane-hirshfield-the-art-of-the-metaphor[The Art of the Metaphor], Jane Hirshfield declares  _"[T]here’s a paradox to metaphors. They almost always say things that aren’t true."_ (e.g., Have you ever seen an elephant in the room?) He adds _"Metaphors are art, not science. [...] They get under your skin by ghosting right past the logical mind."_ Whether you are learning or teaching, you definitely should seek for metaphors as we will illustrate with the following examples. But metaphors are not just for learning something new, they can also be used to explain something already known. Stephen King, in his memoirs _On Writing_, underlines the role of metaphors to enable people to _“see an old thing in a new and vivid way.”_ Let‘s see how.
+
+
+== A Few More Examples
+
+=== When We speak...
+
+In a classic book on the subject, _Metaphors We Live By_, the authors highlight the crucial role of metaphors in languages, in a way most of us barely notice it. For example, if you ignore the _Love is a journey_ metaphor, how can you understand the expressions _"Look how far we've come"_ or _"Where are we now?”_ You can know the meaning of every one of those words and still miss the meaning of the expression. Metaphors are an essential part of any language and you have to decipher them to communicate efficiently.
+
+Now, consider the metaphor _Argument is war_.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your claims are _indefensible_.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;He _attacked every weak point_ in my argument.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;His criticisms were _right on target_.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I _demolished_ his argument.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I've never _won_ an argument with him.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;He _shot down_ all of my arguments.
+
+With such a metaphor, it comes as no surprise that having an argument is often dreaded in the workplace. Metaphors have profound cultural implications. For example, the English language uses extensively the spatial metaphor _Up is better_ and _Down is worse_:
+
+* happy/sad (I'm feeling _up_. I'm feeling _down_. I _fell_ into a depression),
+* healthy/sick (He's in _top_ shape. He came _down_ with the flu).
+
+In particular, we consider _More is up_, and _Less is down_ (My income _rose_ last year. His income _fell_ last year.) _More is better_ is coherent with _More is up_ and _Good is up_, while _Less is better_ is not coherent with them. These are values deeply embedded in our culture, but different cultures may use inverse metaphors. For others, _Less is better_ is true with respect to material possessions. Different cultures, different metaphors.
+
+In the same book, the authors demonstrate metaphors are a powerful language construction.
+
+Metaphors can be composed. _Argument is a journey_ (We proceeded in a _step-by-step_ fashion to _arrive at_ a disturbing conclusion) and _A journey defines a path_ (He _strayed from_ the path, He's _gone off in the wrong direction_, I'm _lost_), therefore _Argument defines a path_ (He _strayed from the line_ of argument, We've _gone off in the wrong direction_, I'm _lost_).
+
+Metaphors can also overlap. _Argument is a journey_ (_So far_, we've seen that) and _Argument is a container_ (That argument _has holes in_ it.) can be put together (_At this point_, our argument doesn't have _much content_).
+
+Each of those metaphors serves a different purpose by highlighting a different aspect of the underlying concept. It is not surprising to find so many metaphors to describe elaborate notions such as love and time.
+
+There are just a few examples present in this book. If you are curious and eager to learn more on the subject, I advise this book. It isn’t an easy reading, and I didn’t understood everything to be honest, but this book really opened my eyes (one more metaphor) on the indispensable role of metaphors in spoken languages. If you are not already convinced, try to spot them in the following paragraph:
+
+_This is a shallow argument; it needs more foundation. You haven't gotten to the deepest points yet—those at the core of the argument. We have to go over these ideas in great depth._
+
+The solution:
+
+* This is a _shallow_ argument; it needs more _foundation_. (Argument is a *building*)
+* You haven't gotten to the _deepest_ points yet—those at the _core_ of the argument, (Argument is a *container*).
+* We have to _go over_ these ideas _in great depth_. (Argument is a *journey*)
+
+
+=== When We Meditate...
+
+Metaphors are popular in meditation, to say the least. _The Pali Canon_, which is the written record of the Buddha's teachings, contains over 1000 metaphorical references addressing over 500 different concepts. Recently, I've read a dozen books on the subject, and you cannot read a (good) book on meditation without discovering metaphors that make you reconsider the practice. Even when you think you have grasp the theory, there is always a metaphor to prove you wrong. That's the real power of metaphors.
+
+The following quotes only serve to illustrate how metaphors capture vague, subtle ideas using the familiarity principle to create "ah ha" moments. You don’t need to adhere to any of the sentences that follows. Meditation is not the point of this article -- metaphors are.
+
+[quote, David Michie, Buddhism for Busy People: Finding Happiness in an Uncertain World]
+____
+If you allow a glass of murky stormwater to stand, eventually the dirt settles and you are left with only clear water. It’s the same with meditation…Eventually we discover that the true nature of our mind is nothing except pure clarity, awareness–and bliss.
+____
+
+[quote, Christophe André, Looking at Mindfulness]
+____
+Breath is the anchor of mindfulness, helping us attach ourselves to the present moment. Sometimes it's what sailors call a floating anchor, the kind that allows a ship to slow down and not capsize in the storm, when other maneuvers are no longer possible.
+____
+
+[quote, David Lynch, Film director]
+____
+This is a donut. It is very sweet, and very good. But if you’ve never tasted a donut, you wouldn’t really know how sweet and how good a donut is… meditation is like that.
+____
+
+[quote, Paul Gilbert and Choden, Mindful Compassion]
+____
+A useful metaphor for mindfulness is going into a darkened room and gradually turning up a dimmer switch so that the light reveals more and more of what is in the room.
+____
+
+[quote, Philip L. Jones, http://silentmindopenheart.org/articles/conc-mind.html]
+____
+Mindfulness is like viewing clouds from the perspective of the sky, simply noticing them arising and passing through without any sense of them being good or bad clouds. They are just clouds.
+____
+
+A quick last one for the road, a metaphor to explain meditation using meditation:
+
+[quote, Dr. Arnie Kozak, http://ctwatchdog.com/misc/mindfulness-the-art-of-being-in-the-present-moment]
+____
+There is a joke within mindfulness teaching circles that teaching mindfulness is like selling water by the river. You already know how to do this!
+____
+
+As an exercise, try to describe the mind without referring to something else. It's hard to do that. Metaphors are not useful, they are indispensable. We have a finite number of words to describe in infinite numbers of concepts and emotions. Metaphors are the solution to this dilemna. So, why not use metaphors at work?
+
+
+=== When We Work...
+
+In the book _Making Truth: Metaphor in Science_, American scientist Theodore L. Brown declares metaphors are _“[A]t the very core of what scientists do when they design experiments, make discoveries, formulate theories and models, and describe their results to others -- in short, when they do science and communicate about it."_
+
+To formulate his theory of relativity, Albert Einstein depicted himself riding on a beam of light holding a mirror in front of him. Similarly, Charles Darwin used the branches of a tree to represent the evolution of species, a metaphor known as the https://en.wikipedia.org/wiki/Tree_of_life_(biology)[Tree of life]. _"The affinities of all the beings of the same class have sometimes been represented by a great tree,"_ says C. Darwin, _"I believe this simile largely speaks the truth."_
+
+These two examples illustrate an important point: the simplicity of metaphors can be used to face the complexity of any topic. In fact, using metaphors is surely a far better strategy than using intelligence to be successful at work.
+
+
+=== When I Work...
+
+The software landscape is not an exception and we find plentiful of metaphors.
+
+* *The house metaphor*. Many development practices (design, architecture) was initially inspired by this analogy. Building a software was compared to building a house, and it is not uncommon to find software architects in the workplace. In practice, this may be not the best metaphor we have used in the software history, far from it (Yes, not all metaphors are useful).
+* *The vehicle metaphor*. Comparing a program with a car proved to be more useful. You _launch_ a program, even if sometimes it _crashes_ abruptly. Most complex programs integrates an _engine_ (on a kernel) at their core, and communicate with _drivers_ operating devices using _buses_.
+* *The desktop metaphor*. Microsoft introduced the https://en.wikipedia.org/wiki/Desktop_metaphor[desktop metaphor] back in the 80’s with Windows 1.0, the first graphical user interface for MS-DOS. This metaphor stands the test of time. We continue to use _folders_ to organize our _documents_ before throwing them in the _trash_, but now, multi-touch screens have introduced new metaphors: we can now _drag_, _flick_, or _swipe_ objects on the screen, mimicking what we will do with physical objects like magazines.
+* *Internet metaphors*. The Internet is commonly known as the _information superhighway_, the _cyberspace_, or more usually as the _web_ in reference to the network of fine threads constructed by a spider. We also compare the Internet to an ocean (to _surf_ the Internet, to _navigate_ the Internet), to a container (to _download_, to _get something from_ the Internet), to a place (to _enter_ the Internet, to sell something _on_ the Internet, the people _on_ the Internet), and so much more.
+* *DevOps metaphors*. When a new paradigm emerges, new metaphors serves to smooth the transition by showing that new ideas are not so new. The _Pets vs Cattle analogy_ compares our servers with bovines and the agricultural revolution that took place centuries before. On a similar topic, we can present Kubernetes as a _Datacenter operating system_, and Cloud computing can be compared to _electricity generation_, except it uses the Internet to deliver the power and not electrical grids.
+
+We might as well continue to find more examples, but we would probably never finish, so why not put into practice everything we have discussed so far.
+
+== A Little Practice
+
+In one of his https://static.googleusercontent.com/media/research.google.com/en/us/people/jeff/stanford-295-talk.pdf[first talks] at Google, Jeff Dean introduced examples of latency numbers, based on the http://norvig.com/21-days.html#answers[research work] from Peter Norvig. These are the "Numbers Every Programmer Should Know", except nobody is really good at memorizing such numbers:
+
+```
+L1 cache reference ............................. 0.5 ns
+Branch mispredict ................................ 5 ns
+L2 cache reference ............................... 7 ns
+Mutex lock/unlock .............................. 100 ns
+Main memory reference .......................... 100 ns
+Compress 1K bytes with Zippy ................ 10,000 ns
+Send 2K bytes over 1 Gbps network ........... 20,000 ns
+Read 1 MB sequentially from memory ......... 250,000 ns
+Round trip within same datacenter .......... 500,000 ns
+Disk seek ............................... 10,000,000 ns
+Read 1 MB sequentially from network ..... 10,000,000 ns
+Read 1 MB sequentially from disk ........ 30,000,000 ns
+Send packet CA->Netherlands->CA ........ 150,000,000 ns
+```
+
+A few years later, in 2009, Jeff Dean refreshed these numbers in a similar http://www.cs.cornell.edu/projects/ladis2009/talks/dean-keynote-ladis2009.pdf[talk].
+
+Since, numerous persons have published actualized versions to reflect the latest trends. Colin Scott, also working at Google, is one of them, and published an https://people.eecs.berkeley.edu/~rcs/research/interactive_latency.html[online tool] to visualize the evolution of these numbers in time. Here are the actual numbers:
+
+```
+L1 cache reference ............................. 1 ns
+Branch mispredict .............................. 3 ns
+L2 cache reference ............................. 4 ns
+Mutex lock/unlock ............................. 17 ns
+Main memory reference ........................ 100 ns
+Compress 1K bytes with Zippy ............... 2,000 ns
+Send 2K bytes over commodity network .......... 44 ns
+Read 1 MB sequentially from memory ......... 3,000 ns
+SSD random read ........................... 16,000 ns
+Round trip within same datacenter ........ 500,000 ns
+Read 1 MB sequentially from SSD ........... 49,000 ns
+Disk seek .............................. 2,000,000 ns =   2 ms
+Read 1 MB sequentially from disk ......... 825,000 ns
+Send packet CA->Netherlands->CA ...... 150,000,000 ns = 150 ms
+```
+
+His online tool favors comprehension as he uses little colored squares to make easier to visualize the difference in magnitude between the different values:
+
+image::latency-numbers-every-programmer-should-know_colored-squares.png[width="700", align="center"]
+
+Even if that's a lot better than the monospace font used by Jeff Dean in his presentation (and reused in this article), this is far from optimal or sufficient for a human brain to remember. Our brain was not devised to retain this kind of information (I doubt it would have been helpful to escape our predators), and the evolution of species requires far more than 200,000 years spent on Earth for such radical changes. Therefore, we need a more effective approach, and guess what, we will use metaphors for that!
+
+But before going on, we should acknowledge those numbers will invariably become obsolete one day. What is important, and what should be kept in mind, is the magnitude of these operations, not their precise value at a single point in time. Analogies are particular useful when learning such abstract information. For example, HDD is a turtle walking when SDD is Usain Bolt sprinting for a gold medal. You should admit It’s far more descriptive than comparing 49 vs 825 nanoseconds. But we can do a lot better!
+
+
+
+=== The Simpson Analogy
+
+Your are Homer Simpson and you want to drink beer.
+
+We will associate the latency with the distance to grab the beer, where 1 nanosecond equals 1 meter. For example, a L1 cache reference (1 ns) means grab the beer on the sofa table (1 meter). The starting point for every distance is always the famous couch in Springfield. But where is Springfield?
+
+After 23 seasons of tantalising secrets, Simpsons creator Matt Groening finally revealed that the town of Springfield, Oregon, was the inspiration for the show's setting. Matt Groening grew up in a house on Evergreen Terrace in Portland, Oregon - incidentally, the same address as the Simpsons.footnote:[https://www.dailymail.co.uk/news/article-2127965/The-Simpsons-Real-location-Springfield-revealed-creator-Matt-Groening.html])
+
+Here is the list of analogies:
+
+L1 cache reference (1 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Grab the beer on the **sofa table**_ (1 m)
+Branch mispredict (3 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Tune the **TV** antenna first_ (3 m)
+L2 cache reference (4 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Grab the beer in the **fridge**_ (4 m)
+Mutex lock/unlock (17 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Go to the **basement** to refill the fridge_ (17 m)
+Send 2K bytes over commodity network (44 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Throw the can of beer at the door of the **Flanders' house**_ (44 m)
+Main memory reference (RAM) (100 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Go to **Moe's Tavern**_ (100 m)
+Read 1 MB sequentially from memory (3,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Go to **Apu's Kwik-E-Mart**_ (3 km)
+SSD random read (16,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Go to the **Springfield Mall**_ (16 km)
+Read 1 MB sequentially from SSD (49,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Round trip to **Barney's Bowl-A-Rama**_ (49 km)
+Round trip within same datacenter (500,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Round trip to the house where **Matt Groening** grew up in Portland_ (500 km)
+Read 1 MB sequentially from disk (825,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Drink a beer after the gold medal at the **Olympics in Vancouver**_ (825 km)
+Disk seek (2,000,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Go to **Hollywood** for the Premiere of the Simpsons movie_ (2,000 km)
+Round trip without two regions (150,000,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _Flight to the **Moon** but stop halfway to eat potato chips in zero gravity_ (150,000 km)
+
+The same information visually depicted:
+
+image::latency-numbers-every-programmer-should-know_simpsons.png[width="650", align="center", link="/posts_resources/2019-07-31-the-power-of-metaphors-in-learning/latency-numbers-every-programmer-should-know_simpsons.png", title="The Simpsons Metaphor Infographic"]
+
+
+
+=== The Weight Analogy
+
+We now associate the latency with the weight of an object, a person, or an animal (1 nanosecond = 1 kilogram). For example, a L1 cache reference (1 nanosecond) represents a liter of milk (1 kilogram). Here is the list of analogies:
+
+
+L1 cache reference (1 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _1 liter of **milk**_ (1 kg)
+Branch mispredict (3 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **baby**_ (3 kg)
+L2 cache reference (4 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **human skeleton**_ (4 kg)
+Mutex lock/unlock (17 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **dog**_ (17 kg)
+Send 2K bytes over commodity network (44 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **teenager**_ (44 kg)
+Main memory reference (RAM) (100 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **tall men**_ (100 kg)
+Read 1 MB sequentially from memory (3,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **forest elephant**_ (3 tons)
+SSD random read (16,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **whale shark**_ (16 tons)
+Read 1 MB sequentially from SSD (49,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **truck**_ (49 tons)
+Round trip within same datacenter (500,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **high-speed train**_ (500 tons)
+Read 1 MB sequentially from disk (825,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a pod of **whales**_ (825 tons)
+Disk seek (2,000,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a **Space Shuttle** (at launch)_ (2,000 tons)
+Round trip without two regions (150,000,000 ns) ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... _a 4000-passenger **cruise ship**_ (150,000 ton)
+
+The same information visually depicted:
+
+image::latency-numbers-every-programmer-should-know_weighting-without-hints.png[width="650", align="center", link="/posts_resources/2019-07-31-the-power-of-metaphors-in-learning/latency-numbers-every-programmer-should-know_weighting-without-hints.png", title="The Weight Metaphor Infographic"]
+
+These analogies (the Simpsons and the weight ones) only help us grasp the orders of magnitude between the different operations. They do nothing to help us remember which operation corresponds to which analogy. If I ask you what represents the human skeleton, it’s not easy at first to recall it corresponds to a L2 cache reference. But if I say you the human skeleton was hidden in a grave, and something that is hidden (cached) corresponds to a cache reference, it becomes easier to recall the analogy. That the power of association, the ultimate memory trick. For example:
+
+Remember the reference unit of one kilogram (easy). Then:
+_Imagine_ ... finding the milk "cached" in the **fridge**
+_Imagine_ ... mispredicting the sex for a upcoming **baby**
+_Imagine_ ... finding a **human skeleton** "cached" in a tomb
+_Imagine_ ... locking the door to prevent your **dog** to escape
+_Imagine_ ... asking a **giant man** his name (from his memory)
+_Imagine_ ... a **teenager** chatting on social network
+_Imagine_ ... checking the old adage about the **elephant**'s memory
+_Imagine_ ... a lighting surprise **shark** attack
+_Imagine_ ... the Disneyland Railroad **train** navigating inside the park
+_Imagine_ ... unloading Amazon packages from a Tesla **truck**
+_Imagine_ ... the **Space Shuttle** positioning to land on the ISS
+_Imagine_ ... unloading containers on the back of the **whales**
+_Imagine_ ... doing a Transatlantic **cruise** over the Panama channel
+
+image::latency-numbers-every-programmer-should-know_weighting-with-hints.png[width="650", align="center", link="/posts_resources/2019-07-31-the-power-of-metaphors-in-learning/latency-numbers-every-programmer-should-know_weighting-with-hints.png", title="The Weight Metaphor Infographic (updated)"]
+
+Let's try to see how it works in practice. Someone asks you for the performance difference between a disk seek compared to a RAM access. How do you proceed? First, you remember that the base unit is the kilogram. The RAM access makes you think of this giant person to whom you asked for his name. A huge person weights around 100 kilograms. Then, when thinking about the disk seek, you remember the Space Shuttle trying to land on the International Space Station. A Space Shuttle weighs a few thousands of tons (crazy numbers like that are generally easy to remember). So, using your mental calculation aptitude (2,000,000 / 100), you determine a disk seek is 20,000 times slower than a memory access.
+
+That's it. You may think this association process is useless. Why not simply remember the original numbers instead? Try both ways.
+
+
+[TIP.admonitionblock.remember]
+.Key Takeaways
+====
+* *Metaphors are everywhere* for a single reason: your memory is an association machine. There is no better way to communicate an idea than by using something you are already familiar.
+* Metaphors put abstract concepts in concrete terms. It's a visualization tool. You can *convey a complex idea for which no vocabulary exist*, in a short, expressive, memorable, accessible, effective way.
+* When using metaphors, you are demonstrating your ability to *adapt your message to the context* in which your are delivering it. It’s a great teaching skill. Metaphors are the most powerful tool in the learner’s toolbox.
+====
