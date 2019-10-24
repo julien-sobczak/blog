@@ -21,6 +21,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/0062874780/'
   goodreads: 'https://www.goodreads.com/book/show/38900866-it-doesn-t-have-to-be-crazy-at-work'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023526854'
 ---
 
 Sadly, bad practices in the workspace often spread and stop being challenged. In this book, the co-authors explain their current practices at Basecamp, resulting from two decades of experimentation. And when you experiment, you learn a lot, and you gain interesting insights, which are related in this excellent book.

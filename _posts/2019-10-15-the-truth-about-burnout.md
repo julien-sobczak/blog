@@ -21,6 +21,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/0787908746/'
   goodreads: 'https://www.goodreads.com/book/show/884279.The_Truth_about_Burnout'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023522137'
 ---
 
 We hear the word burnout more and more. Too often. But even if the burnout has become commonplace in the workplace, it does not mean we understand it. I didn’t. I ignored I had probably experienced burnout in my career. I thought burnout was mainly an individual problem. I was clearly wrong.

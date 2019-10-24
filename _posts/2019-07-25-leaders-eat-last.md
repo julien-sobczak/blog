@@ -22,6 +22,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/1591845327/'
   goodreads: 'https://www.goodreads.com/book/show/16144853-leaders-eat-last'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023524262'
 ---
 
 _Start with Why_ quickly became a must-read for any serious leader. _Leaders Eat Last_ is equally impactful and insightful, but the challenge for leaders is even bigger than with author's previous book. _Start with Why_ was mainly about inspiring through an actionable vision, a task so many executives have tried with varying degrees of success. _Leaders Eat Last_ unravels the mysteries behind why some teams succeed in overcoming obstacles together when some other teams are doomed to individual and collective failure. The answers will seem counterintuitive to many executives. Simon Sinek discovered great leaders sacrifice their own comfort to put organization needs above theirs, focusing on human relations using trust, integrity, friendship, and empowerment.

@@ -20,6 +20,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/1591846358/'
   goodreads: 'https://www.goodreads.com/book/show/18668059-the-obstacle-is-the-way'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023527514'
 ---
 
 A good book, the first one in the author’s trilogy, but probably the less mind opening. I doubt many readers will be surprised by the importance of obstacles on the road to success. What I found interesting, however, is the use of ancient philosophy, mainly Stoicism, to illustrate how persistence and ingenuity has always being keys to overcoming any obstacle -- mental, physical, emotional.

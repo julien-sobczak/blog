@@ -20,6 +20,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/076454280X/'
   goodreads: 'https://www.goodreads.com/book/show/18160.The_Art_of_Deception'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023528066'
 ---
 
 It so common to hear that we, humans, are the bigger threat in security. But before reading this book, I was seriously underestimating how difficult, if not impossible, it is to mitigate social engineering attacks. This book helped me consider how we are “designed” to be an excellent target for attackers. We are eager to trust and cooperate.

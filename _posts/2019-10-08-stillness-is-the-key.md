@@ -23,6 +23,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/0525538585/'
   goodreads: 'https://www.goodreads.com/book/show/43582733-stillness-is-the-key'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023525951'
 ---
 
 Stillness: _“To be steady while the world spins around you. To act without frenzy. To hear only what needs to be heard. To possess quietude --exterior and interior-- on command.”_

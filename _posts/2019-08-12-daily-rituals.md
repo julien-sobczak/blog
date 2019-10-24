@@ -22,6 +22,7 @@ metadata:
 links:
   amazon: 'https://www.amazon.com/gp/product/0307273601/'
   goodreads: 'https://www.goodreads.com/book/show/15799151-daily-rituals'
+  goodreads_review: 'https://www.goodreads.com/review/show/3023528716'
 ---
 
 Routines are key to many things in life, and I was more than happy to find an entire book dedicated to unveiling the routines behind the most brilliant human beings that Earth has ever known. But I was disappointed.
