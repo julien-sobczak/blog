@@ -72,6 +72,7 @@ if (postList) {
     // Inspired by https://codepen.io/haroldjc/pen/GZaqWa
     var readingBar = document.getElementById("reading-bar");
     addEventListener("scroll", function(event) {
+      if (!readingBar) return;
       var total = document.body.scrollHeight - window.innerHeight;
       var percent = (window.scrollY / total) * 100;
 
