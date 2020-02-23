@@ -527,7 +527,7 @@ I hope you now better understand that complexity is not a problem per se. Not ev
 .Key Takeaways
 ====
 * *There are simple problems. There are complicated problems. And there are complex problems.* Trying to cast all problems as simple is the guarantee to solve the wrong problem with the wrong solution.
-* Make it simple. But *understand what must be simple*? 
+* Make it simple. But *understand what must be simple*. 
 * *Simplicity is the goal, not the process*. You don’t get simple solutions by doing simple things.
 * *Simplicity is not additive*. Adding simplicity over simplicity rarely result in simplicity.
 * Complicated solutions are acceptable as long as the complexity is essential and hidden behind simple abstractions.
