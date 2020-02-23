@@ -1,0 +1,538 @@
+---
+layout: post-write
+title: "Simplicity Is Not Simple"
+subtitle: "Why Everything Doesn't Have to Be Simple"
+author: Julien Sobczak
+date: '2020-02-23'
+category: write
+subject: Simplicity
+tags:
+  - craftsmanship
+  - management
+---
+
+:imagesdir: /posts_resources/2020-02-23-simplicity-is-not-simple/
+
+[quote, Jon L. Bentley, Programming Pearls]
+____
+The purpose of software engineering is to control complexity, not to create it.
+____
+
+[.lead]
+Make it simple. 
+
+[.lead]
+This simple advice is too simplistic in practice. What must be simple? Simple to do? Simple to change? Simple for the user? The truth is that simplicity is great but we can’t make everything simple. We need a better approach. But first, we need to know what we are fighting against. As British novelist Anthony Horowitz said, “You cannot defeat your enemies until you know who they are.” 
+
+== Complicated Problems vs Complex Problems 
+
+Developing a web page that loads in less than 100ms or making sure team decisions collectively lean toward the best idea are both problems that are not simple. They are, however, very different. The first is called a complicated problem and the second a complex problem.
+
+Complicated problems can be hard to solve, but they are addressable with techniques like divide-and-conquer, and a good dose of perseverance. Launching a rocket, performing a brain surgery, designing software applications are complicated problems. Not easy to solve, but they are manageable.
+
+*Complex problems are not just more complicated problems*. They are inherently different. They involve many unknowns and techniques like divide-and-conquer are no longer applicable because interactions between components are more important than the components themselves. A small variation of the system may result in disproportionate effects (e.g., the Butterfly effect). Nature is the perfect source of inspiration for complex problems with the rich interactions between all living beings. Peace, global warming, and human relationships are good examples of complex problems. A single conflict between two humans can cause a new war (often economical today) and plunge the whole world into jeopardy. The behavior of a minority of Western citizens affects the lives of billions of people on the other side of the planet with the climate crisis. A single revelation concerning a CEO can destroy the confidence of his employees gained over several decades. Complex problems are not easy to solve, and no single action can solve the problem, while one single action can annihilate the system. 
+
+To illustrate the differences, we will use a more familiar situation: writing code in your IDE is mostly a complicated problem while designing an application as a team is mostly a complex problem.footnote:[7 Differences between complex and complicated, Sonja Blignaut
+, http://www.morebeyond.co.za/7-differences-between-complex-and-complicated-systems/].
+
+++++
+<style>
+.comparison-table {
+  border-collapse: collapse;
+  border: none;
+}
+.comparison-table th {
+  text-align: center;
+  background-color: white;
+}
+.comparison-table tr.category {
+  border-top: 1px dotted black;
+}
+.comparison-table th, .comparison-table td {
+  padding: 1em;
+  vertical-align: top;
+}
+.comparison-table .category span {
+  color: white;
+  background-color: black;
+  border-radius: 0.5em;
+  padding: 0.5em 1em;
+}
+.comparison-table .example {
+  background-color: #EEE;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  margin: 0;
+  margin-top: 1.5em;
+  font-size: 90%;
+  font-style: italic;
+}
+.comparison-table .conclusion {
+  padding: 0 1em 2em;
+  text-align: center;
+}
+</style>
+<table class="comparison-table">
+
+<thead>
+<tr>
+<th width="50%">
+Complicated
+<p class="example">Writing Code</p>
+</th>
+<th width="50%">
+Complex
+<p class="example">Working as a team</p>
+</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr class="category"><th colspan="2"><span>Causality</span></th></tr>
+<tr>
+<td>
+Easy to find causes from observed effects.
+<p class="example">The SQL query is slow due to a missing index.</p>
+</td>
+<td>
+Too many interactions means trying to find a cause always elude a large part of the problem.
+<p class="example">A developer can be less effective because he lacks core competencies, but also because of personal problems, fatigue, or low-motivation.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>Root-cause analysis is a waste of time with complex problems.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Linearity</span></th></tr>
+<tr>
+<td>
+The same input always results in the same output.
+<p class="example">Add more CPUs to a CPU-bound process and you will get better performance.<p>
+</td>
+<td>
+A minor variation in one place can completely change the output. 
+<p class="example">A single failure to support a colleague, for example, following an incident, can definitely revoke the trust built over years of collaboration.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>One-size-fits-all solutions don’t exist for complex problems.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Reducibility</span></th></tr>
+<tr>
+<td>
+Divide-and-conquer is used to solve the problem piece by piece.
+<p class="example">You can code the search logic first, and then build a small UI to display the results.</p>
+</td>
+<td>
+Interactions between components define complex systems and make it impossible to divide them without losing meaning.
+<p class="example">You can fire an employee that opposes your management practices but other employees may feel the same, judge your decision as unfair, and this results in unexpected consequences, far bigger than what you were trying to fix.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>You can’t fix a part of a complex problem. You can only interact with the system to influence the outcomes.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Controllability</span></th></tr>
+<tr>
+<td>
+Problems are easy to diagnose and fix permanently. 
+<p class="example">The authentication logic slows down the application. You can use an in-memory database to speed up queries.</p>
+</td>
+<td>
+Each interaction influences the system but it’s impossible to determine the effect of our actions.
+<p class="example">You organise a team building event and observe motivation goes up after the event, but you will never know why. It may be due to the completion of an important feature having caused higher-than-normal stress,  or all team members have found a new job elsewhere.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>There is no simple problem and no simple solution when interacting with a complex system. New interactions could result in expected and unexpected changes.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Constraint</span></th></tr>
+<tr>
+<td>
+Complicated systems are closed systems. You can work on a part by ignoring the outside interactions or the environment.
+<p class="example">You decide to refactor a function and simply rerun the automated tests for this function to ensure nothing is broken.</p>
+</td>
+<td>
+Complex systems are open systems where it is hard to determine where a system ends and where another starts. The context is an integral part of the system.
+<p class="example">You can’t ignore everything that happens outside the workplace. Personal problems may affect the course of the project. Likewise, bad news on TV, the company’ stock price, the announcements of your competitors, all of this influences your team performance.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>Context matters in complex systems. Don’t be blind on external interactions because what happens outside is as important as what happens inside.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Knowability</span></th></tr>
+<tr>
+<td>
+Closed systems may be modelled and fully-known.
+<p class="example">You can make a diagram to present the program architecture. Or you can become proficient with every single line of code.</p>
+</td>
+<td>
+Any model for an open system is by definition incomplete. You may generate as much data as you want, a complex system will never become a complicated system, and even less a simple one.
+<p class="example">You can make a beautiful chart to explain how people must interact in their team and the role of every member, the reality will always be different. Interactions happen during the lunch break, team members ask for help from a team member independently of his or her role. Most interactions just happen naturally.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>There is no way to manage a complex system from a distance. Come down from your ivory tower and start interacting with the system.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Adaptability</span></th></tr>
+<tr>
+<td>
+Complicated systems need an external force on them to evolve.
+<p class="example">To change the behaviour of a program, you need to update the code with a new implementation (partially true with machine learning algorithms).</p>
+</td>
+<td>
+Complex systems observe themselves and change even without external influences.
+<p class="example">A team can work well together and suddenly, things may go wrong without anything having changed, at least in appearance. Maybe the team gets frustrated because no decision was made to bury legacy code, maybe new features are not as innovative as before, maybe the company is affected by high turnover in other teams.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>Complex systems evolve whether you like it or not. Beware of large-scale changes like new methodologies.</strong> 
+</td>
+</tr>
+
+</tbody>
+</table>
+++++
+
+
+To sum up the differences, *a complicated system is nothing more than the sum of its parts*, while *a complex system is greater than the sum of its parts*. And this makes a huge difference!
+
+These differences explain, in part, why great developers that excel at solving complicated problems don’t necessarily make great managers. Switching from one type of problem to the other must not be considered like an evolution or a promotion, but like a new job. *If you manage complex things as if they are complicated, you’re doomed to failure*. 
+
+Therefore, when facing a problem that doesn’t look simple, you must consider if you are facing a complicated or a complex problem, but that’s not all.
+
+== Essential Complexity vs Accidental Complexity
+
+_Essential complexity_ is caused by the problem to be solved, and nothing can remove it. For example, if users want a program to do 30 different things, then those 30 things are essential and the program must do those 30 different things.
+
+_Accidental complexity_ is caused by the developer, and the developer must work to find a better design. For example, if the developer writes all the code in a single file with a lot of global variables, refactoring the code can remove this complexity.
+
+In short, essential complexity is not a problem to fix, it's the problem to solve in the first place. *Writing clean code is basically solving essential complexity without introducing accidental complexity*. 
+
+We must note that ignoring essential complexity will for sure make your code simpler, but it’s not a solution. Addressing essential complexity is not doing over-engineering, it’s just doing your job. Over-engineering is adding more features, or more safety to solve hypothetical flaws that most users would accept. Ignoring the features that would make your code not as simple as you expect is just bad engineering.
+
+That’s all for the theory. Let’s now try to apply what we have seen on two different problems exposing the challenges of complicated and complex problems. 
+
+
+## A Complicated Problem
+
+*The Problem*: _Let’s try to implement a search engine, a minimalist Google. The logic is mainly divided in two parts: the search, and the rendering_.
+
+First, the search. The most simple algorithm (but not the most performant one) is to retrieve the homepage, inspect the text, extract the links present in the page, and continue the search until having visited all the pages.
+
+[source]
+----
+q = "simplicity"
+url = "https://mysuperwebsite.com"
+pages_to_scrape = [url]
+visited = []
+
+While not pages_to_scrape.empty?
+  pageURL = pages_to_scrape.pop()
+  body = http.Get(pageURL)
+  document = xml.Parse(body)
+  If q in document.innerText
+    print "Found $q in $pageURL" 
+  For link in document.getElementsByTagName("a")
+    If link.href not in visited
+      append(pages_to_scrape, link.href)
+  append(visited, pageURL)  
+----
+
+This algorithm will not compete with the PageRank algorithm but it’s hard to make a more basic version. Each line of code serves its purpose.
+
+Let’s try to render an HTML document instead using code like this:
+
+[source]
+----
+output = "<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Simple Search</title>
+    </head>
+    <body>
+        <h1>Results</h1>
+        <ul>
+"
+For result in results
+  output += "<li>$pageURL</li>"
+output += "
+        </ul>
+    </body>
+</html>
+"
+----
+
+Similarly to the previous snippet, we wrote the most basic version to render a list in HTML. Both programs are easy to understand in isolation. Now, let’s try to mix them:
+
+[source]
+----
+print "<!html<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Simple Search</title>
+    </head>
+    <body>
+        <h1>Results</h1>
+        <ul>
+"
+q = request.QueryParam("q")
+url = "https://mysuperwebsite.com"
+pages_to_scrape = [url]
+visited = []
+
+While not pages_to_scrape.empty?
+  pageURL = pages_to_scrape.pop()
+  body = http.Get(pageURL)
+  document = xml.Parse(body)
+  If q in document.innerText:
+    print "<li>$pageURL</li>" # Convert to HTML
+  For link in document.getElementsByTagName("a")
+    If link.href not in visited:
+      append(pages_to_scrape, link.href)
+  append(visited, pageURL)  
+
+print "
+        </ul>
+    </body>
+</html>
+"
+----
+
+The result doesn’t look good. By composing a program from simple programs, we got a complicated program. *Simplicity is not additive*. 
+
+The main problem is that the code uses too many variables and mixes two different responsibilities. But how to determine what is too much?
+
+[NOTE]
+.A look inside your brain
+====
+Things start to get too complicated when we stop being able to reason about them, when we can’t fit everything into our memory.
+
+*The part of our brain that is working hard when we are thinking over a problem is the prefrontal cortex*. It’s what we call our short-term memory, and unlike a computer, short-term memory is a really scarce resource. Recent researches consider *short-term memory has only a capacity for about four chunks of information* (some studies go up to 8 chunks, and the number may differ between individuals). If the number of chunks is fixed, what represents a chunk is not. For example, a phone number sequence of 3-3-7-2-5-3-7 is commonly chunked as 471-1324. *Creating bigger and bigger chunks is the secret of short-term memory and relies on the power of abstractions*. A chess grandmaster doesn’t see 32 pieces on a board but a few combinations of pieces that he has already learned, analyzed, to determine the next move at a glance. Trying to reason when each piece uses a separate chunk is far more challenging. The good news is the more you become proficient about a subject, the more abstract or general the chunks are, and the easier it is to create connections between topics.
+
+When writing code, chunks can represent variables, functions, classes, modules, or even control structures like a condition or a loop. If, for a given part of the code, you need to understand the meaning of ten variables, used over dozens of lines using a mix of conditions and loops, and calling functions defined in the same file, in different files, and in different modules, it is more than likely that you don’t have enough chunks to really understand the code. The code is too complicated. 
+
+We often say it’s harder to read code than to write it. Indeed, when you are writing code, you are progressively filling your chunks to make sense of what you are doing. But when you are reading code, your chunks are empty. You need to fill them in a very short time. That’s not easy. Therefore, *your code must be obviously easy to understand when you are writing it, so that the same code will be relatively easy to understand when you will be reading it a few weeks later*. 
+
+*Four chunk limits the possibilities*. A function must use no more than 2-3 variables at the same time, and must call at most 2-3 other functions to do its job. It's easy to write complicated code but it’s hard to write simple code.
+====
+
+If we go back to our code, the solution is to reduce the number of chunks required to maintain the code, by using more powerful ones. What we need are abstractions. Abstractions can be new variables, new functions, new classes, new modules, new packages, new dependencies, etc. For this example, we will use interfaces.
+
+[source]
+----
+interface Search
+  search(query string) []string
+
+interface Renderer
+  render(results []string)
+
+class BruteForceSearch implements Search
+ 
+  def search(query string) []string
+    # Same code as above but return the results instead of printing them
+
+class HTMLRenderer implements Renderer
+  def render(results []string)
+    # Same code as above
+----
+
+Using these interfaces, our program can be rewritten as easily as:
+
+[source]
+----
+search = new BruteForceSearch()
+renderer = new HTMLRenderer()
+
+results = search.search(“simplicity")
+renderer.render(results)
+----
+
+Abstractions hide implementation details behind simple to use interfaces. When we need to understand the search logic, we have a well-defined place with a single responsibility and only 3-4 variables to work with. Same goes for the display logic. Concerning the main logic, we only work with two core abstractions, completely ignoring implementation details. Every place of the code is manageable even if globally we have increased the number of lines of code, and make the code slightly more complicated with these interfaces.
+
+Here is a small diagram to visualize the refactoring:
+
+image::abstractions-step-1-2.png[width=600, align="center"]
+
+Using a brute force algorithm is not optimal. We can provide a new implementation based on indexing to get better performance:
+
+[source]
+----
+class IndexSearch implements Search
+  
+  def search(query string) []string
+    # Use an inverted index
+    # Query the index to find the matching URLs in O(1) for the average case
+
+Similarly, we can provide a new UI using 3D to visualize the results.
+
+class CanvasRenderer implements Renderer
+
+  def render(results []string)
+    # Use WebGL to print the results
+----
+
+Here is a small diagram to represent what we did:
+
+image::abstractions-step-3.png[width=300, align="center"]
+
+The search and rendering implementations are now more complicated, mainly due to the essential complexity of the problem. But thanks to the interfaces introduced before, the main logic of the search engine remains as simple as before. In practice, we would refactor the complicated code present in `IndexSearch` to introduce new abstractions as we did before:
+
+image::abstractions-step-4.png[width=375, align="center"]
+
+By introducing more and more components, and more and more abstractions, each component in isolation stays maintainable using our limited number of chunks in memory. 
+
+To conclude this case study, we must underline *it's not a problem to have modules whose implementations are complicated, and hard to understand, if two conditions are met: the module is accessible through a simple interface, and the code complexity results from essential complexity*. When the right abstractions are used, a program will be simpler to understand than if modules were implemented using more basic, less efficient implementations and no abstractions.
+
+[TIP]
+.Tip
+*Abstractions are a key ingredient of simplicity* but that’s not a magic potion, and we must not use link:https://wiki.c2.com/?TooMuchAbstraction[too much abstraction], otherwise, you can end solving the wrong problem.
+
+[NOTE]
+.Abstractions are everywhere
+====
+*We use the power of abstractions all the time*. One of my former coworkers used the wall socket as the perfect example for abstractions. The interface is very simple, just connect a device into the socket to use it. You don’t have to care about the wires hidden in the wall, or the complicated mechanical parts of the device. Moreover, the socket can be used with any compatible powered device. That’s the power of abstractions. They let you ignore the details to focus only on how you use it, like the steering wheel in your car.
+
+Another great example is the container. Introduced in the mid-twentieth century, containers completely revolutionized maritime transport. New ships and trucks were constructed, ship-to-shore cranes were installed in ports, and the daily tasks of dockers completely changed. This abstraction was ported to software development and also completely revolutionized how we package and deploy our applications. In addition to containers, Kubernetes comes with even more abstractions (`Pod`, `ReplicaSet`, `Deployment`, `Service`, `Ingress`, `PersistentVolume`, `HorizontalPodAutoscaler`, etc) so that for any single service to deploy, you only need to mix a few of these abstractions to deploy a rock-solid service in production.
+
+I invite you to take notice all around you to all the abstractions that make your life simpler, like the mouse you may be holding right now. *Abstractions make things easy, but they are hard to get them right*. (Do you think the computer mouse was the most simple idea at that time?)
+====
+
+== A Complex Problem
+
+*The Problem*: _A company has a single vision, but is usually organized in many teams. How do companies make teams rowing in the same direction?_ 
+
+The first attempt may be to limit the number of teams but as we have seen, complex systems are defined by their interactions and the more people you add in a team, the more interactions are necessary for the team to align. 
+
+image::organization-step-1.png[width="700", align="center"]
+
+Therefore, companies follow what is called the two pizza rule introduced at Amazon: “if a team couldn’t be fed with two pizzas, it is too big”, which means six persons in a team is a good size. But with so many teams, how to make sure teams are aligned with the company vision?
+
+[NOTE]
+.Complex problems are … complex
+====
+With complex systems, things don't become complex, they are by their own nature. Therefore, *there is no way to fully understand a complex system*, no matter the number of chunks you have in your memory. But just understanding you will never understand the system is a good start. You can now play the rules of complex systems. 
+
+*If a problem is complex, it can't be understood, but that doesn’t mean it can’t be influenced using continual learning*.
+====
+
+The second attempt is to ignore the complex nature of an organization, and devise solutions that look cleaner on paper like introducing new roles in the hierarchy, new weekly synchronization meetings, or new daily reports to publish. But all of these initiatives rely on imaginative causality. If we meet every day to report progress, we are sure to be perfectly aligned. If we track each task duration, we make sure teams are concerned about the objectives. Really? Reality is different. What you get is depicted in the next diagram:
+
+image::organization-step-2.png[width="700", align="center"]
+
+Communication between team members gets complicated when there are too many roles, too many planned interactions, and too many synchronizations with other teams. In fact, *any initiative on a complex system has an impact and the system will adapt to perturbations*. What will be the effects? You cannot know. You only know for sure there will be changes, mainly unexpected changes, and you don’t know when they will happen. Are you sure you want to go that way?
+
+Most successful companies like Google, Amazon, Twitter, LinkedIn or Intel all use the same system, the link:https://rework.withgoogle.com/guides/set-goals-with-okrs/steps/learn-the-abridged-history-of-OKRs/[OKRs] (Objectives and key results). Wikipedia defines OKR as an _objective_ -- a clearly defined goal -- and one or more _key results_ -- specific measures used to track the achievement of that goal. For example, the objective may be to improve site availability and the key results are defined like this: guarantee uptime of 99.95%, reduce MTTR to less than 15 minutes. OKRs are generally declined at different levels (company, teams, individuals) and are often shared across the organization to align and focus effort.
+
+OKRs have many benefits. Studies have shown that committing to a goal, particularly a challenging and specific goal, improves employee engagement and performance.footnote:[Set goals with OKRs, Google re:Work, https://rework.withgoogle.com/guides/set-goals-with-okrs/steps/introduction/] But what I would like to highlight is why OKRs are particularly relevant for an organization.
+
+We have seen that a complex system cannot be understood in its entirety. *The last thing to do with a complex system is to turn everything upside-down*. This will create for sure unexpected consequences. Instead, you need to dance with the system, and I’m talking about acrobatic Rock’n’Roll dancing. You must strive to have the minimal footprint on the system. OKRs are particularly good at that. They don’t impose any change in the structure. They provide a direction but say nothing about the journey toward the destination. Teams stay self-organized, a common characteristic of complex systems. *The magic behind OKRs relies on how much valuable information they communicate and on how less they influence the organization in place*. OKRs align the organization in a decentralized way that reflects how employees are organized.
+
+image::organization-step-3.png[width="700", align="center"]
+
+On the diagram, the Engineering department is slightly more complex due to a larger number of employees compared to other departments. A common solution would be split along functional units.
+
+[NOTE]
+.Complex systems are everywhere
+====
+*From atoms to galaxies, complex systems are present all around us*. Most of them depend on self-organization, which means the overall order arises from local interactions between parts of an initially disordered system. Self-organization is particularly common in biology. link:https://vimeo.com/79911232[Huge birds flockings] migrating without a single bird coordinating the movement are a great example, like ants in a colony working as a collective mind. In just a few days, the colony creates an underground edifice about the height of a skyscraper in an ant-scaled city without a single leader and a single meeting. I think corporations have a lot to learn from nature.footnote:[Biomimetics is the discipline that uses nature for the purpose of solving complex human problems. https://en.wikipedia.org/wiki/Biomimetics]
+
+*Self-organization only happens when individuals in a group all follow the same rules*, and consequently, every initiative to “organize” the system can only disorganize it. 
+
+Complex systems are a complex subject and I invite you to dig deeper into the subject, especially since *the majority of the challenges of the 21st century like climate change, economic revolution, geopolitics, education, are all complex problems requiring complex thinking*.
+====
+
+
+## A few lessons
+
+The following is a list of guidelines to make sure your quest of simplicity does not end in the land of complexity.
+
+### Don't do simple things
+
+Everyone understands simplicity is important. Clean code makes it easier to read, debug, and evolve it. But not everyone understands the path to simplicity.
+
+I would like to make it clear, *doing the most simple thing is a bad strategy to get the most simple result*. Writing clean code is very hard. It means refactoring the code endless times. The result may look simple, the process to reach it is not.
+
+When facing a decision, choosing the most simple option may seem like a sensible approach, but it is not. *Don’t look for the simplest idea but for the best idea*. The best idea may seem complex at first, and may be more difficult to absorb, but it will bring you the most long-term benefits. If all that matters to you is to make the simplest choice, it means that you don't care about simplicity. Period.
+
+[TIP]
+.Tip
+Stop doing the most simple thing. *Start valuing the most simple result*.
+
+### Don't use principles as rules
+
+*Simplicity pushes to the extreme can only result in complexity*. For example, writing a unit test for every function in the code is a very simple rule to follow (I haven’t said it is a good rule), but if you follow blindly this rule, you will no longer be able to change any single line without breaking a test. No refactoring is possible in these conditions. Writing good tests requires a mix of experience, intuition, and experimentation. This is not simple. But that’s the only way to have simple tests. 
+
+This problem commonly occurs when principles are interpreted as rules. In fact, *any principle applied blindly as a rule becomes a liability*, a way to remove common sense from the equation. Here are a few examples:
+
+*  _Don't explain bad code in comments_ (principle) can become _Good code is self-documenting_ (rule). That’s wrong. The code tells us how it works, but we still need comments to document APIs, explain decisions, which alternatives were considered, and why the present solution was chosen. Writing good comments is as much an art as writing the code itself.footnote:[Coding Without Comments, Coding Horror, https://blog.codinghorror.com/coding-without-comments/]
+
+* _Don’t Repeat Yourself_ (the DRY principle) can become _No Code Duplication_ (rule). That’s wrong. For example, you must not write your tests like your code. A little duplication in tests is better than complex tests that fail to document how the code works. Furthermore, what may seems like duplication can be a good trade to be able to change requirements later so that two similar code may evolve independently.footnote:[Goodbye, Clean Code, Dan Abramov, https://overreacted.io/goodbye-clean-code/].
+
+The problem is our brain loves rules to make sense of the world. It’s a lot harder to accept, “Well, come up with some experiments and see what happens.” But the truth is *thinking is the only way to make things simple*. Therefore, you must work very hard and not succumb to the temptation to see inspiring principles as basic rules. 
+
+[TIP]
+.Tip
+*Use principles to make you think*, not to not have to think.
+
+### Don't simplify locally
+
+Most programming languages support a garbage collector, a complicated piece of code, that makes the life of programmers easier. Without that, developers would have to release the memory explicitly in their code, which is a common source of bugs. *What is simple for some, is often complex for others, and inversely*. The real challenge is to address complexity where it could be best addressed. 
+
+The interface between your code and your users is another good example. Don’t sacrifice the usability to make your code a little simpler. Writing a CLI with intuitive commands, autocompletion, and informative error messages requires more lines of code than a basic version. Designing a great user experience on a website requires techniques like A/B Testing, feature flags, real user monitoring, which add complexity. But all of this complexity has only one goal: simplicity for the user. 
+
+*Simplicity is not black or white*. You need to appreciate shades of gray to determine the right balance between simplicity and essential complexity.
+
+[TIP]
+.Tip
+Simplicity for you can mean complexity for others. Don’t optimize locally. *Think globally*.
+
+
+## Conclusion
+
+[quote,C.A.R. Hoare]
+____
+I conclude that there are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies and the other way is to make it so complicated that there are no obvious deficiencies.
+____
+
+This famous quotation about software design is often quoted abridged. The quotation continues like that: _“The first method is far more difficult. It demands the same skill, devotion, insight, and even inspiration as the discovery of the simple physical laws which underlie the complex phenomena of nature. It also requires a willingness to accept objectives which are limited by physical, logical, and technological constraints, and to accept a compromise when conflicting objectives cannot be met.”_ Through these words, C.A.R. Hoare clearly demonstrates that making things simple doesn’t mean doing simple things. 
+
+We must care about the result. Simplicity really matters. But simplicity is the goal, not the process. Programming is mostly a creative activity. You don’t write maintainable code by always choosing the most simple line of code to add. That’s why programming is so much fun.
+
+I hope you now better understand that complexity is not a problem per se. Not everything has to be simple. Essential complexity must be addressed and accidental complexity must be avoided. And more importantly, complex systems must be considered as such or will end up solving the wrong problem with the wrong solution.
+
+*Simplicity is not simple*. There is only one way to get it: complex thinking. *So, think*. 
+
+[TIP.remember.admonitionblock]
+.Key Takeaways
+====
+* *There are simple problems. There are complicated problems. And there are complex problems.* Trying to cast all problems as simple is the guarantee to solve the wrong problem with the wrong solution.
+* Make it simple. But *understand what must be simple*? 
+* *Simplicity is the goal, not the process*. You don’t get simple solutions by doing simple things.
+* *Simplicity is not additive*. Adding simplicity over simplicity rarely result in simplicity.
+* Complicated solutions are acceptable as long as the complexity is essential and hidden behind simple abstractions.
+* *Tackling complexity for others to enjoy simplicity is sometimes a good trade*.
+* *Stop using simplicity as an argument* to prevent discussions to find the best solution.
+====
+
+
