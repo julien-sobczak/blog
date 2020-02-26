@@ -229,8 +229,9 @@ In short, essential complexity is not a problem to fix, it's the problem to solv
 
 We must note that ignoring essential complexity will for sure make your code simpler, but it’s not a solution. Addressing essential complexity is not doing over-engineering, it’s just doing your job. Over-engineering is adding more features, or more safety to solve hypothetical flaws that most users would accept. Ignoring the features that would make your code not as simple as you expect is just bad engineering.
 
-That’s all for the theory. Let’s now try to apply what we have seen on two different problems exposing the challenges of complicated and complex problems.
+That’s all for the theory. For the rest of this article, I will ignore complex problems. This article is about simplicity and complex problems are … complex. Solutions exist to address complexity, but that's a huge topic that deserves its own article. Moreover, you should not have simplicity in mind when facing a complex problem. Simplicity and complexity are two very different beasts, even if simplicity can emerge when complexity is addressed intelligently.
 
+Let us now try to apply what we have seen to a concrete example of a complicated problem.
 
 ## A Complicated Problem
 
@@ -257,7 +258,7 @@ While not pages_to_scrape.empty?
   append(visited, page_url)
 ----
 
-This algorithm will not compete with the PageRank algorithm but it’s hard to make a more basic version. Each line of code serves its purpose.
+Simple? Yes. This algorithm will not compete with the PageRank algorithm but it’s hard to make a more basic version. Each line of code serves its purpose.
 
 Let’s try to render an HTML document instead using code like this:
 
@@ -282,7 +283,7 @@ output += "
 "
 ----
 
-Similarly to the previous snippet, we wrote the most basic version to render a list in HTML. Both programs are easy to understand in isolation. Now, let’s try to mix them:
+Simple? Yes. Like the previous snippet, we wrote the most basic version to render a list in HTML. Both programs are easy to understand in isolation. Now, let’s try to mix them:
 
 [source]
 ----
@@ -319,7 +320,7 @@ print "
 "
 ----
 
-The result doesn’t look good. By composing a program from simple programs, we got a complicated program. *Simplicity is not additive*.
+Simple? Not exactly. The result doesn’t look good. By composing a program from simple programs, we got a complicated program. *Simplicity is not additive*.
 
 The main problem is that the code uses too many variables and mixes two different responsibilities. But how to determine what is too much?
 
@@ -333,8 +334,6 @@ Things start to get too complicated when we stop being able to reason about them
 When writing code, chunks can represent variables, functions, classes, modules, or even control structures like a condition or a loop. If, for a given part of the code, you need to understand the meaning of ten variables, used over dozens of lines using a mix of conditions and loops, and calling functions defined in the same file, in different files, and in different modules, it is more than likely that you don’t have enough chunks to really understand the code. The code is too complicated.
 
 We often say it’s harder to read code than to write it. Indeed, when you are writing code, you are progressively filling your chunks to make sense of what you are doing. But when you are reading code, your chunks are empty. You need to fill them in a very short time. That’s not easy. Therefore, *your code must be obviously easy to understand when you are writing it, so that the same code will be relatively easy to understand when you will be reading it a few weeks later*.
-
-*Four chunk limits the possibilities*. A function must use no more than 2-3 variables at the same time, and must call at most 2-3 other functions to do its job. It's easy to write complicated code but it’s hard to write simple code.
 ====
 
 If we go back to our code, the solution is to reduce the number of chunks required to maintain the code, by using more powerful ones. What we need are abstractions. Abstractions can be new variables, new functions, new classes, new modules, new packages, new dependencies, etc. For this example, we will use interfaces.
@@ -404,10 +403,6 @@ By introducing more and more components, and more and more abstractions, each co
 
 To conclude this case study, we must underline *it's not a problem to have modules whose implementations are complicated, and hard to understand, if two conditions are met: the module is accessible through a simple interface, and the code complexity results from essential complexity*. When the right abstractions are used, a program will be simpler to understand than if modules were implemented using more basic, less efficient implementations and no abstractions.
 
-[TIP]
-.Tip
-*Abstractions are a key ingredient of simplicity* but that’s not a magic potion, and we must not use link:https://wiki.c2.com/?TooMuchAbstraction[too much abstraction], otherwise, you can end solving the wrong problem.
-
 [NOTE]
 .Abstractions are everywhere
 ====
@@ -417,51 +412,6 @@ Another great example is the container. Introduced in the mid-twentieth century,
 
 I invite you to take notice all around you to all the abstractions that make your life simpler, like the mouse you may be holding right now. *Abstractions make things easy, but they are hard to get them right*. (Do you think the computer mouse was the most simple idea at that time?)
 ====
-
-== A Complex Problem
-
-*The Problem*: _A company has a single vision, but is usually organized in many teams. How do companies make teams rowing in the same direction?_
-
-The first attempt may be to limit the number of teams but as we have seen, complex systems are defined by their interactions and the more people you add in a team, the more interactions are necessary for the team to align.
-
-image::organization-step-1.png[width="700", align="center"]
-
-Therefore, companies follow what is called the two pizza rule introduced at Amazon: “if a team couldn’t be fed with two pizzas, it is too big”, which means six persons in a team is a good size. But with so many teams, how to make sure teams are aligned with the company vision?
-
-[NOTE]
-.Complex problems are … complex
-====
-With complex systems, things don't become complex, they are by their own nature. Therefore, *there is no way to fully understand a complex system*, no matter the number of chunks you have in your memory. But just understanding you will never understand the system is a good start. You can now play the rules of complex systems.
-
-*If a problem is complex, it can't be understood, but that doesn’t mean it can’t be influenced using continual learning*.
-====
-
-The second attempt is to ignore the complex nature of an organization, and devise solutions that look cleaner on paper like introducing new roles in the hierarchy, new weekly synchronization meetings, or new daily reports to publish. But all of these initiatives rely on imaginative causality. If we meet every day to report progress, we are sure to be perfectly aligned. If we track each task duration, we make sure teams are concerned about the objectives. Really? Reality is different. What you get is depicted in the next diagram:
-
-image::organization-step-2.png[width="700", align="center"]
-
-Communication between team members gets complicated when there are too many roles, too many planned interactions, and too many synchronizations with other teams. In fact, *any initiative on a complex system has an impact and the system will adapt to perturbations*. What will be the effects? You cannot know. You only know for sure there will be changes, mainly unexpected changes, and you don’t know when they will happen. Are you sure you want to go that way?
-
-Most successful companies like Google, Amazon, Twitter, LinkedIn or Intel all use the same system, the link:https://rework.withgoogle.com/guides/set-goals-with-okrs/steps/learn-the-abridged-history-of-OKRs/[OKRs] (Objectives and key results). Wikipedia defines OKR as an _objective_ -- a clearly defined goal -- and one or more _key results_ -- specific measures used to track the achievement of that goal. For example, the objective may be to improve site availability and the key results are defined like this: guarantee uptime of 99.95%, reduce MTTR to less than 15 minutes. OKRs are generally declined at different levels (company, teams, individuals) and are often shared across the organization to align and focus effort.
-
-OKRs have many benefits. Studies have shown that committing to a goal, particularly a challenging and specific goal, improves employee engagement and performance.footnote:[Set goals with OKRs, Google re:Work, https://rework.withgoogle.com/guides/set-goals-with-okrs/steps/introduction/] But what I would like to highlight is why OKRs are particularly relevant for an organization.
-
-We have seen that a complex system cannot be understood in its entirety. *The last thing to do with a complex system is to turn everything upside-down*. This will create for sure unexpected consequences. Instead, you need to dance with the system, and I’m talking about acrobatic Rock’n’Roll dancing. You must strive to have the minimal footprint on the system. OKRs are particularly good at that. They don’t impose any change in the structure. They provide a direction but say nothing about the journey toward the destination. Teams stay self-organized, a common characteristic of complex systems. *The magic behind OKRs relies on how much valuable information they communicate and on how less they influence the organization in place*. OKRs align the organization in a decentralized way that reflects how employees are organized.
-
-image::organization-step-3.png[width="700", align="center"]
-
-On the diagram, the Engineering department is slightly more complex due to a larger number of employees compared to other departments. A common solution would be split along functional units.
-
-[NOTE]
-.Complex systems are everywhere
-====
-*From atoms to galaxies, complex systems are present all around us*. Most of them depend on self-organization, which means the overall order arises from local interactions between parts of an initially disordered system. Self-organization is particularly common in biology. link:https://vimeo.com/79911232[Huge birds flockings] migrating without a single bird coordinating the movement are a great example, like ants in a colony working as a collective mind. In just a few days, the colony creates an underground edifice about the height of a skyscraper in an ant-scaled city without a single leader and a single meeting. I think corporations have a lot to learn from nature.footnote:[Biomimetics is the discipline that uses nature for the purpose of solving complex human problems. https://en.wikipedia.org/wiki/Biomimetics]
-
-*Self-organization only happens when individuals in a group all follow the same rules*, and consequently, every initiative to “organize” the system can only disorganize it.
-
-Complex systems are a complex subject and I invite you to dig deeper into the subject, especially since *the majority of the challenges of the 21st century like climate change, economic revolution, geopolitics, education, are all complex problems requiring complex thinking*.
-====
-
 
 ## A few lessons
 
