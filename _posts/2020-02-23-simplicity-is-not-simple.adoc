@@ -96,7 +96,7 @@ Easy to find causes from observed effects.
 <p class="example">The SQL query is slow due to a missing index.</p>
 </td>
 <td>
-Too many interactions means trying to find a cause always elude a large part of the problem.
+Too many interactions mean trying to find a cause always elude a large part of the problem.
 <p class="example">A developer can be less effective because he lacks core competencies, but also because of personal problems, fatigue, or low-motivation.</p>
 </td>
 </tr>
@@ -148,12 +148,12 @@ Problems are easy to diagnose and fix permanently.
 </td>
 <td>
 Each interaction influences the system but it’s impossible to determine the effect of our actions.
-<p class="example">You organise a team building event and observe motivation goes up after the event, but you will never know why. It may be due to the completion of an important feature having caused higher-than-normal stress,  or all team members have found a new job elsewhere.</p>
+<p class="example">You organise a team building event and observe motivation goes up after the event, but you will never know why. It may be due to the completion of an important feature having caused higher-than-normal stress, or all team members having found a new job elsewhere.</p>
 </td>
 </tr>
 <tr class="conclusion">
 <td colspan="2">
-<strong>There is no simple problem and no simple solution when interacting with a complex system. New interactions could result in expected and unexpected changes.</strong>
+<strong>There is no simple problem and no simple solution when interacting with a complex system.</strong>
 </td>
 </tr>
 
@@ -231,7 +231,7 @@ We must note that ignoring essential complexity will for sure make your code sim
 
 That’s all for the theory. For the rest of this article, I will ignore complex problems. This article is about simplicity and complex problems are … complex. Solutions exist to address complexity, but that's a huge topic that deserves its own article. Moreover, you should not have simplicity in mind when facing a complex problem. Simplicity and complexity are two very different beasts, even if simplicity can emerge when complexity is addressed intelligently.
 
-Let us now try to apply what we have seen to a concrete example of a complicated problem.
+Now, let's try to apply what we have seen to a concrete example of a complicated problem.
 
 ## A Complicated Problem
 
@@ -325,7 +325,7 @@ Simple? Not exactly. The result doesn’t look good. By composing a program from
 The main problem is that the code uses too many variables and mixes two different responsibilities. But how to determine what is too much?
 
 [NOTE]
-.A look inside your brain
+.A look inside our brain
 ====
 Things start to get too complicated when we stop being able to reason about them, when we can’t fit everything into our memory.
 
@@ -333,7 +333,7 @@ Things start to get too complicated when we stop being able to reason about them
 
 When writing code, chunks can represent variables, functions, classes, modules, or even control structures like a condition or a loop. If, for a given part of the code, you need to understand the meaning of ten variables, used over dozens of lines using a mix of conditions and loops, and calling functions defined in the same file, in different files, and in different modules, it is more than likely that you don’t have enough chunks to really understand the code. The code is too complicated.
 
-We often say it’s harder to read code than to write it. Indeed, when you are writing code, you are progressively filling your chunks to make sense of what you are doing. But when you are reading code, your chunks are empty. You need to fill them in a very short time. That’s not easy. Therefore, *your code must be obviously easy to understand when you are writing it, so that the same code will be relatively easy to understand when you will be reading it a few weeks later*.
+We often say it’s harder to read code than to write it. Indeed, when you are writing code, you are progressively filling your chunks to make sense of what you are doing. But when you are reading code, your chunks are empty. You need to fill them in a very short time. That’s not easy. Therefore, *your code must be obviously easy to understand when you are writing it, so that the same code will be relatively easy to understand when you will read it a few weeks later*.
 ====
 
 If we go back to our code, the solution is to reduce the number of chunks required to maintain the code, by using more powerful ones. What we need are abstractions. Abstractions can be new variables, new functions, new classes, new modules, new packages, new dependencies, etc. For this example, we will use interfaces.
@@ -352,6 +352,7 @@ class BruteForceSearch implements Search
     # Same code as above but return the results instead of printing them
 
 class HTMLRenderer implements Renderer
+
   def render(results []string)
     # Same code as above
 ----
@@ -382,9 +383,12 @@ class IndexSearch implements Search
   def search(query string) []string
     # Use an inverted index
     # Query the index to find the matching URLs in O(1) for the average case
+----
 
-Similarly, we can provide a new UI using 3D to visualize the results.
+Similarly, we can provide a new UI using 3D to visualize the results (why not?).
 
+[source]
+----
 class CanvasRenderer implements Renderer
 
   def render(results []string)
@@ -439,7 +443,7 @@ This problem commonly occurs when principles are interpreted as rules. In fact, 
 
 * _Don’t Repeat Yourself_ (the DRY principle) can become _No Code Duplication_ (rule). That’s wrong. For example, you must not write your tests like your code. A little duplication in tests is better than complex tests that fail to document how the code works. Furthermore, what may seems like duplication can be a good trade to be able to change requirements later so that two similar code may evolve independently.footnote:[Goodbye, Clean Code, Dan Abramov, https://overreacted.io/goodbye-clean-code/].
 
-The problem is our brain loves rules to make sense of the world. It’s a lot harder to accept, “Well, come up with some experiments and see what happens.” But the truth is *thinking is the only way to make things simple*. Therefore, you must work very hard and not succumb to the temptation to see inspiring principles as basic rules.
+The problem is our brain loves rules to make sense of the world. It’s a lot harder to accept, “Well, come up with some experiments and see what happens.” But the truth is *thinking is the only way to make things simple*. Therefore, you must work very hard and not succumb to the temptation to see inspiring principles as stupid rules.
 
 [TIP]
 .Tip
