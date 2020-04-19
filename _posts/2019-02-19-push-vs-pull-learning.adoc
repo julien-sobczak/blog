@@ -21,7 +21,7 @@ What do you do when you need to learn something new? Do you wait for someone to 
 
 == Push vs Pull Learning
 
-There are many different ways to learn. You can read a book, attend a training, subscribe to a MOOC, practice through a pet project, participate in local meetups, ask coworkers for support, follow tutorials on blogs, watch videos online. There isn't a clear winner when it comes to learning. Some supports are more effective depending on the subject. For example, a MOOC is clearly superior to learn graphic tools like Photoshop, and thus many authors completely migrated to MOOCs. Watching the instructor doing the actions is clearly preferable to reading bulleted lists in books. I learnt Photoshop this way many years ago, and I'm now delighted by courses on LinkedIn Learning. Each support presents advantages and drawbacks, and you will get much better results by varying learning resources than simply learning using books or trainings exclusively. Complementary is key to learning.
+There are many different ways to learn. You can read a book, attend a training session, subscribe to a MOOC, practice through a pet project, participate in local meetups, ask coworkers for support, follow tutorials on blogs, watch videos online. There isn't a clear winner when it comes to learning. Some supports are more effective depending on the subject. For example, a MOOC is clearly superior to learn graphic tools like Photoshop, and thus many authors completely migrated to MOOCs. Watching the instructor doing the actions is clearly preferable to reading bulleted lists in books. I learnt Photoshop this way many years ago, and I'm now delighted by courses on LinkedIn Learning. Each support presents advantages and drawbacks, and you will get much better results by varying learning resources than simply learning using books or training courses exclusively. Complementary is key to learning.
 
 _There is, however, an important distinction to make between these different supports. *How much I control what I learn? Who is pulling the strings?_*
 
@@ -29,7 +29,7 @@ When I buy a book, I personally decide what I want to learn at the most appropri
 
 The two approaches are named _Push Learning_ versus _Pull Learning_.
 
-*In _Push_ mode, you passively wait for the information to reach you*. You hope that a local meetup on a particular subject will occur, you wait for your company to send you to the next conference, or you ask for a training.
+*In _Push_ mode, you passively wait for the information to reach you*. You hope that a local meetup on a particular subject will occur, you wait for your company to send you to the next conference, or you ask to assist a training session.
 
 *In _Pull_ mode, you actively search for the information where it exists*. You follow a MOOC to introduce yourself to the subject, you read an advanced book to go further, you follow influencers on Twitter to watch their publications.
 
@@ -43,11 +43,11 @@ For most of us, _Push Learning_ is the traditional mode we have all experienced 
 
 * *_Pull learning_ favors learning*. You take the decision to learn. Nobody is forcing you, so you could not resist, you will learn faster, and you will retain the information longer.
 
-* *_Push Learning_ is often about what others want you to learn*, whereas _Pull Learning_ is more about your own preferences. "You need to learn this" vs "I want to learn this". Listen to yourself.
+* *_Push Learning_ is often about what others want you to learn*, whereas _Pull Learning_ is more about your own preferences. "You need to learn this" vs "I want to learn this." Listen to yourself.
 
 * *_Pull Learning_ is on-demand, just-in-time learning*. You have full control on your knowledge and tailor it at your convenience. You can follow any path you want.
 
-* *_Pull Learning_ is the only way to reach expertise*. There don't exist trainings to become an expert (otherwise, there would be a ton of experts out there). Expertise results from long study sessions, working alone, trying to push your limits a little farther, slowly but surely.footnote:[http://www.juliensobczak.com/read/2017/01/25/peak.html]
+* *_Pull Learning_ is the only way to reach expertise*. There are no training courses to become an expert (otherwise, there would be a ton of experts out there). Expertise results from long study sessions, working alone, trying to push your limits a little farther, slowly but surely.footnote:[http://www.juliensobczak.com/read/2017/01/25/peak.html]
 
 The good news is _Pull Learning_ is within everyone's reach! Remember everything you learned by yourself when you were just a baby. The human brain is a learning machine. Even if we lose half of our neurons during our early years, why not press the resume button and start learning again?
 
@@ -64,5 +64,5 @@ _Push learning_ involves learning something that someone else has decided for yo
 * If most of your learning occurs through _Push Learning_, *experiment with _Pull Learning_*. Read a book, subscribe to a MOOC, add interesting blogs in your news reader.
 * If you are reading only books people recommended you, go to your bookstore and *look for your next reading*. I read a lot of books. Not all was great, but I learned from every one of them. Try what interests you at the moment.
 * Don’t stop attending local meetups or conferences, but *watch recorded conferences* online to complement your learning.
-* For companies, *stop relying exclusively on training* and start encouraging pull learning. Include credits for employees to subscribe on platforms like Safari Books Online, Linkedin Learning. Encourage the diversity of ideas through the diversity of learning.
+* For companies, *stop relying exclusively on training courses* and start encouraging pull learning. Include credits for employees to subscribe on platforms like Safari Books Online, Linkedin Learning. Encourage the diversity of ideas through the diversity of learning.
 ====

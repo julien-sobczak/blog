@@ -2364,7 +2364,7 @@ To generate the new list:
 $ python calculate_frequency_list.py > my_english_frequency_list.csv
 ----
 
-If we inspect the resulting file, we notice numerous unwanted words such as "Mickey". Let's remove them by updating our program:
+If we inspect the resulting file, we notice numerous unwanted words such as "Mickey." Let's remove them by updating our program:
 
 [source,python]
 ----
