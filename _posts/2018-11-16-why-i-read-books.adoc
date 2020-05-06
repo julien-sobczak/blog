@@ -53,7 +53,7 @@ ____
 
 There are two possible explanations. Either the job of president of the United States is the most boring job in the world, or there are hidden benefits to reading.
 
-This book addiction doesn't stop to US presidents. In fact, reading is probably the single pastime successful people have in common. footnoteref:[success,The Reading Habits of Ultra-Successful People, by Andrew Merle, https://www.huffingtonpost.com/andrew-merle/the-reading-habits-of-ult_b_9688130.html] Jeff Bezos launches Amazon as online book shop, reflecting his passion for reading. footnote:[The fact that millions of books are in print was also the guarantee that no physical store will be able to compete with Amazon. http://www.businessinsider.fr/us/how-amazon-decided-to-sell-books-2018-4] Mark Zuckerberg started the year 2005 with the https://www.facebook.com/ayearofbooks/[New Year's resolution] to read two books per month. Elon Musk growns up as a "bookwormy" kid, reading as many as two books per day. footnoteref:[success] footnote:[5 Billionaires Who Credit Their Success to Reading, by James Paine, https://www.inc.com/james-paine/5-billionaires-who-credit-their-success-to-reading.html] https://www.gatesnotes.com/[Bill Gates' blog] regularly praises fascinating books. The list could go on forever. footnoteref:[famous,15 Famous Readers Who Share Your Passion For Literature, by Sadie Trombetta, https://www.bustle.com/p/15-famous-readers-who-share-your-passion-for-literature-7679559] Despite busy schedules, highly successful entrepreneurs, politicians, researchers, devote a considerable time to reading, favoring especially nonfiction books (biographies, researcher's publications, anthropology books, etc.).
+This book addiction doesn't stop to US presidents. In fact, reading is probably the single pastime successful people have in common. footnote:success[The Reading Habits of Ultra-Successful People, by Andrew Merle, https://www.huffingtonpost.com/andrew-merle/the-reading-habits-of-ult_b_9688130.html] Jeff Bezos launches Amazon as online book shop, reflecting his passion for reading. footnote:[The fact that millions of books are in print was also the guarantee that no physical store will be able to compete with Amazon. http://www.businessinsider.fr/us/how-amazon-decided-to-sell-books-2018-4] Mark Zuckerberg started the year 2005 with the https://www.facebook.com/ayearofbooks/[New Year's resolution] to read two books per month. Elon Musk growns up as a "bookwormy" kid, reading as many as two books per day. footnote:success[] footnote:[5 Billionaires Who Credit Their Success to Reading, by James Paine, https://www.inc.com/james-paine/5-billionaires-who-credit-their-success-to-reading.html] https://www.gatesnotes.com/[Bill Gates' blog] regularly praises fascinating books. The list could go on forever. footnote:famous[15 Famous Readers Who Share Your Passion For Literature, by Sadie Trombetta, https://www.bustle.com/p/15-famous-readers-who-share-your-passion-for-literature-7679559] Despite busy schedules, highly successful entrepreneurs, politicians, researchers, devote a considerable time to reading, favoring especially nonfiction books (biographies, researcher's publications, anthropology books, etc.).
 
 There is no doubt they all have good reasons to read, but as I can't speak for them, I will instead present you the reasons that motivate me to read.
 
@@ -66,21 +66,21 @@ ____
 
 We, humans, are born as very curious creatures. Children loves to learn new things, but adults often stop learning, as there is no teacher to guide us any more. Books are a wonderful way to learn. I use books as my main source of information and books have never failed to surprise me. Here are some examples of what I learned:
 
-* What role sleep plays in the record of longevity in the Greek island of Ikaria. (link:{{ site.baseurl }}{% post_url 2018-04-01-why-we-sleep %}[see the book])
-* Why choosing NULL for a licence plate is a really bad idea. (link:{{ site.baseurl }}{% post_url 2018-05-14-humans-vs-computers %}[see the book])
-* Why pursuing career advancement will never bring happiness in the long term. (link:{{ site.baseurl }}{% post_url 2018-08-15-the-little-book-of-lykke %}[see the book])
-* Why leading organizations are often managed by introverts. (link:{{ site.baseurl }}{% post_url 2016-11-21-quiet %}[see the book])
-* How trust and humility are crucial ingredients for a company to innovate. (link:{{ site.baseurl }}{% post_url 2018-10-20-creativity-inc %}[see the book])
-* Why some children abandon a problem after just a few minutes when others try harder. (link:{{ site.baseurl }}{% post_url 2016-12-31-mindset %}[see the book])
-* How popular storage databases work under the hood. (link:{{ site.baseurl }}{% post_url 2018-02-25-designing-data-intensive-applications %}[see the book])
-* Why copying other people's work is unavoidable, despite what school is trying to teach us. (link:{{ site.baseurl }}{% post_url 2017-04-17-steal-like-an-artist %}[see the book])
-* Why having reached so fast the top of the food pyramid is not a good thing. (link:{{ site.baseurl }}{% post_url 2017-07-20-sapiens %}[see the book])
-* How expertise has nothing to do with innate talent. (link:{{ site.baseurl }}{% post_url 2017-01-25-peak %}[see the book])
+* What role sleep plays in the record of longevity in the Greek island of Ikaria. (link:{% post_url 2018-04-01-why-we-sleep %}[see the book])
+* Why choosing NULL for a licence plate is a really bad idea. (link:{% post_url 2018-05-14-humans-vs-computers %}[see the book])
+* Why pursuing career advancement will never bring happiness in the long term. (link:{% post_url 2018-08-15-the-little-book-of-lykke %}[see the book])
+* Why leading organizations are often managed by introverts. (link:{% post_url 2016-11-21-quiet %}[see the book])
+* How trust and humility are crucial ingredients for a company to innovate. (link:{% post_url 2018-10-20-creativity-inc %}[see the book])
+* Why some children abandon a problem after just a few minutes when others try harder. (link:{% post_url 2016-12-31-mindset %}[see the book])
+* How popular storage databases work under the hood. (link:{% post_url 2018-02-25-designing-data-intensive-applications %}[see the book])
+* Why copying other people's work is unavoidable, despite what school is trying to teach us. (link:{% post_url 2017-04-17-steal-like-an-artist %}[see the book])
+* Why having reached so fast the top of the food pyramid is not a good thing. (link:{% post_url 2017-07-20-sapiens %}[see the book])
+* How expertise has nothing to do with innate talent. (link:{% post_url 2017-01-25-peak %}[see the book])
 * Why forgetting is vital to our memory, even if I can't exactly remember why. (https://www.amazon.com/Mind-Numbers-Science-Flunked-Algebra/dp/039916524X[see the book])
 
 Books are incredible. Instead of learning by instruction from a present teacher, I learn by discovery from an absent teacher, the book author. Books let me decide what to learn and when to do it. I'm free to pursue any interest in any direction at any time. Reading is freedom.
 
-Nonetheless, books alone will never make me really competent. Practice play an important role to convert knowledge into skills. Both are link:{{ site.baseurl }}{% post_url 2018-01-24-competency-equals-knowledge-plus-skills %}[complementary]. Practices let me perfect my comprehension and exposes me to new problems, new questions, that invite me to read other books. It a virtuous circle. The more I know about a subject, the more I find it interesting, and the more I read about it.
+Nonetheless, books alone will never make me really competent. Practice play an important role to convert knowledge into skills. Both are link:{% post_url 2018-01-24-competency-equals-knowledge-plus-skills %}[complementary]. Practices let me perfect my comprehension and exposes me to new problems, new questions, that invite me to read other books. It a virtuous circle. The more I know about a subject, the more I find it interesting, and the more I read about it.
 
 
 == I read to feel ignorant
@@ -185,5 +185,5 @@ ____
 
 I really think everyone should read nonfiction books, at least one in a few months. For me, I see reading as a duty, to be able to create a bigger impact in my work, to appreciate more fully my life and the diversity of the world. There are so many benefits I get from reading, more than what I could write in a blog post. In the end, reading is maybe a duty, but an enjoyable one. I read because I learned to love books. It is as simple as that.
 
-I will close this article with a quotation from world-renowned businessman Warren Buffet, who is famous for reading around 500 pages every day. _"That’s how knowledge works. It builds up, like compound interest,"_ he said. _"All of you can do it, but I guarantee not many of you will do it.”_.footnoteref:[famous] Will you?
+I will close this article with a quotation from world-renowned businessman Warren Buffet, who is famous for reading around 500 pages every day. _"That’s how knowledge works. It builds up, like compound interest,"_ he said. _"All of you can do it, but I guarantee not many of you will do it.”_.footnote:famous[] Will you?
 
