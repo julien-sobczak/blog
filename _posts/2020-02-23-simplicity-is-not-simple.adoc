@@ -4,14 +4,15 @@ title: "Simplicity Is Not Simple"
 subtitle: "Why Everything Doesn't Have to Be Simple"
 author: Julien Sobczak
 date: '2020-02-23'
-category: write
+category: "write"
 subject: Simplicity
 tags:
   - craftsmanship
   - management
 ---
 
-:imagesdir: /posts_resources/2020-02-23-simplicity-is-not-simple/
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2020-02-23-simplicity-is-not-simple/' | relative_url }}
 
 [quote, Jon L. Bentley, Programming Pearls]
 ____

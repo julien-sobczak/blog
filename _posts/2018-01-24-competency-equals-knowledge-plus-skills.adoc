@@ -9,6 +9,8 @@ tags:
   - learning
 ---
 
+:page-liquid:
+
 [quote,Anton Chekhov, Russian writer]
 ____
 Knowledge is of no value unless you put it into practice.

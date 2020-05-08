@@ -11,6 +11,8 @@ unofficialTags:
   - reading
 ---
 
+:page-liquid:
+
 [quote,Italo Calvino, The Uses of Literature]
 ____
 A classic is a book that has never finished saying what it has to say.

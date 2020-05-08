@@ -12,6 +12,9 @@ tags:
   - computer-science
 ---
 
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/' | relative_url }}
+
 [quote,Gerald Jay Sussman,MIT Professor, coauthor of the seminal book _Structure and Interpretation of Computer Programs_]
 ____
 Nothing brings fear to my heart more than a floating point number.
@@ -44,7 +47,7 @@ Let's try the same test in JavaScript, directly from your browser, by simply ent
 
 First, computers are electronic devices, full of components, in particular transistors. The basic operation of a transistor is switching (on and off). In other words, it is 0 or 1. So, computers work with what is called _Binary Number System_ in mathematics, instead of the _Decimal Number System_ we use everyday (1 is represented as `1` in binary, 2 as `10`, 3 as `11`, 4 as `100`, and so on).
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/decimal-binary-systems.png' | prepend: site.baseurl }}[width=450]
+image::decimal-binary-systems.png[width=450]
 
 Depending on the base (e.g., 10 or 2), there exist numbers that cannot be represented. For example, 1/3 cannot be represented as a decimal number as there is an infinite number of digits after the floating point (0.33333…). In binary system, 0.1 cannot be represented for the same reason, in the same way that 0.2 cannot neither. Why? Mathematics to our rescue.
 
@@ -56,11 +59,11 @@ To illustrate the problem with a concrete example, consider 0.2 in base 2.
 
 First, how do we build numbers in the decimal system? By composition. Look at this example:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/number-composition.png' | prepend: site.baseurl }}[width=550]
+image::number-composition.png[width=550]
 
 Here are the equivalent numbers on which to compose in base 2:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/binary-composition.png' | prepend: site.baseurl }}[width=320]
+image::binary-composition.png[width=320]
 
 Let's try to represent 25 in binary using the above table. 25 = 16 + 8 + 1 in decimal, so 10000 + 1000 + 1 = 11001 in binary. Easy.
 
@@ -122,7 +125,7 @@ Problem. No significant digits are included... Completely useless too.
 
 Clearly, we need a better solution to satisfy both the astronomer and the chemist, to store large and small floating-point numbers using as few digits as allowed by the machine. The solution is called https://en.wikipedia.org/wiki/Decimal_floating_point[Decimal floating point] where a number is represented by a fixed number of significant digits (the significand) and scaled using an exponent in some fixed base. An example:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/decimal-floating-point.png' | prepend: site.baseurl }}[width=450]
+image::decimal-floating-point.png[width=450]
 
 Let's try the previous examples again using this technique.
 
@@ -278,7 +281,7 @@ Still wrong...
 
 Second, the significand is not a simple binary number, where the rightmost bit is 2^0^, then 2^1^, 2^2^, ... until 2^23^. The significand represents a sum of fractions where the leftmost bit is 2^-1^ (1/2), then 2^-2^ (1/4), 2^-3^ (1/8), ... until 2^-24^. Basically, the floating-point is not on the right, but on the left:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/normalized-number.png' | prepend: site.baseurl }}[width=500]
+image::normalized-number.png[width=500]
 
 The result is a number always between 0 and 1, far different from our previous calculation.
 
@@ -392,11 +395,11 @@ Our dummy 4-bit type can *only* represent the numbers present on this list. *Any
 
 Here is a diagram to visualize the gaps between these numbers:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/dummy-normalized-numbers.png' | prepend: site.baseurl }}[width=500]
+image::dummy-normalized-numbers.png[width=500]
 
 For standard types such as single or double precision, the pattern is very similar, except there are a lot more numbers. If we add the bit sign, we just need to reflect the diagram to get something like this:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/all-normalized-numbers.png' | prepend: site.baseurl }}[width=750]
+image::all-normalized-numbers.png[width=750]
 
 Gaps are larger and larger when numbers are getting smaller or bigger.
 
@@ -438,7 +441,7 @@ It's exactly what we learned in school about decimals. Move the comma to the lef
 
 The same logic is applied here with binaries. The following figure shows why integers can be safely represented using the normalized representation, using the 4-bit dummy type as the example:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/normal-vs-normalized.png' | prepend: site.baseurl }}[width=550]
+image::normal-vs-normalized.png[width=550]
 
 Normalized or not, we can represent the same numbers when using the same number of bits.
 
@@ -546,7 +549,7 @@ Of course! This increment explains why starting from 16777216, not all integer c
 
 In fact, the gaps are easily predictable and depend only on the exponent value. On the previous example, the gap between two successive numbers will always be 2 as long as the exponent is 24 (or 151 with the exponent bias). When the exponent is increased to 25 (or 152 with the exponent bias), the gap becomes `2^-23^ * 2^25^ = 2^2^ = 4`. The representable numbers are 33554432, 33554436, 33554440, and so on until 67108856, 67108860.
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/gaps.png' | prepend: site.baseurl }}[width=700]
+image::gaps.png[width=700]
 
 We observe that the gap increases by the next multiple of 2 each time the exponent is incremented. To better visualise the gap, let's try a bigger exponent to measure how large the gap becomes as numbers are getting bigger. For example, let’s try the exponent 120 (or 247 with the exponent bias):
 
@@ -702,11 +705,11 @@ These two numbers represent respectively the smallest and largest subnormals num
 
 Indeed, subnormal numbers solve the gap we had on the diagram when we tried to visualize representable numbers:
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/normals-subnormals.png' | prepend: site.baseurl }}[width=700]
+image::normals-subnormals.png[width=700]
 
 It is important to realise that subnormal numbers are represented with less precision than normal numbers. This is due to the presence of the leading 0, and thus leading zero bits in the significand no longer function as significant bits of precision. Consequently, the precision is less than that of normalized floating-point numbers.
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/subnormals-precision.png' | prepend: site.baseurl }}[width=650]
+image::subnormals-precision.png[width=650]
 
 
 [TIP.remember.admonitionblock]
@@ -1001,7 +1004,7 @@ If the first bit of the trailing significand is `0`, we have a *quiet NaN* (`qNa
 
 A known technique, called *NaN-boxing*, is implemented by some interpreters like JavaScriptCore, to *pack other types such as pointers (48-bits) or integers (32-bit) inside the space left by NaNs in double precisions* (where the significand represents 52 bits). As a variable can be of any type, the interpreter uses only double precision floating-points to store everything. If it's a floating-point, it uses the usual IEEE 754 representation. If it's another type, it uses the available 51-bits for ``NaN``s to store any value (a pointer address, an integer, etc). If you want to know more about this hack, you can start looking at this https://anniecherkaev.com/the-secret-life-of-nan[great article].
 
-image::{{ '/posts_resources/2019-03-10-floating-point-numbers-demystified/nan-boxing.png' | prepend: site.baseurl }}[width=650, title="NaN-Boxing"]
+image::nan-boxing.png[width=650, title="NaN-Boxing"]
 ====
 
 

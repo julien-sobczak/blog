@@ -12,6 +12,9 @@ unofficialTags:
   - java
 ---
 
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2016-04-12-spring-integration-from-scratch/' | relative_url }}
+
 [CAUTION]
 .Note for the novice Spring Integration user
 This post assumes a basic comprehension of the Spring Integration Framework. If you just begin with Spring Integration, you could find the short book *Just Spring Integration* helpful to quickly grasp the core concepts, the different types of channel and their endpoints. Do not hesitate to refer to the official documentation if a term is new to you.
@@ -19,8 +22,6 @@ This post assumes a basic comprehension of the Spring Integration Framework. If 
 
 [CAUTION.license]
 https://github.com/spring-projects/spring-integration/tree/v4.2.5.RELEASE[Spring Integration] is published under the https://opensource.org/licenses/Apache-2.0[licence Apache, Version 2.0]. The code presented in this post was simplified (robustness, performance, validation, etc) and should not be used outside of this context. This post is based on the version 4.2.5.RELEASE of Spring Integration.
-
-
 
 
 == A basic example
@@ -489,7 +490,7 @@ public interface MessageChannel {
 
 What could surprise you is that this interface defines only methods for sending messages. Why? The answer depends on the channel type: `PollableChannel` or `SubscribableChannel` (must not be confused with `PublishSubscribeChannel`). Does the target endpoint should poll to received a message (active endpoint) or does the channel should send the message to the endpoint (passive endpoint). Let's draw a diagram to clarify the class hierarchy:
 
-image::{{ '/posts_resources/2016-04-12-spring-integration-from-scratch/channels.png' | prepend: site.baseurl}}[Channel implementations]
+image::channels.png[Channel implementations]
 
 For example, when using a `DirectChannel`, I should first subscribe to the channel to be notified automatically when a new message comes. When using a `QueueChannel`, I do not have to subscribe but I should poll regularly (for example, every second) to check if a new message is present. Given the polling interval, there is a latency between the sending and the receiving of a message.
 
@@ -915,11 +916,11 @@ We just have seen how to send and receive messages from a channel. In practice, 
 Unlike `Message` and `MessageChannel` interfaces, there isn't a `MessageEndpoint` interface. There is an `AbstractEndpoint` class but not all endpoints extend this class. Although there is a one-to-one mapping between the EIP patterns and the component names in Spring Integration, each endpoint does not necessarily have a corresponding class. Maybe a class diagram could help us make things clearer.
 
 
-image::{{ '/posts_resources/2016-04-12-spring-integration-from-scratch/consumers.png' | prepend: site.baseurl}}[Message Consumers]
+image::consumers.png[Message Consumers]
 
 Both consumer types delegates internally to an instance of `MessageHandler`:
 
-image::{{ '/posts_resources/2016-04-12-spring-integration-from-scratch/handlers.png' | prepend: site.baseurl}}[Message Handlers]
+image::handlers.png[Message Handlers]
 
 
 We will now describe each one of these classes.

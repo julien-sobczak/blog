@@ -13,6 +13,8 @@ recommendations:
   - 2018-11-16-why-i-read-books
 ---
 
+:page-liquid:
+
 [quote,Abraham Lincoln]
 ____
 My Best Friend is a person who will give me a book I have not read.

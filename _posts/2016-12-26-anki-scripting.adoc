@@ -15,8 +15,9 @@ recommendations:
   - 2018-12-01-10-rules-for-better-flashcards
   - 2018-12-30-should-i-create-a-flashcard
 ---
-:imagesdir: /posts_resources/2016-12-26-anki-scripting/
 
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2016-12-26-anki-scripting/' | relative_url }}
 
 == A look inside the Anki model
 

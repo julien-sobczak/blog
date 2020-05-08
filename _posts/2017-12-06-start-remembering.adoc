@@ -11,6 +11,8 @@ unofficialTags:
   - flashcards
 ---
 
+:page-liquid:
+
 [.lead]
 I love reading nonfiction books, particularly while commuting. I (try to) start a new book every week -- a new language, a new framework, a new insight. There is so much to learn. But the truth is, after more than 300 books read in the last decade, I forgot (almost) everything.
 

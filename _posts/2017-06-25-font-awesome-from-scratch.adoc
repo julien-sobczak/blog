@@ -11,7 +11,9 @@ tags:
 unofficialTags:
   - web
 ---
-:imagesdir: /posts_resources/2017-06-25-font-awesome/
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2017-06-25-font-awesome/' | relative_url }}
 
 
 [CAUTION.license]

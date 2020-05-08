@@ -11,6 +11,8 @@ recommendations:
   - 2019-01-16-job-title-competency
 ---
 
+:page-liquid:
+
 [quote,Henry Ford]
 ____
 Anyone who stops learning is old, whether at twenty or eighty. Anyone who keeps learning stays young.

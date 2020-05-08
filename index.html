@@ -50,7 +50,7 @@ author: Julien Sobczak
     <header id="page-top">
       <div class="container">
         <div id="logo">
-          <img src="{{ '/img/me-head.png' | prepend: site.baseurl }}">
+          <img src="{{ '/img/me-head.png' | relative_url }}">
         </div>
         <div class="intro-text">
             <span class="name">I'm lovin' I.T.</span><span class="author manuscript">by Julien Sobczak, Programmer</span>
@@ -74,8 +74,8 @@ author: Julien Sobczak
       <div class="container">
       <div class="categories">
         <div>
-          <a href="{{ '/categories/read.html' | prepend: site.baseurl }}"><img src="{{ '/img/imreadinit-icon.png' | prepend: site.baseurl }}" /></a>
-          <a href="{{ '/categories/read.html' | prepend: site.baseurl }}"><h3>I'm <span class="text-colored">read</span>in' I.T.</h3></a>
+          <a href="{{ '/categories/read.html' | relative_url }}"><img src="{{ '/img/imreadinit-icon.png' | relative_url }}" /></a>
+          <a href="{{ '/categories/read.html' | relative_url }}"><h3>I'm <span class="text-colored">read</span>in' I.T.</h3></a>
           <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
           <ul>
             <li>Latest books:</li>
@@ -85,7 +85,7 @@ author: Julien Sobczak
                 {% assign count = count | plus: 1 %}
                 {% if count < 4 %} <!-- show only 3 last posts -->
                 <li>
-                  <a href="{{ post.url | prepend: site.baseurl }}">
+                  <a href="{{ post.url | relative_url }}">
                     {% if post.shortTitle %}
                       {{ post.shortTitle }},
                     {% else %}
@@ -96,7 +96,7 @@ author: Julien Sobczak
                 {% endif %}
               {% endif %}
             {% endfor %}
-            <li>or see them <a href="{{ '/categories/read.html' | prepend: site.baseurl }}">all</a>!
+            <li>or see them <a href="{{ '/categories/read.html' | relative_url }}">all</a>!
           </ul>
         </div>
         <!-- TODO
@@ -105,8 +105,8 @@ author: Julien Sobczak
           Highlighted project: evolutio. Your companion to read faster, retain more, or train your brain.
         -->
         <div>
-          <a href="{{ '/categories/write.html' | prepend: site.baseurl }}"><img src="{{ '/img/imwritinit-icon.png' | prepend: site.baseurl }}" /></a>
-          <a href="{{ '/categories/write.html' | prepend: site.baseurl }}"><h3>I'm <span class="text-colored">writ</span>in' I.T.</h3></a>
+          <a href="{{ '/categories/write.html' | relative_url }}"><img src="{{ '/img/imwritinit-icon.png' | relative_url }}" /></a>
+          <a href="{{ '/categories/write.html' | relative_url }}"><h3>I'm <span class="text-colored">writ</span>in' I.T.</h3></a>
           <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
           <ul>
             <li>Read the latest posts about</li>
@@ -116,17 +116,17 @@ author: Julien Sobczak
                 {% assign count = count | plus: 1 %}
                 {% if count < 4 %} <!-- show only 3 last posts -->
                 <li>
-                  <a href="{{ post.url | prepend: site.baseurl }}">{{post.subject}},</a>
+                  <a href="{{ post.url | relative_url }}">{{post.subject}},</a>
                 </li>
                 {% endif %}
               {% endif %}
             {% endfor %}
-            <li>or see them <a href="{{ '/categories/write.html' | prepend: site.baseurl }}">all</a>!
+            <li>or see them <a href="{{ '/categories/write.html' | relative_url }}">all</a>!
           </ul>
         </div>
         <div>
-          <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}"><img src="{{ '/img/iminspectinit-icon.png' | prepend: site.baseurl }}" /></a>
-          <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}"><h3>I'm <span class="text-colored">inspect</span>in' I.T.</h3></a>
+          <a href="{{ '/categories/inspect.html' | relative_url }}"><img src="{{ '/img/iminspectinit-icon.png' | relative_url }}" /></a>
+          <a href="{{ '/categories/inspect.html' | relative_url }}"><h3>I'm <span class="text-colored">inspect</span>in' I.T.</h3></a>
           <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
           <ul>
             <li>Discover the inner working of famous OSS projects or programming languages:</li>
@@ -136,16 +136,16 @@ author: Julien Sobczak
                 {% assign count = count | plus: 1 %}
                 {% if count < 4 %} <!-- show only 3 last posts -->
                 <li>
-                  <a href="{{ post.url | prepend: site.baseurl }}">{{ post.subject }},</a>
+                  <a href="{{ post.url | relative_url }}">{{ post.subject }},</a>
                 </li>
                 {% endif %}
               {% endif %}
             {% endfor %}
-            <li>or see them <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}">all</a>!
+            <li>or see them <a href="{{ '/categories/inspect.html' | relative_url }}">all</a>!
           </ul>
         </div>
       </div>
-      <a href="{{ '/categories/all.html' | prepend: site.baseurl }}" class="btn btn-lg btn-outline btn-outline-colored">
+      <a href="{{ '/categories/all.html' | relative_url }}" class="btn btn-lg btn-outline btn-outline-colored">
           <i class="fa fa-list"></i> View All Posts
       </a>
     </div>

@@ -30,7 +30,7 @@
           <button type="button" class="navbar-toggle">
               Menu <i class="fa fa-bars"></i>
           </button>
-          <a class="navbar-brand" href="{{ '/index.html' | prepend: site.baseurl }}">I'm lovin' I.T.</a>
+          <a class="navbar-brand" href="{{ '/index.html' | relative_url }}">I'm lovin' I.T.</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -41,21 +41,21 @@
               {% else %}
               <li>
               {% endif %}
-                  <a href="{{ '/categories/read.html' | prepend: site.baseurl }}">I'm readin' I.T.</a>
+                  <a href="{{ '/categories/read.html' | relative_url }}">I'm readin' I.T.</a>
               </li>
               {% if page.category == 'write' %}
               <li class="active">
               {% else %}
               <li>
               {% endif %}
-                  <a href="{{ '/categories/write.html' | prepend: site.baseurl }}">I'm writin' I.T.</a>
+                  <a href="{{ '/categories/write.html' | relative_url }}">I'm writin' I.T.</a>
               </li>
               {% if page.category == 'inspect' %}
               <li class="active">
               {% else %}
               <li>
               {% endif %}
-                  <a href="{{ '/categories/inspect.html' | prepend: site.baseurl }}">I'm inspectin' I.T.</a>
+                  <a href="{{ '/categories/inspect.html' | relative_url }}">I'm inspectin' I.T.</a>
               </li>
               <li class="page-scroll">
                   <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>

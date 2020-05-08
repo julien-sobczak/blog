@@ -10,7 +10,9 @@ toc: true
 tags:
   - learning
 ---
-:imagesdir: /posts_resources/2019-08-29-the-power-of-metaphors-in-learning/
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2019-08-29-the-power-of-metaphors-in-learning/' | relative_url }}
 
 [quote]
 ____

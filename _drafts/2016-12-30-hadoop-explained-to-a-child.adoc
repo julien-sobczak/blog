@@ -10,7 +10,9 @@ model: problem-solution
 tags:
 - data
 ---
-:imagesdir: /posts_resources/2016-12-30-hadoop-explained-to-a-child/
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2016-12-30-hadoop-explained-to-a-child/' | relative_url }}
 
 [quote, Albert Einstein]
 ____

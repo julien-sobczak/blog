@@ -14,6 +14,8 @@ recommendations:
   - 2018-12-30-should-i-create-a-flashcard
 ---
 
+:page-liquid:
+
 ++++
 <style>
 

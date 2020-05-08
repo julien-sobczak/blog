@@ -13,7 +13,7 @@
     {% endif %}
     <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
     <nav>
-      <a href="{{ post.url | prepend: site.baseurl }}"><span data-hover="Read">Read</span></a>
+      <a href="{{ post.url | relative_url }}"><span data-hover="Read">Read</span></a>
     </nav>
   </div>
 

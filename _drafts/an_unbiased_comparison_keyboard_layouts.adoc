@@ -9,6 +9,9 @@ tags:
   - productivity
 ---
 
+:page-liquid:
+
+[.lead]
 Qwerty, Colemak, Dvorak: which is the best layout if we want to minimise the typing effort (i.e. the covered distance of our hands). As Colemak and Dvorak layouts are specifically designed to be more optimal (place most frequent keys on the home row), the question will be by how much? To answer this question, we will design an algorithm the estimate the distance from any text text (literature, source code, etc.).
 
 

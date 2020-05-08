@@ -11,6 +11,8 @@ tags:
   - productivity
 ---
 
+:page-liquid:
+
 ==== Google Big Query "à la rescousse"
 
 GitHub export its content in BigQuery. All repository contents (more than 3To) is available and open to analyzes: https://medium.com/@hoffa/400-000-github-repositories-1-billion-files-14-terabytes-of-code-spaces-or-tabs-7cfe0b5dd7fd[Spaces or Tabs], https://cloud.google.com/bigquery/public-data/github[Commonly used Go packages], or even https://medium.com/@hoffa/ed0e3011732c[run JHint on all JavaScript files]. The alleviate the 1To query limit when using the Free Tier on Google Cloud Platform, GitHub export the 400 000 top repositories (having at least 2 stars in the last months to be sure to exclude inactive repositories) in another tables:

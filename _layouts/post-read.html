@@ -64,7 +64,7 @@ layout: post
 
     {% if page.illustrationUrl %}
     <figure class="illustration">
-      <img src="{{ page.illustrationUrl | prepend: site.baseurl }}" class="blur" />
+      <img src="{{ page.illustrationUrl | relative_url }}" class="blur" />
       <figcaption>{{page.illustrationLegend}}</figcaption>
     </figure>
     {% endif %}
