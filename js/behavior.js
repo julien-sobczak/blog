@@ -103,26 +103,6 @@ if (postList) {
       }
     );
 
-
-    // Spongbob easteregg
-    $(document).easteregg({
-      callback: function () {
-        // Add a CSS class to trigger animations
-        $('.easter-egg-party').addClass('active').addClass('go');
-
-        var goBackToBlog = function() {
-          $('.easter-egg-party').removeClass('active').removeClass('go');
-          $(document).unbind('keydown', goBackToBlog);
-          $(document).unbind('click', goBackToBlog);
-        };
-
-        // Remove everything when any key is pressed
-        $(document).on('keydown', goBackToBlog);
-        $(document).on('click', goBackToBlog);
-      }
-    });
-
-
     // Make Aside sticky on blog post
     var stickySidebar = $('.sticky');
     var stickyContainer = $('.sticky-container');
@@ -219,3 +199,41 @@ if (postList) {
     }
 
 })(jQuery); // End of use strict
+
+
+
+// Easter-egg
+window.addEventListener('load', (event) => {
+  // The hidden element to reveal...
+  const easterEgg = document.getElementById('easter-egg');
+  // ...when the following sequence is completed:
+  const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  // Current position in the above sequence
+  let current = 0;
+
+  // Listen for keypress
+  document.addEventListener('keydown', (event) => {
+    // If the key isn't in the pattern, or isn't the current key in the pattern, reset
+    if (konamiCode.indexOf(event.key) < 0 || event.key !== konamiCode[current]) {
+      current = 0;
+      return;
+    }
+
+    // Update how much of the pattern is complete
+    current++;
+
+    // Complete
+    if (konamiCode.length === current) {
+      current = 0;
+      easterEgg.classList.add('active');
+    }
+
+  }, false);
+
+  // Mask when the user click on the revealed element
+  easterEgg.addEventListener('click', () => {
+    easterEgg.classList.remove('active');
+  });
+});
+
+

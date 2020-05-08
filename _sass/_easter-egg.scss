@@ -1,3 +1,5 @@
+// CSS-valid file
+
 /*
  * Our easter egg is composed of three elements:
  * - The transparent water covers all the screen
@@ -5,9 +7,12 @@
  * - The yellow star show his head when everything is in place
  */
 
-/* Hidden and position the backgrounds */
-#water, #easter-egg {
-  visibility: hidden;
+#easter-egg {
+  visibility: hidden; /* Only visible when user presses the Konani code */
+}
+
+/* Position the elements globally */
+#water, #bikini-bottom {
   position: fixed;
   top: 0;
   left: 0;
@@ -20,7 +25,7 @@
   background: url('../img/easter-egg/water-texture.jpg') no-repeat center bottom / cover rgba(0, 0, 0, 0);
   z-index: 999;
 }
-#easter-egg {
+#bikini-bottom {
   background-image: url('../img/easter-egg/bikini-bottom.png');
   background-repeat: no-repeat;
   background-size: cover;
@@ -38,23 +43,23 @@
 /* The Konami was entered! Welcome to Bikini Bottom! */
 
 /* Display water progressively */
-#water.active {
+#easter-egg.active #water {
   visibility: visible;
   opacity: 0.5;
   transition: visibility 1s;
 }
 /* Display the landscape progressively */
-#easter-egg.active {
+#easter-egg.active #bikini-bottom {
   visibility: visible;
   transition: opacity 1s;
 }
 /* Animate the landscape to come from the bottom */
-#easter-egg.active {
+#easter-egg.active #bikini-bottom {
   background-position: center bottom;
   transition: background-position 1s;
 }
 /* Animate Spongebob to come from the top */
-#spongebob.active {
+#easter-egg.active #spongebob {
   top: 0;
   transition: top 1s;
   transition-delay: 1s;
