@@ -1,9 +1,6 @@
 = Julien Sobczak's Blog
 
-image:https://travis-ci.org/julien-sobczak/blog.svg?branch=master["Build Status", link="https://travis-ci.org/julien-sobczak/blog"]
-
 :toc:
-
 
 == Installation
 

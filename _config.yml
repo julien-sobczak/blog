@@ -11,7 +11,7 @@ gems:
 twitter_username: julien_sobczak
 
 # Not required when using a custom domain name
-baseurl: /blog-copy # TODO comment after reenabling the CNAME
+# baseurl: /
 
 asciidoctor:
   attributes:
