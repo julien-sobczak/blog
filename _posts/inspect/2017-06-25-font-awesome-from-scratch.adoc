@@ -22,7 +22,7 @@ https://github.com/FortAwesome/Font-Awesome[Font Awesome] is published under the
 
 == A basic example
 
-http://fontawesome.io/[Font Awesome], the iconic font and CSS toolkit, gives us icons that can be easily customized — size, color, drop shadow — with the sole power of CSS. No JavaScript is required and icons scale smoothly on any devices. Here is a small HTML document that uses the main features to display of list of transportation icons:
+https://fontawesome.io/[Font Awesome], the iconic font and CSS toolkit, gives us icons that can be easily customized — size, color, drop shadow — with the sole power of CSS. No JavaScript is required and icons scale smoothly on any devices. Here is a small HTML document that uses the main features to display of list of transportation icons:
 
 [source,html]
 ----

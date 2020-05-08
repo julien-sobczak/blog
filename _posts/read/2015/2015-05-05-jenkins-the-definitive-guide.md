@@ -11,7 +11,7 @@ note: 12
 tags:
   - devops
   - tools
-image: 'http://d.gr-assets.com/books/1328761496l/11709965.jpg'
+image: 'https://d.gr-assets.com/books/1328761496l/11709965.jpg'
 metadata:
   authors: John Ferguson Smart
   publisher: O'Reilly
@@ -20,8 +20,8 @@ metadata:
   isbn: '1449305350'
   numberOfPages: 406
 links:
-  goodreads: 'http://www.goodreads.com/book/show/11709965-jenkins'
-  amazon: 'http://www.amazon.com/Jenkins-Definitive-John-Ferguson-Smart/dp/1449305350/'
+  goodreads: 'https://www.goodreads.com/book/show/11709965-jenkins'
+  amazon: 'https://www.amazon.com/Jenkins-Definitive-John-Ferguson-Smart/dp/1449305350/'
 ---
 
 *Jenkins: The Definitive Guide* is the perfect introduction to Jenkins and the subject of continuous integration. The setup and basic configuration of the server are perfectly covered and all the most popular plugins are presented (Jenkins is so extensible that it uses plugins to do almost anything).

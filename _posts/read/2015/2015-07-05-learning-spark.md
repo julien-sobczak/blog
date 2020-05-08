@@ -13,7 +13,7 @@ tags:
   - frameworks
 unofficialTags:
   - big-data
-image: 'http://d.gr-assets.com/books/1380034125l/17318146.jpg'
+image: 'https://d.gr-assets.com/books/1380034125l/17318146.jpg'
 metadata:
   authors: Mark Hamstra, Matei Zaharia
   publisher: O'Reilly
@@ -22,8 +22,8 @@ metadata:
   isbn: '1449358624'
   numberOfPages: 300
 links:
-  goodreads: 'http://www.goodreads.com/book/show/17318146-learning-spark'
-  amazon: 'http://www.amazon.com/Learning-Spark-Lightning-Fast-Data-Analysis/dp/1449358624/'
+  goodreads: 'https://www.goodreads.com/book/show/17318146-learning-spark'
+  amazon: 'https://www.amazon.com/Learning-Spark-Lightning-Fast-Data-Analysis/dp/1449358624/'
 ---
 
 Written by core developers, *Learning Spark* is targeted to data scientists and developers, trying to tackle big datasets in an easy way. The book succeeds in presenting the Spark capabilities. After a well-written introduction to the subject and the indispensable chapter to install Spark, the authors explains the Spark’s core abstraction for working with data, the resilient distributed dataset (RDD).

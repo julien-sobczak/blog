@@ -12,7 +12,7 @@ tags:
   - craftsmanship
 unofficialTags:
   - testing
-image: 'http://d.gr-assets.com/books/1359031267l/17282399.jpg'
+image: 'https://d.gr-assets.com/books/1359031267l/17282399.jpg'
 metadata:
   authors: Lasse Koskela
   publisher: Manning
@@ -20,8 +20,8 @@ metadata:
   bookFormat: 'Paperback'
   numberOfPages: 248
 links:
-  goodreads: 'http://www.goodreads.com/book/show/17282399-effective-unit-testing'
-  amazon: 'http://www.amazon.com/Effective-Unit-Testing-guide-developers/dp/1935182579/'
+  goodreads: 'https://www.goodreads.com/book/show/17282399-effective-unit-testing'
+  amazon: 'https://www.amazon.com/Effective-Unit-Testing-guide-developers/dp/1935182579/'
 ---
 
 You begin to embrace unit testing but you feel your tests do not deliver all its promises? With *Effective Unit Testing*, you will learn how to write effective unit tests by learning to detect bad smells.

@@ -106,7 +106,7 @@ def _defaultBase(self):
                 return os.path.join(loc, "Anki")
 ----
 
-To tell Anki to use a different location, please see: http://ankisrs.net/docs/manual.html#startupopts
+To tell Anki to use a different location, please see: https://ankisrs.net/docs/manual.html#startupopts
 This could be very useful when you experiment with Anki to avoid corrupting our data!
 ====
 
@@ -173,7 +173,7 @@ We will start from this description and complete where information is missing.
 .How to inspect the Anki database?
 ====
 
-- Download the SQLite DB Browser: http://sqlitebrowser.org/
+- Download the SQLite DB Browser: https://sqlitebrowser.org/
 - Unzip the .apkg file that has been generated
 - Open the collection.anki2 with SQLiteBrowser (launch the executable on Windows) (be sure to consider all file extensions)
 - You should see dialog like this:
@@ -806,7 +806,7 @@ Then, use the generated dumps to compare the table data and determine what what 
 ====
 
 
-To force Anki to use a fresh installation, we will override the folder location to point to an empty directory (see http://ankisrs.net/docs/manual.html#startupopts for more information about the option `-b`)
+To force Anki to use a fresh installation, we will override the folder location to point to an empty directory (see https://ankisrs.net/docs/manual.html#startupopts for more information about the option `-b`)
 
 On Windows, just click right on the icon and update the target field to add the option. Ex:
 `"C:\Program Files (x86)\Anki\anki.exe" -b "D:\AnkiTmp"`
@@ -1065,7 +1065,7 @@ Anki is an open-source solution, published on GitHub. The code source is accessi
 - Insert data directly in the SQLite database used by Anki
 - Write a Python program to use the internal API of Anki
 
-This post will concentrate on the second option. The first option could be implemented based on the information published in the first part but is not the optimal solution (high coupling, necessity to specify all fields when most of them are useless for us). This solution was already partially http://decks.wikia.com/wiki/Anki_APKG_format_documentation[documented online]. The Python solution is more powerful. You could use a Python module to read a PDF or an Epub and generate the associated flashcards. You could use the Google Images API to retrieve funny pictures to integrate in our flashcards. The only limit is our imagination.
+This post will concentrate on the second option. The first option could be implemented based on the information published in the first part but is not the optimal solution (high coupling, necessity to specify all fields when most of them are useless for us). This solution was already partially https://decks.wikia.com/wiki/Anki_APKG_format_documentation[documented online]. The Python solution is more powerful. You could use a Python module to read a PDF or an Epub and generate the associated flashcards. You could use the Google Images API to retrieve funny pictures to integrate in our flashcards. The only limit is our imagination.
 
 
 === Python Scripting
@@ -1843,7 +1843,7 @@ In the manifest section, we can see all web resources included in this epub. Thi
 
 image::epub-preview.png[]
 
-If you want to know more about the epub format, O'Reilly devoted whole http://shop.oreilly.com/product/0636920024897.do[books] on the subject.
+If you want to know more about the epub format, O'Reilly devoted whole https://shop.oreilly.com/product/0636920024897.do[books] on the subject.
 
 Let's see how the HTML looks like. The `Page_1.html` page contains only a picture with the cover of the book. We could ignore it. The next page `Page_2.html` is an example of page we need to parse to extract the English expressions. Here is an extract of this file:
 
@@ -1905,7 +1905,6 @@ Let's see how the HTML looks like. The `Page_1.html` page contains only a pictur
         est appelé SRS (Spaced Repetition System).
       </span>
     </p>
-    <!-- ... --->
   </div>
 </div>
 </body>
@@ -2701,7 +2700,7 @@ This file could quickly be parsed (10s on my local machine). The next step is to
 
 ==== Parsing the x-wiki text to generate a JSON file
 
-The `<text>` tag contains a x-wiki document whose main syntax is defined http://platform.xwiki.org/xwiki/bin/view/Main/XWikiSyntax[here]. Wikipedia add a lot of semantic above this syntax through the use of numerous labels. I didn't find a document that describes the Wiktionary syntax, so we need to revert to reverse engineering.
+The `<text>` tag contains a x-wiki document whose main syntax is defined https://platform.xwiki.org/xwiki/bin/view/Main/XWikiSyntax[here]. Wikipedia add a lot of semantic above this syntax through the use of numerous labels. I didn't find a document that describes the Wiktionary syntax, so we need to revert to reverse engineering.
 
 Here is an shortened example of a x-wiki document (about the word `keyboard`):
 
@@ -3503,7 +3502,7 @@ And the back template:
 ----
 {% endraw %}
 
-Check the http://ankisrs.net/docs/manual.html#conditional-replacement[official Anki manual] to know more about the syntax used in these templates.
+Check the https://ankisrs.net/docs/manual.html#conditional-replacement[official Anki manual] to know more about the syntax used in these templates.
 
 
 ===== What is it?
@@ -3613,7 +3612,7 @@ And the back template:
 
 ===== Complete this sentence...
 
-The `Card 4`, `Card 5`, and `Card 6` display a sentence with a missing word and the user should find it (the same concept as http://ankisrs.net/docs/manual.html#cloze[Cloze Deletion] in Anki):
+The `Card 4`, `Card 5`, and `Card 6` display a sentence with a missing word and the user should find it (the same concept as https://ankisrs.net/docs/manual.html#cloze[Cloze Deletion] in Anki):
 
 image::vocabulary-note-card4.png[]
 

@@ -13,7 +13,7 @@ tags:
   - frameworks
 unofficialTags:
   - java
-image: 'http://d.gr-assets.com/books/1419183325l/23333089.jpg'
+image: 'https://d.gr-assets.com/books/1419183325l/23333089.jpg'
 metadata:
   authors: Jeff Langr, Andy Hunt, Dave Thomas
   publisher: 'Pragmatic Bookshelf'
@@ -22,8 +22,8 @@ metadata:
   isbn: '1941222595'
   numberOfPages: 200
 links:
-  goodreads: 'http://www.goodreads.com/book/show/23333089-pragmatic-unit-testing-in-java-8-with-junit'
-  amazon: 'http://www.amazon.com/Pragmatic-Unit-Testing-Java-JUnit/dp/1941222595/'
+  goodreads: 'https://www.goodreads.com/book/show/23333089-pragmatic-unit-testing-in-java-8-with-junit'
+  amazon: 'https://www.amazon.com/Pragmatic-Unit-Testing-Java-JUnit/dp/1941222595/'
 ---
 
 Should we still introduce Unit Tests twelve years after the publication of *Pragmatic Unit Testing in Java with JUnit* ?

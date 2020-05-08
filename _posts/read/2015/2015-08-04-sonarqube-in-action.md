@@ -11,7 +11,7 @@ note: 17
 tags:
   - tools
   - craftsmanship
-image: 'http://d.gr-assets.com/books/1415174686l/23502608.jpg'
+image: 'https://d.gr-assets.com/books/1415174686l/23502608.jpg'
 metadata:
   authors: Patroklos P. Papapetrou
   publisher: Manning Publications
@@ -19,8 +19,8 @@ metadata:
   bookFormat: 'Paperback'
   numberOfPages: 392
 links:
-  goodreads: 'http://www.goodreads.com/book/show/16028082-sonar-in-action'
-  amazon: 'http://www.amazon.com/SonarQube-Action-G-Ann-Campbell/dp/1617290955/'
+  goodreads: 'https://www.goodreads.com/book/show/16028082-sonar-in-action'
+  amazon: 'https://www.amazon.com/SonarQube-Action-G-Ann-Campbell/dp/1617290955/'
 ---
 
 Could a book about a graphical tool like SonarQube be enjoyable to read? The answer is yes. *SonarQube in Action* is not a succession of screenshots explaining what each menu entry does but a book about code quality: why the quality is not an option but an essential factor for a project be successful, what are the metrics to collect. The book is organized around the Seven Axes of Quality, which are: potential bugs, coding rules, tests, duplications, comments, architecture and design, and complexity. But of course, *SonarQube in Action* is also about how SonarQube helps us to track these metrics and watch their evolutions

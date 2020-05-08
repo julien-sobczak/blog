@@ -12,7 +12,7 @@ tags:
   - frameworks
 unofficialTags:
   - java
-image: 'http://d.gr-assets.com/books/1442410340l/332070.jpg'
+image: 'https://d.gr-assets.com/books/1442410340l/332070.jpg'
 metadata:
   authors: Clinton Begin, Brandon Goodin, Larry Meadors
   publisher: 'Manning Publications'
@@ -21,8 +21,8 @@ metadata:
   isbn: '1932394826'
   numberOfPages: 350
 links:
-  goodreads: 'http://www.goodreads.com/book/show/332070.iBatis_in_Action'
-  amazon: 'http://www.amazon.com/iBatis-Action-Clinton-Begin/dp/1932394826/'
+  goodreads: 'https://www.goodreads.com/book/show/332070.iBatis_in_Action'
+  amazon: 'https://www.amazon.com/iBatis-Action-Clinton-Begin/dp/1932394826/'
 ---
 
 Why read a book about a retired project today ? Because iBatis shares a lot with MyBatis, its successor : same developers and same initial codebase. This explains why no reference book was published about this new framework. So, *iBatis in Action*, written by the creators of the two frameworks, is probably the best resource if you want to have a solid knowledge about it.

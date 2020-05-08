@@ -12,7 +12,7 @@ tags:
   - frameworks
 unofficialTags:
   - java
-image: 'http://d.gr-assets.com/books/1361784282l/9327132.jpg'
+image: 'https://d.gr-assets.com/books/1361784282l/9327132.jpg'
 metadata:
   authors: Mark Fisher, Jonas Partner, Marius Bogoevici, Iwein Fuld
   publisher: 'Manning Publications'
@@ -21,8 +21,8 @@ metadata:
   isbn: '1935182439'
   numberOfPages: 368
 links:
-  goodreads: 'http://www.goodreads.com/book/show/9327132-spring-integration-in-action'
-  amazon: 'http://www.amazon.com/Spring-Integration-Action-Mark-Fisher/dp/1935182439/'
+  goodreads: 'https://www.goodreads.com/book/show/9327132-spring-integration-in-action'
+  amazon: 'https://www.amazon.com/Spring-Integration-Action-Mark-Fisher/dp/1935182439/'
 ---
 
 You overcome the book *Enterprise Integration Patterns* (EIP)? Great! Now, you need a framework to help you implementing the patterns. Enter Spring Integration. Compared to its most serious competitor, Apache Camel, Spring Integration respects perfectly the EIP book. The notation and naming are preserved and you do not need to learn anything else, except Spring Integration.

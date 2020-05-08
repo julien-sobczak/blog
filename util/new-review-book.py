@@ -167,7 +167,7 @@ class GoodreadsMetadataExtractor:
     def _calculate_url_amazon(self, location):
         """
         Remove unnecessary URL parameters. Ex:
-        "http://www.amazon.com/gp/product/0321125215/ref=x_gr_w_bb?ie=UTF8&tag=httpwwwgoodco-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0321125215&SubscriptionId=1MGPYB6YW3HWK55XCGG2"
+        "https://www.amazon.com/gp/product/0321125215/ref=x_gr_w_bb?ie=UTF8&tag=httpwwwgoodco-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0321125215&SubscriptionId=1MGPYB6YW3HWK55XCGG2"
         """
         try:
           indexOfRef = location.index("ref=")

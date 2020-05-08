@@ -13,7 +13,7 @@ tags:
   - computer-science
 unofficialTags:
   - java
-image: 'http://d.gr-assets.com/books/1349044077l/127932.jpg'
+image: 'https://d.gr-assets.com/books/1349044077l/127932.jpg'
 metadata:
   authors: Brian Goetz, Tim Peierls, Joshua Bloch, Joseph Bowbeer, David Holmes, Doug Lea
   publisher: 'Addison-Wesley Professional'
@@ -22,8 +22,8 @@ metadata:
   isbn: '0321349601'
   numberOfPages: 403
 links:
-  goodreads: 'http://www.goodreads.com/book/show/127932.Java_Concurrency_in_Practice'
-  amazon: 'http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/'
+  goodreads: 'https://www.goodreads.com/book/show/127932.Java_Concurrency_in_Practice'
+  amazon: 'https://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601/'
 ---
 
 Does anyone ever try to write concurrent code and looks their code does weird things in production, at the worst possible time, under heavy load? With *Java Concurrency in Practice*, this time is over, at least for us, the fortunate readers of this exceptional book.

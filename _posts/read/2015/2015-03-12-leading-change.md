@@ -20,8 +20,8 @@ metadata:
   numberOfPages: 208
   publisher: Harvard Business Review Press
 links:
-  amazon: "http://www.amazon.com/gp/product/0875847471/"
-  goodreads: "http://www.goodreads.com/book/show/51370.Leading_Change"
+  amazon: "https://www.amazon.com/gp/product/0875847471/"
+  goodreads: "https://www.goodreads.com/book/show/51370.Leading_Change"
 ---
 
 

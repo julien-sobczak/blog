@@ -26,7 +26,7 @@ https://github.com/spring-projects/spring-integration/tree/v4.2.5.RELEASE[Spring
 
 == A basic example
 
-To illustrate the inner working of Spring Integration, we will use the following basic example. This example is inspired from the official http://pivotal.io/academy[Spring Enterprise Training] and highlights common misunderstandings (message immutability, the Proxy Gateway, the different types of channel, the right use of gateway and service activator to keep our code free from dependencies on the Spring Integration API, ...)
+To illustrate the inner working of Spring Integration, we will use the following basic example. This example is inspired from the official https://pivotal.io/academy[Spring Enterprise Training] and highlights common misunderstandings (message immutability, the Proxy Gateway, the different types of channel, the right use of gateway and service activator to keep our code free from dependencies on the Spring Integration API, ...)
 
 [source,xml]
 ----
@@ -1038,7 +1038,7 @@ This class demonstrates common multithreading idioms, not really required for ou
 The *volatile* keyword tells the JVM that the variable will be updated by multiple threads and guarantees that reads and writes would be made directly to main memory, instead of registers or local processor cache. Since Java 5, *volatile* reads and writes establish a happens-before relationship, much like acquiring and releasing a mutex (like a *synchronized* block), a guarantee for *double-checked locking* pattern to work in Java (more on this subject later). *volatile* variables are typically used for indicating that an important lifecycle
 event (such as initialization or shutdown) has occurred (as in our example).
 
-Check the http://www.ibm.com/developerworks/library/j-jtp03304/[excellent article] of Brian Goetz to know more about the *volatile* keyword.
+Check the https://www.ibm.com/developerworks/library/j-jtp03304/[excellent article] of Brian Goetz to know more about the *volatile* keyword.
 
 *volatile* variables are great for initializing flags but does not prevent multiple threads from executing the `start()` method simultaneously, we have to resort on locking. In Java, we could declare our method as `synchronized` to declare an intrinsic lock or use an explicit lock, represented by the `java.util.concurrent.Lock` interface. `ReentrantLock` is the most widely used implementation and acts similarly as the `synchronized` keyword. In the previous code, we could have use `synchronized` methods instead of explicit locking as the whole method is guarded by the lock. In practice, not all the method should be protected and using an explicit lock is often a good performance optimization.
 ====

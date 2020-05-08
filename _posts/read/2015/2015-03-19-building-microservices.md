@@ -11,7 +11,7 @@ note: 17
 tags:
   - architecture
   - devops
-image: 'http://d.gr-assets.com/books/1403186979l/22512931.jpg'
+image: 'https://d.gr-assets.com/books/1403186979l/22512931.jpg'
 metadata:
   authors: 'Sam Newman'
   datePublished: '2014-12-25'
@@ -20,8 +20,8 @@ metadata:
   numberOfPages: 250
   publisher: O'Reilly Media
 links:
-  amazon: "http://www.amazon.com/gp/product/1491950358/"
-  goodreads: "http://www.goodreads.com/book/show/22512931-building-microservices"
+  amazon: "https://www.amazon.com/gp/product/1491950358/"
+  goodreads: "https://www.goodreads.com/book/show/22512931-building-microservices"
 ---
 
 

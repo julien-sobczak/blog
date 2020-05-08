@@ -11,7 +11,7 @@ tags:
   - frameworks
 unofficialTags:
   - java
-image: 'http://d.gr-assets.com/books/1347812155l/11493933.jpg'
+image: 'https://d.gr-assets.com/books/1347812155l/11493933.jpg'
 read_authors: Arnaud Cogoluegnes, Thierry Templier, Gary Gregory, Olivier Bazoud
 read_note: 16
 read_publisher: 'Manning Publications'
@@ -19,8 +19,8 @@ read_date_published: '2011-10-07'
 read_book_format: 'Paperback'
 read_isbn: '1935182951'
 read_number_of_pages: 504
-link_goodreads: 'http://www.goodreads.com/book/show/11493933-spring-batch-in-action'
-link_amazon: 'http://www.amazon.com/Spring-Batch-Action-Arnaud-Cogoluegnes/dp/1935182951/'
+link_goodreads: 'https://www.goodreads.com/book/show/11493933-spring-batch-in-action'
+link_amazon: 'https://www.amazon.com/Spring-Batch-Action-Arnaud-Cogoluegnes/dp/1935182951/'
 ---
 
 The perfect example of what a technical book should be: begins with a good introduction to the subject, do not hesitate to overuse clear explanations and real-world examples, included all best practices, do a thorough coverage of all topics even if it takes more than 400 pages and provides the source code, with a lot of unit tests, perfectly organized in a multi modules Maven project.
