@@ -1,4 +1,4 @@
-name: Publish
+name: Publish with drafts
 
 on:
   push:
@@ -19,10 +19,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
       - name: Build & Deploy to GitHub Pages
-        uses: julien-sobczak/jekyll4-deploy-gh-pages@master
+        uses: `julien-sobczak/jekyll4-deploy-gh-pages@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-          GITHUB_TARGET_BRANCH: "gh-pages"
-          JEKYLL_BUILD_EXTRA_ARGS: ""
+          GITHUB_TARGET_BRANCH: "gh-pages-drafts"
+          JEKYLL_BUILD_EXTRA_ARGS: "--drafts --unpublished --future"
