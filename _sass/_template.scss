@@ -822,7 +822,8 @@ footer img.footer-me {
 
 // Split main content into 3 columns including 2 sticky ones
 #page-post article {
-  width: 800px;
+  width: 100%;
+  margin: 0 auto;
 
   .content {
     li {
@@ -830,130 +831,10 @@ footer img.footer-me {
     }
   }
 }
-$aside-width: 375px;
-#page-post aside {
-  width: $aside-width;
-  padding: $default-line-height 10px;
-  text-align: center;
-  transition: opacity 300ms linear;
-  display: none; // RWD
-}
-#page-post aside.optional { // reveal on scroll (see JavaScript)
-  opacity: 0;
-}
-#page-post .aside-left {
-  float: left;
-}
-#page-post .aside-right {
-  float: right;
-}
 
-@media (max-width: 800px) {
+@media (min-width: 800px) {
   #page-post article {
-    width: 100%;
-  }
-}
-@media (max-width: 1200px) {
-  #page-post article {
-    margin: 0 auto;
-  }
-}
-@media (min-width: 1200px) {
-  #page-post .aside-right {
-    display: block;
-  }
-}
-@media (min-width: 1600px) {
-  #page-post article {
-    margin: 0 auto;
-  }
-  #page-post .aside-left {
-    display: block;
-  }
-}
-
-
-#page-post .sticky {
-  position: relative;
-  top: 0;
-
-  > span {
-    display: block;
-  }
-}
-
-#page-post aside span {
-  display: inline-block;
-  color: silver;
-  margin-bottom: $default-line-height;
-  font-size: 22px;
-}
-
-.aside-links ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-.aside-links ul a {
-  color: silver;
-  font-size: 1.5em;
-}
-.aside-links ul li {
-  margin: 0 0 $default-line-height;
-}
-.aside-links ul a:hover {
-  color: $color-base;
-  text-decoration: none;
-  transition: color 300ms linear;
-}
-.aside-picture img {
-  max-width: 80%;
-  max-height: 300px;
-  margin: 0 auto;
-}
-
-#page-post .aside-menu {
-  width: 350px;
-  font-size: 16px;
-  text-align: left;
-  padding: 20px;
-  padding-top: 90px; // top menu is fixed and hide the menu otherwise
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-
-    ul {
-      padding-left: 20px;
-    }
-
-    li {
-      border-left: 5px solid white;
-      padding-left: 20px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-
-      a {
-        color: #999 !important; // everything is link...
-      }
-    }
-    li.tocify-focus {
-      border-left: 5px solid $color-base;
-
-      a {
-        color: black !important; // everything is link...
-      }
-    }
-  }
-
-  .tocify-extend-page {
-    height: 0! important; // TODO find bug in JS tocify
-  }
-}
-
-@media (max-width: 1200px) {
-  .tocify-extend-page {
-    display: none;
+    max-width: 800px;
   }
 }
 
@@ -980,7 +861,13 @@ $aside-width: 375px;
   }
 }
 
-
+img.cover {
+  display: block;
+  border: 20px solid white;
+  box-shadow: 0px 0px 10px rgba(0,0,0,.2);
+  margin: 0 auto;
+  width: 40%;
+}
 
 .author-bio {
   position: relative;
