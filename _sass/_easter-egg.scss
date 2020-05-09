@@ -8,29 +8,28 @@
  */
 
 #easter-egg {
-  visibility: hidden; /* Only visible when user presses the Konani code */
+  position: fixed;
 }
 
 /* Position the elements globally */
 #water, #bikini-bottom {
+  visibility: hidden; /* Only visible when user presses the Konani code */
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 /* Configure the images for the backgrounds */
 #water {
   background: url('../img/easter-egg/water-texture.jpg') no-repeat center bottom / cover rgba(0, 0, 0, 0);
-  z-index: 999;
 }
 #bikini-bottom {
   background-image: url('../img/easter-egg/bikini-bottom.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 3000px;
-  z-index: 1000;
 }
 
 /* We place Bob outside the screen at the top */
@@ -41,12 +40,15 @@
 }
 
 /* The Konami was entered! Welcome to Bikini Bottom! */
+#easter-egg.active {
+  z-index: 999;
+}
 
 /* Display water progressively */
 #easter-egg.active #water {
-  visibility: visible;
   opacity: 0.5;
-  transition: visibility 1s;
+  visibility: visible;
+  transition: opacity 1s;
 }
 /* Display the landscape progressively */
 #easter-egg.active #bikini-bottom {

@@ -14,17 +14,6 @@ if (postList) {
 
     var $window = $(window);
 
-    // Highlight the top nav as scrolling occurs
-    $('body').scrollspy({
-        target: '.navbar-default',
-        offset: 51
-    });
-
-    // Highlight the top nav as scrolling occurs
-    $('.body').scrollspy({
-        target: '.navbar-default',
-    });
-
     // Closes the Responsive Menu on Menu Item Click
     $('.navbar-collapse ul li a').click(function(){
         $('.navbar-toggle:visible').click();
@@ -160,6 +149,7 @@ window.addEventListener('load', (event) => {
   
   //
   // Easter-egg
+  // Based on https://gomakethings.com/how-to-create-a-konami-code-easter-egg-with-vanilla-js/
   //
 
   // The hidden element to reveal...
@@ -219,6 +209,43 @@ window.addEventListener('load', (event) => {
   });
 
 
+  // 
+  // Nav Links Highlighting
+  // Inspired by https://codepen.io/jonasmarco/pen/JjoKNaZ
+  // 
+
+  // Make nav link be active on scroll when their section is on screen
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  for (let n in navLinks) {
+    if (navLinks.hasOwnProperty(n)) {
+      navLinks[n].addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(navLinks[n].hash).scrollIntoView({ behavior: "smooth" });
+      });
+    }
+  }
+  
+  const sections = document.querySelectorAll('section[id]');
+  const highlightCurrentNavLink = () => {
+    const scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+    const accuracy = window.innerHeight / 2; // Heighlight the section represents 50% of the viewport 
+
+    for (let s in sections) {
+      if (sections.hasOwnProperty(s) && sections[s].offsetTop - accuracy <= scrollPos) {
+        const id = sections[s].id;
+        const sectionLink = document.querySelector(`a[href*=${id}]`);
+        const sectionPreviousLink = document.querySelector('nav li.active');
+        // Remove highlight on previous link
+        if (sectionPreviousLink) sectionPreviousLink.classList.remove('active');
+        // Add highlight on current link
+        if (sectionLink) sectionLink.parentNode.classList.add('active');
+      }
+    }
+  };
+  window.addEventListener('scroll', highlightCurrentNavLink, false);
+  highlightCurrentNavLink(); // Force on page load 
+  
 });
 
 
