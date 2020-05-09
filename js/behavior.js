@@ -68,27 +68,7 @@ if (postList) {
       });
     }
 
-    // Reading progress bar
-    // Inspired by https://codepen.io/haroldjc/pen/GZaqWa
-    var readingBar = document.getElementById("reading-bar");
-    addEventListener("scroll", function(event) {
-      if (!readingBar) return;
-      var total = document.body.scrollHeight - window.innerHeight;
-      var percent = (window.scrollY / total) * 100;
-
-      if (percent > 5) {
-        readingBar.style.width = percent + "%";
-      } else {
-        readingBar.style.width = "0%";
-      }
-
-      if (percent == 100) {
-        readingBar.className = "finished";
-      } else {
-        readingBar.className = "";
-      }
-    });
-
+   
 
     // Activate the sunshine effect on the main label list
     $('#labels .label').hover(
@@ -176,8 +156,12 @@ if (postList) {
 
 
 
-// Easter-egg
 window.addEventListener('load', (event) => {
+  
+  //
+  // Easter-egg
+  //
+
   // The hidden element to reveal...
   const easterEgg = document.getElementById('easter-egg');
   // ...when the following sequence is completed:
@@ -208,6 +192,33 @@ window.addEventListener('load', (event) => {
   easterEgg.addEventListener('click', () => {
     easterEgg.classList.remove('active');
   });
+
+
+  //
+  // Reading bar
+  // Inspired by https://codepen.io/haroldjc/pen/GZaqWa
+  //
+
+  var readingBar = document.getElementById("reading-bar");
+  document.addEventListener("scroll", () => {
+    if (!readingBar) return;
+    var total = document.body.scrollHeight - window.innerHeight;
+    var percent = (window.scrollY / total) * 100;
+
+    if (percent > 5) {
+      readingBar.style.width = percent + "%";
+    } else {
+      readingBar.style.width = "0%";
+    }
+
+    if (percent == 100) {
+      readingBar.className = "finished";
+    } else {
+      readingBar.className = "";
+    }
+  });
+
+
 });
 
 
