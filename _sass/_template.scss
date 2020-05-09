@@ -1040,19 +1040,6 @@ figure {
   text-align: center;
   overflow: hidden;
 }
-/* Un-blur figures when first appearing on screen. */
-figure img {
-  filter: blur(20px) brightness(120%);
-  color: white;
-  transition: all 0.4s linear;
-  transition-delay: 0.5s;
-  opacity: 0.5;
-}
-figure img.in-view {
-  filter: none;
-  transform: none;
-  opacity: 1;
-}
 
 
 #recommendations {
