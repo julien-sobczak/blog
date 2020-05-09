@@ -14,23 +14,6 @@ if (postList) {
 
     var $window = $(window);
 
-    // Closes the Responsive Menu on Menu Item Click
-    $('.navbar-collapse ul li a').click(function(){
-        $('.navbar-toggle:visible').click();
-    });
-
-    // Offset for Main Navigation
-    $('#mainNav').affix({
-        offset: {
-            top: 100
-        }
-    });
-
-    $('#mainNav button').click(function() {
-        $('#mainNav .navbar-collapse').toggleClass('expanded');
-    });
-
-
     // Activate the sunshine effect on the main label list
     $('#labels .label').hover(
       function() {
@@ -209,7 +192,7 @@ window.addEventListener('load', (event) => {
         const sectionLink = document.querySelector(`a[href*=${id}]`);
         const sectionPreviousLink = document.querySelector('nav li.active');
         // Remove highlight on previous link
-        if (sectionPreviousLink) sectionPreviousLink.classList.remove('active');
+        if (sectionLink && sectionPreviousLink) sectionPreviousLink.classList.remove('active');
         // Add highlight on current link
         if (sectionLink) sectionLink.parentNode.classList.add('active');
       }
@@ -218,6 +201,17 @@ window.addEventListener('load', (event) => {
   window.addEventListener('scroll', highlightCurrentNavLink, false);
   highlightCurrentNavLink(); // Force on page load 
   
+
+  // Affix effect (reduce the menu size on scroll)
+  window.addEventListener('scroll', () => {
+    const scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollPos > 100) {
+      document.body.classList.add('affix');
+    } else {
+      document.body.classList.remove('affix');
+    }
+  }, false);
+
 });
 
 
