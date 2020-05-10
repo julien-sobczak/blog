@@ -37,3 +37,8 @@ Open your browser on http://localhost:4000.
 
 This blog was bootstraped using the https://github.com/asciidoctor/jekyll-asciidoc-quickstart[Jekyll AsciiDoc Quickstart project].
 
+== Deployment
+
+The blog is deployed using GitHub Actions and served by GitHub Pages (with enforced HTTPS enabled): https://juliensobczak.com
+
+A version including drafts is also deployed in parallel using Netlify directly: https://juliensobczak.netlify.app/

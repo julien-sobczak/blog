@@ -7,8 +7,6 @@ layout: default
   <div>
     {% if page.category == 'read' %}
       <h2>I'm readin' I.T.</h2>
-    {% elsif page.category == 'watch' %}
-      <h2>I'm watchin' I.T.</h2>
     {% elsif page.category == 'write' %}
       <h2>I'm writin' I.T.</h2>
     {% elsif page.category == 'inspect' %}
@@ -22,13 +20,21 @@ layout: default
   <div id="post-list-container" style="text-align: center;">
     <ul class="post-list" id="post-list">
 
-      {% for post in site.categories[page.category] %}
-        <li>
-          {% include post-preview.html %}
-          <div style="clear: both;"></div>
-        </li>
-      {% endfor %}
-
+      {% if page.category == 'read' or page.category == 'write' or page.category == 'inspect' %}
+        {% for post in site.categories[page.category] %}
+          <li>
+            {% include post-preview.html %}
+            <div style="clear: both;"></div>
+          </li>
+        {% endfor %}
+      {% else %}
+        {% for post in site.posts %}
+          <li>
+            {% include post-preview.html %}
+            <div style="clear: both;"></div>
+          </li>
+        {% endfor %}
+      {% endif %}
     </ul>
   </div>
 

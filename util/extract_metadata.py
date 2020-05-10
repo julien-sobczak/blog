@@ -161,7 +161,7 @@ def prepend_metadata(content):
             label = label.get_text().strip()
             if label in tags:
                 metadata['tags'].append(tags[label])
-            elif label in [ "I'm readin' I.T.", "I'm watchin' I.T.", "I'm writin' I.T.", "I'm inspectin' I.T." ]:
+            elif label in [ "I'm readin' I.T.", "I'm writin' I.T.", "I'm inspectin' I.T." ]:
                 pass # ignore
             else:
                 raise Exception("Unknown tag <%s>" % label)
@@ -191,29 +191,6 @@ def prepend_metadata(content):
             metadata['read_isbn'] = isbn.get_text()
         if number_of_pages:
             metadata['read_number_of_pages'] = number_of_pages.get_text()
-
-
-    elif article_type == 'post-watch':
-        metadata['category'] = 'watch'
-        metadata['title'] = article.h1.get_text()
-        metadata['watch_speakers'] = article.h2.get_text()
-        image = article.header.find('img')
-        if image:
-            metadata['image'] = article.header.find('img').get('src')
-        metadata['watch_note'] = article.find('div', { "class" : "evaluations"}).find('meta', { "itemprop" : "ratingValue"}).get('content')
-
-        informations = article.find('section', { "class" : "informations"})
-        url = informations.find('span', { "itemprop" : "url"})
-        organizer = informations.find('span', { "itemprop" : "organizer"})
-        start_date = informations.find('span', { "itemprop" : "startDate"})
-
-        if url:
-            metadata['watch_url'] = url.get('content')
-        if organizer:
-            metadata['watch_organizer'] = organizer.get_text()
-        if start_date:
-            metadata['watch_date'] = start_date.get('content')
-
 
     elif article_type == 'post-write':
         metadata['category'] = 'write'
@@ -252,18 +229,6 @@ def prepend_metadata(content):
             metadata_str += "read_isbn: '%s'\n" % metadata['read_isbn']
         if "read_number_of_pages" in metadata:
             metadata_str += "read_number_of_pages: %s\n" % metadata['read_number_of_pages']
-
-    elif article_type == 'post-watch':
-        if "image" in metadata:
-            metadata_str += "image: '%s'\n" % metadata['image']
-        metadata_str += "watch_speakers: '%s'\n" % metadata['watch_speakers']
-        metadata_str += "watch_note: %s\n" % metadata['watch_note']
-        if "watch_url" in metadata:
-            metadata_str += "watch_url: '%s'\n" % metadata['watch_url']
-        if "watch_organizer" in metadata:
-            metadata_str += "watch_organizer: '%s'\n" % metadata['watch_organizer']
-        if "watch_date" in metadata:
-            metadata_str += "watch_date: '%s'\n" % metadata['watch_date']
 
     metadata_str += "---\n\n"
     metadata_str += content

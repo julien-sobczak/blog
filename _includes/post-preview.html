@@ -8,8 +8,6 @@
     {% endif %}
     {% if post.categories == 'read' %}
     <h3>{{ post.read_authors }}</h3>
-    {% elsif post.categories == 'watch' %}
-    <h3>{{ post.watch_speakers }}</h3>
     {% endif %}
     <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
     <nav>
@@ -29,10 +27,6 @@
   {% if post.categories == 'read' %}
   <div class="more">
     <span class="note note-{{ post.read_note }}-20"></span>
-  </div>
-  {% elsif post.categories == 'watch' %}
-  <div class="more">
-    <span class="note note-{{ post.watch_note }}-5"></span>
   </div>
   {% endif %}
 

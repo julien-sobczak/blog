@@ -76,22 +76,17 @@ author: Julien Sobczak
           <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
           <ul>
             <li>Latest books:</li>
-            {% assign count = 0 %}
-            {% for post in site.posts %}
-              {% if post.category == 'read' %}
-                {% assign count = count | plus: 1 %}
-                {% if count < 4 %} <!-- show only 3 last posts -->
-                <li>
-                  <a href="{{ post.url | relative_url }}">
-                    {% if post.shortTitle %}
-                      {{ post.shortTitle }},
-                    {% else %}
-                      {{ post.title }},
-                    {% endif %}
-                  </a>
-                </li>
-                {% endif %}
-              {% endif %}
+            {% assign first_read_posts = site.categories.read | slice:0, 2 %}
+            {% for post in first_read_posts %}
+              <li>
+                <a href="{{ post.url | relative_url }}">
+                  {% if post.shortTitle %}
+                    {{ post.shortTitle }},
+                  {% else %}
+                    {{ post.title }},
+                  {% endif %}
+                </a>
+              </li>
             {% endfor %}
             <li>or see them <a href="{{ '/categories/read.html' | relative_url }}">all</a>!
           </ul>
@@ -107,16 +102,11 @@ author: Julien Sobczak
           <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
           <ul>
             <li>Read the latest posts about</li>
-            {% assign count = 0 %}
-            {% for post in site.posts %}
-              {% if post.category == 'write' %}
-                {% assign count = count | plus: 1 %}
-                {% if count < 4 %} <!-- show only 3 last posts -->
-                <li>
-                  <a href="{{ post.url | relative_url }}">{{post.subject}},</a>
-                </li>
-                {% endif %}
-              {% endif %}
+            {% assign first_write_posts = site.categories.write | slice:0, 2 %}
+            {% for post in first_write_posts %}
+              <li>
+                <a href="{{ post.url | relative_url }}">{{post.subject}},</a>
+              </li>
             {% endfor %}
             <li>or see them <a href="{{ '/categories/write.html' | relative_url }}">all</a>!
           </ul>
@@ -127,16 +117,11 @@ author: Julien Sobczak
           <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
           <ul>
             <li>Discover the inner working of famous OSS projects or programming languages:</li>
-            {% assign count = 0 %}
-            {% for post in site.posts %}
-              {% if post.category == 'inspect' %}
-                {% assign count = count | plus: 1 %}
-                {% if count < 4 %} <!-- show only 3 last posts -->
-                <li>
-                  <a href="{{ post.url | relative_url }}">{{ post.subject }},</a>
-                </li>
-                {% endif %}
-              {% endif %}
+            {% assign first_inspect_posts = site.categories.inspect | slice:0, 2 %}
+            {% for post in first_inspect_posts %}
+              <li>
+                <a href="{{ post.url | relative_url }}">{{ post.subject }},</a>
+              </li>
             {% endfor %}
             <li>or see them <a href="{{ '/categories/inspect.html' | relative_url }}">all</a>!
           </ul>
