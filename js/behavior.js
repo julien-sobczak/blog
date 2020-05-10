@@ -9,28 +9,6 @@ if (postList) {
   });
 }
 
-(function($) {
-    "use strict"; // Start of use strict
-
-    var $window = $(window);
-
-    // Activate the sunshine effect on the main label list
-    $('#labels .label').hover(
-      function() {
-        $(this).addClass('hover');
-      },
-      function() {
-        var label = $(this);
-        window.setTimeout(function() {
-          label.removeClass('hover');
-        }, 500);
-      }
-    );
-
-})(jQuery); // End of use strict
-
-
-
 window.addEventListener('load', (event) => {
   
   //
