@@ -272,7 +272,7 @@ hr.star-primary:after {
   outline: none;
 }
 .navbar-default li.active a {
-  color: white;
+  color: white !important;
   background: #4185f4;
 }
 
@@ -285,7 +285,7 @@ hr.star-primary:after {
  
   /* Increase menu size */
   .navbar-default {
-    transition: all 0.3s;
+    transition: all 0.5s;
   }
 
   .navbar-default .container {
@@ -302,6 +302,19 @@ hr.star-primary:after {
   }
   .affix .navbar-default .navbar-brand {
     font-size: 1.4em;
+  }
+
+  /* On post page make the bar "disappear" to keep the reader focused on the content. */
+  #page-post.affix .navbar-default {
+    background-color: white;
+    box-shadow: 0 5px 5px rgba(0,0,0,.2);
+    color: gray;
+  }
+  #page-post.affix .navbar-default .navbar-brand {
+    color: $color-base;
+  }
+  #page-post.affix .navbar-default li a {
+    color: #AAA;
   }
 
   /* Hide the menu button for small screens */

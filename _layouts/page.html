@@ -22,7 +22,9 @@
   <nav id="mainNav" class="navbar-default">
 
     {% if page.category == 'write' or page.category == 'inspect' %}
+    {% if page.author  %}
     <div id="reading-bar"></div>
+    {% endif %}
     {% endif %}
 
     <div class="container">

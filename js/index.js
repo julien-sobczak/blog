@@ -101,11 +101,16 @@ window.addEventListener('load', (event) => {
   window.addEventListener('scroll', highlightCurrentNavLink, false);
   highlightCurrentNavLink(); // Force on page load 
   
-
+  
   // Affix effect (reduce the menu size on scroll)
+  const labels = document.getElementById('labels');
+  const footer = document.getElementById('footer');
   window.addEventListener('scroll', () => {
     const scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
-    if (scrollPos > 100) {
+    const labelsPos = (labels && labels.offsetTop) || Number.MAX_SAFE_INTEGER;
+    const footerPos = (footer && footer.offsetTop) || Number.MAX_SAFE_INTEGER;
+    console.log('scroll', scrollPos, footerPos);
+    if (scrollPos > 500 && scrollPos < Math.min(labelsPos, footerPos) - 100) {
       document.body.classList.add('affix');
     } else {
       document.body.classList.remove('affix');
