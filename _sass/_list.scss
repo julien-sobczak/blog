@@ -5,15 +5,15 @@
   text-align: center;
 }
 
-/* Masonry effect based on https://css-tricks.com/piecing-together-approaches-for-a-css-masonry-layout/ */
-/* https://codepen.io/chriscoyier/pen/NeRNBO */
-
 
 .post-list-container.list-view {
-
+  /* TODO */
 }
 
-.mansory-view {
+
+/* Masonry effect based on https://css-tricks.com/piecing-together-approaches-for-a-css-masonry-layout/ */
+/* https://codepen.io/chriscoyier/pen/NeRNBO */
+.post-list-container.mansory-view {
 
   ul.post-list {
     width: 100%;
@@ -114,20 +114,6 @@ ul.post-list li:nth-child(4n+3) .post-inspect-preview .title::after { background
 	text-transform: none;
   font-family: 'Righteous', cursive;
   z-index: 10; // to be above icon ::before
-}
-
-ul.post-list li:nth-child(4n+0) .post-preview .title h3 {
-  //font-family: 'Lobster', cursive;
-}
-ul.post-list li:nth-child(4n+1) .post-preview .title h3 {
-  //font-family: 'Pacifico', cursive;
-}
-ul.post-list li:nth-child(4n+2) .post-preview .title h3 {
-  //font-family: 'Righteous', cursive;
-}
-ul.post-list li:nth-child(4n+3) .post-preview .title h3 {
-  //font-family: 'Dancing Script', cursive;
-  //text-shadow: 1px 1px 1px white;
 }
 
 .post-preview .title h4 {

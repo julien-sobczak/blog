@@ -1,16 +1,7 @@
-
-// // Enable Masonry effect
-// var postList = document.getElementById('post-list');
-// if (postList) {
-//   new AnimOnScroll(postList, {
-// 	  minDuration: 0.4,
-// 	  maxDuration: 0.7,
-// 	  viewportFactor: 0.4
-//   });
-// }
-
 window.addEventListener('load', (event) => {
   
+  document.body.classList.add('loaded');
+
   //
   // Easter-egg
   // Based on https://gomakethings.com/how-to-create-a-konami-code-easter-egg-with-vanilla-js/
