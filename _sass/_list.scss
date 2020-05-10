@@ -7,7 +7,7 @@
 
 
 .post-list-container.list-view {
-  /* TODO */
+  /* TODO https://stackoverflow.com/questions/40444967/posts-by-month-in-jekyll */
 }
 
 
@@ -65,8 +65,9 @@
 
 .post-preview .title {
   position: relative;
-  padding: 20px 20px;
+  padding: 1.5rem;
   min-height: 100px;
+  color: white;
 }
 .post-preview .title::after {
   content: '';
@@ -77,29 +78,28 @@
   bottom: 0px;
   right: 0;
 }
-// TODO refactor: everything is white now!
-ul.post-list li:nth-child(4n+0) .post-read-preview .title        { background-color: #EB5546; color: white;  }
-ul.post-list li:nth-child(4n+1) .post-read-preview .title        { background-color: #97BCB4; color: white;  }
-ul.post-list li:nth-child(4n+2) .post-read-preview .title        { background-color: #FFC33E; color: white;  }
-ul.post-list li:nth-child(4n+3) .post-read-preview .title        { background-color: #E4E1D0; color: white;  }
+ul.post-list li:nth-child(4n+0) .post-read-preview .title        { background-color: #EB5546;  }
+ul.post-list li:nth-child(4n+1) .post-read-preview .title        { background-color: #97BCB4;  }
+ul.post-list li:nth-child(4n+2) .post-read-preview .title        { background-color: #FFC33E;  }
+ul.post-list li:nth-child(4n+3) .post-read-preview .title        { background-color: #E4E1D0;  }
 ul.post-list li:nth-child(4n+0) .post-read-preview .title::after { background-position:      0 0; }
 ul.post-list li:nth-child(4n+1) .post-read-preview .title::after { background-position: -100px 0; }
 ul.post-list li:nth-child(4n+2) .post-read-preview .title::after { background-position: -200px 0; }
 ul.post-list li:nth-child(4n+3) .post-read-preview .title::after { background-position:  100px 0; }
 
-ul.post-list li:nth-child(4n+0) .post-write-preview .title        { background-color: #62BCA0; color: white;  }
-ul.post-list li:nth-child(4n+1) .post-write-preview .title        { background-color: #D65625; color: white;  }
-ul.post-list li:nth-child(4n+2) .post-write-preview .title        { background-color: #62BCA0; color: white;  }
-ul.post-list li:nth-child(4n+3) .post-write-preview .title        { background-color: #F0E5C7; color: white;  }
+ul.post-list li:nth-child(4n+0) .post-write-preview .title        { background-color: #62BCA0;  }
+ul.post-list li:nth-child(4n+1) .post-write-preview .title        { background-color: #D65625;  }
+ul.post-list li:nth-child(4n+2) .post-write-preview .title        { background-color: #62BCA0;  }
+ul.post-list li:nth-child(4n+3) .post-write-preview .title        { background-color: #F0E5C7;  }
 ul.post-list li:nth-child(4n+0) .post-write-preview .title::after { background-position:      0 -200px; }
 ul.post-list li:nth-child(4n+1) .post-write-preview .title::after { background-position: -100px -200px; }
 ul.post-list li:nth-child(4n+2) .post-write-preview .title::after { background-position:  100px -200px; }
 ul.post-list li:nth-child(4n+3) .post-write-preview .title::after { background-position: -200px -200px; }
 
-ul.post-list li:nth-child(4n+0) .post-inspect-preview .title        { background-color: #FF3E7A; color: white;  }
-ul.post-list li:nth-child(4n+1) .post-inspect-preview .title        { background-color: #70C6E7; color: white;  }
-ul.post-list li:nth-child(4n+2) .post-inspect-preview .title        { background-color: #FFC33E; color: white;  }
-ul.post-list li:nth-child(4n+3) .post-inspect-preview .title        { background-color: #6A77AB; color: white;  }
+ul.post-list li:nth-child(4n+0) .post-inspect-preview .title        { background-color: #FF3E7A;  }
+ul.post-list li:nth-child(4n+1) .post-inspect-preview .title        { background-color: #70C6E7;  }
+ul.post-list li:nth-child(4n+2) .post-inspect-preview .title        { background-color: #FFC33E;  }
+ul.post-list li:nth-child(4n+3) .post-inspect-preview .title        { background-color: #6A77AB;  }
 ul.post-list li:nth-child(4n+0) .post-inspect-preview .title::after { background-position:      0 -300px; }
 ul.post-list li:nth-child(4n+1) .post-inspect-preview .title::after { background-position: -100px -300px; }
 ul.post-list li:nth-child(4n+2) .post-inspect-preview .title::after { background-position: -200px -300px; }

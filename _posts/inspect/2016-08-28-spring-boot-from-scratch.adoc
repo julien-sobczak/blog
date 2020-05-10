@@ -142,19 +142,11 @@ Spring Boot brings a great deal of magic to Spring application development by pe
 NOTE: Spring Boot brings other interesting features like the **Actuator** (gives you insight into what’s going on inside of the application) and the **command-line interface** (lets you write complete applications with no need for a traditional project build). These features are not described in this post but relied heavily on the two main points.
 
 
-Before delving into the framework, let's take a high-level view of Spring Boot and its main components. The following diagram presents the main dependencies in the context of our `pom.xml`:
+The rest of this article is splitted into 3 parts, each part focusing on a given aspect of the framework: 
 
-
-
-TODO includes diagram
-
-
-
-This diagram highlights the three parts that composed this article :
-
-- Creating your Spring Boot Application, describes why our code compiles though we only have added one dependency. This part inspect the different POM files.
-- Running your Spring Boot Application, presents the core logic behind the magic of Spring Boot: how beans are auto-loaded, how a Tomcat instance is automatically bootstrapped.
-- Packaging your Spring Boot Application, describes how the Spring Boot Maven plugin works under the hood to create the executable uber-jar.
+- _Creating your Spring Boot Application_, describes why our code compiles though we only have added one dependency. This part inspect the different POM files.
+- _Running your Spring Boot Application_, presents the core logic behind the magic of Spring Boot: how beans are auto-loaded, how a Tomcat instance is automatically bootstrapped.
+- _Packaging your Spring Boot Application_, describes how the Spring Boot Maven plugin works under the hood to create the executable uber-jar.
 
 
 According to your interest, you could safely jump from one part to another one.
