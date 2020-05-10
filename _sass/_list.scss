@@ -185,27 +185,11 @@ ul.post-list li:nth-child(4n+3) .post-inspect-preview .title::after { background
     transform: scale(1.1);
 }
 
-.post-preview .more {
-  background: white;
-  color: black;
-  max-height: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.post-preview:hover .more {
-  min-height: 30px;
-  max-height: 50px;
-  transition: all 0.2s;
-}
-
-.post-preview .note {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  background: url(../img/stars-sprite-20px.png);
-  width: 100px;
-  height: 20px;
+.post-preview .review-note {
+  color: white;
+  font-size: 0.8rem;
+  margin: 0.5rem;
+  text-align: center;
 }
 
 /* Generate classes for each note out of 20 */

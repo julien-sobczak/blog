@@ -21,7 +21,7 @@ Nothing brings fear to my heart more than a floating point number.
 ____
 
 [.lead]
-In this post, I tried to debunk common myths about floating-point numbers by explaining their subtleties, introducing each of them by showing the problem they are solving. This is a long blog post. To write it, I read several dozen articles on the subject, often shorter, but none succeed in answering all my questions. I hope it will answer yours.
+In this post, I tried to debunk common myths about floating-point numbers by explaining their subtleties, introducing each of them by showing the problem they are solving. This is a long blog post. To write it, I read several dozen articles on the subject, often shorter, but none answered all my questions. I hope it will answer yours.
 
 == Floating-Point Numbers
 
@@ -38,7 +38,7 @@ $ python
 **5.55111512313e-17**
 ----
 
-Hmm, that's weird. A bug in Python? Not really, you get the same result in almost all languages, since most of them follow the same specification (a little bit about that later).
+Hmm, that's weird. A bug in Python? No. You get the same result in almost all languages, since most of them follow the same specification (a little bit about that later).
 
 Let's try the same test in JavaScript, directly from your browser, by simply entering `javascript:alert(0.1+0.2)` in the address bar. A popup appears and displays `0.30000000000000004`. Too bad. The same result, which will make the hair of any math teacher stand on end. (Indeed, I'm writing this article following a discussion with a math professor that is teaching Python to his students.)
 
