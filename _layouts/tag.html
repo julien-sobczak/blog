@@ -2,15 +2,14 @@
 layout: default
 ---
 
-
-<section class="category-content" style="text-align: center;">
+<section class="category-content">
 
   <div>
-    <h2>{{page.tag_name}}</h3>
+    <h2>{{ page.tag_name }}</h3>
     <hr class="star-primary">
   </div>
 
-  <div id="post-list-container" style="text-align: center;">
+  <div class="post-list-container mansory-view">
     <ul class="post-list" id="post-list">
 
       {% for post in site.posts %}

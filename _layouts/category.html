@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<section class="category-content" style="text-align: center;">
+<section class="category-content">
 
   <div>
     {% if page.category == 'read' %}
@@ -17,8 +17,9 @@ layout: default
     <hr class="star-primary">
   </div>
 
-  <div id="post-list-container" style="text-align: center;">
-    <ul class="post-list" id="post-list">
+  <div class="post-list-container mansory-view">
+    
+    <ul class="post-list">
 
       {% if page.category == 'read' or page.category == 'write' or page.category == 'inspect' %}
         {% for post in site.categories[page.category] %}

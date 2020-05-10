@@ -48,3 +48,7 @@ $screen-large-min:    $screen-medium-max + 1;
 @import 'list';
 @import 'easter-egg';
 @import 'template';
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
