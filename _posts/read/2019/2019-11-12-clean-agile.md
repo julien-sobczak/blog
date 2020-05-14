@@ -8,6 +8,7 @@ category: read
 subject: Agile
 headline: Rediscover Agile from its inception.
 note: 12
+stars: 2
 tags:
   - craftsmanship
 unofficialTags:

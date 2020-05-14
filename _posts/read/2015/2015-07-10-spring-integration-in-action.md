@@ -8,6 +8,7 @@ category: read
 subject: Spring Integration
 headline: The reference book about the reference implementation of EIPs. A journey through the framework for beginners and intermediate users.
 note: 16
+stars: 4
 tags:
   - frameworks
 unofficialTags:

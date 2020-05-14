@@ -1,0 +1,40 @@
+<div class="post-preview post-{{post.categories}}-preview">
+
+  <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
+
+  <h3>
+    <a href="{{ post.url | relative_url }}">{{ post.shortTitle | default: post.title }}</a>
+    {% if post.stars %}
+    <span class="rating">
+      <i class="fas fa-star"></i>
+      {% if post.stars >= 2 %}
+        <i class="fas fa-star"></i>
+      {% endif %}
+      {% if post.stars >= 3 %}
+        <i class="fas fa-star"></i>
+      {% endif %}
+      {% if post.stars >= 4 %}
+        <i class="fas fa-star"></i>
+      {% endif %}
+      {% if post.stars >= 5 %}
+        <i class="fas fa-star"></i>
+      {% endif %}
+    </span>
+    {% endif %}
+  </h3>
+
+  {% if post.category == 'read' %}<span class="authors">{{ post.metadata.authors }}</span>{% endif %}
+
+  {% if post.category != "read" %}
+    {% for tag in post.tags %}
+    <a href="{{ '/tags/' | append: tag | relative_url }}" class="label">
+      {{ tag | capitalize }}
+    </a>
+    {% endfor %}
+    {% for tag in post.unofficialTags %}
+    <span class="label">
+      {{ tag | capitalize }}
+    </span>
+    {% endfor %}
+  {% endif %}
+</div>

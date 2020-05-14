@@ -8,6 +8,7 @@ category: read
 subject: Programming
 headline: Brilliant. A classic to understand what programming is really about.
 note: 18
+stars: 5
 tags:
   - computer-science
   - languages

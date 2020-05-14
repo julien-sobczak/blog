@@ -13,42 +13,39 @@ layout: 'page'
       <span class="date">{{ page.date | date: '%B %d, %Y' }}</span>
 
       {% for tag in page.tags %}
-      <a href="{{ '/tags/' | append: tag | relative_url }}"
-      class="label">
+      <a href="{{ '/tags/' | append: tag | relative_url }}" class="label">
       {{ tag | capitalize }}
-    </a>
-    {% endfor %}
+      </a>
+      {% endfor %}
 
-    {% for tag in page.unofficialTags %}
-    <span
-    class="label">
-    {{ tag | capitalize }}
-  </span>
-  {% endfor %}
+      {% for tag in page.unofficialTags %}
+      <span class="label">
+        {{ tag | capitalize }}
+      </span>
+      {% endfor %}
 
-  <ul class="language">
-    <!--<li><a href="#">FR</a></li>-->
-    <li class="current-language"><a class="active" href="#">EN</a></li>
-  </ul>
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
 
-  <h2>{{page.title}}</h2>
-  {% if page.subtitle %}
-  <h3>{{ page.subtitle }}</h3>
-  {% endif %}
+      <h2>{{page.title}}</h2>
+      {% if page.subtitle %}
+      <h3>{{ page.subtitle }}</h3>
+      {% endif %}
 
-  <p class="author-name">
-    {% if page.category == 'read' %}
-    {% comment %} We explicit that the book was not written by the author of the review {% endcomment %}
-    <span>A review by </span>
-    {% else %}
-    <span>By </span>
-    {% endif %}
-    <a href="/blog/about-me">{{page.author}}</a>
-  </p>
+      <p class="author-name">
+        {% if page.category == 'read' %}
+        {% comment %} We explicit that the book was not written by the author of the review {% endcomment %}
+        <span>A review by </span>
+        {% else %}
+        <span>By </span>
+        {% endif %}
+        <a href="/blog/about-me">{{page.author}}</a>
+      </p>
 
-</div>
-</div>
-</div>
+     </div>
+    </div>
+  </div>
 </header>
 
 {{ content }}

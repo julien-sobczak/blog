@@ -8,6 +8,7 @@ category: read
 subject: Passion
 headline: To be happy, you must follow your passion, or read this book.
 note: 16
+stars: 4
 tags:
   - self-help
 image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1360564614l/13525945.jpg'

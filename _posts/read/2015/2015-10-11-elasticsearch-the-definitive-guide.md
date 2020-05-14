@@ -8,6 +8,7 @@ category: read
 subject: Elasticsearch
 headline: By far the best Elasticsearch book but covers the outdated 1.4 release
 note: 15
+stars: 3
 tags:
   - data
 image: 'https://images.gr-assets.com/books/1422215264l/21557290.jpg'

@@ -8,6 +8,7 @@ category: read
 subject: Happiness
 headline: "A convincing approach to answer the question: \"What should I do with my life?\""
 note: 17
+stars: 4
 tags:
   - self-help
 image: 'https://images.gr-assets.com/books/1469406987l/28814910.jpg'

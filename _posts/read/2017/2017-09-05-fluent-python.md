@@ -8,6 +8,7 @@ category: read
 subject: Python
 headline: Every language deserves a book like that
 note: 15
+stars: 3
 tags:
   - languages
 unofficialTags:

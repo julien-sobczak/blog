@@ -8,6 +8,7 @@ category: read
 subject: Security
 headline: True stories demonstrating why we stay indisputably the security's weakest link.
 note: 14
+stars: 3
 unofficialTags:
   - security
 image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1385273509l/18160.jpg'

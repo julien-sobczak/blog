@@ -8,6 +8,7 @@ category: read
 subject: iBatis
 headline: Still a good reference to understand concepts behind MyBatis.
 note: 12
+stars: 2
 tags:
   - frameworks
 unofficialTags:

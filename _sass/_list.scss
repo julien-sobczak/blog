@@ -5,225 +5,297 @@
   text-align: center;
 }
 
+/* 
+ * Post Filters
+ */
 
-.post-list-container.list-view {
-  /* TODO https://stackoverflow.com/questions/40444967/posts-by-month-in-jekyll */
+.filters {
+  margin: 2rem;
+}
+/* Use after pseudo-element to clear float used on filter */
+.filters:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.filters .rating-filter {
+  position: relative;
+  display: none;
+}
+
+@media ( min-width: 1080px ) {
+  .filters .rating-filter {
+    position: relative;
+    float: left;
+    display: block;
+  }
+  .filters .display-mode {
+    float: right;
+  }
 }
 
 
-/* Masonry effect based on https://css-tricks.com/piecing-together-approaches-for-a-css-masonry-layout/ */
-/* https://codepen.io/chriscoyier/pen/NeRNBO */
-.post-list-container.mansory-view {
+.filters button {
+  padding: 0.5em;
+  background: inherit;
+  border: none;
+  border-radius: 0.25em;
+  display: inline-block;
+  width: 1em;
+  margin: 0 1em;
+  /* Disable browser default link decoration */
+  text-decoration: none;
+  outline: 0;
+}
 
-  ul.post-list {
-    width: 100%;
-    columns: 6 200px;
-    column-gap: 1rem;
+/* default link color is blue */
+.rating-filter button .fa-star:before {
+  font-weight: 400 !important; /* simulate far */
+}
+
+.star-1-label,
+.star-2-label,
+.star-3-label,
+.star-4-label,
+.star-5-label {
+  display: none;
+  background: rgb(51,51,51);
+  color: white;
+  padding: 1em 2em;
+  border-radius: 0.4em;
+  text-align: center;
+  margin-left: 1.5em;
+}
+
+/* See https://stackoverflow.com/a/27993987 */
+/* We change the style on previous siblings to simulate the .fas class */
+.rating-filter:hover button .fa-star:before,
+.rating-filter button:hover .fa-star:before {
+  font-weight: 900 !important; /* simulate fas */
+}
+/* We change the style on next siblings to simulate the .far class */
+.rating-filter button:hover ~ button .fa-star:before {
+  font-weight: 400 !important; /* simulate far */
+}
+/* + display the labels associated with the currently hovered button */
+.rating-filter button:nth-of-type(1):hover ~ .star-1-label,
+.rating-filter button:nth-of-type(2):hover ~ .star-2-label,
+.rating-filter button:nth-of-type(3):hover ~ .star-3-label,
+.rating-filter button:nth-of-type(4):hover ~ .star-4-label,
+.rating-filter button:nth-of-type(5):hover ~ .star-5-label {
+  display: inline-block;
+}
+
+.list-view, .grid-view {
+  clear: both;
+}
+
+.list-view {
+  ul {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
 
     li {
-      width: 150px;
-      color: white;
-      margin: 0 1rem 1rem 0;
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      font-family: system-ui;
-      font-weight: 900;
-      font-size: 2rem;
-    } 
+      margin: 2.5em;
+
+      h4 {
+        font-size: 0.8rem;
+        margin: 0.2em 0;
+      }
+      h3 {
+        margin-top: 0;
+        text-transform: none;
+        font-family: 'Righteous', cursive;
+
+        .authors {
+          font-size: 0.6em;
+          color: gray;
+        }
+
+        .rating {
+          font-size: 0.6em;
+        }
+      }
+    }
+  }
+}
+
+.grid-view {
+
+  /* Using floats */
+  .grid-col {
+    float: left;
+    width: 50%;
   }
 
-}
-
-
-.post-preview {
-  border: 10px solid #fff;
-  text-align: center;
-  box-shadow: 1px 1px 2px #a6a6a6;
-  cursor: default;
-}
-.post-preview:hover {
-  box-shadow: 3px 3px 6px #868686;
-}
-.post-preview .image {
-  overflow: hidden;
-  height: 150px;
-}
-.post-preview img {
-  display: block;
-  position: relative;
-  width: 100%;
-  filter: grayscale(100%) opacity(10%);
-}
-.post-preview:hover img {
-  filter: none;
-}
-
-
-.post-preview .title {
-  position: relative;
-  padding: 1.5rem;
-  min-height: 100px;
-  color: white;
-}
-.post-preview .title::after {
-  content: '';
-  background-image: url(../img/icons-list-posts.png);
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  bottom: 0px;
-  right: 0;
-}
-ul.post-list li:nth-child(4n+0) .post-read-preview .title        { background-color: #EB5546;  }
-ul.post-list li:nth-child(4n+1) .post-read-preview .title        { background-color: #97BCB4;  }
-ul.post-list li:nth-child(4n+2) .post-read-preview .title        { background-color: #FFC33E;  }
-ul.post-list li:nth-child(4n+3) .post-read-preview .title        { background-color: #E4E1D0;  }
-ul.post-list li:nth-child(4n+0) .post-read-preview .title::after { background-position:      0 0; }
-ul.post-list li:nth-child(4n+1) .post-read-preview .title::after { background-position: -100px 0; }
-ul.post-list li:nth-child(4n+2) .post-read-preview .title::after { background-position: -200px 0; }
-ul.post-list li:nth-child(4n+3) .post-read-preview .title::after { background-position:  100px 0; }
-
-ul.post-list li:nth-child(4n+0) .post-write-preview .title        { background-color: #62BCA0;  }
-ul.post-list li:nth-child(4n+1) .post-write-preview .title        { background-color: #D65625;  }
-ul.post-list li:nth-child(4n+2) .post-write-preview .title        { background-color: #62BCA0;  }
-ul.post-list li:nth-child(4n+3) .post-write-preview .title        { background-color: #F0E5C7;  }
-ul.post-list li:nth-child(4n+0) .post-write-preview .title::after { background-position:      0 -200px; }
-ul.post-list li:nth-child(4n+1) .post-write-preview .title::after { background-position: -100px -200px; }
-ul.post-list li:nth-child(4n+2) .post-write-preview .title::after { background-position:  100px -200px; }
-ul.post-list li:nth-child(4n+3) .post-write-preview .title::after { background-position: -200px -200px; }
-
-ul.post-list li:nth-child(4n+0) .post-inspect-preview .title        { background-color: #FF3E7A;  }
-ul.post-list li:nth-child(4n+1) .post-inspect-preview .title        { background-color: #70C6E7;  }
-ul.post-list li:nth-child(4n+2) .post-inspect-preview .title        { background-color: #FFC33E;  }
-ul.post-list li:nth-child(4n+3) .post-inspect-preview .title        { background-color: #6A77AB;  }
-ul.post-list li:nth-child(4n+0) .post-inspect-preview .title::after { background-position:      0 -300px; }
-ul.post-list li:nth-child(4n+1) .post-inspect-preview .title::after { background-position: -100px -300px; }
-ul.post-list li:nth-child(4n+2) .post-inspect-preview .title::after { background-position: -200px -300px; }
-ul.post-list li:nth-child(4n+3) .post-inspect-preview .title::after { background-position:  100px -300px; }
-
-
-
-.post-preview .title h3 {
-  font-size: 20px;
-  text-shadow: 1px 1px 1px black;
-  margin: 0;
-	text-transform: none;
-  font-family: 'Righteous', cursive;
-  z-index: 10; // to be above icon ::before
-}
-
-.post-preview .title h4 {
-  margin: 0; /* TODO delete with reset.css */
-  margin-top: 25px;
-  margin-bottom: 25px;
-  font-family: 'Roboto', Sans-Serif;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 300;
-  z-index: 10; // to be above icon ::before
-}
-
-.post-preview .title nav {
-  margin-top: 15px;
-  margin-bottom: 25px;
-  margin-right: 80px;
-}
-
-/* Effect 5: same word slide in */
-/* http://tympanus.net/codrops/2013/08/06/creative-link-effects/ */
-.post-preview .title nav a {
-	overflow: hidden;
-  display: inline-block;
-	padding: 0 4px;
-	height: 29px;
-  padding: 4px 25px;
-  font-size: 15px;
-  background: black;
-  box-sizing: border-box;
-  color: white;
-}
-
-.post-preview .title nav a span {
-	position: relative;
-	display: inline-block;
-	-webkit-transition: -webkit-transform 0.3s;
-	-moz-transition: -moz-transform 0.3s;
-	transition: transform 0.3s;
-  box-sizing: border-box;
-}
-
-.post-preview .title nav a span::before {
-	position: absolute;
-	top: 100%;
-	content: attr(data-hover);
-	font-weight: 700;
-	-webkit-transform: translate3d(0,0,0);
-	-moz-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0);
-}
-
-.post-preview .title nav a:hover span,
-.post-preview .title nav a:focus span {
-	-webkit-transform: translateY(-100%);
-	-moz-transform: translateY(-100%);
-	transform: translateY(-100%);
-}
-
-
-
-
-
-.post-preview img {
-    transition: all 0.2s linear;
-}
-
-.post-preview:hover img {
-    transform: scale(1.1);
-}
-
-.post-preview .review-note {
-  color: white;
-  font-size: 0.8rem;
-  margin: 0.5rem;
-  text-align: center;
-}
-
-/* Generate classes for each note out of 20 */
-$i: 0;
-
-@for $i from 0 through 20 {
-
-  .post-preview .note-#{$i}-20 {
-    $y: ceil($i / 2) * -20px;
-    background-position: 0 $y;
+  .grid-item {
+    margin: 1em;
   }
 
-}
+  /* 2 columns by default, hide other columns */
+  .grid-col--2, .grid-col--3, .grid-col--4 { display: none; }
 
-/* Generate classes for each note out of 5 */
-$i: 0;
-
-@for $i from 0 through 5 {
-
-  .post-preview .note-#{$i}-5 {
-    $y : $i * 2 * -20px;
-    background-position: 0 $y;
+  /* 3 columns at medium size */
+  @media ( min-width: 768px ) {
+    .grid-col { width: 33.333%; }
+    .grid-col--2 { display: block; } /* show column 2 */
   }
 
-}
+  /* 4 columns at large size */
+  @media ( min-width: 1080px ) {
+    .grid-col { width: 25%; }
+    .grid-col--3 { display: block; } /* show column 3 */
+  }
+
+  /* 5 columns at large size */
+  @media ( min-width: 1400px ) {
+    .grid-col { width: 20%; }
+    .grid-col--4 { display: block; } /* show column 4 */
+  }
+
+
+  /* Previews in Grid mode */
+
+  .post-preview {
+    border: 10px solid #fff;
+    text-align: center;
+    box-shadow: 1px 1px 2px #a6a6a6;
+    cursor: default;
+  }
+  .post-preview:hover {
+    box-shadow: 3px 3px 6px #868686;
+  }
+  .post-preview .image {
+    overflow: hidden;
+    height: 150px;
+  }
+  .post-preview img {
+    display: block;
+    position: relative;
+    width: 100%;
+    filter: grayscale(100%) opacity(10%);
+  }
+  .post-preview:hover img {
+    filter: none;
+  }
+
+  .post-preview .title {
+    position: relative;
+    padding: 1.5rem;
+    min-height: 100px;
+    color: white;
+  }
+  .post-preview .title::after {
+    content: '';
+    background-image: url(../img/icons-list-posts.png);
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+  }
+  .post-read-preview.style1 .title        { background-color: #EB5546;  }
+  .post-read-preview.style2 .title        { background-color: #97BCB4;  }
+  .post-read-preview.style3 .title        { background-color: #FFC33E;  }
+  .post-read-preview.style4 .title        { background-color: #E4E1D0;  }
+  .post-read-preview.style1 .title::after { background-position:      0 0; }
+  .post-read-preview.style2 .title::after { background-position: -100px 0; }
+  .post-read-preview.style3 .title::after { background-position: -200px 0; }
+  .post-read-preview.style4 .title::after { background-position:  100px 0; }
+
+  .post-write-preview.style1 .title        { background-color: #62BCA0;  }
+  .post-write-preview.style2 .title        { background-color: #D65625;  }
+  .post-write-preview.style3 .title        { background-color: #62BCA0;  }
+  .post-write-preview.style4 .title        { background-color: #F0E5C7;  }
+  .post-write-preview.style1 .title::after { background-position:      0 -200px; }
+  .post-write-preview.style2 .title::after { background-position: -100px -200px; }
+  .post-write-preview.style3 .title::after { background-position:  100px -200px; }
+  .post-write-preview.style4 .title::after { background-position: -200px -200px; }
+
+  .post-inspect-preview.style1 .title        { background-color: #FF3E7A;  }
+  .post-inspect-preview.style2 .title        { background-color: #70C6E7;  }
+  .post-inspect-preview.style3 .title        { background-color: #FFC33E;  }
+  .post-inspect-preview.style4 .title        { background-color: #6A77AB;  }
+  .post-inspect-preview.style1 .title::after { background-position:      0 -300px; }
+  .post-inspect-preview.style2 .title::after { background-position: -100px -300px; }
+  .post-inspect-preview.style3 .title::after { background-position: -200px -300px; }
+  .post-inspect-preview.style4 .title::after { background-position:  100px -300px; }
 
 
 
-/* Blogger specific */
+  .post-preview .title h3 {
+    font-size: 20px;
+    text-shadow: 1px 1px 1px black;
+    margin: 0;
+    text-transform: none;
+    font-family: 'Righteous', cursive;
+    z-index: 10; // to be above icon ::before
+  }
 
-.jump-link {
-  display: none;
-}
+  .post-preview .title h4 {
+    margin: 0; /* TODO delete with reset.css */
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-family: 'Roboto', Sans-Serif;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 300;
+    z-index: 10; // to be above icon ::before
+  }
 
-.blog-feeds {
-  display: none;
+  .post-preview .title nav {
+    margin-top: 15px;
+    margin-bottom: 25px;
+    margin-right: 80px;
+  }
+
+  /* Effect 5: same word slide in */
+  /* http://tympanus.net/codrops/2013/08/06/creative-link-effects/ */
+  .post-preview .title nav a {
+    overflow: hidden;
+    display: inline-block;
+    padding: 0 4px;
+    height: 29px;
+    padding: 4px 25px;
+    font-size: 15px;
+    background: black;
+    box-sizing: border-box;
+    color: white;
+  }
+
+  .post-preview .title nav a span {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s;
+    box-sizing: border-box;
+  }
+
+  .post-preview .title nav a span::before {
+    position: absolute;
+    top: 100%;
+    content: attr(data-hover);
+    font-weight: 700;
+    transform: translate3d(0,0,0);
+  }
+
+  .post-preview .title nav a:hover span,
+  .post-preview .title nav a:focus span {
+    transform: translateY(-100%);
+  }
+
+  .post-preview img {
+      transition: all 0.2s linear;
+  }
+
+  .post-preview:hover img {
+      transform: scale(1.1);
+  }
+
+  .post-preview .review-note {
+    color: white;
+    font-size: 0.8rem;
+    margin: 0.5rem;
+    text-align: center;
+  }
+
 }

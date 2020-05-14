@@ -8,6 +8,7 @@ category: read
 subject: Concurrency
 headline: java.util.concurrent demystified by its creators. One of my top 3 most important book on the Java language.
 note: 19
+stars: 5
 tags:
   - languages
   - computer-science

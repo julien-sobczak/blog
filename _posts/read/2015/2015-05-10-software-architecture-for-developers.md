@@ -8,6 +8,7 @@ category: read
 subject: Definition of Architecture
 headline: Just enough architecture but too much repetitions. Great ideas delivered in a poor format.
 note: 9
+stars: 1
 tags:
   - architecture
 image: 'https://d.gr-assets.com/books/1341368491l/15734781.jpg'

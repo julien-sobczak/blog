@@ -8,6 +8,7 @@ category: read
 subject: Linux
 headline: Should be titled "Become a Linux superuser"
 note: 6
+stars: 1
 tags:
   - computer-science
 unofficialTags:

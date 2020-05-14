@@ -8,6 +8,7 @@ category: read
 subject: Data
 headline: Undeniably one of the best books published in the last years
 note: 19
+stars: 5
 tags:
   - data
   - architecture

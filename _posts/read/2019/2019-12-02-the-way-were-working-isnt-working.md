@@ -8,6 +8,7 @@ category: read
 subject: Work
 headline: Toward a more satisfying, productive, and sustainable way to work.
 note: 12
+stars: 2
 tags:
   - management
 image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1439820428l/7679810._SY475_.jpg'

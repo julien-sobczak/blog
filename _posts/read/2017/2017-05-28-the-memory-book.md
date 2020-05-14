@@ -8,6 +8,7 @@ category: read
 subject: memory
 headline: A highly practical book to use memory techniques in our everyday life
 note: 13
+stars: 2
 tags:
   - learning
 unofficialTags:

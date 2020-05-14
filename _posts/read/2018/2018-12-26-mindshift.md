@@ -8,6 +8,7 @@ category: read
 subject: Career change
 headline: Learning as a life changer
 note: 15
+stars: 3
 tags:
   - self-help
   - learning

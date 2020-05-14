@@ -5,9 +5,10 @@ shortTitle: The Artist's Way
 author: Julien Sobczak
 date: '2017-06-14'
 category: read
-subject: ???
+subject: Creativity
 headline: Literally, the Bible of Creativity. Go[o]d or Evil?
 note: 8
+stars: 1
 tags:
   - self-help
 unofficialTags:

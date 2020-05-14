@@ -8,6 +8,7 @@ category: read
 subject: Architecture
 headline: The timeless way of building software
 note: 17
+stars: 4
 tags:
   - architecture
   - craftsmanship

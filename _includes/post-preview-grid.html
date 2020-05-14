@@ -1,4 +1,4 @@
-<div class="post-preview post-{{post.categories}}-preview">
+<div class="post-preview post-{{post.categories}}-preview style{{ forloop.index0 | modulo:4 | plus:1}}">
 
   <div class="title">
     {% if post.shortTitle %}
@@ -6,19 +6,19 @@
     {% else %}
     <h3>{{ post.title }}</h3>
     {% endif %}
-    {% if post.note %}
+    {% if post.stars %}
     <div class="review-note">
       <i class="fas fa-star"></i>
-      {% if post.note >= 11 %}
+      {% if post.stars >= 2 %}
         <i class="fas fa-star"></i>
       {% endif %}
-      {% if post.note >= 14 %}
+      {% if post.stars >= 3 %}
         <i class="fas fa-star"></i>
       {% endif %}
-      {% if post.note >= 16 %}
+      {% if post.stars >= 4 %}
         <i class="fas fa-star"></i>
       {% endif %}
-      {% if post.note >= 18 %}
+      {% if post.stars >= 5 %}
         <i class="fas fa-star"></i>
       {% endif %}
     </div>
@@ -29,6 +29,7 @@
     </nav>
   </div>
 
+  {% comment %}FIXME
   {% if post.image %}
   <div class="image">
     <img class="ignore" src="{{ post.image }}">
@@ -37,5 +38,6 @@
     {% endcomment %}
   </div>
   {% endif %}
+  {% endcomment %}
 
 </div>

@@ -8,6 +8,7 @@ category: read
 subject: Leadership
 headline: An idea so simple, yet so powerful. A must-have book!
 note: 17
+stars: 4
 tags:
   - human
   - management

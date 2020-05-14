@@ -8,6 +8,7 @@ category: read
 subject: ZooKeeper
 headline: The reference for developers of distributed systems and administrators of applications using ZooKeeper in production
 note: 16
+stars: 4
 tags:
   - data
   - architecture

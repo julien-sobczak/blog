@@ -8,6 +8,7 @@ category: read
 subject: Happiness
 headline: This book was a happy surprise to me
 note: 17
+stars: 4
 tags:
   - human
 unofficialTags:

@@ -8,6 +8,7 @@ category: read
 subject: Creativity
 headline: The entertaining, fascinating, illuminating, story of a truly unique company.
 note: 19
+stars: 5
 tags:
   - management
 unofficialTags:

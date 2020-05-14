@@ -8,6 +8,7 @@ category: read
 subject: Reactive programming
 headline: The EIP catalog reimplemented with Akka
 note: 6
+stars: 1
 tags:
   - architecture
 image: 'https://images.gr-assets.com/books/1403533773l/22251127.jpg'

@@ -8,6 +8,7 @@ category: read
 subject: Feedback
 headline: Difficult conversations are … difficult but much more approachable with this book!
 note: 19
+stars: 5
 tags:
   - human
   - management

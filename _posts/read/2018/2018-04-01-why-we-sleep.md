@@ -6,8 +6,9 @@ author: Julien Sobczak
 date: '2018-04-01'
 category: read
 subject: Sleep
-headline: ???
+headline: A good read to book before a good night sleep
 note: 15
+stars: 3
 tags:
   - self-help
 image: 'https://images.gr-assets.com/books/1506854639l/34466963.jpg'

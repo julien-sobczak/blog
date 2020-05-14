@@ -8,6 +8,7 @@ category: read
 subject: Apache Mesos
 headline: Valuable advices targeted to Mesos framework developers delivered in a poorly edited book
 note: 8
+stars: 1
 tags:
   - devops
   - architecture

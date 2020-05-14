@@ -7,7 +7,8 @@ date: '2016-11-21'
 category: read
 subject: Scrumban Methodology
 headline: An important subject delivered in a very disorganized verbose book. Recommended for the more adventurous reader.
-note: 1
+note: 3
+stars: 1
 tags:
   - management
 unofficialTags:

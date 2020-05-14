@@ -8,6 +8,7 @@ category: read
 subject: JUnit
 headline: A quick introduction to the world of modern unit-testing.
 note: 14
+stars: 3
 tags:
   - craftsmanship
   - frameworks

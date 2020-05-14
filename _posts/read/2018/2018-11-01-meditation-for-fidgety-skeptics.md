@@ -8,6 +8,7 @@ category: read
 subject: Meditation
 headline: The book I was waiting for
 note: 15
+stars: 3
 tags:
   - self-help
 unofficialTags:

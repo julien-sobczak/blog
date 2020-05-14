@@ -8,6 +8,7 @@ category: read
 subject: Life
 headline: Start giving a f*ck on what is really important to you
 note: 14
+stars: 3
 tags:
   - self-help
   - productivity

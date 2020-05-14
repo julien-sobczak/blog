@@ -8,6 +8,7 @@ category: read
 subject: Change
 headline: A model to understand human nature and its evolution
 note: 16
+stars: 4
 tags:
   - human
   - management

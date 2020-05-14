@@ -8,6 +8,7 @@ category: read
 subject: Kubernetes
 headline: The perfect recipe for a technical book
 note: 17
+stars: 4
 tags:
   - devops
 unofficialTags:

@@ -8,6 +8,7 @@ category: read
 subject: System Administration
 headline: Everything missing from other technical system administration books
 note: 14
+stars: 3
 tags:
   - management
 unofficialTags:

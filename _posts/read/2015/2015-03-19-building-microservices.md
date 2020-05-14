@@ -8,6 +8,7 @@ category: read
 subject: Microservices
 headline: "An essential contribution to know if you should build microservices and what it means."
 note: 17
+stars: 4
 tags:
   - architecture
   - devops

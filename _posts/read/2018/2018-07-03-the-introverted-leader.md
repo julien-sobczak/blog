@@ -8,6 +8,7 @@ category: read
 subject: Introversion
 headline: A good complement to Quiet to improve your leadership at work
 note: 14
+stars: 3
 tags:
   - self-help
 unofficialTags:

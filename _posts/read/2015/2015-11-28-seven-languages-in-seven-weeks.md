@@ -8,6 +8,7 @@ category: read
 subject: Programming Languages
 headline: A pleasant reading to sharpen your programming skills and broaden your horizon
 note: 17
+stars: 4
 tags:
   - craftsmanship
   - languages

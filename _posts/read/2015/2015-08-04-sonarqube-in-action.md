@@ -8,6 +8,7 @@ category: read
 subject: SonarQube
 headline: A thorough, in-depth guide to Code Inspection with SonarQube
 note: 17
+stars: 4
 tags:
   - tools
   - craftsmanship

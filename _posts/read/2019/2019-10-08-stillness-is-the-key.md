@@ -8,6 +8,7 @@ category: read
 subject: Stoicism
 headline: The best book in the trilogy.
 note: 18
+stars: 5
 tags:
   - self-help
 unofficialTags:

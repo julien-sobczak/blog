@@ -8,6 +8,7 @@ category: read
 subject: Routines
 headline: The devil is in the details, but the details are missing from this book.
 note: 9
+stars: 1
 tags:
   - productivity
 unofficialTags:

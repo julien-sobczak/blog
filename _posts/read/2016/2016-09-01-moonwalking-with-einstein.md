@@ -8,6 +8,7 @@ category: read
 subject: Memory Techniques
 headline: The wonderful story of the author from his discovery of ancient memory techniques to the top of the US Memory Championship. A thorough work of research and a very enjoyable reading that you should not miss.
 note: 17
+stars: 4
 tags:
   - learning
 image: 'https://images.gr-assets.com/books/1347705105l/6346975.jpg'

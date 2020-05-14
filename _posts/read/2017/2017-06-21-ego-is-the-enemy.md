@@ -8,6 +8,7 @@ category: read
 subject: Egoism
 headline: Be somebody or do something. That's the question.
 note: 15
+stars: 3
 tags:
   - self-help
 image: 'https://images.gr-assets.com/books/1459114043l/27036528.jpg'

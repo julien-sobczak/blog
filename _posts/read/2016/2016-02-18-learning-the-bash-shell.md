@@ -8,6 +8,7 @@ category: read
 subject: Shell Programming
 headline: Every technology needs its reference book and it makes me no doubt that bash has found its one
 note: 15
+stars: 3
 tags:
   - tools
 unofficialTags:

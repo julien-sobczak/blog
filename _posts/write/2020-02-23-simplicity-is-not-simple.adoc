@@ -8,7 +8,6 @@ category: "write"
 subject: Simplicity
 tags:
   - craftsmanship
-  - management
 ---
 
 :page-liquid:

@@ -8,6 +8,7 @@ category: read
 subject: Success
 headline: Start seeing obstacles as not so bad, but simply as good.
 note: 15
+stars: 3
 tags:
   - self-help
 image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1391440316l/18668059.jpg'

@@ -8,6 +8,7 @@ category: read
 subject: Software Architecture
 headline: A brittle foundation to the topic
 note: 8
+stars: 1
 tags:
   - architecture
 image: 'https://images.gr-assets.com/books/1507020307l/35755822.jpg'

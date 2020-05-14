@@ -8,6 +8,7 @@ category: read
 subject: Cryptography
 headline: Learn to think like a cryptographer. The perfect introduction.
 note: 17
+stars: 4
 tags:
   - computer-science
 unofficialTags:

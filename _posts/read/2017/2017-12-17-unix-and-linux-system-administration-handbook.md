@@ -8,6 +8,7 @@ category: read
 subject: Linux
 headline: Very concise explanations + an exhaustive list of topics = a voluminous reference book
 note: 16
+stars: 4
 tags:
   - computer-science
 unofficialTags:

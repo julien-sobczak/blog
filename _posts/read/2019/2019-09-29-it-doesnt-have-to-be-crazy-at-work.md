@@ -8,6 +8,7 @@ category: read
 subject: Work
 headline: When common sense reinvents management practices
 note: 18
+stars: 5
 tags:
   - management
   - productivity

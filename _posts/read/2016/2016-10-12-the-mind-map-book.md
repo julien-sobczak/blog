@@ -8,6 +8,7 @@ category: read
 subject: MindMapping
 headline: The only reference (a little too verbose) you need to discover Mind Mapping and apply it successfully to your best advantage
 note: 15
+stars: 3
 tags:
   - learning
   - productivity

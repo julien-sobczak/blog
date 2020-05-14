@@ -8,6 +8,7 @@ category: read
 subject: Management
 headline: What happens when the corporate pyramid is reversed
 note: 14
+stars: 3
 tags:
   - management
 image: 'https://images.gr-assets.com/books/1328765371l/8038126.jpg'

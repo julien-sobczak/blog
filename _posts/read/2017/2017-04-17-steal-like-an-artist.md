@@ -8,6 +8,7 @@ category: read
 subject: Creativity
 headline: The hidden face of creativity
 note: 17
+stars: 4
 tags:
   - self-help
 unofficialTags:

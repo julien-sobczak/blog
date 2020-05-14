@@ -8,6 +8,7 @@ category: read
 subject: Reliability
 headline: Fantastic contribution to the operational field. One of the most important book published the last years
 note: 18
+stars: 5
 tags:
   - devops
   - architecture

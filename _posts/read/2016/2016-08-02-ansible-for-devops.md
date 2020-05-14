@@ -8,6 +8,7 @@ category: read
 subject: DevOps
 headline: Learn Ansible and DevOps best practices with this well-written and technically excellent guide
 note: 16
+stars: 4
 tags:
   - tools
   - devops

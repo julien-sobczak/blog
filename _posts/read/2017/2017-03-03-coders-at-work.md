@@ -8,6 +8,7 @@ category: read
 subject: Top-programmer interviews
 headline: Inspiring insights from top-experts.
 note: 15
+stars: 3
 tags:
   - craftsmanship
 image: 'https://images.gr-assets.com/books/1349026758l/6713575.jpg'

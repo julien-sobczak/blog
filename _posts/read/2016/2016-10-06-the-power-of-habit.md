@@ -8,6 +8,7 @@ category: read
 subject: Habits
 headline: Insightful but not the game changer I was expecting.
 note: 14
+stars: 3
 tags:
   - productivity
   - self-help

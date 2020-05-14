@@ -63,6 +63,9 @@
     cursor: pointer;
 }
 
+.hidden {
+  display: none;
+}
 
 .btn {
  	display: inline-block;
@@ -678,13 +681,13 @@ footer img.footer-me {
   margin-right: 10px;
   text-transform: uppercase;
 }
-#page-post header .label, #page-post #recommendations .label {
+#page-post header .label, #page-post #recommendations .label, #page-category .list-view .label {
   display: inline-block;
-  border-radius: 3px;
-  font-size: 14px;
+  border-radius: 0.2em;
+  font-size: 0.8em;
   font-weight: 600;
-  margin: 0 5px;
-  padding: 2px 6px;
+  margin: 0 0.4em;
+  padding: 0.2em 0.4em;
   color: white;
   text-transform: uppercase;
   text-decoration: none !important;

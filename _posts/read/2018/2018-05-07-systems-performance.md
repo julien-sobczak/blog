@@ -7,7 +7,8 @@ date: '2017-05-07'
 category: read
 subject: Systems Performance
 headline: From black art to systematic approach
-note: 15
+note: 16
+stars: 4
 tags:
   - devops
 unofficialTags:

@@ -8,6 +8,7 @@ category: read
 subject: Change management
 headline: "Eight steps to considerably increase your chance of success. Useful to any company, large and small, that needs to adapt in today's rapidly changing world."
 note: 15
+stars: 3
 tags:
   - people
   - management

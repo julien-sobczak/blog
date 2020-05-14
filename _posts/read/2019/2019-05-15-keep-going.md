@@ -8,6 +8,7 @@ category: read
 subject: Creativity
 headline:  A short burst of motivation to make things happen
 note: 17
+stars: 4
 tags:
   - self-help
 unofficialTags:

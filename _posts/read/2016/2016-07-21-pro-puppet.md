@@ -8,6 +8,7 @@ category: read
 subject: Puppet
 headline: A messy collection of advanced Puppet code. Valuable information delivered in a poorly organized book
 note: 5
+stars: 1
 tags:
   - devops
   - tools

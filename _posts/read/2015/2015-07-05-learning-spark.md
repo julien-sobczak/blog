@@ -8,6 +8,7 @@ category: read
 subject: Apache Spark
 headline: Better than the official documentation to get started but not so much helpful to truly learn Spark.
 note: 10
+stars: 1
 tags:
   - data
   - frameworks

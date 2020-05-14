@@ -8,6 +8,7 @@ category: read
 subject: Hadoop
 headline: Could have been better if the authors focuses on architectural concerns only
 note: 10
+stars: 1
 tags:
   - data
   - architecture

@@ -8,6 +8,7 @@ category: read
 subject: Algorithms
 headline: A common sense guide on trivial data structures and algorithms
 note: 9
+stars: 1
 tags:
   - computer-science
 unofficialTags:

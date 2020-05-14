@@ -8,6 +8,7 @@ category: read
 subject: Leadership
 headline: The football coach that changed the face of Silicon Valley
 note: 16
+stars: 4
 tags:
   - management
   - people

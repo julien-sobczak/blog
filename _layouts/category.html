@@ -5,7 +5,9 @@ layout: default
 <section class="category-content">
 
   <div>
-    {% if page.category == 'read' %}
+    {% if page.tag_name %}
+      <h2>{{ page.tag_name }}</h2>
+    {% elsif page.category == 'read' %}
       <h2>I'm readin' I.T.</h2>
     {% elsif page.category == 'write' %}
       <h2>I'm writin' I.T.</h2>
@@ -17,25 +19,59 @@ layout: default
     <hr class="star-primary">
   </div>
 
-  <div class="post-list-container mansory-view">
-    
-    <ul class="post-list">
+  <div class="filters">
+    {% if page.category == 'read' %}
+    <div class="rating-filter">
+      Filter by
+      <button id="filter-star-1"><i class="far fa-star fa-2x"></i></button>
+      <button id="filter-star-2"><i class="far fa-star fa-2x"></i></button>
+      <button id="filter-star-3"><i class="far fa-star fa-2x"></i></button>
+      <button id="filter-star-4"><i class="far fa-star fa-2x"></i></button>
+      <button id="filter-star-5"><i class="far fa-star fa-2x"></i></button>
+      <sup class="star-1-label">any rating</sup>
+      <sup class="star-2-label">2+ stars</sup>
+      <sup class="star-3-label">3+ stars</sup>
+      <sup class="star-4-label">4+ stars</sup>
+      <sup class="star-5-label">5 stars only</sup>
+    </div>
+    {% endif %}
+    <div class="display-mode">
+      Display mode
+      <button id="filter-list-mode"><i class="fas fa-list fa-2x"></i></button>
+      <button id="filter-grid-mode"><i class="fas fa-th fa-2x"></i></button>
+    </div>
+  </div>
 
-      {% if page.category == 'read' or page.category == 'write' or page.category == 'inspect' %}
-        {% for post in site.categories[page.category] %}
-          <li>
-            {% include post-preview.html %}
-            <div style="clear: both;"></div>
-          </li>
-        {% endfor %}
-      {% else %}
-        {% for post in site.posts %}
-          <li>
-            {% include post-preview.html %}
-            <div style="clear: both;"></div>
-          </li>
-        {% endfor %}
-      {% endif %}
+  {% assign posts = site.posts %}
+  {% if page.tag_name %}
+    {% assign posts = site.tags[page.tag] %}
+  {% elsif page.category == 'read' or page.category == 'write' or page.category == 'inspect' %}
+    {% assign posts = site.categories[page.category] %}
+  {% endif %}
+
+  <div class="post-list-container post-list grid-view hidden">
+    <!-- columns -->
+    <div class="grid-col grid-col--1"></div>
+    <div class="grid-col grid-col--2"></div>
+    <div class="grid-col grid-col--3"></div>
+    <div class="grid-col grid-col--4"></div>
+    <div class="grid-col grid-col--5"></div>
+  
+    {% for post in posts %}
+      <div class="grid-item {% if post.stars %}item-stars-{{ post.stars }}{% endif %}">
+        {% include post-preview-grid.html %}
+        <div style="clear: both;"></div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="post-list-container list-view">
+    <ul class="post-list">
+      {% for post in posts %}
+        <li class="list-item {% if post.stars %}item-stars-{{ post.stars }}{% endif %}">
+          {% include post-preview-list.html %}
+        </li>
+      {% endfor %}
     </ul>
   </div>
 

@@ -8,6 +8,7 @@ category: read
 subject: Unit Testing
 headline: Learn unit testing through a catalog of bad Test smells.
 note: 16
+stars: 4
 tags:
   - craftsmanship
 unofficialTags:

@@ -8,6 +8,7 @@ category: read
 subject: Memory Palace
 headline: The Memory Palace illustrated through advanced use cases. No explanation but really great examples
 note: 14
+stars: 3
 tags:
   - learning
 image: 'https://images.gr-assets.com/books/1349917314l/5149957.jpg'

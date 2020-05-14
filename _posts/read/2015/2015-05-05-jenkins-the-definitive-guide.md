@@ -8,6 +8,7 @@ category: read
 subject: Continuous Integration
 headline: Still the best introduction to the most popular CI Server but not a definitive guide.
 note: 12
+stars: 2
 tags:
   - devops
   - tools

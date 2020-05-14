@@ -8,6 +8,7 @@ category: read
 subject: Cryptography
 headline: A classic still useful to master the foundations of the discipline
 note: 17
+stars: 4
 tags:
   - classics
   - computer-science

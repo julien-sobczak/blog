@@ -8,6 +8,7 @@ category: read
 subject: Golang
 headline: The K&R of the Go programming language
 note: 17
+stars: 4
 tags:
   - languages
 unofficialTags:

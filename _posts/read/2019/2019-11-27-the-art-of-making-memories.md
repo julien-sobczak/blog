@@ -8,6 +8,7 @@ category: read
 subject: Happiness
 headline: A beautiful and relaxing reading.
 note: 16
+stars: 4
 tags:
   - people
 image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1546272513l/43245559.jpg'

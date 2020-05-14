@@ -8,6 +8,7 @@ category: read
 subject: Burnout
 headline: The true face of burnout in contrast to common misconceptions.
 note: 16
+stars: 4
 tags:
   - management
   - productivity

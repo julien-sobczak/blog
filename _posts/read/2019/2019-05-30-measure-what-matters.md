@@ -8,6 +8,7 @@ category: read
 subject: OKR
 headline: How successful enterprises are using OKRs and why you should start using them.
 note: 18
+stars: 5
 tags:
   - management
   - productivity

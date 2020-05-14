@@ -8,6 +8,7 @@ category: read
 subject: Introversion
 headline: The struggle of anxiety to succeed as an introvert
 note: 14
+stars: 3
 tags:
   - self-help
 unofficialTags:
