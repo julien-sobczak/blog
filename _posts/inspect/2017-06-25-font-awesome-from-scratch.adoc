@@ -7,7 +7,7 @@ category: inspect
 subject: Font Awesome
 toc: true
 tags:
-  - framworks
+  - frameworks
 unofficialTags:
   - web
 ---
