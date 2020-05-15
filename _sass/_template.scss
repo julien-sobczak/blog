@@ -1,161 +1,52 @@
 /*
- * Inherit from BootStrap
+ * Common
  */
 
- * {
- 	box-sizing: border-box;
- }
-
- html, body {
-     overflow-x: hidden;
-     width: 100%;
-     margin: 0px;
-     padding: 0px;
-     font-size: 100%;
- }
-
- body {
-  font-family: "Open Sans",sans-serif;
-	line-height: 1.4;
-	color: #333;
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
- .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-     font-family: inherit;
-     font-weight: 500;
-     line-height: 1.2;
-     color: inherit;
- }
- .h1, .h2, .h3, h1, h2, h3 {
-     margin-top: 1em;
-     margin-bottom: 0.5em;
- }
- h1, .h1 { font-size: 2em; }
- h2, .h2 { font-size: 1.6em; }
- h3, .h3 { font-size: 1.4em; }
- h4, .h4 { font-size: 1.2em; }
- h5, .h5 { font-size: 1.1em; }
- h6, .h6 { font-size: 1em; }
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  font-size: 100%;
+}
 
- p {
-   margin: 0 0 10px;
- }
- .lead p {
-   font-style: italic;
-   font-size: 110%;
- }
-
- a {
-   color: #337ab7;
-   text-decoration: none;
- }
- a:hover,
- a:focus {
-   color: #23527c;
-   text-decoration: underline;
- }
- a:focus {
-   outline: 5px auto -webkit-focus-ring-color;
-   outline-offset: -2px;
- }
-
- button, html input[type=button], input[type=reset], input[type=submit] {
-    cursor: pointer;
+body {
+  font-family: $font-base;
+	line-height: 1.4;
+  color: #333;
+  overflow-x: hidden;
 }
 
 .hidden {
   display: none;
 }
 
-.btn {
- 	display: inline-block;
- 	padding: 6px 12px;
- 	margin-bottom: 0;
- 	font-size: 1rem;
- 	font-weight: 400;
- 	line-height: 1.42857143;
- 	text-align: center;
- 	white-space: nowrap;
- 	vertical-align: middle;
- 	touch-action: manipulation;
- 	cursor: pointer;
- 	user-select: none;
- 	border: 1px solid transparent;
- 	border-radius: 4px;
-  text-decoration: none !important;
-}
 
-.container {
-  padding-right: 1em;
-  padding-left: 1em;
-  margin-right: auto;
-  margin-left: auto;
-}
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
-  }
-}
-@media (min-width: 1400px) {
-  .container {
-    width: 1370px;
-  }
-}
-@media (min-width: 1600px) {
-  .container {
-    width: 1570px;
-  }
-}
+/* Title */
 
-
-
-
-
-/*
- * Start Bootstrap
- */
-
-body {
-  font-family: 'Open Sans', sans-serif;
-  //font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  overflow-x: hidden;
-}
-p {
-  font-size: 18px;
-  line-height: $default-line-height;
-  margin: $default-line-height 0;
-}
-p.small {
-  font-size: 16px;
-}
-a,
-a:hover,
-a:focus,
-a:active,
-a.active {
-  color: #4185f4;
-  outline: none;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-transform: uppercase;
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+  font-family: $font-title;
+  font-weight: 500;
+  line-height: 1.2;
+  color: inherit;
   font-weight: 700;
+  text-transform: uppercase;
 }
+h1, h2, h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+h1 { font-size: 2rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.4rem; }
+h4 { font-size: 1.2rem; }
+h5 { font-size: 1.1rem; }
+h6 { font-size: 1rem; }
+
 hr.star-light,
 hr.star-primary {
   padding: 0;
@@ -165,33 +56,103 @@ hr.star-primary {
   max-width: 250px;
   margin: 25px auto 30px;
 }
-hr.star-light:after,
-hr.star-primary:after {
-  content: "\f005";
-  font-family: FontAwesome;
-  display: inline-block;
-  position: relative;
-  top: -0.8em;
-  font-size: 2em;
-  padding: 0 0.25em;
-}
 hr.star-light {
   border-color: white;
-}
-hr.star-light:after {
-  background-color: #4185f4;
-  color: white;
 }
 hr.star-primary {
   border-color: $color-gray;
 }
-hr.star-primary:after {
-  background-color: white;
-  color: $color-gray;
+
+
+/* Text */
+
+p {
+  margin: 1.5em 0;
 }
-.img-centered {
-  margin: 0 auto;
+.lead p {
+  font-style: italic;
+  font-size: 1.1em;
 }
+p.small {
+  font-size: 0.9em;
+}
+
+/* Links */
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+a:hover,
+a:focus,
+a:active,
+a.active {
+  color: #23527c;
+  text-decoration: underline;
+  outline: none;
+}
+a:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+
+/* Buttons */
+
+button, html input[type=button], input[type=reset], input[type=submit] {
+  cursor: pointer;
+}
+
+.btn {
+ 	display: inline-block;
+ 	padding: 0.5rem 1rem;
+ 	margin-bottom: 0;
+ 	font-size: 1rem;
+ 	font-weight: 400;
+ 	line-height: 1.5rem;
+ 	text-align: center;
+ 	white-space: nowrap;
+ 	vertical-align: middle;
+ 	touch-action: manipulation;
+ 	cursor: pointer;
+ 	user-select: none;
+ 	border: 1px solid transparent;
+ 	border-radius: 0.2em;
+  text-decoration: none !important;
+}
+
+/* Container */
+
+.container {
+  padding-right: 1em;
+  padding-left: 1em;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: $screen-small-min) {
+  .container {
+    width: calc($screen-small-min - 20px);
+  }
+}
+@media (min-width: $screen-medium-min) {
+  .container {
+    width: calc($screen-medium-min - 25px);
+  }
+}
+@media (min-width: $screen-large-min) {
+  .container {
+    width: calc($screen-large-min - 30px);
+  }
+}
+@media (min-width: $screen-xlarge-min) {
+  .container {
+    width: calc($screen-xlarge-min - 35px);
+  }
+}
+
+
+/*
+ * Template
+ */
 
 
 /* Menu */
@@ -203,7 +164,7 @@ hr.star-primary:after {
   right: 0;
   top: 0;
   background: $color-gray;
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: $font-title;
   text-transform: uppercase;
   font-weight: 700;
   border: none;
@@ -244,7 +205,6 @@ hr.star-primary:after {
   width: 100%;
 }
 
-
 /* The container around the collapsible menu */
 .navbar-collapse {
   display: none;
@@ -272,18 +232,24 @@ hr.star-primary:after {
   padding: 0.5em 1em;
 }
 .navbar-default li a:hover {
-  color: #4185f4;
+  color: $color-base;
   outline: none;
 }
 .navbar-default li.active a {
   color: white !important;
-  background: #4185f4;
+  background: $color-base;
 }
-
 
 .navbar-default .navbar-brand {
   padding: 1em;
 }
+
+/* Zen Mode */
+
+// How it works?
+// Two toggle buttons on the right corner allows the user to enable/disable the zen mode.
+// In zen mode, we hide the main menu (but only in affix mode, but on page display).
+// The zen mode is only available on page posts.
 
 button#zen-mode-in,
 button#zen-mode-out {
@@ -303,16 +269,18 @@ button#zen-mode-out {
 }
 
 /* In Zen mode, hiden the minus button, and show the plus button to restore the navbar */
-.affix.zen button#zen-mode-in {
+#page-post.affix.zen button#zen-mode-in {
   display: none;
   transition: all 1s linear;
 }
-.affix button#zen-mode-out.visible {
+#page-post.affix button#zen-mode-out.visible {
   display: block;
-  transition: all 1s linear;
 }
 
-@media (min-width: 1024px) {
+/* Responsive Menu */
+// On large-enough screen, the collapsed menu is displayed directly in the menu bar.  
+
+@media (min-width: $screen-medium-min) {
  
   /* Increase menu size */
   .navbar-default {
@@ -335,17 +303,19 @@ button#zen-mode-out {
     font-size: 1.4em;
   }
 
-  .affix .navbar-default button#zen-mode-in {
+  #page-post.affix .navbar-default button#zen-mode-in {
     display: block;
   }
 
-  .affix.zen .navbar-default {
+  #page-post.affix.zen .navbar-default {
     /* Move the navbar on the left of the screen */
     left: -100vw;
     right: 100vw;
     overflow: hidden;
   }
 
+  /* Affix mode */
+  // We reduce the menu height and adjust text size accordingly.
 
   /* On post page make the bar "disappear" to keep the reader focused on the content. */
   #page-post.affix .navbar-default {
@@ -391,35 +361,36 @@ button#zen-mode-out {
 
 }
 
-
-// Prevent the header from being too large while there is not so much to display
+// HACK: Prevent the header from being too large (there is not so much to display)
 body > nav .container, body > header .container {
-  max-width: 1170px !important;
+  max-width: $screen-medium-max !important;
 }
 
+/* Buttons */
 
-
-
+// Main button on the main page
 .btn-outline {
   color: white;
-  font-size: 20px;
+  font-size: 1.4rem;
   border: solid 2px white;
   background: transparent;
   transition: all 0.3s ease-in-out;
-  margin-top: 15px;
-  border-radius: 5px;
+  margin-top: 1rem;
+  border-radius: 4px;
 }
 .btn-outline:hover,
 .btn-outline:focus,
 .btn-outline:active,
 .btn-outline.active {
-  color: #4185f4;
+  color: $color-base;
   background: white;
   border: solid 2px white;
 }
 .btn-outline-colored {
-  background-color: #4185f4;
+  background-color: $color-base;
 }
+
+// Secondary buttons on the footer
 .btn-social {
   display: inline-block;
   height: 50px;
@@ -439,10 +410,9 @@ body > nav .container, body > header .container {
 
 /* Custom */
 
-
 .manuscript {
-  font-family: 'Nothing You Could Do', cursive;
-  font-size: 120%;
+  font-family: $font-manuscript;
+  font-size: 1.2em;
 }
 
 #page-home > * {
@@ -450,7 +420,7 @@ body > nav .container, body > header .container {
   padding: 100px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: $screen-xsmall-max) {
   #page-home > * {
     padding: 50px 15px;
   }
@@ -462,7 +432,7 @@ header {
   background-image: url("../img/pattern.png");
   background-color: $color-base;
   color: white;
-  font-size: 14px;
+  font-size: 0.8rem; /* Used for the home page but not ideal for post pages */
   padding-top: 150px !important;
 }
 #page-home header #logo {
@@ -483,7 +453,7 @@ header {
 
 #page-home header .intro-text .name {
   display: block;
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: $font-title;
   text-transform: uppercase;
   font-weight: 700;
   font-size: 2em;
@@ -499,7 +469,7 @@ header {
 #page-home header blockquote {
   font-size: 1em;
 }
-@media (min-width: 768px) {
+@media (min-width: $screen-small-min) {
   #page-home header .intro-text .name {
     font-size: 4.75em;
   }
@@ -515,7 +485,6 @@ header {
 }
 
 
-
 /* Sections */
 
 section {
@@ -525,10 +494,9 @@ section {
 section .categories {
   margin: 50px 0 0;
   display: flex;
-  font-size: 14px;
   flex-direction: column;
 }
-@media (min-width: 768px) {
+@media (min-width: $screen-small-min) {
   section .categories  {
     flex-direction: row;
   }
@@ -563,7 +531,7 @@ section .categories ul {
 }
 
 .text-colored {
-  color: #4185f4;
+  color: $color-base;
 }
 
 
@@ -578,14 +546,14 @@ section h2 {
   font-size: 2em;
 }
 section.colored {
-  background: #4185f4;
+  background: $color-base;
   color: white;
 }
 section.colored a {
   text-decoration: underline;
   color: inherit;
 }
-@media (max-width: 767px) {
+@media (max-width: $screen-xsmall-max) {
   section {
     padding: 75px 0;
   }
@@ -599,6 +567,7 @@ section.colored a {
 #about-me .row {
   margin: 50px 0;
   padding: 0 50px;
+  line-height: 1.7em;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -606,7 +575,7 @@ section.colored a {
 #about-me .col {
   text-align: left;
 }
-@media (min-width: 768px) {
+@media (min-width: $screen-small-min) {
   #about-me .row {
     flex-direction: row;
   }
@@ -624,7 +593,7 @@ section.colored a {
 footer {
   padding: 0 !important; /* Cancel padding because footer is composed of two rows with distinct colors */
   color: white;
-  font-size: 14px;
+  font-size: 0.9rem;
   text-align: center;
   position: relative;
 }
@@ -638,7 +607,7 @@ footer {
   justify-content: space-around;
 }
 
-@media (min-width: 768px) {
+@media (min-width: $screen-small-min) {
   .footer-above {
     flex-direction: row;
   }
@@ -650,7 +619,7 @@ footer img.footer-me {
   visibility: hidden;
 }
 
-@media (min-width: 992px) {
+@media (min-width: $screen-medium-min) {
   footer img.footer-me {
     visibility: visible;
     display: block;
@@ -684,7 +653,7 @@ footer img.footer-me {
 
 /* Reading progress indicator */
 #reading-bar {
-  background: #4185f4;
+  background: $color-base;
   width: 0%;
   height: 5px;
   transition: all .3s ease;
@@ -712,11 +681,12 @@ footer img.footer-me {
 
 #page-post header {
   padding-bottom: 100px;
+  font-size: 1rem;
 }
 #page-post header .date {
   display: inline-block;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.9em;
   font-weight: 300;
   margin-right: 10px;
   text-transform: uppercase;
@@ -724,7 +694,7 @@ footer img.footer-me {
 #page-post header .label, #page-post #recommendations .label, #page-category .list-view .label {
   display: inline-block;
   border-radius: 0.2em;
-  font-size: 0.8em;
+  font-size: 0.9em;
   font-weight: 600;
   margin: 0 0.4em;
   padding: 0.2em 0.4em;
@@ -755,7 +725,7 @@ footer img.footer-me {
   color: #444;
   font-weight: 600;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 0.8em;
   line-height: 27px;
   display: inline-block;
   padding: 0 5px;
@@ -766,7 +736,7 @@ footer img.footer-me {
   color: white;
 }
 #page-post header .author-name {
-  font-size: 20px;
+  font-size: 1.4em;
   color: white;
 }
 #page-post header .author-name a {
@@ -776,33 +746,10 @@ footer img.footer-me {
 #page-post header .author-name a:hover {
   text-decoration: underline;
 }
-#page-post header .share-label {
-  font-size: 13px;
-  font-weight: 300;
-  margin: 0;
-  margin-top: 25px;
+#page-post header h3 {
+  font-family: $font-manuscript;
 }
-#page-post header ul.share-links {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  margin-top: 10px;
-}
-#page-post header ul.share-links li {
-  display: inline-block;
-  background: white;
-  border: 1px solid white;
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  margin-right: 15px;
-  text-align: center;
-}
-#page-post header ul.share-links li a {
-  color: $color-gray;
-  font-size: 17px;
-  line-height: 30px;
-}
+
 #page-post header.post-title .icon-category {
   float: right;
   margin-top: 30px;
@@ -825,7 +772,7 @@ footer img.footer-me {
   background-image: url(../img/iminspectinit-icon.png);
 }
 
-@media (max-width: 800px) {
+@media (max-width: $screen-xsmall-max) {
   #page-post header {
     padding: 100px 0 50px 0 !important;
     margin: 0;
@@ -841,42 +788,6 @@ footer img.footer-me {
   }
 }
 
-
-#page-post .likes, #page-post .dislikes {
-  position: relative;
-  width: 50%;
-  font-size: 18px;
-  line-height: 30px;
-  text-align: center;
-  margin-bottom: 35px;
-
-  i {
-    display: block;
-    margin-bottom: 20px;
-  }
-
-  ul {
-    margin: 0;
-    padding: 0;
-    font-family: 'Oswald', sans-serif;
-    list-style-type: none;
-  }
-}
-
-#page-post .likes {
-  float: left;
-
-}
-
-#page-post .dislikes {
-  float: right;
-}
-
-#page-post header h3 {
-  font-family: 'Nothing You Could Do', cursive;
-}
-
-// Split main content into 3 columns including 2 sticky ones
 #page-post article {
   width: 100%;
   margin: 0 auto;
@@ -888,23 +799,32 @@ footer img.footer-me {
   }
 }
 
-@media (min-width: 800px) {
+@media (max-width: $screen-small-max) {
   #page-post article {
     max-width: 800px;
+    font-size: 1em;
+    line-height: 1.5em;
   }
 }
 
+@media (min-width: $screen-large-min) {
+  #page-post article {
+    max-width: 850px;
+    font-size: 1.2em;
+    line-height: 1.7em;
+  }
+}
 
 #page-post p.headline {
   @extend .manuscript;
   text-align: center;
-  font-size: 140%;
+  font-size: 1.4em;
 }
 
 #page-post .star {
   text-align: center;
   margin: 40px 0;
-  font-size: 14px;
+  font-size: 0.8em;
 
   i {
     background-color: white;
@@ -931,9 +851,9 @@ img.cover {
   border-left: 8px solid $color-gray;
   border-right: 8px solid $color-gray;
   margin-top: 70px;
-  font-family: "Montserrat";
   padding: 10px 20px;
   padding-bottom: 40px;
+  font-size: 0.8em;
   background-color: $color-base;
   color: white;
 
@@ -947,15 +867,13 @@ img.cover {
   }
 
   p strong {
-    font-size: 120%;
+    font-size: 1.2em;
     font-style: normal;
     border-bottom: 6px dotted $color-gray;
   }
   p {
     margin: 20px 0;
     margin-right: 40px;
-    font-size: 16px;
-    line-height: 150%;
   }
   a {
     position: absolute;
@@ -963,7 +881,7 @@ img.cover {
     left: 0;
     right: 0;
     padding: 5px 0;
-    font-size: 90%;
+    font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 600;
     text-align: center;
@@ -1007,18 +925,18 @@ figure {
         margin-right: 25px; /* add negative space with labels */
 
         /* https://www.konbini.com/fr/gaming/retour-sur-30-jeux-cultes-de-la-game-boy-qui-fete-ses-30-ans/ */
-        box-shadow: inset 0 -5px 0 #4185f4;
+        box-shadow: inset 0 -5px 0 $color-base;
         transition: box-shadow 0.3s ease-in-out;
       }
       a:hover {
-        box-shadow: inset 0 -30px 0 #4185f4;
+        box-shadow: inset 0 -30px 0 $color-base;
       }
     }
 
     .subtitle {
       display: block;
       font-size: 1.2em;
-      font-family: 'Nothing You Could Do', cursive;
+      font-family: $font-manuscript;
       margin-top: 10px; /* add space with title */
     }
   }
@@ -1028,7 +946,7 @@ figure {
 /* Asciidoc */
 
 .listingblock {
-  font-size: 15px; // Be sure to display 80 characters per line
+  font-size: 0.9em; // Be sure to display 80 characters per line
   border-top: 1px solid gray;
 
   pre {
@@ -1036,7 +954,7 @@ figure {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: $screen-small-min) {
   .listingblock {
     // replace scrollbar by a border
     border-bottom: 1px solid gray;
@@ -1097,7 +1015,7 @@ figure {
 
 
 .admonitionblock {
-  font-size: 90%;
+  font-size: 0.8em;
   position: relative;
   padding: 30px 110px 30px 30px;
   min-height: 100px;
@@ -1191,7 +1109,7 @@ article {
 }
 
 #footnotes .footnote {
-  font-size: 75%;
+  font-size: 0.75em;
   margin: 20px 15px;
 }
 
@@ -1206,42 +1124,41 @@ article {
 // Callout
 
 .conum[data-value] {
-	display:inline-block;
-	color:#fff !important;
-	background-color:rgba(0,0,0,0.8);
-	-webkit-border-radius:100px;
-	border-radius:100px;
-	text-align:center;
-	width:1.67em;
-	height:1.67em;
-	font-size:0.75em;
-	line-height:1.67em;
-	font-family:"Open Sans", "Sans", sans-serif;
-	font-style:normal;
-	font-weight:bold
+	display: inline-block;
+	color: #fff !important;
+	background-color: rgba(0,0,0,0.8);
+	border-radius: 100px;
+	text-align: center;
+	width: 1.67em;
+	height: 1.67em;
+	font-size: 0.75em;
+	line-height: 1.67em;
+	font-family: $font-base;
+	font-style: normal;
+	font-weight: bold;
 }
 .conum[data-value] * {
-	color:#fff !important
+	color: #fff !important;
 }
 .conum[data-value]+b {
-	display:none
+	display: none;
 }
 .conum[data-value]:after {
-	content:attr(data-value)
+	content: attr(data-value);
 }
 pre .conum[data-value] {
-	position:relative;
-	top:-0.125em
+	position: relative;
+	top: -0.125em;
 }
 b.conum * {
-	color:inherit !important
+	color: inherit !important;
 }
 .conum:not([data-value]):empty {
-	display:none
+	display: none;
 }
 .colist {
-    margin-top: 15px;
-    font-size: 90%;
+  margin-top: 15px;
+  font-size: 0.9em;
 }
 .colist td {
   padding: 5px 10px;

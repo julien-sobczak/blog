@@ -24,7 +24,7 @@
   display: none;
 }
 
-@media ( min-width: 1080px ) {
+@media ( min-width: $screen-medium-min ) {
   .filters .rating-filter {
     position: relative;
     float: left;
@@ -136,19 +136,19 @@
   .grid-col--2, .grid-col--3, .grid-col--4 { display: none; }
 
   /* 3 columns at medium size */
-  @media ( min-width: 768px ) {
+  @media ( min-width: $screen-small-min ) {
     .grid-col { width: 33.333%; }
     .grid-col--2 { display: block; } /* show column 2 */
   }
 
   /* 4 columns at large size */
-  @media ( min-width: 1080px ) {
+  @media ( min-width: $screen-large-min ) {
     .grid-col { width: 25%; }
     .grid-col--3 { display: block; } /* show column 3 */
   }
 
   /* 5 columns at large size */
-  @media ( min-width: 1400px ) {
+  @media ( min-width: $screen-xlarge-min ) {
     .grid-col { width: 20%; }
     .grid-col--4 { display: block; } /* show column 4 */
   }
@@ -222,7 +222,6 @@
   .post-inspect-preview.style4 .title::after { background-position:  100px -300px; }
 
 
-
   .post-preview .title h3 {
     font-size: 20px;
     text-shadow: 1px 1px 1px black;
@@ -236,7 +235,7 @@
     margin: 0; /* TODO delete with reset.css */
     margin-top: 25px;
     margin-bottom: 25px;
-    font-family: 'Roboto', Sans-Serif;
+    font-family: $font-base;
     text-align: center;
     font-size: 14px;
     font-weight: 300;
