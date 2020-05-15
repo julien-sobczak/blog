@@ -807,6 +807,14 @@ footer img.footer-me {
   }
 }
 
+@media (min-width: $screen-medium-min) {
+  #page-post article {
+    max-width: 800px;
+    font-size: 1.1em;
+    line-height: 1.6em;
+  }
+}
+
 @media (min-width: $screen-large-min) {
   #page-post article {
     max-width: 850px;
@@ -1017,11 +1025,36 @@ figure {
 .admonitionblock {
   font-size: 0.8em;
   position: relative;
-  padding: 30px 110px 30px 30px;
+  padding: 30px;
   min-height: 100px;
   margin-top: 35px;
   margin-bottom: 35px;
+  border-left: 10px solid rgba(0,0,0,.4);
 }
+
+@media (min-width: $screen-small-min) {
+  .admonitionblock {
+    padding-right: 110px; /* Add a little space for the background icon */
+    border-left: none; /* Replace the border by a beautiful icon: */
+  }
+
+  .admonitionblock::after {
+    content: '';
+    background-image: url('../img/icons-list-posts.png');
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+  }
+  .note::after            { background-position: -300px -400px; }
+  .caution::after         { background-position: 0 -400px; }
+  .experiment::after      { background-position: -100px -400px; }
+  .congratulations::after { background-position: -200px -400px; }
+  .tip::after             { background-position: -300px -400px; }
+  .remember::after        { background-position: 0 -500px; }
+}
+
 .admonitionblock .icon {
   display: none;
 }
@@ -1034,22 +1067,6 @@ figure {
 .congratulations { background-color: #77B3D5; color: white !important; }
 .tip             { background-color: #F6B92B; color: black !important; }
 .remember        { background-color: #8DD8F8; color: black !important; }
-
-.admonitionblock::after {
-  content: '';
-  background-image: url('../img/icons-list-posts.png');
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  bottom: 0px;
-  right: 0;
-}
-.note::after            { background-position: -300px -400px; }
-.caution::after         { background-position: 0 -400px; }
-.experiment::after      { background-position: -100px -400px; }
-.congratulations::after { background-position: -200px -400px; }
-.tip::after             { background-position: -300px -400px; }
-.remember::after        { background-position: 0 -500px; }
 
 .caution p {
   z-index: 10;
