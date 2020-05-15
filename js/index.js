@@ -117,6 +117,10 @@ window.addEventListener('load', (event) => {
   }, false);
 
 
+  //
+  // Posts List
+  //
+
   // Mansory effect 
   var grid = document.querySelector('.grid-view');
   if (grid) {
@@ -191,6 +195,10 @@ window.addEventListener('load', (event) => {
     }
   }
 
+  // 
+  // Zen Mode
+  // 
+  
   // Support a zen mode on long post
   const zenButtonIn = document.getElementById('zen-mode-in');
   const zenButtonOut = document.getElementById('zen-mode-out');

@@ -954,7 +954,7 @@ figure {
 /* Asciidoc */
 
 .listingblock {
-  font-size: 0.9em; // Be sure to display 80 characters per line
+  font-size: 0.8em; // Be sure to display 80 characters per line
   border-top: 1px solid gray;
 
   pre {
@@ -1023,7 +1023,7 @@ figure {
 
 
 .admonitionblock {
-  font-size: 0.8em;
+  font-size: 0.9em;
   position: relative;
   padding: 30px;
   min-height: 100px;
@@ -1034,11 +1034,20 @@ figure {
 
 @media (min-width: $screen-small-min) {
   .admonitionblock {
-    padding-right: 110px; /* Add a little space for the background icon */
     border-left: none; /* Replace the border by a beautiful icon: */
   }
-
-  .admonitionblock::after {
+  .admonitionblock.caution,
+  .admonitionblock.experiment,
+  .admonitionblock.congratulations,
+  .admonitionblock.tip,
+  .admonitionblock.remember {
+    padding-right: 110px; /* Add a little space for the background icon */
+  }
+  .admonitionblock.caution::after,
+  .admonitionblock.experiment::after,
+  .admonitionblock.congratulations::after,
+  .admonitionblock.tip::after,
+  .admonitionblock.remember::after {
     content: '';
     background-image: url('../img/icons-list-posts.png');
     width: 100px;
@@ -1047,12 +1056,11 @@ figure {
     bottom: 0px;
     right: 0;
   }
-  .note::after            { background-position: -300px -400px; }
   .caution::after         { background-position: 0 -400px; }
   .experiment::after      { background-position: -100px -400px; }
   .congratulations::after { background-position: -200px -400px; }
   .tip::after             { background-position: -300px -400px; }
-  .remember::after        { background-position: 0 -500px; }
+  .remember::after        { background-position: 0 -200px; }
 }
 
 .admonitionblock .icon {
@@ -1061,12 +1069,12 @@ figure {
 .admonitionblock .content {
   width: 100%;
 }
-.note            { background-color: #F6B92B; color: black !important; }
+.note            { background-color: #F1F1F1; color: black !important; }
 .caution         { background-color: #024F79; color: white !important; }
 .experiment      { background-color: #024F79; color: white !important; }
 .congratulations { background-color: #77B3D5; color: white !important; }
 .tip             { background-color: #F6B92B; color: black !important; }
-.remember        { background-color: #8DD8F8; color: black !important; }
+.remember        { background-color: #62BCA0; color: black !important; }
 
 .caution p {
   z-index: 10;
@@ -1079,17 +1087,17 @@ figure {
   margin-bottom: 25px;
 }
 
-.note .content > .title,
 .caution .content > .title,
 .experiment .content > .title,
 .tip .content > .title,
+.remember .content > .title,
 .congratulations .content > .title {
   color: white;
   text-shadow: 1px 1px black;
   border-bottom: 1px solid white;
 }
 
-.remember .content > .title {
+.note .content > .title {
   color: black;
   text-shadow: 1px 1px white;
   border-bottom: 1px solid black;

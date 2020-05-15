@@ -57,10 +57,10 @@ layout: default
     <div class="grid-col grid-col--4"></div>
     <div class="grid-col grid-col--5"></div>
   
+    {% assign previous_style = "1" %}{% comment %}see comment in included file{% endcomment %}
     {% for post in posts %}
       <div class="grid-item {% if post.stars %}item-stars-{{ post.stars }}{% endif %}">
         {% include post-preview-grid.html %}
-        <div style="clear: both;"></div>
       </div>
     {% endfor %}
   </div>

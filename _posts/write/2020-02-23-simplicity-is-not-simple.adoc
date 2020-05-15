@@ -430,10 +430,9 @@ I would like to make it clear, *doing the most simple thing is a bad strategy to
 When facing a decision, choosing the most simple option may seem like a sensible approach, but it is not. *Don’t look for the simplest idea but for the best idea*. The best idea may seem complex at first, and may be more difficult to absorb, but it will bring you the most long-term benefits. If all that matters to you is to make the simplest choice, it means that you don't care about simplicity. Period.
 
 [TIP]
-.Tip
-Stop doing the most simple thing. *Start valuing the most simple result*.
+✔️ Stop doing the most simple thing. *Start valuing the most simple result*.
 
-### Don't use principles as rules
+### ❌ Don't use principles as rules
 
 *Simplicity pushes to the extreme can only result in complexity*. For example, writing a unit test for every function in the code is a very simple rule to follow (I haven’t said it is a good rule), but if you follow blindly this rule, you will no longer be able to change any single line without breaking a test. No refactoring is possible in these conditions. Writing good tests requires a mix of experience, intuition, and experimentation. This is not simple. But that’s the only way to have simple tests.
 
@@ -446,8 +445,7 @@ This problem commonly occurs when principles are interpreted as rules. In fact, 
 The problem is our brain loves rules to make sense of the world. It’s a lot harder to accept, “Well, come up with some experiments and see what happens.” But the truth is *thinking is the only way to make things simple*. Therefore, you must work very hard and not succumb to the temptation to see inspiring principles as stupid rules.
 
 [TIP]
-.Tip
-*Use principles to make you think*, not to not have to think.
+✔️ *Use principles to make you think*, not to not have to think.
 
 ### Don't simplify locally
 
@@ -458,8 +456,7 @@ The interface between your code and your users is another good example. Don’t 
 *Simplicity is not black or white*. You need to appreciate shades of gray to determine the right balance between simplicity and essential complexity.
 
 [TIP]
-.Tip
-Simplicity for you can mean complexity for others. Don’t optimize locally. *Think globally*.
+✔️c Simplicity for you can mean complexity for others. Don’t optimize locally. *Think globally*.
 
 
 ## Conclusion

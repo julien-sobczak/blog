@@ -1,4 +1,7 @@
-<div class="post-preview post-{{post.categories}}-preview style{{ forloop.index0 | modulo:4 | plus:1}}">
+{% comment %}We simulate a random number but make sure to not use the previous color.{% endcomment %}
+{% assign current_style = '1,2,3,4' | split:',' | where_exp:'item', 'item != previous_style' | sample:1 %}
+{% assign previous_style = current_style %}
+<div class="post-preview post-{{ post.categories }}-preview style{{ current_style }}">
 
   <div class="title">
     {% if post.shortTitle %}

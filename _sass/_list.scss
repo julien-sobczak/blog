@@ -24,7 +24,7 @@
   display: none;
 }
 
-@media ( min-width: $screen-medium-min ) {
+@media (min-width: $screen-medium-min) {
   .filters .rating-filter {
     position: relative;
     float: left;
@@ -50,8 +50,8 @@
 }
 
 /* default link color is blue */
-.rating-filter button .fa-star:before {
-  font-weight: 400 !important; /* simulate far */
+.rating-filter button .fa-star {
+  color: rgb(51,51,51);
 }
 
 .star-1-label,
@@ -69,14 +69,14 @@
 }
 
 /* See https://stackoverflow.com/a/27993987 */
-/* We change the style on previous siblings to simulate the .fas class */
-.rating-filter:hover button .fa-star:before,
-.rating-filter button:hover .fa-star:before {
-  font-weight: 900 !important; /* simulate fas */
+/* We change the style on previous siblings too */
+.rating-filter:hover button .fa-star,
+.rating-filter button:hover .fa-star {
+  color: black;
 }
-/* We change the style on next siblings to simulate the .far class */
-.rating-filter button:hover ~ button .fa-star:before {
-  font-weight: 400 !important; /* simulate far */
+/* We change the style on next siblings to restore the default style */
+.rating-filter button:hover ~ button .fa-star {
+  color: rgb(51,51,51) !important;
 }
 /* + display the labels associated with the currently hovered button */
 .rating-filter button:nth-of-type(1):hover ~ .star-1-label,
@@ -86,6 +86,7 @@
 .rating-filter button:nth-of-type(5):hover ~ .star-5-label {
   display: inline-block;
 }
+
 
 .list-view, .grid-view {
   clear: both;
@@ -121,6 +122,7 @@
 }
 
 .grid-view {
+  $item-dark-color: #444;
 
   /* Using floats */
   .grid-col {
@@ -136,19 +138,19 @@
   .grid-col--2, .grid-col--3, .grid-col--4 { display: none; }
 
   /* 3 columns at medium size */
-  @media ( min-width: $screen-small-min ) {
+  @media (min-width: $screen-small-min) {
     .grid-col { width: 33.333%; }
     .grid-col--2 { display: block; } /* show column 2 */
   }
 
   /* 4 columns at large size */
-  @media ( min-width: $screen-large-min ) {
+  @media (min-width: $screen-large-min) {
     .grid-col { width: 25%; }
     .grid-col--3 { display: block; } /* show column 3 */
   }
 
   /* 5 columns at large size */
-  @media ( min-width: $screen-xlarge-min ) {
+  @media (min-width: $screen-xlarge-min) {
     .grid-col { width: 20%; }
     .grid-col--4 { display: block; } /* show column 4 */
   }
@@ -185,6 +187,12 @@
     min-height: 100px;
     color: white;
   }
+  /* Exception(s): */
+  .post-read-preview.style4 .title,
+  .post-write-preview.style4 .title {
+    color: $item-dark-color;
+  }
+
   .post-preview .title::after {
     content: '';
     background-image: url(../img/icons-list-posts.png);
@@ -194,28 +202,28 @@
     bottom: 0px;
     right: 0;
   }
-  .post-read-preview.style1 .title        { background-color: #EB5546;  }
-  .post-read-preview.style2 .title        { background-color: #97BCB4;  }
-  .post-read-preview.style3 .title        { background-color: #FFC33E;  }
-  .post-read-preview.style4 .title        { background-color: #E4E1D0;  }
+  .post-read-preview.style1 .title        { background-color: #EB5546; }
+  .post-read-preview.style2 .title        { background-color: #97BCB4; }
+  .post-read-preview.style3 .title        { background-color: #FFC33E; }
+  .post-read-preview.style4 .title        { background-color: #E4E1D0; }
   .post-read-preview.style1 .title::after { background-position:      0 0; }
   .post-read-preview.style2 .title::after { background-position: -100px 0; }
   .post-read-preview.style3 .title::after { background-position: -200px 0; }
   .post-read-preview.style4 .title::after { background-position:  100px 0; }
 
-  .post-write-preview.style1 .title        { background-color: #62BCA0;  }
-  .post-write-preview.style2 .title        { background-color: #D65625;  }
-  .post-write-preview.style3 .title        { background-color: #62BCA0;  }
-  .post-write-preview.style4 .title        { background-color: #F0E5C7;  }
+  .post-write-preview.style1 .title        { background-color: #62BCA0; }
+  .post-write-preview.style2 .title        { background-color: #D65625; }
+  .post-write-preview.style3 .title        { background-color: #62BCA0; }
+  .post-write-preview.style4 .title        { background-color: #F0E5C7; }
   .post-write-preview.style1 .title::after { background-position:      0 -200px; }
   .post-write-preview.style2 .title::after { background-position: -100px -200px; }
   .post-write-preview.style3 .title::after { background-position:  100px -200px; }
   .post-write-preview.style4 .title::after { background-position: -200px -200px; }
 
-  .post-inspect-preview.style1 .title        { background-color: #FF3E7A;  }
-  .post-inspect-preview.style2 .title        { background-color: #70C6E7;  }
-  .post-inspect-preview.style3 .title        { background-color: #FFC33E;  }
-  .post-inspect-preview.style4 .title        { background-color: #6A77AB;  }
+  .post-inspect-preview.style1 .title        { background-color: #FF3E7A; }
+  .post-inspect-preview.style2 .title        { background-color: #70C6E7; }
+  .post-inspect-preview.style3 .title        { background-color: #FFC33E; }
+  .post-inspect-preview.style4 .title        { background-color: #6A77AB; }
   .post-inspect-preview.style1 .title::after { background-position:      0 -300px; }
   .post-inspect-preview.style2 .title::after { background-position: -100px -300px; }
   .post-inspect-preview.style3 .title::after { background-position: -200px -300px; }
@@ -229,6 +237,11 @@
     text-transform: none;
     font-family: 'Righteous', cursive;
     z-index: 10; // to be above icon ::before
+  }
+  /* Exception(s): */
+  .post-read-preview.style4 .title h3,
+  .post-write-preview.style4 .title h3 {
+    text-shadow: 1px 1px 1px white;
   }
 
   .post-preview .title h4 {
@@ -295,6 +308,11 @@
     font-size: 0.8rem;
     margin: 0.5rem;
     text-align: center;
+  }
+  /* Exception(s): */
+  .post-read-preview.style4 .review-note,
+  .post-write-preview.style4 .review-note { 
+    color: $item-dark-color; 
   }
 
 }
