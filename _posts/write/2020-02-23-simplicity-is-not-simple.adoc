@@ -421,7 +421,7 @@ I invite you to take notice all around you to all the abstractions that make you
 
 The following is a list of guidelines to make sure your quest of simplicity does not end in the land of complexity.
 
-### Don't do simple things
+### ❌ Don't do simple things
 
 Everyone understands simplicity is important. Clean code makes it easier to read, debug, and evolve it. But not everyone understands the path to simplicity.
 
@@ -447,7 +447,7 @@ The problem is our brain loves rules to make sense of the world. It’s a lot ha
 [TIP]
 ✔️ *Use principles to make you think*, not to not have to think.
 
-### Don't simplify locally
+### ❌ Don't simplify locally
 
 Most programming languages support a garbage collector, a complicated piece of code, that makes the life of programmers easier. Without that, developers would have to release the memory explicitly in their code, which is a common source of bugs. *What is simple for some, is often complex for others, and inversely*. The real challenge is to address complexity where it could be best addressed.
 
@@ -456,7 +456,7 @@ The interface between your code and your users is another good example. Don’t 
 *Simplicity is not black or white*. You need to appreciate shades of gray to determine the right balance between simplicity and essential complexity.
 
 [TIP]
-✔️c Simplicity for you can mean complexity for others. Don’t optimize locally. *Think globally*.
+✔️Simplicity for you can mean complexity for others. Don’t optimize locally. *Think globally*.
 
 
 ## Conclusion
