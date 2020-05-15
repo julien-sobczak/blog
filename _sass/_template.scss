@@ -183,11 +183,11 @@ hr.star-light:after {
   color: white;
 }
 hr.star-primary {
-  border-color: #2C3E50;
+  border-color: $color-gray;
 }
 hr.star-primary:after {
   background-color: white;
-  color: #2C3E50;
+  color: $color-gray;
 }
 .img-centered {
   margin: 0 auto;
@@ -209,6 +209,7 @@ hr.star-primary:after {
   border: none;
   padding: 0 !important;
   z-index: 998;
+  transition: left 1s ease-in-out;
 }
 .navbar-default a {
   text-decoration: none !important;
@@ -284,6 +285,33 @@ hr.star-primary:after {
   padding: 1em;
 }
 
+button#zen-mode-in,
+button#zen-mode-out {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  
+  display: none;
+  font-size: 2rem;
+  color: $color-gray;
+  
+  /* Disable browser default link decoration */
+  text-decoration: none;
+  outline: 0;
+  border: none;
+  background: inherit;
+}
+
+/* In Zen mode, hiden the minus button, and show the plus button to restore the navbar */
+.affix.zen button#zen-mode-in {
+  display: none;
+  transition: all 1s linear;
+}
+.affix button#zen-mode-out.visible {
+  display: block;
+  transition: all 1s linear;
+}
+
 @media (min-width: 1024px) {
  
   /* Increase menu size */
@@ -307,17 +335,29 @@ hr.star-primary:after {
     font-size: 1.4em;
   }
 
+  .affix .navbar-default button#zen-mode-in {
+    display: block;
+  }
+
+  .affix.zen .navbar-default {
+    /* Move the navbar on the left of the screen */
+    left: -100vw;
+    right: 100vw;
+    overflow: hidden;
+  }
+
+
   /* On post page make the bar "disappear" to keep the reader focused on the content. */
   #page-post.affix .navbar-default {
     background-color: white;
     box-shadow: 0 5px 5px rgba(0,0,0,.2);
-    color: gray;
+    color: $color-gray;
   }
   #page-post.affix .navbar-default .navbar-brand {
     color: $color-base;
   }
   #page-post.affix .navbar-default li a {
-    color: #AAA;
+    color: $color-gray;
   }
 
   /* Hide the menu button for small screens */
@@ -432,7 +472,7 @@ header {
   height: 250px;
   border: 1px solid $color-base;
   border-radius: 50%;
-  background-color: #2C3E50;
+  background-color: $color-gray;
   /* Center the logo */
   text-align: center;
   overflow: hidden;
@@ -591,7 +631,7 @@ footer {
 
 .footer-above {
   padding: 50px 15px;
-  background-color: #2C3E50;
+  background-color: $color-gray;
 
   display: flex;
   flex-direction: column;
@@ -721,8 +761,8 @@ footer img.footer-me {
   padding: 0 5px;
 }
 #page-post header ul.language li.current-language a {
-  background: #2C3E50;
-  border-color: #2C3E50;
+  background: $color-gray;
+  border-color: $color-gray;
   color: white;
 }
 #page-post header .author-name {
@@ -759,7 +799,7 @@ footer img.footer-me {
   text-align: center;
 }
 #page-post header ul.share-links li a {
-  color: #2C3E50;
+  color: $color-gray;
   font-size: 17px;
   line-height: 30px;
 }
@@ -944,7 +984,7 @@ figure {
 
 
 #recommendations {
-  background-color: #2C3E50;
+  background-color: $color-gray;
   color: white;
 
   h2 {

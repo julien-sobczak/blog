@@ -190,7 +190,30 @@ window.addEventListener('load', (event) => {
       showGridView();
     }
   }
-  // TODO complete
+
+  // Support a zen mode on long post
+  const zenButtonIn = document.getElementById('zen-mode-in');
+  const zenButtonOut = document.getElementById('zen-mode-out');
+  if (zenButtonIn) {
+
+    const enableZenMode = () => {
+      document.body.classList.add('zen');
+      zenButtonOut.classList.add('visible');
+      localStorage.setItem('zen','enable');
+    };
+    const disableZenMode = () => {
+      document.body.classList.remove('zen');
+      zenButtonOut.classList.remove('visible');
+      localStorage.setItem('zen','disable');
+    };
+    zenButtonIn.addEventListener('click', enableZenMode);
+    zenButtonOut.addEventListener('click', disableZenMode);
+
+    let zenMode = localStorage.getItem('zen');
+    if (zenMode === 'enable') {
+      enableZenMode();
+    }
+  }
 });
 
 
