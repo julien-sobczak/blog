@@ -2286,25 +2286,23 @@ Our namespace could be used in the same way as we used the official namespace at
 We re-run the test. Green. Done.
 
 
-
-
-
-[NOTE.congratulations.admonitionblock]
+[NOTE.congratulations]
 .Congratulations!
+====
 **The implementation of our own Spring Integration framework is finished.** We now have a basic but working solution implementing core components of the framework. The full code source of this post is available on https://github.com/julien-sobczak/spring-integration-from-scratch[GitHub].
+====
 
-
-
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .To remember
+====
 - `volatile` variables are useful for initializing variables. `ReentrantLock` provides explicit locking mechanism similar to the `synchronized` keyword but are more fine-grained.
 - Java `Executor` framework should be privileged instead of using directly the `Thread` API.
 - Creating a new XML namespace with Spring is easy. The parsing code is completely hidden behind well designed interfaces. Moreover, adding syntactic sugar increases the chance of adoption of a framework.
 - A `FactoryBean` instance could be used when creating an object in XML is too complicated.
 - The `SmartLifecycle` interface could be used to auto start-up your bean.
+====
 
-
-[NOTE.experiment.admonitionblock]
+[NOTE.experiment]
 .Try for yourself!
 ====
 There is so much to cover about Spring Integration. Why not try to analyze other features of the framework. Here is some ideas:

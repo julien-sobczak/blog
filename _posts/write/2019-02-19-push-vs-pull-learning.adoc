@@ -60,7 +60,7 @@ Migrating from _Push_ to _Pull_ learning is like migrating from TV channels to N
 _Push learning_ involves learning something that someone else has decided for you. _Pull learning_ involves learning something you have decided right now. Say like this, it’s hard to justify the prevalence of _Push Learning_. Too often, we stop being actor of our own learning experience, although _Pull Learning_ represents a far better strategy to face the challenges of the 21st century.footnote:[https://www.amazon.com/Lessons-21st-Century-Yuval-Harari/dp/0525512179]. We still need to be curious and to welcome every opportunity to learn something new, but we need even more to be proactive and seek by ourselves what we really want to learn.
 
 
-[NOTE.experiment.admonitionblock]
+[NOTE.experiment]
 .In practice
 ====
 * If most of your learning occurs through _Push Learning_, *experiment with _Pull Learning_*. Read a book, subscribe to a MOOC, add interesting blogs in your news reader.

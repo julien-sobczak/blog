@@ -3736,7 +3736,7 @@ small {
 ----
 
 
-What we just did could be done through Anki internal Api too but using the application is very easy and this task needs to be done only once. So, everything is ready for us to load the flashcards.
+What we just did could be done through Anki internal API too but using the application is very easy and this task needs to be done only once. So, everything is ready for us to load the flashcards.
 
 Here is the full listing. We already have seen most of the API in the previous case studies.
 
@@ -4092,11 +4092,13 @@ Relaunch Anki. You should see new cards under the English deck.
 Congratulations! We finally comes to the end of this lengthy post. We have seen how the internal API of Anki could be used in various scenarios. This is not complete, however. It remains the most important task -- study all of these newly created flashcards!
 
 
-[TIP.admonitionblock.remember]
+[NOTE.remember]
 .To remember
-- Anki is written in Python and do not expose a REST Api. We need to interact directly with its internal Api.
+====
+- Anki is written in Python and do not expose a REST API. We need to interact directly with its internal API.
 - Anki persists the flashcard texts in a SQL database. Media resources are persisted on disk along the database and are referenced directly inside the card text.
 - The Anki underlying model is partially documented. Use this post as a reference to determine the role of each field or property.
 - Creating flashcards manually is the recommended way to start learning but when it comes to creating hundreds or thousand of flashcards, using a small program could be welcome.
 - Creating a flashcard programmatically is relatively easy. The most difficult part is extracting the information you want to add (book, website, ...)
 - Basic programming competency is necessary to get started. The good news is that Python is the most used language in the world to introduce new people to programming. You could find many resource online (MOOC, tutorial, ebook, blog) to get started. https://www.khanacademy.org/[Khan Academy] is a good start.
+====

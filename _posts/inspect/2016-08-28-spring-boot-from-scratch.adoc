@@ -2526,9 +2526,11 @@ We’ve come a long way, and have a (almost) usable implementation of Spring Boo
 There is, of course, a lot more to cover than just this article. Why don't fork the project at your turn and see how the actuator works under the hood or how the command line tool does to create a full application with no need for a build file!
 
 
-[TIP.admonitionblock.remember]
-.To remember
+[NOTE.remember]
+.Key Takeaways
+====
 - An uber-jar could be created using the Maven Shade Plugin. All jars are exploded and merged into a unique jar.
 - Spring keep dependencies in its own folder `lib/` at the root of the JAR hierarchy but need to code custom logic to create a `ClassLoader` at application startup.
 - Creating a new starter for Spring Boot is easy: one project containing only a `pom.xml` listing the required dependencies, and one project to contains the bean definitions inside a class annotated with `@AutoConfiguration`. (everything in a single project is totally fine too)
 - Auto-configuration relies on a new feature of Spring Framework 4, the `@Conditional` annotation. Spring Boot extends this mechanism to add its own conditions to detect if a bean is already defined or if a class is present in the classpath.
+====

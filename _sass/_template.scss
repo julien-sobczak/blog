@@ -955,6 +955,7 @@ figure {
 
 .listingblock {
   font-size: 0.8em; // Be sure to display 80 characters per line
+  line-height: 1.5em;
   border-top: 1px solid gray;
 
   pre {
@@ -1087,21 +1088,21 @@ figure {
   margin-bottom: 25px;
 }
 
+.note .content > .title,
+.congratulations .content > .title {
+  color: black;
+  text-shadow: 1px 1px white;
+  border-bottom: 1px solid black;
+}
 .caution .content > .title,
 .experiment .content > .title,
 .tip .content > .title,
-.remember .content > .title,
-.congratulations .content > .title {
+.remember .content > .title {
   color: white;
   text-shadow: 1px 1px black;
   border-bottom: 1px solid white;
 }
 
-.note .content > .title {
-  color: black;
-  text-shadow: 1px 1px white;
-  border-bottom: 1px solid black;
-}
 .note li, .caution li, .experiment li, .tip li, .remember li, .congratulations li {
   margin-top: 30px !important;
   margin-bottom: 30px !important;

@@ -907,7 +907,7 @@ Nevertheless, some subjects like vocabulary makes good candidates for sharing (l
 
 As there isn't a unique way of learning, there shouldn't be a unique way to create flashcards. In this post, I have tried to expose what I learned from the numerous mistakes I made. There are surely more mistakes I will do. So, try what makes sense to you and experiment by yourself.
 
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .A good flashcard...
 ====
 * has one *unique, single, possible answer*,

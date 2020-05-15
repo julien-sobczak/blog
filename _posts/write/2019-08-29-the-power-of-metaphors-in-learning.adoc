@@ -352,7 +352,7 @@ Let's try to see how it works in practice. Someone asks you for the performance 
 That's it. You may think this association process is useless. Why not simply remember the original numbers instead? Try both ways.
 
 
-[TIP.admonitionblock.remember]
+[NOTE.remember]
 .Key Takeaways
 ====
 * *Metaphors are everywhere* for a single reason: your memory is an association machine. There is no better way to communicate an idea than by using something you are already familiar.

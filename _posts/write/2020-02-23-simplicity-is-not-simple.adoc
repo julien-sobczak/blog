@@ -474,7 +474,7 @@ I hope you now better understand that complexity is not a problem per se. Not ev
 
 *Simplicity is not simple*. There is only one way to get it: complex thinking. *So, think*.
 
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .Key Takeaways
 ====
 * *There are simple problems. There are complicated problems. And there are complex problems.* Trying to cast all problems as simple is the guarantee to solve the wrong problem with the wrong solution.

@@ -445,7 +445,7 @@ image::demo-mf-rotation.png[]
 
 This ends the part devoted to the icons customization and this post too.
 
-[NOTE.experiment.admonitionblock]
+[NOTE.experiment]
 .Congratulations!
 ====
 We have build a minimal but functional version of _Font Awesome_ (with just one icon but that's a good start!). If you want to go further:

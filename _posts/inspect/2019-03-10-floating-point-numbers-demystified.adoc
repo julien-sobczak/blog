@@ -69,10 +69,10 @@ Let's try to represent 25 in binary using the above table. 25 = 16 + 8 + 1 in de
 
 What about 1/5? Not so easy... There is no 1/5 in the table, and there are no values we can add to get this result. Therefore, we have to approximate and use the available representable numbers. The (partial) solution is 1/8 + 1/16 + 1/128 + 1/256 + 1/2048 + 1/4096 = 0.001100110011 in binary, and 0.19995117187 in decimal. Pretty close, but not exact. These approximations will result in more rounding errors when we are going to talk about floating arithmetic in the second part of this article.
 
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .Key Takeaways
 ====
-We learnt than, regardless the number system, *there are numbers we cannot represent exactly without having to use fractions*. Nobody will be surprised that 0.333333333333 is not an exact value for ⅓, but we sometimes forget computers are working with 0's and 1's, and when we are entering 0.1, the programming language uses the inexact binary representation instead.
+We've learned than, regardless the number system, *there are numbers we cannot represent exactly without having to use fractions*. Nobody will be surprised that 0.333333333333 is not an exact value for ⅓, but we sometimes forget computers are working with 0's and 1's, and when we are entering 0.1, the programming language uses the inexact binary representation instead.
 ====
 
 Is that the only problem with floating-point numbers? Of course, not!
@@ -326,10 +326,10 @@ $ python
 
 That's much better!
 
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .Key Takeaways
 ====
-We learnt that floating-point numbers are not stored verbatim. *The sign, significand and exponent are used to represent tiny and large numbers* with just as few as 32 bits in single precision. *The IEEE standard 754 ensures the portability between computers and programming languages* by defining the number of bits for each element. We have also seen that the standard includes some optimizations important to know to correctly interpret the binary representation like the hidden bit and the exponent bias.
+We've learned that floating-point numbers are not stored verbatim. *The sign, significand and exponent are used to represent tiny and large numbers* with just as few as 32 bits in single precision. *The IEEE standard 754 ensures the portability between computers and programming languages* by defining the number of bits for each element. We have also seen that the standard includes some optimizations important to know to correctly interpret the binary representation like the hidden bit and the exponent bias.
 ====
 
 Are we done with floating-point numbers imprecision? I'm afraid not. We should now inspect one of the most common sources of confusion (and a major source of imprecision).
@@ -610,10 +610,10 @@ $ python
 Bingo!
 
 
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .Key Takeaways
 ====
-We learnt that floating-point types don't just define a range of representable numbers. *There exists gaps inside this interval where numbers cannot be represented, resulting in rounding*. This is due to the format significand-exponent. We cannot store large and tiny numbers and be able to store everything between these extremes in a restricted number of bits. No magic.
+We've learned that floating-point types don't just define a range of representable numbers. *There exists gaps inside this interval where numbers cannot be represented, resulting in rounding*. This is due to the format significand-exponent. We cannot store large and tiny numbers and be able to store everything between these extremes in a restricted number of bits. No magic.
 ====
 
 
@@ -712,10 +712,10 @@ It is important to realise that subnormal numbers are represented with less prec
 image::subnormals-precision.png[width=650]
 
 
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .Key Takeaways
 ====
-We learnt that *subnormal numbers were introduced to fill the gap between 0 and the first normal number*, and allow to represent very small positive and negative floating-point numbers.
+We've learned that *subnormal numbers were introduced to fill the gap between 0 and the first normal number*, and allow to represent very small positive and negative floating-point numbers.
 ====
 
 That's all concerning floating-point numbers. We come a long way since our initial example but there is still more to discover about the subject. Take a pause, a big breath, and let's move on!
@@ -1008,17 +1008,16 @@ image::nan-boxing.png[width=650, title="NaN-Boxing"]
 ====
 
 
-
-[TIP.remember.admonitionblock]
+[NOTE.remember]
 .Key Takeaways
 ====
-We learnt that the *IEEE Standard 754 defines special formats to represent Zero, Infinity, and NaN*. When you see all `0`-bits or all `1`-bits in the exponent, you know there is something special about that number.
+We've learned that the *IEEE Standard 754 defines special formats to represent Zero, Infinity, and NaN*. When you see all `0`-bits or all `1`-bits in the exponent, you know there is something special about that number.
 
-We also learnt that *floating-point arithmetic may result in exceptions*: invalid operations like the square root of a negative number return `NaN`, a division by zero returns ±Infinity, an addition/subtraction/multiplication may result in overflow/underflow when the exponent would be smaller or larger than the allowed value, and we should not forget that rounding is omnipresent.
+We have also learned that *floating-point arithmetic may result in exceptions*: invalid operations like the square root of a negative number return `NaN`, a division by zero returns ±Infinity, an addition/subtraction/multiplication may result in overflow/underflow when the exponent would be smaller or larger than the allowed value, and we should not forget that rounding is omnipresent.
 ====
 
 
-When I started writing this article, I was not prepared to go so far on the subject. We covered a large scope of the standard. If you decide to pore over it, you will see we have introduced almost every detail. We didn't talk about the hardware implementation, or how software uses the processor instructions, but they are very low-level details, and they aren't part of the standard anyway. I think we should stop here, and digest everything we learnt. If you want to know more about the subject, you may try this https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html[detailled article], or why not read a https://www.springer.com/us/book/9780817647056[full book] on the subject!
+When I started writing this article, I was not prepared to go so far on the subject. We covered a large scope of the standard. If you decide to pore over it, you will see we have introduced almost every detail. We didn't talk about the hardware implementation, or how software uses the processor instructions, but they are very low-level details, and they aren't part of the standard anyway. I think we should stop here, and digest everything we have learned. If you want to know more about the subject, you may try this https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html[detailled article], or why not read a https://www.springer.com/us/book/9780817647056[full book] on the subject!
 
 
 == Conclusion
@@ -1031,7 +1030,7 @@ By understanding the underlying logic behind the standard, you are now better eq
 
 
 
-[NOTE.experiment.admonitionblock]
+[NOTE.experiment]
 .Myths vs Reality
 ====
 * *Myth*: I can use floating-point numbers to represent common numbers like amounts.
