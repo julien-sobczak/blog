@@ -1,0 +1,91 @@
+---
+layout: post-write
+title: "Employees First, Products Second"
+subtitle: "Why Putting People First Benefits Everyone"
+author: Julien Sobczak
+date: '2020-??-??'
+category: write
+subject: Management
+tags:
+  - management
+---
+
+[quote, Richard Branson]
+____
+Take care of your employees, and they’ll take care of your business.
+____
+
+[.lead]
+Tech companies are working really hard to ship products that will delight their customers. The success of their products is essential for their development--Customers buy products and products generate money. Often, products become synonymous to the company's name. We are "Googling", and when people talk about Facebook, they are mainly referencing their smartphone application. But are those products their most valuable assets? Should executives devote all their attention to products? I don’t think so.
+
+
+== Human First
+
+Imagine that you've just inherited the ownership of the most profitable products developed by Google (the source code, and the infrastructure to run them), but none of the people that contribute to their development. Should you call your investors to announce the good news? Probably not. The situation contains all the ingredients for failure. The value of an enterprise is not its products, but its capacity to create them. Products are valuable only if you are able to evolve them. Competition among companies has never be en so rude. You need competent employees to succeed and stay ahead. Products without people are useless. *Employees: 1, Products: 0*.
+
+Imagine a major leak revealing the source code of your flagship product. Does that mean you definitely lose your advantage over competitors? Certainly not. The energy for any company to dig into it, understand it, appropriate it, is so huge that you will have plenty of time to continue the development, updating your product quickly enough to make the leak obsolete. The velocity of an enterprise determines its value. The faster an enterprise is able to ship new features, the more it can experiment and delight its customers. *Employees: 2, Products: 0*.
+
+Imagine you’ve just released the first version of your product. It’s a huge success. Customers are delighted, but slowly, employees stop being happy. For various reasons, they decide to leave the company. What are your chances of staying afloat? Rather low, if not impossible. When the crews put the lifeboats at sea, the vessel is doomed to a shipwreck. Hiring will not solve the problem -- the time for newcomers to come onboard, competitors will have no trouble overpassing you. Great products are always a side effect of happy employees. *Employees: 3, Products: 0*.
+
+These fictitious situations teach us a valuable lesson. If you really care about your products, you should start by focusing on your employees. Numerous studies show that a company’s people should be treated as an asset as they are the foundation of the company’s success.footnote:[Trillion Dollar Coach, written by Eric Schmidt, Jonathan Rosenberg, Alan Eagle, Harper Business] So, what means putting people first?
+
+== Human First, In Practice
+
+Focusing on employees is not a new idea. Many companies have already adopted this counterintuitive approach to management, following the lead of popular authors such as Simon Sinek. His book _Leaders  Eat Last_ is a good start on the subject, underlining the importance of trust and empathy in the workplace. In this article, I’ve decided to focus on just one aspect I consider to be particularly representative of a human-first approach. I don’t pretend to have found a silver bullet. Management is inherently a complex problem, and no unique solution will never solve all of your problems. But I think this small aspect represents a good indicator, a kind of compass to determine if the company is heading in the right direction. This aspect is learning. 
+
+But first, let’s begin with two common fallacies.
+
+=== Hiring is not the solution
+
+Companies often think hiring talents, or top employees, will guarantee success. The reality is very different.
+
+Most of the companies for which I worked declare hiring the best talents. What I understand is that talent could not be such a scarce resource, or companies distort the talent definition instead of admitting they simply hired the best developers who were looking for a job and who chose to apply for the position. 
+
+Anyway, nobody is really effective right from its first day in the company. It takes several months to be proficient in what we do. Hiring competent persons only shortens this adaptation period. Furthermore, nobody applies for a job to do the exact same thing he or she was doing previously. Challenge is an integral part of any fulfilling job .footnote:[According to the https://insights.stackoverflow.com/survey/2019[latest StackOverflow survey], developers assess opportunities for professional development as one of the most important job factor, along with flexible work conditions, as is the ability to learn new things.] You can't hire people to do what you want. You only can hire people that will be able to do what you need.
+
+Furthermore, research shows that talent is not inborn but is the result of countless hours of practice. Practice makes perfect. Practice creates talent.footnote:[Anders Ericsson's _Peak_ book is highly recommended if you are curious about the secrets behind expertise.] But practice infers acting out of our comfort zone to learn something new; in other words, we should be prepared to make mistakes, and we cannot do that in any environment.
+
+Consequently, stop looking desperately after skilled developers. Hire people eager to learn, eager to solve challenges, and make sure to inspire them. Talent does not appear out of the blue. Hiring is nothing more than seeding. No flower can flourish without an abundant supply of water.
+
+[NOTE]
+.What about Outsourcing?
+====
+Almost all companies will use, sooner or later, outsourcing and/or consulting to develop its activities. Outsourcing is almost always easier than hiring. You can easily connect with dozens of developers having the skills you are looking for. On the contrary, hiring is a complicated process where you are mostly concerned about the long term, for example, does this employee fit the company’s culture? Hence, to boost an urgent project like a new corporate website, outsourcing is a serious option. But what are the disadvantages?
+
+We have seen in the first section of this article that the most important asset for a company is its employees. When depending on outsourcing, you miss the opportunity to grow competency among your employees, in order to ship the product earlier. Outsourcing is acceptable but should be considered in the same way as your technical debt, it has to be paid later. It's a learning debt. You failed to learn. 
+====
+
+=== Money is not the solution
+
+Companies often think putting money on the table could solve their problems. In other words, can you make employees happy with money? Or can you remove what makes them unhappy with money? The answer is yes. But only partially...
+
+To understand the role of money in job satisfaction, we can use the link:https://en.wikipedia.org/wiki/Two-factor_theory[two-factor theory], devised by psychologist Frederick Herzberg in the 60's. This theory distinguishes between _Hygiene factors_ (e.g. job security, salary, working conditions, good pay, vacations) and _Motivators_ (e.g. challenging work, recognition, responsibility, opportunity to do something meaningful, involvement in decision making). Herzberg discovered that the absence of hygiene factors creates demotivation but their presence does not contribute to motivation. You have to introduce motivators. In short, you cannot create motivation by eliminating demotivation. So, even if money can take away the things that make people dissatisfied (the hygiene factors), money alone is not sufficient to solve the happiness equation. Only good management practices can. 
+
+To sum up, hiring and money play an important role in any successful company. But they represent only the tip of the iceberg. The real solution lies below the surface, inside the company, inside of you. You should imagine yourself at the command of a submarine. Nothing can enter. Nothing can leave. Management is about getting the most out of everyone. This is exactly the story of David Marquet, the newly appointed captain of the USS nuclear-powered submarine with the worst crew retention. In his book _Turn the Ship Around!_, Marquet explains how he challenged the U.S. Navy's traditional leader-follower approach, to inspire everyone taking responsibility for their actions, making them healthier and happier by the same token. So, great management is mainly about transforming the present, not creating or destroying it, and there could be no transformation without learning.
+
+=== Learning is the solution
+
+As a manager, if most of your discussions concern the development of your products and few of them concern the development of your employees, you are probably on the wrong track. If employees are not learning, the company is not growing. Peter Senge, renowned management expert, said: "The rate at which an organization learns may soon become the only sustainable source of competitive advantage." Find what every one of your employees want to learn, aspire to do, and help them to get better at what they excel, and products will inevitably be better in the end. 
+
+Here are a few points to help you determine if you are building a strong learning culture:
+
+* _Failure is always an option._ Making mistakes is part of the learning process. A company where few mistakes are made can't be an innovative company. There are many ways to limit the impact of mistakes like failing fast. Employees should not be afraid to report problems to their hierarchy. *No mistakes, no learning*.
+* _Negative emotions are absent._ Human emotion is a powerful driving force at work. It can be highly creative as well as highly destructive. Emotions are deeply rooted in our brain, and even if our rational brain fakes to ignore these emotions, things are not so simple. When chemicals such as cortisol (the stress hormone) are released, they can’t disappear by magic. To be productive, you need a fully integrated brain, where the two hemispheres operate as a whole. *No happiness, no learning*.
+*  _Empathy is real._ People should demonstrate openness, and feel confident to be vulnerable. Even the most stupid ideas are freely exposed, and debated constructively. Problems are overcome through a blameless culture where the us-versus-them attitude has no place. *No trust, no learning*.
+* _Knowledge is spreading._ Sharing knowledge is not a synonym for delivering presentations. It means having time to help coworkers, providing constructive feedback, not always working alone, and making sure ideas can be confronted. *No cooperation, no learning.*
+* _Innovation happens bottom-up._ Are great ideas coming from the top or from the bottom of the hierarchy? Do employees participate in the decisions impacting their job? footnote:[The book _Creativity Inc._ is a wonderful source of inspiration on the topic of innovation.] Recall that nobody likes to be told what to do (even if there are plentiful jobs where this is sadly a reality). *No empowerment, no learning.*
+* _Inspiration is the fuel._ Who wakes up in the morning eager to work to generate higher profits? Presumably nobody, although everyone knows money is essential for a company to thrive.footnote:[The same StackOverflow survey places financial results as one of the least important factors in job satisfaction.] People are instead motivated by a vision, a look ahead into the future, showing clearly how their work affects existing persons in a concrete way. Aspiring to be the worldwide leader in your market segment is not a vision. A vision is something we can see. *No vision, no learning.* 
+
+Clearly, management plays a crucial role for learning to happen. It is really easy to find management decisions that can negatively affect any of the above points. A recent https://www.gallup.com/services/182138/state-american-manager.aspx?ays=n#aspnetForm[poll] reveals employees join companies but leave managers. Turnover is mostly a manager issue. You can't hope for stability in your products if there isn't stability in your staff. Create opportunities for employees to grow and learn new skills, and employees will take care of products for you. It’s a win-win moral contract.
+
+== Conclusion
+
+Everyone agrees that a company without great products will not stay alive for a long time. But behind great products are hidden great teams, great players, and great managers. In fact, companies are not selling products, they are selling the know-how of their employees disguised as products. Focusing on the human side is crucial, especially in time of crisis like we are all living now.
+
+Building a strong learning culture is indispensable. Learning is the foundation for continual improvement, on which everything else will be built on. Learning is the superpower to turn challenges into opportunities. Learning is all about your employees. "When you are putting your employees first, you are ultimately putting the customer first," said Vineet Nayar, businessman and author of _Employees First, Customers Second_," Products will be greater, and will delight customers in a way that would not have been possible using traditional "customer care" first." I will end this article with one last quote:
+
+[quote, Simon Sinek]
+Customers will never love a company until the employees love it first.
+
+_PS: No, subscribing to an e-learning platform is not enought to create a learning culture._ 😉
+

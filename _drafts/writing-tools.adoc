@@ -1,0 +1,63 @@
+---
+layout: post-write
+title: "Writing Tools"
+author: Julien Sobczak
+date: '2020-05-16'
+category: write
+subject: Writing posts
+---
+
+:page-liquid:
+
+== Asciidoc
+
+== Jekyll
+
+Cheatsheets:
+
+* link:https://learn.cloudcannon.com/jekyll-cheat-sheet/[All syntaxes, control structures, filters, etc.]
+* link:https://devhints.io/jekyll[Similar including also config files]
+
+Set folder for post assets:
+
+[source,asciidoc]
+----
+# Top of the file (below Front Matter)
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2016-12-30-mypost/' | relative_url }}
+...
+image::problem.png[width="600", align="center"]
+----
+
+== Emojis
+
+Here are common emojis to use in posts:
+
+✔️ ❌
+
+== Connectors
+
+* **addition/sequence**: `additionally, afterward, again, also, and, and then, another ..., besides, equally important, eventually, finally, first ... second ... third, further, furthermore, in addition, in the first place, initially, last, later, likewise, meanwhile, moreover, next, other, overall, still, too, what’s more`.
+* **concession**: `admittedly, although it is true that, certainly, conceding that, granted that, in fact, it may appear that, naturally, no doubt, of course, surely, undoubtedly, without a doubt`.
+* **contrast**: `after all, alternatively, although, and yet, at the same time, but, conversely, despite, even so, even though, for all that, however, in contrast, in spite of, instead, nevertheless, nonetheless, nor, notwithstanding, on the contrary, on the other hand, or, otherwise, regardless, still, though, yet`.
+* **examples, clarification, emphasis**: `after all, an instance of this, as an illustration, by all means, certainly, clearly, definitely, e.g., even, for example, for instance, for one thing, i.e., importantly, indeed, in fact, in other words, in particular, in short, more than that, namely, of course, of major concern, once again, specifically, somewhat, such as, that is, that is to say, the following example, this can be seen in, thus, to clarify, to demonstrate, to illustrate, to repeat, to rephrase, to put it another way, truly, undoubtedly, without a doubt`.
+* **place or direction**: `above, adjacent to, at that point, below, beyond, close by, closer to, elsewhere, far, farther on, here, in the back, in the distance, in the front, near, nearby, neighboring on, next to, on the other side, opposite to, overhead, there, to the left, to the right, to the side, under, underneath, wherever`.
+* **purpose/cause and effect**: `accordingly, as a consequence, as a result, because, consequently, due to, for that reason, for this purpose, hence, in order that, on account of, since, so, so that, then, therefore, thereupon, thus, to do this, to this end, with this in mind, with this objective`.
+* **qualification**: `almost, although, always, frequently, habitually, maybe, nearly, never, oftentimes, often, perhaps, probably, time and again`.
+* **result**: `accordingly, and so, as a result, as an outcome, consequently, hence, so, then, therefore, thereupon, thus`.
+* **similarity**: `again, also, and, as well as, besides, by the same token, for example, furthermore, in a like manner, in a similar way, in the same way, like, likewise, moreover, once more, similarly, so`.
+* **summary or conclusion**: `after all, all in all, as a result, as has been noted, as I have said, as we have seen, as mentioned earlier, as stated, clearly, finally, in any event, in brief, in conclusion, in other words, in particular, in short, in simpler terms, in summary, on the whole, that is, therefore, to conclude, to summarize`.
+* **time**: `after a bit, after a few days, after a while, afterward, again, also, and then, as long as, as soon as, at first, at last, at length, at that time, at the same time, before, during, earlier, eventually, finally, first, following, formerly, further, hence, initially, immediately, in a few days, in the first place, in the future, in the meantime, in the past, last, lately, later, meanwhile, next, now, on (a certain day), once, presently, previously, recently, second, shortly, simultaneously, since, so far, soon, still, subsequently, then, thereafter, this time, today, tomorrow, until, until now, when, whenever`.
+
+== Post Review Checklist
+
+- [ ] Catchy title and headlines?
+- [ ] Unnecessary informations is deported in admonition blocks or footnotes?
+- [ ] Main ideas are highlighted?
+- [ ] Inspiring quote(s)?
+- [ ] Use metaphors/analogies to explain complex ideas?
+- [ ] Use visuals instead of 1,000 words?
+- [ ] A dose of humor?
+- [ ] Key Takeaways?
+- [ ] Contains incredible facts?
+- [ ] Short sentences with active verbs?
