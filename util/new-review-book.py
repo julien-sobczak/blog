@@ -6,6 +6,12 @@ Generate a new book review. Usage:
 
 $ python util/new-review-book.py --date 2016-12-17 --output _posts https://www.goodreads.com/book/show/27213329-grit
 
+How to run on Windows?
+======================
+The following error may occurs: https://stackoverflow.com/questions/59487242/permission-denied-error-python-3-8-on-windows-gitbash
+$ /c/Users/Julien/AppData/Local/Programs/Python/Python38/python -m venv venv    
+$ source venv/bin/activate
+$ pip install -r requirements.txt
 """
 
 from bs4 import BeautifulSoup
@@ -289,6 +295,7 @@ class BookReviewPost:
         result += "subject: ???\n"
         result += "headline: ???\n"
         result += "note: ???\n"
+        result += "stars: ???\n"
         result += "tags:\n"
         result += "  - ???\n"
         if self.metadata.image:

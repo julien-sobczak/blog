@@ -3,7 +3,7 @@ layout: post-write
 title: "Employees First, Products Second"
 subtitle: "Why Putting People First Benefits Everyone"
 author: Julien Sobczak
-date: '2020-??-??'
+date: '2020-05-20'
 category: write
 subject: Management
 tags:
