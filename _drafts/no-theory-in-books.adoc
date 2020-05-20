@@ -1,0 +1,106 @@
+---
+layout: post-write
+title: "No Theory in Books, Only Practice"
+subtitle: "Why Books Are So Helpful in Practice"
+author: Julien Sobczak
+date: '2020-06-01'
+category: "write"
+subject: Theory
+tags:
+  - learning
+---
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2020-06-01-no-theory-in-books/' | relative_url }}
+
+[quote, Albert Einstein]
+____
+In theory, theory and practice are the same. In practice, they are not.
+____
+
+[.lead]
+I love reading non-fiction books. For many people, reading is not obvious. “Books contain only theoretical knowledge” or “my situation is different” are common excuses. Books are seen as useless in practice, so why waste time reading? That’s nonsense to me. I read because books are helpful in my life. This gap is pointless. What follows explain why the word “theory” is such a good thing in practice.
+
+== What is a theory?
+
+According to Stephen Hawking, a theory must satisfy two requirements:footnote:[In the classic _A Brief History of Time_, Stephen Hawking relates the history of the most popular theories about the universe, showing how observations played a central role in their development.]
+
+1. A theory must describe a large class of observations using a few arbitrary elements.
+2. A theory must make definite predictions about the results of future observations.
+
+The role of observations is obvious based on this definition. A theory stems from observations (in practice) and is used to explain new observations (in practice). Newton's theory is a good example. Legend has it that Isaac Newton was sitting under an apple tree when a fruit fell and hit him on the head, prompting him to suddenly come up with the theory of gravity. Chances are Newton was simply observing the apple falling from the tree, and wondered why it fell straight down. More explorations continued until the elaboration of his famous theory: _Bodies attract each other with a force that is proportional to their mass and inversely proportional to the square of the distance between them_. This same theory was then used to predict the motions of the sun and planets to a high degree of accuracy. A theory is just a way to connect different observations that happen in the real world. 
+
+In short, theory is abstracted practice, and practice is applied theory. *A theory cannot exist without practice*.footnote:[The inverse is not necessarily true. Many things happen in practice for which no theory exists to explain them--for example the link:https://en.wikipedia.org/wiki/Placebo#Effects[placebo effect].]
+
+image::theory-and-practice.png[,500]
+
+It is also true that a theory may explain things that we cannot observe directly. Electrons and black holes are great examples. But again, practice is always used to provide support, or challenge the theory. For example, we have no proof electrons exist but the concept of an electron does a remarkably good job of predicting how many things that are observable behave. *Any theory is useless without practice.*
+
+== The Practice Behind the Theory
+
+In this section, I would like to share some of the theories I discovered during my readings. The list is not exhaustive since my memory is not very reliable. I will explain the conditions under which they were created to highlight that theory and practice always go hand in hand.
+
+* I learned about the *theory of evolution* in numerous books, including link:todo[_Sapiens_], by Yuval Noah Harari.
+Long before publishing _The Origin of Species_ where he introduced his theory, Charles Darwin started a journey around the globe on the ship HMS Beagle. The trip lasted almost 5 years. He suffered horribly from seasickness. Fortunately for him, he spent most of his time on land observing species. Slowly, Darwin began to see intriguing patterns in the distribution and features of organisms. The idea of evolution was born.
++
+**Key lesson**: A theory always follows observations of the real-world to make sense of it.
+* I learned about the *germ theory of disease* in link:todo[_Mastery_], by Robert Greene.
+Ignaz Semmelweis was a 19th-century Hungarian doctor who contributed largely in the acceptance of this theory. While working at the Vienna General Hospital, Semmelweis observed a large number of women who died during childbirth. He realized doctors having examined the woman had directly come from autopsies. Semmelweis introduced handwashing and documented a sudden reduction in the mortality rate. Despite the evidence, Semmelweis and his theories were harshly rejected at that time. He was eventually admitted to an asylum where he died from infection two weeks later. 
++
+**Key lesson**: A theory can be correct, and not widely accepted in practice. The _Semmelweis reflex_ continues to describe the tendency to reject new evidence or new knowledge because it contradicts established norms, beliefs, or paradigms.
+* I learned about the link:https://en.wikipedia.org/wiki/Two-factor_theory[*Two-factor theory*] in link:todo[_Management 3.0_], by Jurgen Appelo, and have seen it quoted so many times since.
+The theory states that certain factors in the workplace cause job satisfaction while other factors cause dissatisfaction. A low salary is a source of demotivation but a high salary is not enough to motivate. An employee needs recognition, sense of achievement, responsibility, and meaningful work. Frederick Herzberg, the behavioural scientist behind this theory, conducted interviews with 203 engineers and accountants in nine factories in the Pittsburgh area. The same study was repeated in the following years, on thousands other persons, and today, the theory is still widely accepted in the workplace. 
++
+**Key lesson**: A theory often relies on intuition but experiments are always used to confirm it.
+* I learned about the *scientific management theory* in numerous recent books, mostly to demonstrate its inadequacies with knowledge workers like developers.
+It all started in 1890 at the _Midvale Steel Company_, one of America's great armor plate making plants. Frederick W. Taylor, then aged 25 and working as a foreman, was constantly impressed by the failure of his team members to produce more than about one-third of what he deemed a good day's work. Using scientific methods, he determined how long it should take men to perform each given piece of work, and started applying his ideas. The approach quickly spreaded into other manufacturing industries.
++
+**Key lesson**: A theory doesn’t have to work in all contexts to have a huge impact. 
+* I learned about the *theory of ego depletion* in link:todo[_Thinking Fast and Slow_], by Daniel Kahneman. 
+Roy Baumeister’s research says if you expend your willpower on one thing, you have less left to take on another. In the study, the researchers asked two groups of 30 persons to wait in a room where there were two plates of food--fresh-baked cookies versus red and white radishes. Each group was allowed to eat from only one plate but not the other. Next, the researchers gave both groups an unsolvable puzzle to work on. The researchers anticipated that the people in the radish group would give up sooner, as they have struggled not to eat the cookies. That’s exactly what happened. The experience was conducted again more than a hundred times on thousands of subjects. The theory became a huge success until a recent study refutes the theory.footnote:[The full story reveals a publication bias where researchers going against the established theory were less likely to be published, but with enough evidence, the truth always wins. https://hbr.org/2016/11/have-we-been-thinking-about-willpower-the-wrong-way-for-30-years]
++
+**Key lesson**: A theory can be wrong, but often, not completely. Theories are built on each other. Each new theory brings a new model to be used in a larger number of situations. Roy Baumeister’s study shows biology plays a role in willpower. Recent studies show this part is not as big as imagined and that psychology plays an even bigger role.
+* I learned about the *General Systems theory* for the first time in link:todo[_Management 3.0_], by Jurgen Appelo.
+This theory (The whole is more than the sum of its parts) has had an enormous impact on so many disciplines including economics, sociology, psychology, and medicine. But it should come as no surprise that this theory was introduced by a biologist, Ludwig von Bertalanffy, using living organisms to refute popular beliefs in physics. The theory gave birth to a succession of complementary theories: Cybernetics, Game Theory, Chaos Theory, and also many obscure terms like Homeostasis, Self-organization, or Autopoiesis, all of which use the real world as a source of inspiration. The human body, for example, regulates its internal body temperature (homeostasis) without any external control in a decentralized manner (self-organization) and replenishes every cell within itself over the course of a ten year period (autopoiesis). 
++
+**Key lesson**: A theory can be complex, as long as it reflects how the world works in practice. For example, managers that ignore the complex nature of human interactions will not succeed in leading people towards positive outcomes.
+
+You may consider the above books as mostly theoretical. But if I look back at my readings, most non-fiction books don’t go so far. They simply relate the experience of their authors, like a new coworker will relate his prior experiences during lunch. The medium is different, but the goal is the same. Here are a few examples:
+
+* In link:todo[_The Mythical Man-Month_], Fred Brooks wrote about his experience at IBM where he managed the development of the OS/360, one of the first large-scale development endeavors. Some of his quotations are universally known like “Adding manpower to a late software project makes it later,” or the incontournable “Nine women can't make a baby in one month.”
++
+**Key lesson**: Books are written by writers, and sometimes authors. Writers are normal persons, like you and me, eager to share their experience. 
+* In link:todo[_Trillion Dollar Coach_], Eric Schmidt, and other executives at Google, draw the portrait of Bill Campbell, who recently passed away. Bill was the legendary coach that changed the course of Silicon Valley. To succeed, authors interviewed more than eighty people who knew and loved Bill, and captured key moments in their lives to illustrate Bill’s principles. 
++
+**Key lesson**: Books are doors. You open them, and you find a new experience to learn from.
+* In link:todo[_Creativity, Inc._], Ed Catmull, co-founder of Pixar, relates the history of the studio, showing at the same time, the company culture, the management principles, and the techniques to inspire employees to bring innovation to a new level.
++
+**Key lesson**: Books let you live several lives. Your work experience can be unique, the fact is you cannot learn as much as what writers can teach you.
+* In link:todo[_Quiet_], Susan Cain argues that modern Western culture misunderstands and undervalues the traits and capabilities of introverted people, leading to a colossal waste of talent, energy, and happiness. It took seven years for Susan Cain to write the book. As an introverted person, I learned so much from this book that if you are extroverted, I cannot imagine how you could learn the same thing by experience alone.
++
+**Key lesson**: Books are an opportunity to see the world with different eyes and appreciate what is barely noticeable with your eyes.
+* In link:todo[_It Doesn't Have to Be Crazy at Work_], Jason Fried and David Heinemeier Hansson present their way of working. Imagine the “standard” practices in the workplace totally reinvented, and you will have an accurate picture of what working at Basecamp is.
++
+**Key lesson**: Books challenge your ideas by showing how others act differently, and obtain better results.
+
+You have probably noticed that I have omitted technical books from the previous examples. I consider software development a highly practical discipline. However, based on the definition of theory, I can list a few books that extract what is working in practice to make it accessible to a larger extent. Here are a few examples:
+
+* In link:todo[_Design Patterns: Elements of Reusable Object-Oriented Software_], the authors, known as the Gang of Four, introduce principles like “program to an interface, not an implementation" or "favor object composition over class inheritance," and also a list of now famous patterns--Builder, Factory, Proxy, Adapter, Template, Observer, etc. “None of the design patterns in this book describes new or unproven designs”, the authors say in the introduction. The patterns were issued from code in large-scale systems. They were revised by dozens of persons during four years to create a format that makes them easily applicable in new contexts.
+* In link:todo[_Refactoring_], Martin Fowler popularizes a practice that is now an integral part of software development. (Several editors automate many of the refactorings described in the book.) We can retrace the origin of refactoring to the link:http://cseweb.ucsd.edu/~wgg/Abstracts/gristhesis.pdf[dissertation of William Griswold] in 1991. The dissertation starts with a problem observed in real-world software projects: the cost of a change grows exponentially with respect to the system’s age.
+* In link:todo[_Site Reliability Engineering_], the “SRE Book”, Google engineers explain how they build, deploy, monitor, and maintain some of the largest software systems in the world. They list the principles and practices used at Google, but present them in a way easily applicable elsewhere. As a result, the term SRE is now omnipresent in job openings (although we can’t say the same about the ideas in this book).
+* In link:todo[_Domain-Driven Design: Tackling Complexity in the Heart of Software_], Eric Evans presents the catalog of patterns I’ve found the most inspiring. Many ideas like the pattern Bounded Context emerged several years later with the popularization of microservices.
+* In link:todo[_Extreme Programming Explained: Embrace Change_], pioneers of the Agile manifesto share a list of practices and techniques, collected over five years of experimentation. These practices are well-known, but most enterprises pick the ones they feel at ease, in the same way you could prepare a recipe with half of the ingredients. Surprise, I bet the meal will not be tasty. The truth is you can’t apply practices if you ignore the theory. The funny thing is the Agile Manifesto only talks about values and principles. But companies prefer to talk about practices with the result we know. 
+
+I’m done with the examples. I hope you now have a better understanding of the kind of theory you may find in books, and why it’s a good thing. A (good) theory is never the result of a scientist cut off from the real world. From my own experience, there is always something that I can and want to try in practice.
+
+== The Theory Behind the Practice 
+
+This article would not be complete without a few words about the limitations of theories.
+
+During the last century, a British statistician named George Box wrote the famous line, “All models are wrong, some are useful.” In fact, “scientists generally agree that no theory is 100 percent correct,” said author Yuval Noah Harai. Even Einstein's work on relativity was not perfect. It explains how the universe works in many situations, and still breaks down in situations like black holes.
+
+But a theory does not have to be flawless to be actionable. Brilliant minds continue to work on the link:https://en.wikipedia.org/wiki/Theory_of_everything[Theory of Everything], the unification of the two major physics theories, which conflict on some aspects. But the reality is, while imperfect those theories are, they continue to drive innovations in practice. 
+
+I want to conclude by saying you’re right when you say “It depends on the context.” Each situation is different. That’s true. But you must learn to recognize they have far more in common than what you may imagine. The goal of any software development project is to run instructions written by a bunch of developers. Problems are never totally new. Theories highlight those similarities so that you can better appreciate the differences. 
+
+A theory is not a bad thing. A theory is an opportunity. Only if you decide to apply it into practice. 
