@@ -227,7 +227,7 @@ _Accidental complexity_ is caused by the developer, and the developer must work 
 
 In short, essential complexity is not a problem to fix, it's the problem to solve in the first place. *Writing clean code is basically solving essential complexity without introducing accidental complexity*.
 
-We must note that ignoring essential complexity will for sure make your code simpler, but it’s not a solution. Addressing essential complexity is not doing over-engineering, it’s just doing your job. Over-engineering is adding more features, or more safety to solve hypothetical flaws that most users would accept. Ignoring the features that would make your code not as simple as you expect is just bad engineering.
+We must note that ignoring essential complexity will for sure make your code simpler, but it’s not a solution. Addressing essential complexity isn't over-engineering, it’s just doing your job. Over-engineering is adding more features, or more safety to solve hypothetical flaws that most users would accept. Ignoring the features that would make your code not as simple as you expect is just bad engineering.
 
 That’s all for the theory. For the rest of this article, I will ignore complex problems. This article is about simplicity and complex problems are … complex. Solutions exist to address complexity, but that's a huge topic that deserves its own article. Moreover, you should not have simplicity in mind when facing a complex problem. Simplicity and complexity are two very different beasts, even if simplicity can emerge when complexity is addressed intelligently.
 

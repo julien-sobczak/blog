@@ -11,12 +11,18 @@ tags:
 ---
 
 :page-liquid:
-:imagesdir: {{ '/posts_resources/2020-06-01-no-theory-in-books/' | relative_url }}
+:imagesdir: {{ '/posts_resources/2020-06-20-no-theory-in-books/' | relative_url }}
 
 [quote, Albert Einstein]
 ____
 In theory, theory and practice are the same. In practice, they are not.
 ____
+
+[quote, Kurt Lewin, Father of Modern Social Psychology]
+____
+There is nothing as practical as a good theory.
+____
+
 
 [.lead]
 I love reading non-fiction books. For many people, reading is not obvious. “Books contain only theoretical knowledge” or “my situation is different” are common excuses. Books are seen as useless in practice, so why waste time reading? That’s nonsense to me. I read because books are helpful in my life. This gap is pointless. What follows explain why the word “theory” is such a good thing in practice.

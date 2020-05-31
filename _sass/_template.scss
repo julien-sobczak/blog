@@ -841,6 +841,10 @@ footer img.footer-me {
   }
 }
 
+#page-post img {
+  max-width: 100%;
+}
+
 img.cover {
   display: block;
   border: 20px solid white;
@@ -918,6 +922,9 @@ figure {
   }
 
   ul {
+    max-width: 600px;
+    margin: 0 auto;
+    
     li {
       list-style-type: disc;
       margin: 50px auto 25px;
