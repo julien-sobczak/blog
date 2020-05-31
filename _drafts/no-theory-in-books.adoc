@@ -3,7 +3,7 @@ layout: post-write
 title: "No Theory in Books, Only Practice"
 subtitle: "Why Books Are So Helpful in Practice"
 author: Julien Sobczak
-date: '2020-06-01'
+date: '2020-06-20'
 category: "write"
 subject: Theory
 tags:
