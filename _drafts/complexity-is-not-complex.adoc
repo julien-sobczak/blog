@@ -140,7 +140,7 @@ The diagram looks neat on paper (or on your screen). But only in appearance...
 
 **Architecture diagrams don’t describe the system. It’s a classic example of reductionism**. They picture the structure, but not the interactions. They also ignore the time constraint (How long is the whole process for a product team to deploy?)
 
-Here is the same diagram with human interactions explicitly illustrated.footnote:[Diagrams have been designed using resources from Freepik.com, especially the contributions by upklyak. https://www.freepik.com/search?author=13115374&authorSlug=upklyak&format=author]:
+Here is the same diagram with human interactions explicitly illustrated:footnote:[Diagrams have been designed using resources from Freepik.com, especially the contributions by upklyak. https://www.freepik.com/search?author=13115374&authorSlug=upklyak&format=author]
 
 image::platform-teams-interactions-solution1.png[,link={{ '/posts_resources/2020-06-02-complexity-is-not-complex/platform-teams-interactions-solution1.png' | relative_url }}]
 
@@ -210,7 +210,7 @@ To illustrate above leverage points, we can reuse the previous example where pro
 [TIP]
 ✔️ Address complexity with complexity.
 
-=== ❌ Don’t let your left brain rules to world
+=== ❌ Don’t let your left brain rules the world
 
 Complex systems require an holistic view. **Approaching complex problems with a purely analytic reasoning is the domain of reductionism**. It is also the domain of the left side of our brain. This hemisphere excels at filling gaps in information to find coherence where there isn’t (a good definition for reductionism too). 
 
