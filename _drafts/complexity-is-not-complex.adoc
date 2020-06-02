@@ -169,7 +169,7 @@ The end result may not seem much different from our initial solution. It’s the
 In the end, we replace human interactions by lines of code. We turn a complex system into a complicated problem. Of course, these lines are written by developers working as a team, and thus the complex system is still present. That’s true. Writing code in a team will always be a complex problem but running code in production doesn't have to be complex. It's mostly a complicated problem where the end goal is to execute deterministic instructions on a pool of static servers. Adding humans in the deployment process is accidental complexity. 
 
 [NOTE]
-.Automation Don’t Kill Collaboration. Automation Fosters Collaboration.
+.Automation Fosters Collaboration.
 ====
 Removing the human in the equation doesn’t mean reducing collaboration between teams.  The challenge is to remove the interactions that don’t require true collaboration (a ticket to start a VM is nothing more than a command to execute). This way, employees can spend their time on truly collaborative tasks (analyze the system during retrospectives, find better solutions, identify technical debt, find new growth opportunities, elaborate new architecture proposals, etc.). 
 ====
