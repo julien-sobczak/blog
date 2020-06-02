@@ -5,7 +5,7 @@ title: "I'm Lovin' I.T. - Julien Sobczak"
 # Google Analytics
 google_analytics: UA-111207061-1
 
-gems:
+plugins:
   - jekyll-feed
 
 twitter_username: julien_sobczak
