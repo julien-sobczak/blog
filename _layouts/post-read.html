@@ -8,6 +8,8 @@ layout: post
 
     <article>
 
+      <img src="{{ '/img/post-read-lite.png' | relative_url }}" class="webfeedsFeaturedVisual" />
+
       <img class="cover" src="{{ page.image }}" />
 
       <p class="headline">
@@ -43,13 +45,6 @@ layout: post
         {% endif %}
         
       </div>
-
-      {% if page.illustrationUrl %}
-      <figure class="illustration">
-        <img src="{{ page.illustrationUrl | relative_url }}" class="blur" />
-        <figcaption>{{page.illustrationLegend}}</figcaption>
-      </figure>
-      {% endif %}
 
       <div class="content">
       {{content}}

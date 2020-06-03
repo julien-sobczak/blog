@@ -8,7 +8,6 @@ category: write
 subject: Complexity
 tags:
   - management
-image: /img/post-write.png
 excerpt: |
   Complexity is a scary word. Who wants to create complex systems? Who wants to interact with complex systems? But complexity is not as bad as it seems. The laws of Nature are complex and this doesn’t prevent us from living happily. We are complex and we can face it if we understand the rules of the game.
 feed:

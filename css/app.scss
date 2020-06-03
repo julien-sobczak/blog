@@ -23,6 +23,8 @@ $screen-large-min:    $screen-medium-max + 1;
 $screen-large-max:    1599px;
 $screen-xlarge-min:   $screen-large-max + 1;
 
+.webfeedsFeaturedVisual { display: none; } // Used by Feedly https://blog.feedly.com/10-ways-to-optimize-your-feed-for-feedly/
+
 @import 'loader';
 @import 'label';
 @import 'list';
