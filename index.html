@@ -13,7 +13,7 @@ author: Julien Sobczak
 
     {% include meta.html %}
 
-    <title>{{page.title}}</title>
+    <title>{{ page.title }}</title>
 
     {% include stylesheets.html %}
 
@@ -76,7 +76,7 @@ author: Julien Sobczak
           <p class="manuscript">Find your next technical (or not) book and expand your knowledge</p>
           <ul>
             <li>Latest books:</li>
-            {% assign first_read_posts = site.categories.read | slice:0, 2 %}
+            {% assign first_read_posts = site.categories.read | slice:0, 3 %}
             {% for post in first_read_posts %}
               <li>
                 <a href="{{ post.url | relative_url }}">
@@ -102,7 +102,7 @@ author: Julien Sobczak
           <p class="manuscript">Various posts or essays mainly about productivity, learning, soft skills and personal development</p>
           <ul>
             <li>Read the latest posts about</li>
-            {% assign first_write_posts = site.categories.write | slice:0, 2 %}
+            {% assign first_write_posts = site.categories.write | slice:0, 3 %}
             {% for post in first_write_posts %}
               <li>
                 <a href="{{ post.url | relative_url }}">{{post.subject}},</a>
@@ -117,7 +117,7 @@ author: Julien Sobczak
           <p class="manuscript">Stand on the shoulders of giants by learning techniques from top developers.</p>
           <ul>
             <li>Discover the inner working of famous OSS projects or programming languages:</li>
-            {% assign first_inspect_posts = site.categories.inspect | slice:0, 2 %}
+            {% assign first_inspect_posts = site.categories.inspect | slice:0, 3 %}
             {% for post in first_inspect_posts %}
               <li>
                 <a href="{{ post.url | relative_url }}">{{ post.subject }},</a>

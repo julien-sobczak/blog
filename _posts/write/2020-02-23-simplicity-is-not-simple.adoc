@@ -8,10 +8,18 @@ category: "write"
 subject: Simplicity
 tags:
   - craftsmanship
+image: /img/post-write.png
+recommendations:
+  - 2020-06-02-complexity-is-not-complex
 ---
 
 :page-liquid:
 :imagesdir: {{ '/posts_resources/2020-02-23-simplicity-is-not-simple/' | relative_url }}
+
+[CAUTION.license]
+====
+This post is a part of a two-parts series. This first post focuses on simplicity while link:TODO[the following one] focuses on complexity.
+====
 
 [quote, Jon L. Bentley, Programming Pearls]
 ____

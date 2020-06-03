@@ -300,6 +300,8 @@ class BookReviewPost:
         result += "  - ???\n"
         if self.metadata.image:
             result += "image: '%s'\n" % self.metadata.image
+        else:
+            result += "image: /img/post-read.png"
         result += "metadata:\n"
         result += "  authors: %s\n" % self.metadata.author
         if self.metadata.publisher:

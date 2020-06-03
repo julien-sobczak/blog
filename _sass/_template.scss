@@ -130,22 +130,22 @@ button, html input[type=button], input[type=reset], input[type=submit] {
 }
 @media (min-width: $screen-small-min) {
   .container {
-    width: calc($screen-small-min - 20px);
+    width: $screen-small-min - 20px;
   }
 }
 @media (min-width: $screen-medium-min) {
   .container {
-    width: calc($screen-medium-min - 25px);
+    width: $screen-medium-min - 25px;
   }
 }
 @media (min-width: $screen-large-min) {
   .container {
-    width: calc($screen-large-min - 30px);
+    width: $screen-large-min - 30px;
   }
 }
 @media (min-width: $screen-xlarge-min) {
   .container {
-    width: calc($screen-xlarge-min - 35px);
+    width: $screen-xlarge-min - 35px;
   }
 }
 

@@ -61,3 +61,18 @@ Here are common emojis to use in posts:
 - [ ] Key Takeaways?
 - [ ] Contains incredible facts?
 - [ ] Short sentences with active verbs?
+
+== Feed
+
+The link:https://github.com/jekyll/jekyll-feed[`jekyll-feed`] plugin generates an Atom feed accessible from `/feed.xml`.
+
+The feed content is configurable using the Front Matter. Here is an example:
+
+[source,yaml]
+----
+image: /img/post-write.png
+excerpt: |
+  A short summary of the blogpost.
+feed:
+  excerpt_only: true
+----
