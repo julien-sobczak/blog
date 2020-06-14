@@ -810,15 +810,15 @@ footer img.footer-me {
 @media (min-width: $screen-medium-min) {
   #page-post article {
     max-width: 800px;
-    font-size: 1.1em;
+    font-size: 1.15em;
     line-height: 1.6em;
   }
 }
 
 @media (min-width: $screen-large-min) {
   #page-post article {
-    max-width: 850px;
-    font-size: 1.2em;
+    max-width: 800px;
+    font-size: 1.25em;
     line-height: 1.7em;
   }
 }
