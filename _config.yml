@@ -6,7 +6,7 @@ title: "I'm Lovin' I.T. - Julien Sobczak"
 google_analytics: UA-111207061-1
 
 plugins:
-  - jekyll-feed
+  - jekyll-feed # Alternative: https://markonproduct.com/coding-an-atom-feed-optimized-for-feedly
 
 twitter_username: julien_sobczak
 

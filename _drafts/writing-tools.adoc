@@ -70,7 +70,7 @@ The feed content is configurable using the Front Matter. Here is an example:
 
 [source,yaml]
 ----
-image: /img/post-write.png
+image: /img/post-write.png # Present in the XML feed but not used by Feedly (Feedly has rules to detect an image in the content)
 excerpt: |
   A short summary of the blogpost.
 feed:
