@@ -5,8 +5,10 @@ title: "I'm Lovin' I.T. - Julien Sobczak"
 # Google Analytics
 google_analytics: UA-111207061-1
 
-plugins:
-  - jekyll-feed # Alternative: https://markonproduct.com/coding-an-atom-feed-optimized-for-feedly
+# Metadata for feed
+url: https://juliensobczak.com
+author:
+  name: Julien Sobczak
 
 twitter_username: julien_sobczak
 
@@ -19,5 +21,5 @@ asciidoctor:
     - source-highlighter=coderay
     - icons=font
 
-exclude: [env,venv,tmp]
+exclude: [env, venv, tmp]
 # end of configuration

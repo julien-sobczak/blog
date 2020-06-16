@@ -64,15 +64,6 @@ Here are common emojis to use in posts:
 
 == Feed
 
-The link:https://github.com/jekyll/jekyll-feed[`jekyll-feed`] plugin generates an Atom feed accessible from `/feed.xml`.
+The plugin link:https://github.com/jekyll/jekyll-feed[`jekyll-feed`] imposes the image to be present in the blogpost to be included in the feed. This is problematic as I want to use a standard image for each category. 
 
-The feed content is configurable using the Front Matter. Here is an example:
-
-[source,yaml]
-----
-image: /img/post-write.png # Present in the XML feed but not used by Feedly (Feedly has rules to detect an image in the content)
-excerpt: |
-  A short summary of the blogpost.
-feed:
-  excerpt_only: true
-----
+I use this link:https://markonproduct.com/coding-an-atom-feed-optimized-for-feedly[other solution] as a workaround to really control the `/feed.xml` file content.

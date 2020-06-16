@@ -845,6 +845,16 @@ footer img.footer-me {
   max-width: 100%;
 }
 
+/* A class for short list */
+#page-post .compact > ul {
+  li {
+    margin: 0.75em 0 !important;
+  }
+  p {
+    margin: 0 !important;
+  }
+}
+
 img.cover {
   display: block;
   border: 20px solid white;

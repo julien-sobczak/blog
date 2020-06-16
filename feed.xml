@@ -1,0 +1,52 @@
+---
+layout: null
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+
+ <title>{{ site.title }}</title>
+ <link href="{{ site.url }}/feed.xml" rel="self"/>
+ <link href="{{ site.url }}/"/>
+ <updated>{{ site.time | date_to_xmlschema }}</updated>
+ <id>{{ site.url }}/</id>
+ <author>
+   <name>{{ site.author.name }}</name>
+ </author>
+
+ <webfeeds:cover image="https://juliensobczak.com/img/cover.png" />
+ <webfeeds:icon>https://juliensobczak.com/android-chrome-192x192.png</webfeeds:icon>
+ <webfeeds:logo>https://juliensobczak.com/favicon-32x32.png</webfeeds:logo>
+ <webfeeds:accentColor>4185f4</webfeeds:accentColor>
+ <webfeeds:related layout="card" target="browser"/>
+
+ {% assign latest_posts = site.posts | slice:0, 10 %}
+ {% for post in latest_posts %}
+ {% unless post.tags contains 'hidden' %}
+ <entry>
+   <title>{{ post.title | xml_escape }}</title>
+   <link href="{{ site.url }}{{ post.url }}"/>
+   <updated>{{ post.date | date_to_xmlschema }}</updated>
+   <id>{{ site.url }}{{ post.id }}</id>
+   {% if post.excerpt_only %}
+   <summary type="html">
+   	 &lt;img class=&quot;post-image&quot; alt=&quot;Article Image&quot; src=&quot;https://juliensobczak.com/img/post-{{ post.category }}-lite.png&quot;/&gt;
+     &lt;p&gt;{{ post.excerpt | xml_escape }}&lt;/p&gt;
+   </summary>
+   {% else %}
+   <content type="html">
+   	 &lt;img class=&quot;post-image&quot; alt=&quot;Article Image&quot; src=&quot;https://juliensobczak.com/img/post-{{ post.category }}-lite.png&quot;&gt;
+     {% if post.category == 'read' %}
+     &lt;p&gt;
+       {{ post.headline | xml_escape }}
+     &lt;/p&gt;
+    &lt;img class=&quot;cover&quot; src=&quot;{{ post.image }}&quot; alt=&quot;Book Cover - {{ post.title | xml_escape }}&quot; /&gt;
+    {% endif %}
+     {{ post.content | xml_escape }}
+   </content>
+   {% endif %}
+ </entry>
+ {% endunless %}
+ {% endfor %}
+
+</feed>
