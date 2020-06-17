@@ -14,9 +14,9 @@ layout: null
    <name>{{ site.author.name }}</name>
  </author>
 
- <webfeeds:cover image="https://juliensobczak.com/img/cover.png" />
- <webfeeds:icon>https://juliensobczak.com/android-chrome-192x192.png</webfeeds:icon>
- <webfeeds:logo>https://juliensobczak.com/favicon-32x32.png</webfeeds:logo>
+ <webfeeds:cover image="https://www.juliensobczak.com/img/cover.png" />
+ <webfeeds:icon>https://www.juliensobczak.com/android-chrome-192x192.png</webfeeds:icon>
+ <webfeeds:logo>https://www.juliensobczak.com/favicon-32x32.png</webfeeds:logo>
  <webfeeds:accentColor>4185f4</webfeeds:accentColor>
  <webfeeds:related layout="card" target="browser"/>
 
@@ -30,12 +30,12 @@ layout: null
    <id>{{ site.url }}{{ post.id }}</id>
    {% if post.excerpt_only %}
    <summary type="html">
-   	 &lt;img class=&quot;post-image&quot; alt=&quot;Article Image&quot; src=&quot;https://juliensobczak.com/img/post-{{ post.category }}-lite.png&quot;/&gt;
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-{{ post.category }}-lite.png&quot;/&gt;
      &lt;p&gt;{{ post.excerpt | xml_escape }}&lt;/p&gt;
    </summary>
    {% else %}
    <content type="html">
-   	 &lt;img class=&quot;post-image&quot; alt=&quot;Article Image&quot; src=&quot;https://juliensobczak.com/img/post-{{ post.category }}-lite.png&quot;&gt;
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-{{ post.category }}-lite.png&quot;&gt;
      {% if post.category == 'read' %}
      &lt;p&gt;
        {{ post.headline | xml_escape }}
