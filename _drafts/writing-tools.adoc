@@ -51,7 +51,8 @@ Here are common emojis to use in posts:
 
 == Post Review Checklist
 
-- [ ] Catchy title and headlines?
+- [ ] Catchy title and headlines? Don't stumble on the sweinhesser effect?
+- [ ] Banal introduction?
 - [ ] Unnecessary informations is deported in admonition blocks or footnotes?
 - [ ] Main ideas are highlighted?
 - [ ] Inspiring quote(s)?
@@ -64,6 +65,6 @@ Here are common emojis to use in posts:
 
 == Feed
 
-The plugin link:https://github.com/jekyll/jekyll-feed[`jekyll-feed`] imposes the image to be present in the blogpost to be included in the feed. This is problematic as I want to use a standard image for each category. 
+The plugin link:https://github.com/jekyll/jekyll-feed[`jekyll-feed`] imposes the image to be present in the blogpost to be included in the feed. This is problematic as I want to use a standard image for each category.
 
 I use this link:https://markonproduct.com/coding-an-atom-feed-optimized-for-feedly[other solution] as a workaround to really control the `/feed.xml` file content.
