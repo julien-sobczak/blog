@@ -1,0 +1,82 @@
+---
+layout: post-write
+title: "The Perils of Learning From Experience"
+subtitle: "Or Why You Are Not Stupid Enough"
+author: Julien Sobczak
+date: '2020-12-19'
+category: "write"
+subject: Experience
+tags:
+  - learning
+recommendations:
+  - why-i-read
+---
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2020-12-19-learning-from-experience/' | relative_url }}
+
+[quote, Isaac Newton]
+____
+If I have seen further it is by standing on the shoulders of giants.
+____
+
+[.lead]
+Learning on the job is indispensable as you don’t want to repeat the same mistakes. The motivation to learn from our experiences is obvious and this probably explains why experience is commonly overvalued during hiring. But there is something even more important. It’s our ability to learn from others.
+
+== Do
+
+Imagine a fish pond. The fishes represent your ideas, your teachings, your mistakes, your lessons, your values--whatever your experience learns you. There are big fishes, little fishes, fat fishes, skinny fishes, and you, standing near the pond trying to catch one of those fishes.footnote:[I thought about this fish pond analogy by reading _The Artist’s Way_ by Julia Cameron. In her classic book, Julia compares our creativity to an artistic reservoir, like a well-stocked trout pond. The artist's responsibility is to maintain the ecosystem, filling it with new fishes before it becomes depleted. It means following other artists’ works, reading or just paying attention to details all around you.] You have a new problem to solve or a new decision to take and you resort on your experience to find the answer. You will maybe catch a big fish and have a great idea. Or maybe not. It all depends on your living ecosystem.
+
+image::own-experience.png[width=500]
+
+When you are learning from your experience, you are filling your fish pond at a very slow pace. Each new experience brings you new fishes but since time is finite, your experience is limited too.
+
+Over time, new species of fish will appear. The theory of evolution applies to your pond. But it’s a slow process. And if all of your fishes look identical, you must not be surprised if your new ideas are not so different. In addition, fishes are living creatures, and thus die, in the same way your memories fade away. Therefore, you may soon end up with an empty pond and have to wait a very long time for a new idea that will never emerge.
+
+For sure, learning from experience is important. We all make mistakes and we better have to learn from them. Even surgeons can learn a lot from their mistakes, but they will have to explain it to their patients (or their families for the biggest mistakes). Mistakes make us better persons. But nobody is sufficiently incompetent to make all the mistakes he need to unleash his potential. A better strategy is to recognize we all suck and we all make mistakes. So, why not learn from each other? This way, we would avoid making the same mistakes so that we can make even bigger mistakes (and thus learn even more).
+
+In _The ONE Thing_, Gary W. Keller retold what his college professor once told him, "Gary, you're smart, but people have lived before you. You're not the first person to dream big, so you'd be wise to study what others have learned first, and then build your actions on the back of their lessons." He is so right. We think we are smart. But we aren’t. So, we need to listen.
+
+== Listen
+
+[source, The Dalai Lama]
+____
+“When you talk, you are only repeating what you already know. But if you listen, you may learn something new.”
+____
+
+Listening is diving into someone else’s pond and carrying with you a few fishes. You complete your own pond with new species. The more you listen, the more diverse your pond becomes. Big fishes will eat smaller fishes. The evolution process continues.
+
+image::copy-experience.png[width=500]
+
+Listening is great, as long you don’t surround yourself with people who think like you. If everyone is cultivating trouts, the theory of evolution will create … better trouts! So, the solution is easy—simply hire people different from you! But it’s not so simple...
+
+We are link:https://en.wikipedia.org/wiki/List_of_cognitive_biases[biased]. _Affinity bias_ is one of the most common in hiring. We are more likely to select a candidate who shares the same view, or who went to the same school, or reminds us of our younger selves.footnote:[How to Reduce Personal Bias When Hiring, Ruchika Tulshyan, https://hbr.org/2019/06/how-to-reduce-personal-bias-when-hiring]. _Confirmation bias_ is even more present. We are searching for or interpreting information in a way that confirms our own thinking. If your pond is full of salmon and someone shows you a clownfish, you are more likely to reject the idea than if someone else presents you a new variety of salmon. Diversity of opinion is great, but our biases make it an illusion and we need to work really hard to make it a reality.
+
+image::biases.png[width=500]
+
+Listening is great. But listening does not happen only using your ears. You need to find divergent opinions using the ultimate listening experience, reading.
+
+== Read
+
+[source, Albert Einstein]
+____
+"If you want your children to be intelligent, read them fairy tales. If you want them to be more intelligent, read them more fairy tales."
+____
+
+Listening is great but is limited in time, and in space. We can only listen from people we know. On the contrary, reading is listening without limit. You can listen from persons who are not living anymore (_Meditations_ by Marcus Aurelius continues to be one of the most inspiring books two thousands years later.). You can listen to people that live on the opposite side of the world. You can listen to people that have never heard about you. Reading is pure listening, not with your ears, but with your eyes.
+
+[NOTE]
+.Reading is not the only option.
+====
+Watching TED talks is another great example to perfect your listening skill. It shares a lot in common with reading. The main difference is the time spent with the “other” person. A talk is more like a phone call where a book is more like a full day spent with the person.
+====
+
+Reading is like being submerged with water. The more you read, the more high is the wave, and if you are an avid reader, you must be prepared to face a tsunami that will ravage all of your biases. Reading is a weapon of massive destruction to fight them. “People don't realize how a man's whole life can be changed by one book,” said Malcolm X. Reading is a way to escape reality to live thousands of experiences.
+
+image::reading-experiences.png[width=500]
+
+The benefits of reading are exponentiel. The more you read, the more you benefit from it. You may ignore a person's idea, but if the same idea is present in dozens of ponds, it’s much more difficult for your confirmation bias to ignore it. Similarly, the more you read, the more you catch diverse new fishes, and the more incredible the results of the natural evolution process will be. Your pond will become a growing ecosystem whose diversity is key to become more creative and innovative.
+
+image::all-experiences.png[width=500]
+
+*Learning from others is the only solution*. If you are able to read these words on your screen, it is because others before you took the time to share their knowledge and some have been smart enough to listen. “What we know is a drop, what we don't know is an ocean,” said Isaac Newton. You need others. Others need you.
