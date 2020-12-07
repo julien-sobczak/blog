@@ -11,8 +11,8 @@ excerpt: >
   This post is part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. The first step of our journey leads us to the city of learning. Like any tourist, our goal is to visit the most beautiful places and come back with great memories. Ready for the tour?
 excerpt_only: true
 recommendations:
-  - the-landscape-of-knowledge
-  - the-pyramid-of-expertise
+  - 2020-12-08-the-landscape-of-knowledge
+  - 2020-12-08-the-pyramid-of-expertise
 ---
 
 :page-liquid:

@@ -11,8 +11,8 @@ excerpt: >
   This post is the last part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. In the previous posts, we discussed the important role of exploration in learning. But if your destination is to reach expertise on a subject, you can’t just wander and hope for expertise to join you on your ride. You need a better strategy.
 excerpt_only: true
 recommendations:
-  - the-city-of-learning
-  - the-landscape-of-knowledge
+  - 2020-12-08-the-city-of-learning
+  - 2020-12-08-the-landscape-of-knowledge
 ---
 
 :page-liquid:
