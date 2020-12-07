@@ -8,11 +8,11 @@ subject: Knowledge
 tags:
   - learning
 excerpt: >
-  This post is the first part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. In this second post, I compare knowledge with Nature. Both are ephemeral, constantly changing, and always full of surprises. We will explore the world around us from a new angle, using learning as our means of transport.
+  This post is the second part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. In this one, I compare knowledge with Nature. Both are ephemeral, constantly changing, and always full of surprises. We will explore the world around us from a new angle, using learning as our means of transport.
 excerpt_only: true
 recommendations:
-  - the-city-of-learning
-  - the-pyramid-of-expertise
+  - 2020-12-08-the-city-of-learning
+  - 2020-12-08-the-pyramid-of-expertise
 ---
 
 :page-liquid:
