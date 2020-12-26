@@ -24,9 +24,9 @@ recommendations:
 
 [CAUTION.license]
 ====
-This post revises an old I wrote four years ago, link:{% post_url write/2016-12-26-anki-scripting %}[Anki Scripting]. My motivation at that time was just to publish my notes mainly for myself. I've not anticipated that many learners were trying to automate their flashchards creation.
+This post revises an old post that I wrote four years ago, link:{% post_url write/2016-12-26-anki-scripting %}[Anki Scripting]. My motivation at that time was just to publish my notes mainly for myself. I have not anticipated that so many learners were trying to automate their flashchards creation.
 
-Since, I finished memorizing the thousands of flashcards I created programmatically. As I need to create new ones, I thought revising my old post could be useful.
+I finished memorizing the thousands of flashcards I created programmatically. I need to create new ones, and I thought revising my old post could be useful.
 ====
 
 This post is written for an audience with minimal programming skills. I've tried to keep it small, and provide basic solutions to automate your flashcards easily.
@@ -34,7 +34,7 @@ This post is written for an audience with minimal programming skills. I've tried
 [NOTE]
 .My Environnement
 ====
-The code present in this article was tested on MacOS using Python 3.8 and Anki 2.1.35. Future versions must be working but if you encounter errors, differences with your environnement may explain why I didn't get the same error.
+The code present in this article was tested on MacOS using Python 3.8 and Anki 2.1.35. Future versions must be working but if you encounter errors, differences with your environment may explain why I didn't get the same error.
 ====
 
 === Under the Hood
@@ -57,7 +57,7 @@ To automate the creation of our flashcards, several strategies are possible:
 * *Create new cards using the Anki Python API* (think of an API as a list of capabilities that we can ask Anki to perform). This approach requires to write Python code (the API speaks only in Python, so you have to speak in Python if you want to be understood). Contrary to the first approach, the API contains the logic to initialize most columns automatically. We can focus exclusively on the content of our flashcards.
 * *Use a bot to simulate inputs and clicks using the Anki GUI*. My experience with such tools is not so great. Future changes in the UI can easily break everything and you will have to repeat the process from scratch. Like the previous approach, code is required using this strategy too, and will be even more challenging than using the Anki API.
 
-Consequently, like for my previous post, *I think the best approach is to use the Python API to create our flashcards*. Interacting with the SQL database or the GUI is brittle as every new version of Anki may change the schema or the UI. The Python API is the more stable component. This explains why I think it's preferable to rely only on it.
+Consequently, like for my previous post, *I think the best approach is to use the Python API to create our flashcards*. Interacting with the SQL database or the GUI is brittle as every new version of Anki may change the schema or the UI. The Python API is the more stable component. This explains why I think it's preferable to rely on it.
 
 
 === Using the Anki Python Library
@@ -294,7 +294,7 @@ Here is an example of a valid input file containing French words and expressions
     Back: Voiture <small>n.</small>
 ----
 
-NOTE: The note fields can reference medias using the usual Anki syntax (`<img src="..."/>` for images and `[sound:...]` for sounds). The CLI will try to load these files into Anki medias database.
+NOTE: The note fields can reference medias using the usual Anki syntax (`<img src="..."/>` for images and `[sound:...]` for sounds). The CLI will try to load these files into the Anki medias database.
 
 The file is a link:https://en.wikipedia.org/wiki/YAML[YAML] file. YAML is popular among developers and can be considered like a supercharged CSV or TXT file. Check link:https://en.wikipedia.org/wiki/YAML[the Wikipedia page] if you have never used this format before. The syntax is easy to grasp if you have a good text editor, which will ensure only spaces are used and not tabulations.
 
@@ -324,7 +324,7 @@ Let's load the file `french.yml`:
 
 [source,shell]
 ----
-$ anki-cli-unofficial french.yml french.apkg
+$ anki-cli-unofficial load french.yml french.apkg
 ----
 
 When running this command, the CLI creates a new temporary Anki directory. It does not work directly on your Anki collection. There are limitations with such an approach. For example, you are limited to the default Anki note types (`Basic`, `Basic (with reversed card)`, `Basic (optional reversed card)`, `Cloze`). The main advantage is the command is safe. It will not trash your flashcards due to a bug.
