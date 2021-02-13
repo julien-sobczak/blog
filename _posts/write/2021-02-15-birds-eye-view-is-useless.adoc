@@ -1,0 +1,79 @@
+---
+layout: post-write
+title: "A Bird's-Eye View Is Useless if You Cannot Land on Your Feet"
+author: Julien Sobczak
+date: '2021-02-15'
+category: "write"
+subject: The Big Picture
+tags:
+  - management
+recommendations:
+  - 2021-02-15-your-organizational-chart-lies
+---
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2021-02-15-birds-eye-view-is-useless/' | relative_url }}
+
+[quote, Sanford I. Weill, American banker, financier and philanthropist]
+____
+Details create the big picture.
+____
+
+[.lead]
+I observe too often people navigating a company like a plane flying at a certain altitude. The developers are working on the ground when the CEO is adopting the 30,000-foot view, the famous Big Picture. Between these two extremes, a crowd of managers is filling the air space, flying at 1,000-foot, 5,000 foot, 10,000 foot based on their position in the organizational chart. That's stupid. Commercial airliners are maybe flying at 30,000-foot, they still have to land, otherwise they will collapse. That's true for you too.
+
+== The perils of the Worm's-eye view 👎
+
+Many developers excel at solving problems. It makes sense that you want to find a solution to every one of your problems and to find it quickly to move on. But implementing a solution that is not optimal will lead you to new problems that you will solve the same way, without never taking the time to consider the global problem and to find a correct solution. 
+
+For example, you may start deploying your application on a virtual machine using a configuration management tool like Ansible. Over time, your playbook becomes more and more complex. You deploy your application in a new environment, add new variables to condition some parts of your configuration. The YAML configuration files grow and you start to use advanced syntaxes to overcome the limitations of the tool. The code is less and less maintainable but you still find workarounds for every new problem. It works.
+
+Now, imagine other developers in different teams deploying using the same approach. Everyone is doing the same thing. Everyone is adding commands to keep packages up-to-date. Everyone is improving their architecture to make their application more resilient. Everyone is collecting system metrics to prevent incidents. None of these problems is hard to solve. But if you step back and look at the overall picture, it does not look great. Every team has spent time solving the same problems when the best approach was to find a solution to prevent this duplication of effort. 
+
+In practice, not all solutions are equivalent. You want to solve your problem. But you want to solve it using the solution that will get you closer to your end destination. Sometimes, that means reflecting on our own practices, adopting new paradigms, new directions, and the only way to do that is to look behind what you are doing right now. 
+
+*The worm’s eye view alone is not enough.* Local optimizations always means suboptimizations.
+
+== The perils of the Bird's-eye view 👎
+
+Managers can use the 30,000 foot view to distract from smaller details of a project as a way to cover up their lack of knowledge on the subject. Their incompetence makes things so blurry that they stop seeing the ground and are effectively 30,000 foot above reality. We don't need that. Moving up the corporate ladder is not an excuse to stop bothering with lower-level problems.
+
+Indeed, not being able to stand on the ground is dangerous. It's like flying in a hot air balloon, carried by the winds without having control of the direction. You may have a bird's-eye view and a large vision, it's not very helpful. Innovation happens when you face real-world problems using a new direction. Innovation must not be easy. It's going against the winds. You can't do that if you are stuck in your balloon. 
+
+[title="A landscape with developers on the ground and managers drifting in hot air balloons without any control of direction."]
+image::balloon.png[title=A landscape with developers on the ground and managers drifting in hot air balloons without any control of direction.]
+
+Over time, management will look like a giant balloon meeting. There will be balloons everywhere in the sky, all drifting in the same direction. If you are one of those managers, you should not be surprised if employees on the ground look at you with curiosity but aren't going to trust you for the direction and the vision. 
+
+*The bird’s eye view alone is not enough.* The big picture is useless if details are blurry.
+
+== Worm's-eye view + Bird's-eye view = 💪
+
+Whatever your title or your position in your organization, you need to think using a worm's-eye view AND a bird's-eye view. You need both to solve the right problems with the right solutions. 
+
+The challenge is not just to adopt a bird's-eye view but to act like a bird. You must be able to fly high and to stand firmly on your feet. You must be an eagle soaring high in the air, ready to swoop down on your prey. But as you are not really a bird, what you need is a jetpack to observe the world from an infinite number of viewpoints.
+
+[title="The same landscape where all employees are using a jetpack to observe the world from different viewpoints."]
+image::jetpack.png[title=The same landscape where all employees are using a jetpack to observe the world from different viewpoints.]
+
+*The Big Picture is a giant jigsaw. You must collect the pieces on the ground and understand how they fit together.*
+
+What that means in practice differs according to your professional domain. In this section, I will focus on tech companies whose main asset is often a SaaS product.
+
+For example, *as a developer*:
+
+* You don’t need to know how to solve every programming problem at your company BUT you have to ask yourself if the problem you are trying to solve could not be better addressed at a more global level.
+* You don't need to know how to code in all programming languages used in your company BUT you need to understand in which context each language really excels to choose wisely what is best for the company, and not just what is best for our personal convenience.
+* You don’t need to know your customers BUT you need to understand how your code helps them to get their job done so that you can consider what you could do even better.
+
+For example, *as someone in a management position* (VP/CEO/Executive/Product Manager/…):
+
+* You don't need to know how to write a Dockerfile BUT you have to understand what containers are (simple processes using old Linux mechanisms to provide isolation) so that you understand why migrating your application to containers will save you cloud computing resources.
+* You don't need to know that Golang supports variadic functions BUT you have to understand that the Go runtime has a small memory footprint and includes modern concurrency patterns to better exploit your cloud computing resources.
+* You don't need to know which framework is used to create microservices BUT you have to understand how microservices allow your teams to scale horizontally and the technical challenges that such an architecture raises (the fallacies of distributed computing, the importance of observability, the standardization of deployments, etc.).
+
+There are just a few examples. There are many more to know. You may think this is absurd and employees are more effective when they focus on their immediate work. But it just doesn’t work. A manager will not support an initiative that he does not understand. And a developer will resist change if he does not understand why he needs to learn something new. 
+
+In the end, every decision is a technical and business decision. You may debate about how to reorganize your teams, the core problem is how to group employees so that their skills are better aligned to create a better product. You may debate about which frameworks to use, the core problem is which one will result in the better product. Developers must understand the business orientation and managers must understand the technical challenges. The worm’s-eye view and the bird’s-eye view are two sides of the same coin.
+
+Remember that you can’t appreciate the beauty of the earth simply by looking out an airplane window. You don’t see more with distance. You just see differently. At 30,000 feet, it’s often just clouds.
