@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+
+ <title>I'm Lovin' I.T. - Julien Sobczak</title>
+ <link href="https://www.juliensobczak.com/feed.xml" rel="self"/>
+ <link href="https://www.juliensobczak.com/"/>
+ <updated>2021-02-16T08:47:18+00:00</updated>
+ <id>https://www.juliensobczak.com/</id>
+ <author>
+   <name>Julien Sobczak</name>
+ </author>
+
+ <webfeeds:cover image="https://www.juliensobczak.com/img/cover.png" />
+ <webfeeds:icon>https://www.juliensobczak.com/android-chrome-192x192.png</webfeeds:icon>
+ <webfeeds:logo>https://www.juliensobczak.com/favicon-32x32.png</webfeeds:logo>
+ <webfeeds:accentColor>4185f4</webfeeds:accentColor>
+ <webfeeds:related layout="card" target="browser"/>
+
+ 
+ 
+ 
+ <entry>
+   <title>A Bird's-Eye View Is Useless if You Cannot Land on Your Feet</title>
+   <link href="https://www.juliensobczak.com/write/2021/02/15/birds-eye-view-is-useless.html"/>
+   <updated>2021-02-15T12:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2021/02/15/birds-eye-view-is-useless</id>
+   
+   <content type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;&gt;
+     
+     &lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Details create the big picture.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Sanford I. Weill&lt;br&gt;
+&lt;cite&gt;American banker&lt;/cite&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph lead&quot;&gt;
+&lt;p&gt;I observe too often people navigating inside a company like a plane flying at a certain altitude. The developers are working on the ground when the CEO is adopting the 30,000-foot view, the famous Big Picture. Between these two extremes, a crowd of managers is filling the air space, flying at 1,000-foot, 5,000 foot, 10,000 foot based on their position in the organizational chart. That&amp;#8217;s stupid. Commercial airliners are maybe flying at 30,000-foot, they still have to land. That&amp;#8217;s true for you too.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;the_perils_of_the_worms_eye_view&quot;&gt;The perils of the Worm&amp;#8217;s-eye view 👎&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Many developers excel at solving problems. It makes sense that you want to find a solution to every one of your problems and to find it quickly to move on. But implementing a solution that is not optimal will lead you to new problems that you will solve the same way, without never taking the time to consider the global problem to find a correct solution.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For example, you may start deploying your application on a virtual machine using a configuration management tool like Ansible. Over time, your playbook becomes more and more complex. You deploy your application in a new environment, add new variables to condition some parts of your configuration. The YAML configuration files grow and you start to use advanced syntaxes to overcome the limitations of the tool. The code is less and less maintainable but you still find workarounds for every new problem. It works.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Now, imagine other developers in different teams deploying using the same approach. Everyone is doing the same thing. Everyone is adding commands to keep packages up-to-date. Everyone is improving their architecture to make their application more resilient. Everyone is collecting system metrics to prevent incidents. None of these problems is hard to solve. But if you step back and look at the overall picture, it does not look great. Every team has spent time solving the same problems when the best approach was to find a solution to prevent this duplication of effort.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In practice, not all solutions are equivalent. You want to solve your problem. But you want to solve it using the solution that will get you closer to your end destination. Sometimes, that means reflecting on our own practices, adopting new paradigms, new directions, and the only way to do that is to look behind what you are doing right now.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;The worm’s eye view alone is not enough.&lt;/strong&gt; Local optimizations always means suboptimizations.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;the_perils_of_the_birds_eye_view&quot;&gt;The perils of the Bird&amp;#8217;s-eye view 👎&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Many managers excel at never touching the ground. They use the 30,000 foot view to distract from smaller details of a project as a way to cover up their lack of knowledge on the subject. Their incompetence makes things so blurry that they even stop seeing the ground and are effectively 30,000 foot above reality. We don&amp;#8217;t need that. Moving up the corporate ladder is not an excuse to stop bothering with lower-level problems.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Indeed, not being able to stand on the ground is dangerous. It&amp;#8217;s like flying in a hot air balloon, carried by the winds without having control of the direction. You may have a bird&amp;#8217;s-eye view and a large vision, it&amp;#8217;s not very helpful. Innovation happens when you face real-world problems using a new direction. Innovation must not be easy. It&amp;#8217;s going against the winds. You can&amp;#8217;t do that if you are stuck in your balloon.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-birds-eye-view-is-useless/balloon.png&quot; alt=&quot;balloon&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 1. A landscape with developers on the ground and managers drifting in hot air balloons without any control of the direction.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Over time, management will look like a giant balloon meeting. There will be balloons everywhere in the sky, all drifting in the same direction. If you are one of those managers, you should not be surprised if employees on the ground look at you with curiosity but aren&amp;#8217;t going to trust you for the direction and the vision.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;The bird’s eye view alone is not enough.&lt;/strong&gt; The big picture is useless if details are blurry.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;worms_eye_view_birds_eye_view&quot;&gt;Worm&amp;#8217;s-eye view + Bird&amp;#8217;s-eye view = 💪&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Whatever your title or your position in your organization, you need to think using a worm&amp;#8217;s-eye view AND a bird&amp;#8217;s-eye view. You need both to solve the right problems with the right solutions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The challenge is not just to adopt a bird&amp;#8217;s-eye view but to act like a bird. You must be able to fly high and to stand firmly on your feet. You must be an eagle soaring high in the air, ready to swoop down on your prey running on the ground. But since you are not really a bird, what you need is instead a jetpack to observe the world from an infinite number of viewpoints.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-birds-eye-view-is-useless/jetpack.png&quot; alt=&quot;jetpack&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 2. The same landscape where all employees are using a jetpack to observe the world from different perspectives.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;The Big Picture is a giant jigsaw. You must collect the pieces on the ground and understand how they fit together.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;What that means in practice differs according to your professional domain. In this section, I will focus on tech companies whose main asset is often a SaaS product.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For example, &lt;strong&gt;as a developer&lt;/strong&gt;:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;You don’t need to know how to solve every programming problem at your company BUT you have to ask yourself if the problem you are trying to solve could not be better addressed at a more global level.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You don&amp;#8217;t need to know how to code in all programming languages used in your company BUT you need to understand in which context each language really excels to choose wisely what is best for the company, and not just what is best for our personal convenience.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You don’t need to know your customers BUT you need to understand how your code helps them to get their job done so that you can consider what you could do even better.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For example, &lt;strong&gt;as someone in a management position&lt;/strong&gt; (VP/CEO/Executive/Product Manager/…):&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;You don&amp;#8217;t need to know how to write a Dockerfile BUT you have to understand what containers are (simple processes using Linux mechanisms to provide isolation) so that you understand why migrating your application to containers will save you cloud computing resources.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You don&amp;#8217;t need to know that Golang supports variadic functions BUT you have to understand that the Go runtime has a small memory footprint and includes modern concurrency primitives to better exploit your cloud computing resources.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You don&amp;#8217;t need to know which framework is used to create microservices BUT you have to understand how microservices allow your teams to scale horizontally and the technical challenges that such an architecture raises (the fallacies of distributed computing, the importance of observability, the standardization of deployments, etc.).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;There are just a few examples. There are many more to know. You may think this is absurd and employees are more effective when they focus on their immediate work. But it just doesn’t work. A manager will not support an initiative that he does not understand. And a developer will resist change if he does not understand why he needs to learn something new.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In the end, every decision is a technical and business decision. You may debate about how to reorganize your teams, the core problem is how to group employees so that their skills are better aligned to create a better product. You may debate about which frameworks to use, the core problem is which one will result in the better product. Developers must understand the business orientation and managers must understand the technical challenges. The worm’s-eye view and the bird’s-eye view are two sides of the same coin.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Remember that you can’t appreciate the beauty of the earth simply by looking out an airplane window. You don’t see more with distance. You just see differently. At 30,000 feet, it’s often just clouds.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+   </content>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>Your Organizational Chart Lies</title>
+   <link href="https://www.juliensobczak.com/write/2021/02/15/your-organizational-chart-lies.html"/>
+   <updated>2021-02-15T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2021/02/15/your-organizational-chart-lies</id>
+   
+   <content type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;&gt;
+     
+     &lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Every company has two organizational structures: The formal one is written on the charts; the other is the everyday relationship of the men and women in the organization.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Harold Geneen&lt;br&gt;
+&lt;cite&gt;American businessman 1910-1997&lt;/cite&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph lead&quot;&gt;
+&lt;p&gt;The Conway law states that companies design systems reflecting its communication structure. This structure is commonly represented as an organizational chart that must be updated after every reorganization or restructuring. In practice, companies are often stuck in endless reorganizations and the organizational chart becomes quickly outdated. Do we really need this organizational chart?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;the_pros_and_cons_of_organizational_charts&quot;&gt;The Pros and Cons of Organizational Charts&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;An organizational chart illustrates how formal communications happen inside an organization, that is how a manager higher in the ladder spreads information and how employees on the lower rung reports to them. By grouping employees in boxes, called teams, an organizational chart also forces communications to happen. You are more likely to exchange with your teammates than with other employees, at least if you consider only formal meetings like daily standups or retrospectives.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;But an organizational chart says nothing about the invisible organization where crucial, informal communications happen. Employees nurture relationships&amp;#8201;&amp;#8212;&amp;#8201;at lunch, during incidents, at the coffee machine&amp;#8201;&amp;#8212;&amp;#8201;that will help them overcome problems and solve challenges in their daily tasks. These are the interactions that define the best your company, your culture, and using a tree model like an organizational chart cannot depicts such a complex social network.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_1&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_1&quot; title=&quot;View footnote.&quot;&gt;1&lt;/a&gt;]&lt;/sup&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/graph.png&quot; alt=&quot;graph&quot; width=&quot;600&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 1. A graph depicting employees with their interactions.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Researches show leaders that understand this informal structure are more successful and for good reasons. The organizational chart (formal structure) highlights the divisions while the social network (informal structure) highlights the interactions. As explained in a previous post about &lt;a href=&quot;TODO&quot;&gt;complexity&lt;/a&gt;, complex systems are mostly defined by their interactions, not their structure. Holism (the whole is greater than the parts) beats reductionism (divide-and-conquer) when it comes to management.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This social network explains for example that employees are not interchangeable. You can&amp;#8217;t replace an employee having complex interactions nurtured over time by a fresh one completely disconnected in this network on his first workday, even if they have the same skills.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/mapping.png&quot; alt=&quot;mapping&quot; width=&quot;600&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 2. A comparison between the visible organization as captured by the organizational chart and the invisible organization as it happens through informal interactions.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;An organizational chart is thus not the more accurate description of your company. You may even be tempted to completely remove it, but that would be a mistake&amp;#8230;&amp;#8203;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;goodbye_organizational_charts&quot;&gt;Goodbye Organizational Charts?&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Removing the organizational chart is wrong, especially if you fail to replace it by something more useful, more actionable.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For example, saying &quot;We don&amp;#8217;t need a hierarchy. We are all together in the same boat. We are one big team&quot; sounds appealing. I like this metaphor. But this simplistic model is useless. You need everyone to row in the same direction to reach our destination.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/boat.png&quot; alt=&quot;boat&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 3. A bunch of employees in a small boat completely disorganized with no clear direction.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Saying that everyone is in the same boat hides the reality:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We don&amp;#8217;t want all employees to communicate with everyone else. There will be no work done at all! Humans can only manage a small number of relationships.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_2&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_2&quot; title=&quot;View footnote.&quot;&gt;2&lt;/a&gt;]&lt;/sup&gt; So we must keep that number of interactions low if we want these relations to grow rich.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We still have decisions to take to reach our destination. The all-in-the-same-boat metaphor simply says that someone in the boat has to make them. Not very useful. We need to figure out how to solve decision conflicts that arise naturally when more than one brain is working on a problem.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Let&amp;#8217;s take a practical example to illustrate this last point. Imagine that the marketing department is asking for a new feature on your flagship product. But the product team has a divergent opinion. Who must have the last say? Based on the boat metaphor, it&amp;#8217;s not clear.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;analogical_thinking&quot;&gt;Analogical Thinking&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To continue on the previous example, there are clearly several options. What follows is the organizational chart of this fictive company.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/chart.png&quot; alt=&quot;chart&quot; width=&quot;600&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 4. A basic organizational chart with 3 teams reporting to the CEO.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;analogy_1_the_parenting_analogy&quot;&gt;&lt;strong&gt;Analogy 1&lt;/strong&gt;: The parenting analogy&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The first approach is the classic example of top-down management. The Product team and the Marketing team expose their conflicting opinions to the CEO, which arbiter the final decision, in the same way that two children complain to their mother when they want to play with the same toy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/parenting-analogy.png&quot; alt=&quot;parenting analogy&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 5. What happens when decision conflicts are settled by upper management.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Few companies will admit making decisions like this, but most are doing it. A better alternative is to empower one of the two teams to make the decision.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;analogy_2_the_puppeteer_analogy&quot;&gt;&lt;strong&gt;Analogy 2&lt;/strong&gt;: The puppeteer analogy&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You may decide that the marketing department is better advised and thus can make more informed decisions. In case of disagreement, the marketing must be responsible to decide what to include or not in the products. This strategy makes sense but let&amp;#8217;s try to find an analogy to illustrate this approach.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/puppeteer-analogy.png&quot; alt=&quot;puppeteer analogy&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 6. What happens when a team decides the tasks of another team.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Depicted like that, that approach does not look great. You will not create strong product teams using this approach. And what if the marketing analysis were wrong. We have plenty of examples where customers didn&amp;#8217;t really know what they wanted. Henry Ford captured this idea with his quotation:  “If I had asked people what they wanted, they would have said faster horses.” Apple is famous for bringing products to the market that nobody asked. Therefore, if innovation is key to your business, you need to reconsider your decision making approach.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;analogy_3_the_turbine_analogy&quot;&gt;&lt;strong&gt;Analogy 3&lt;/strong&gt;: The turbine analogy&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Innovation happens when you are facing a problem. It is a bottom-up process, and you must empower your product teams to make the right decisions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2021-02-15-your-organizational-chart-lies/turbine-analogy.png&quot; alt=&quot;turbine analogy&quot; width=&quot;600&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;title&quot;&gt;Figure 7. What happens when a team is empowered and other teams are working towards the same goal.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Product teams are giant wind turbines. The goal of your company is to make the turbines rotate as fast as possible. The marketing team acts like an air ventilator, providing the market analysis the product team needs to make well-informed decisions. The platform team acts as the soil on which the turbines can stand firmly. And the product team acts as the rotor, making continual adjustments to keep the turbines running as fast as possible.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Using this analogy, it becomes obvious who must make the decisions. The product team is really empowered to do its job, which is one of the main motivation factors at work.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_3&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_3&quot; title=&quot;View footnote.&quot;&gt;3&lt;/a&gt;]&lt;/sup&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Note that all analogies presented in this section are perfectly compatible with our organizational chart. This illustrates once again that organizational charts are only partially true. It&amp;#8217;s a great tool to communicate the structure, but not the interactions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;to_sum_up&quot;&gt;To sum up&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In the same way that you cannot understand the human body by observing its skeleton, you cannot understand how a company is working simply by looking at its organizational chart. But learning about the human skeleton is useful and you still need your organizational chart. Any company has a global structure and you had better represent it as clearly as possible.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;What we learned in this article is that you need to complement your organizational chart with other tools that focus more on the interactions. Using analogies is a great idea to foster the kind of interactions you want to observe more, but make sure they reflect the reality, and not an impossible ideal.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_1&quot;&gt;
+&lt;a href=&quot;#_footnoteref_1&quot;&gt;1&lt;/a&gt;. The book &lt;em&gt;Driving Results Through Social Networks: How Top Organizations Leverage Networks for Performance and Growth&lt;/em&gt; elaborates on the importance to visualize this network in order to drive your organization.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_2&quot;&gt;
+&lt;a href=&quot;#_footnoteref_2&quot;&gt;2&lt;/a&gt;. The Dunbar&amp;#8217;s number is often cited to define the number of people with whom one can maintain stable social relationships. 150 is &quot;the number of people you would not feel embarrassed about joining uninvited for a drink if you happened to bump into them in a bar.&quot;
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_3&quot;&gt;
+&lt;a href=&quot;#_footnoteref_3&quot;&gt;3&lt;/a&gt;. &lt;a href=&quot;https://en.wikipedia.org/wiki/Two-factor_theory&quot; class=&quot;bare&quot;&gt;https://en.wikipedia.org/wiki/Two-factor_theory&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+   </content>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>Anki Scripting for Non-Programmers</title>
+   <link href="https://www.juliensobczak.com/write/2020/12/26/anki-scripting-for-non-programmers.html"/>
+   <updated>2020-12-26T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/12/26/anki-scripting-for-non-programmers</id>
+   
+   <summary type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;/&gt;
+     &lt;p&gt;&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Creating flashcards manually is great to initiate the learning process. The time you spend creating your flashcards contributes in lowering the effect of the forgetting curve. But creating flashcards manually is challenging when you want to learn for example the most common 10,000 French words. Automation can be a good strategy, especially if the process is more repetitive than creative. Although Anki does not support automation, solutions exist, even if you are not a professional programmer.&lt;/p&gt;
+&lt;/div&gt;&lt;/p&gt;
+   </summary>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>The Perils of Learning From Experience</title>
+   <link href="https://www.juliensobczak.com/write/2020/12/19/learning-from-experience.html"/>
+   <updated>2020-12-19T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/12/19/learning-from-experience</id>
+   
+   <content type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;&gt;
+     
+     &lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If I have seen further it is by standing on the shoulders of giants.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Isaac Newton
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph lead&quot;&gt;
+&lt;p&gt;Learning on the job is indispensable as you don’t want to repeat the same mistakes. The motivation to learn from our experiences is obvious and this probably explains why experience is commonly overvalued during hiring. But there is something even more important. It’s our ability to learn from others.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;do&quot;&gt;Do&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Imagine a fish pond. The fishes represent your ideas, your teachings, your mistakes, your lessons, your values&amp;#8212;&amp;#8203;whatever your experience learns you. There are big fishes, little fishes, fat fishes, skinny fishes, and you, standing near the pond trying to catch one of those fishes.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_1&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_1&quot; title=&quot;View footnote.&quot;&gt;1&lt;/a&gt;]&lt;/sup&gt; You have a new problem to solve or a new decision to take and you resort on your experience to find the answer. You will maybe catch a big fish and have a great idea. Or maybe not. It all depends on your living ecosystem.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2020-12-19-learning-from-experience/own-experience.png&quot; alt=&quot;own experience&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;When you are learning from your experience, you are filling your fish pond at a very slow pace. Each new experience brings you new fishes but since time is finite, your experience is limited too.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Over time, new species of fish will appear. The theory of evolution applies to your pond. But it’s a slow process. And if all of your fishes look identical, you must not be surprised if your new ideas are not so different. In addition, fishes are living creatures, and thus die, in the same way your memories fade away. Therefore, you may soon end up with an empty pond and have to wait a very long time for a new idea that will never emerge.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For sure, learning from experience is important. We all make mistakes and we better have to learn from them. Even surgeons can learn a lot from their mistakes, but they will have to explain it to their patients (or their families for the biggest mistakes). Mistakes make us better persons. But nobody is sufficiently incompetent to make all the mistakes he need to unleash his potential. A better strategy is to recognize we all suck and we all make mistakes. So, why not learn from each other? This way, we would avoid making the same mistakes so that we can make even bigger mistakes (and thus learn even more).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In &lt;em&gt;The ONE Thing&lt;/em&gt;, Gary W. Keller retold what his college professor once told him, &quot;Gary, you&amp;#8217;re smart, but people have lived before you. You&amp;#8217;re not the first person to dream big, so you&amp;#8217;d be wise to study what others have learned first, and then build your actions on the back of their lessons.&quot; He is so right. We think we are smart. But we aren’t. So, we need to listen.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;listen&quot;&gt;Listen&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;“When you talk, you are only repeating what you already know. But if you listen, you may learn something new.”&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; The Dalai Lama
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Listening is diving into someone else’s pond and carrying with you a few fishes. You complete your own pond with new species. The more you listen, the more diverse your pond becomes. Big fishes will eat smaller fishes. The evolution process continues.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2020-12-19-learning-from-experience/copy-experience.png&quot; alt=&quot;copy experience&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Listening is great, as long you don’t surround yourself with people who think like you. If everyone is cultivating trouts, the theory of evolution will create … better trouts! So, the solution is easy—simply hire people different from you! But it’s not so simple&amp;#8230;&amp;#8203;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We are &lt;a href=&quot;https://en.wikipedia.org/wiki/List_of_cognitive_biases&quot;&gt;biased&lt;/a&gt;. &lt;em&gt;Affinity bias&lt;/em&gt; is one of the most common in hiring. We are more likely to select a candidate who shares the same view, or who went to the same school, or reminds us of our younger selves.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_2&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_2&quot; title=&quot;View footnote.&quot;&gt;2&lt;/a&gt;]&lt;/sup&gt;. &lt;em&gt;Confirmation bias&lt;/em&gt; is even more present. We are searching for or interpreting information in a way that confirms our own thinking. If your pond is full of salmon and someone shows you a clownfish, you are more likely to reject the idea than if someone else presents you a new variety of salmon. Diversity of opinion is great, but our biases make it an illusion and we need to work really hard to make it a reality.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2020-12-19-learning-from-experience/biases.png&quot; alt=&quot;biases&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Listening is great. But listening does not happen only using your ears. You need to find divergent opinions using the ultimate listening experience, reading.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;read&quot;&gt;Read&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&quot;If you want your children to be intelligent, read them fairy tales. If you want them to be more intelligent, read them more fairy tales.&quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Albert Einstein
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Listening is great but is limited in time, and in space. We can only listen from people we know. On the contrary, reading is listening without limit. You can listen from persons who are not living anymore (&lt;em&gt;Meditations&lt;/em&gt; by Marcus Aurelius continues to be one of the most inspiring books two thousands years later.). You can listen to people that live on the opposite side of the world. You can listen to people that have never heard about you. Reading is pure listening, not with your ears, but with your eyes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;Reading is not the only option.&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Watching TED talks is another great example to perfect your listening skill. It shares a lot in common with reading. The main difference is the time spent with the “other” person. A talk is more like a phone call where a book is more like a full day spent with the person.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Reading is like being submerged with water. The more you read, the more high is the wave, and if you are an avid reader, you must be prepared to face a tsunami that will ravage all of your biases. Reading is a weapon of massive destruction to fight them. “People don&amp;#8217;t realize how a man&amp;#8217;s whole life can be changed by one book,” said Malcolm X. Reading is a way to escape reality to live thousands of experiences.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2020-12-19-learning-from-experience/reading-experiences.png&quot; alt=&quot;reading experiences&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The benefits of reading are exponentiel. The more you read, the more you benefit from it. You may ignore a person&amp;#8217;s idea, but if the same idea is present in dozens of ponds, it’s much more difficult for your confirmation bias to ignore it. Similarly, the more you read, the more you catch diverse new fishes, and the more incredible the results of the natural evolution process will be. Your pond will become a growing ecosystem whose diversity is key to become more creative and innovative.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2020-12-19-learning-from-experience/all-experiences.png&quot; alt=&quot;all experiences&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Learning from others is the only solution&lt;/strong&gt;. If you are able to read these words on your screen, it is because others before you took the time to share their knowledge and some have been smart enough to listen. “What we know is a drop, what we don&amp;#8217;t know is an ocean,” said Isaac Newton. You need others. Others need you.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_1&quot;&gt;
+&lt;a href=&quot;#_footnoteref_1&quot;&gt;1&lt;/a&gt;. I thought about this fish pond analogy by reading &lt;em&gt;The Artist’s Way&lt;/em&gt; by Julia Cameron. In her classic book, Julia compares our creativity to an artistic reservoir, like a well-stocked trout pond. The artist&amp;#8217;s responsibility is to maintain the ecosystem, filling it with new fishes before it becomes depleted. It means following other artists’ works, reading or just paying attention to details all around you.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_2&quot;&gt;
+&lt;a href=&quot;#_footnoteref_2&quot;&gt;2&lt;/a&gt;. How to Reduce Personal Bias When Hiring, Ruchika Tulshyan, &lt;a href=&quot;https://hbr.org/2019/06/how-to-reduce-personal-bias-when-hiring&quot; class=&quot;bare&quot;&gt;https://hbr.org/2019/06/how-to-reduce-personal-bias-when-hiring&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+   </content>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>No Theory in Books, Only Practice</title>
+   <link href="https://www.juliensobczak.com/write/2020/12/14/no-theory-in-books.html"/>
+   <updated>2020-12-14T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/12/14/no-theory-in-books</id>
+   
+   <content type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;&gt;
+     
+     &lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;There is nothing as practical as a good theory.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Kurt Lewin&lt;br&gt;
+&lt;cite&gt;Father of Modern Social Psychology&lt;/cite&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph lead&quot;&gt;
+&lt;p&gt;A lot people don&amp;#8217;t read, especially non-fiction books. “Books contain only theoretical knowledge” or “my situation is different” are common excuses. Books are considered as useless in practice. That’s nonsense to me. Here is why.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;what_is_a_theory&quot;&gt;What is a theory?&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;According to Stephen Hawking, a theory must satisfy two requirements:&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_1&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_1&quot; title=&quot;View footnote.&quot;&gt;1&lt;/a&gt;]&lt;/sup&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;olist arabic&quot;&gt;
+&lt;ol class=&quot;arabic&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;A theory must describe a large class of observations using a few arbitrary elements.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A theory must make definite predictions about the results of future observations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The role of observations is obvious based on this definition. A theory stems from observations (in practice) and is used to explain new observations (in practice). Newton&amp;#8217;s theory is a good example. Legend has it that Isaac Newton was sitting under an apple tree when a fruit fell and hit him on the head, prompting him to suddenly come up with the theory of gravity. Chances are Newton was simply observing the apple falling from the tree, and wondered why it fell straight down. More explorations continued until the elaboration of his famous theory: &lt;em&gt;Bodies attract each other with a force that is proportional to their mass and inversely proportional to the square of the distance between them&lt;/em&gt;. This same theory was then used to predict the motions of the sun and planets to a high degree of accuracy. &lt;strong&gt;A theory is just a way to connect different observations that happen in the real world&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In short, theory is abstracted practice, and practice is applied theory. &lt;strong&gt;A theory cannot exist without practice&lt;/strong&gt;.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_2&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_2&quot; title=&quot;View footnote.&quot;&gt;2&lt;/a&gt;]&lt;/sup&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/posts_resources/2020-12-14-no-theory-in-books/theory-and-practice.png&quot; alt=&quot;theory and practice&quot; width=&quot;500&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;A theory may also explain things that we cannot observe directly. Electrons and black holes are great examples. But again, practice is always used to provide support, or challenge the theory. For example, we have no proof electrons exist but the concept of an electron does a remarkably good job of predicting how many things that are observable behave. &lt;strong&gt;Any theory is useless without practice.&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;the_practice_behind_the_theory&quot;&gt;The Practice Behind the Theory&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this section, I would like to share some of the theories I discovered during my readings. The list is not exhaustive since my memory is not very reliable. I will explain the conditions under which they were created to highlight that theory and practice always go hand in hand.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;I learned about the &lt;strong&gt;theory of evolution&lt;/strong&gt; in numerous books, including &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Sapiens&lt;/em&gt;&lt;/a&gt;, by Yuval Noah Harari.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Long before publishing &lt;em&gt;The Origin of Species&lt;/em&gt; where he introduced his theory, Charles Darwin started a journey around the globe on the ship HMS Beagle. The trip lasted almost 5 years. He suffered horribly from seasickness. Fortunately for him, he spent most of his time on land observing species. Slowly, Darwin began to see intriguing patterns in the distribution and features of organisms. The idea of evolution was born.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: A theory always follows observations of the real-world to make sense of it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I learned about the &lt;strong&gt;germ theory of disease&lt;/strong&gt; in &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Mastery&lt;/em&gt;&lt;/a&gt;, by Robert Greene.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Ignaz Semmelweis was a 19th-century Hungarian doctor who contributed largely in the acceptance of this theory. While working at the Vienna General Hospital, Semmelweis observed a large number of women who died during childbirth. He realized doctors having examined the woman had directly come from autopsies. Semmelweis introduced handwashing and observed a sudden reduction in the mortality rate. Despite the evidences, Semmelweis and his theory were harshly rejected at that time. He was eventually admitted to an asylum where he died from infection two weeks later.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: A theory can be correct, and not widely accepted in practice. The &lt;em&gt;Semmelweis reflex&lt;/em&gt; continues to describe the tendency to reject new evidence or new knowledge because it contradicts established norms, beliefs, or paradigms.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I learned about the &lt;a href=&quot;https://en.wikipedia.org/wiki/Two-factor_theory&quot;&gt;&lt;strong&gt;Two-factor theory&lt;/strong&gt;&lt;/a&gt; in &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Management 3.0&lt;/em&gt;&lt;/a&gt;, by Jurgen Appelo, and have seen it quoted so many times since.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The theory states that certain factors in the workplace cause job satisfaction while other factors cause dissatisfaction. A low salary is a source of demotivation but a high salary is not enough to motivate. An employee needs recognition, sense of achievement, responsibility, and meaningful work. Frederick Herzberg, the behavioural scientist behind this theory, conducted interviews with 203 engineers and accountants in nine factories in the Pittsburgh area. The same study was repeated in the following years, on thousands other persons, and today, the theory is still widely accepted in the workplace.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: A theory often relies on intuition but experiments are always used to confirm it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I learned about the &lt;strong&gt;scientific management theory&lt;/strong&gt; in numerous recent books, mostly to demonstrate its inadequacies with knowledge workers like developers.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It all started in 1890 at the &lt;em&gt;Midvale Steel Company&lt;/em&gt;, one of America&amp;#8217;s great armor plate making plants. Frederick W. Taylor, then aged 25 and working as a foreman, was constantly impressed by the failure of his team members to produce more than about one-third of what he deemed a good day&amp;#8217;s work. Using scientific methods, he determined how long it should take men to perform each given piece of work, and started applying his ideas. The approach quickly spreaded into other manufacturing industries.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: A theory doesn’t have to work in all contexts to have a huge impact.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I learned about the &lt;strong&gt;theory of ego depletion&lt;/strong&gt; in &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Thinking Fast and Slow&lt;/em&gt;&lt;/a&gt;, by Daniel Kahneman.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Roy Baumeister’s research says if you expend your willpower on one thing, you have less left to take on another. In the study, the researchers asked two groups of 30 persons to wait in a room where there were two plates of food&amp;#8212;&amp;#8203;fresh-baked cookies versus red and white radishes. Each group was allowed to eat from only one plate but not the other. Next, the researchers gave both groups an unsolvable puzzle to work on. The researchers anticipated that the people in the radish group would give up sooner, as they have struggled not to eat the cookies. That’s exactly what happened. The experience was conducted again more than a hundred times on thousands of subjects. The theory became a huge success until a recent study refutes the theory.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_3&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_3&quot; title=&quot;View footnote.&quot;&gt;3&lt;/a&gt;]&lt;/sup&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: A theory can be wrong, but often, not completely. Theories are built on each other. Each new theory brings a new model to be used in a larger number of situations. Roy Baumeister’s study shows biology plays a role in willpower. Recent studies show this part is not as big as imagined and that psychology plays an even bigger role.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I learned about the &lt;strong&gt;General Systems theory&lt;/strong&gt; for the first time in &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Management 3.0&lt;/em&gt;&lt;/a&gt;, by Jurgen Appelo.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This theory (The whole is more than the sum of its parts) has had an enormous impact on so many disciplines including economics, sociology, psychology, and medicine. But it should come as no surprise that this theory was introduced by a biologist, Ludwig von Bertalanffy, using living organisms to refute popular beliefs in physics. The theory gave birth to a succession of complementary theories: Cybernetics, Game Theory, Chaos Theory, and many other obscure terms like Homeostasis, Self-organization, or Autopoiesis, all of which use the real world as a source of inspiration. The human body, for example, regulates its internal body temperature (homeostasis) without any external control in a decentralized manner (self-organization) and replenishes every cell within itself over the course of a ten year period (autopoiesis).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: A theory can be complex, as long as it reflects how the world works in practice. For example, managers that ignore the complex nature of human interactions will not succeed in leading people towards positive outcomes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You may consider the above books as mostly theoretical. But if I look back at my readings, most non-fiction books don’t go so far. They simply relate the experience of their authors, like a new coworker will relate his prior experiences during lunch. The medium is different, but the goal is the same. Here are a few examples:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;The Mythical Man-Month&lt;/em&gt;&lt;/a&gt;, Fred Brooks wrote about his experience at IBM where he managed the development of the OS/360, one of the first large-scale development endeavors. Some of his quotations are universally known like “Adding manpower to a late software project makes it later,” or the incontournable “Nine women can&amp;#8217;t make a baby in one month.”&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: Books are written by authors, and sometimes writers. Authors are normal persons, like you and me, eager to share their experience.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Trillion Dollar Coach&lt;/em&gt;&lt;/a&gt;, Eric Schmidt and other executives at Google draw the portrait of Bill Campbell, who recently passed away. Bill was the legendary coach that changed the course of Silicon Valley. To succeed, authors interviewed more than eighty people who knew and loved Bill, and captured key moments in their lives to illustrate Bill’s principles.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: Books are doors. You open them, and you find new experiences to learn from.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Creativity, Inc.&lt;/em&gt;&lt;/a&gt;, Ed Catmull, co-founder of Pixar, relates the history of the studio, showing at the same time, the company culture, the management principles, and the techniques to inspire employees to bring innovation to a new level.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: Books let you live several lives. Your work experience can be unique, the fact is you cannot learn as much as books can teach you.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Quiet&lt;/em&gt;&lt;/a&gt;, Susan Cain argues that modern Western culture misunderstands and undervalues the capabilities of introverted people, leading to a colossal waste of talent, energy, and happiness. It took seven years for Susan Cain to write the book. As an introverted person, I learned so much from this book that if you are extroverted, I cannot imagine how you could learn the same thing by experience alone.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: Books are an opportunity to see the world with different eyes and appreciate what is barely noticeable with your eyes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;It Doesn&amp;#8217;t Have to Be Crazy at Work&lt;/em&gt;&lt;/a&gt;, Jason Fried and David Heinemeier Hansson present their way of working. Imagine the “standard” practices in the workplace totally reinvented, and you will have an accurate picture of what working at Basecamp is.&lt;/p&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Key lesson&lt;/strong&gt;: Books challenge your ideas by showing how others act differently, and obtain better results.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You have probably noticed that I have omitted technical books from the previous examples. I consider software development a highly practical discipline. However, based on the definition of theory, I can list a few books that extract what is working in practice to make it accessible to a larger extent. Here are a few examples:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Design Patterns: Elements of Reusable Object-Oriented Software&lt;/em&gt;&lt;/a&gt;, the authors, known as the Gang of Four, introduce principles like “program to an interface, not an implementation&quot; or &quot;favor object composition over class inheritance,&quot; and also a list of now famous patterns&amp;#8212;&amp;#8203;Builder, Factory, Proxy, Adapter, Template, Observer, etc. “None of the design patterns in this book describes new or unproven designs,” the authors say in the introduction. The patterns were issued from code in existing large-scale systems. They were revised by dozens of persons during four years to create a format that makes them easily applicable in new contexts.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Refactoring&lt;/em&gt;&lt;/a&gt;, Martin Fowler popularizes a practice that is now an integral part of software development. (Several editors automate many of the refactorings described in the book.) We can retrace the origin of refactoring to the &lt;a href=&quot;http://cseweb.ucsd.edu/~wgg/Abstracts/gristhesis.pdf&quot;&gt;dissertation of William Griswold&lt;/a&gt; in 1991. The dissertation starts with a problem observed in real-world software projects: the cost of a change grows exponentially with respect to the system’s age.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Site Reliability Engineering&lt;/em&gt;&lt;/a&gt;, the “SRE Book”, Google engineers explain how they build, deploy, monitor, and maintain some of the largest software systems in the world. They list the principles and practices used at Google, but present them in a way easily applicable elsewhere. As a result, the term SRE is now omnipresent in job openings (although we can’t say the same about the ideas present in this book).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Domain-Driven Design: Tackling Complexity in the Heart of Software&lt;/em&gt;&lt;/a&gt;, Eric Evans presents the catalog of patterns I’ve found the most inspiring. Many ideas like the pattern Bounded Context emerged several years later with the popularization of microservices.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In &lt;a href=&quot;todo&quot;&gt;&lt;em&gt;Extreme Programming Explained: Embrace Change&lt;/em&gt;&lt;/a&gt;, pioneers of the Agile manifesto share a list of practices and techniques, collected over five years of experimentation. These practices are well-known, but most enterprises pick the ones they feel at ease, in the same way you could prepare a recipe with half of the ingredients. Surprise, the meal will not be tasty. The truth is you can’t apply practices if you ignore the theory. The funny thing is the Agile Manifesto only talks about values and principles. But companies prefer to talk about practices with the result we know.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;I’m done with the examples. I hope you now have a better understanding of the kind of theory you may find in books, and why it’s a good thing. From my experience, every book is an opportunity to try something new in practice.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;the_theory_behind_the_practice&quot;&gt;The Theory Behind the Practice&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This article would not be complete without a few words about the limitations of theories.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;During the last century, a British statistician named George Box wrote the famous line, “All models are wrong, some are useful.” In fact, “scientists generally agree that no theory is 100 percent correct,” said author Yuval Noah Harai. Even Einstein&amp;#8217;s work on relativity was not perfect. It explains how the universe works in many situations, and still breaks down in situations like black holes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;But a theory does not have to be flawless to be usefufl. Brilliant minds continue to work on the &lt;a href=&quot;https://en.wikipedia.org/wiki/Theory_of_everything&quot;&gt;Theory of Everything&lt;/a&gt;, the unification of the two major physics theories, which conflict on some aspects. But the reality is, while imperfect those theories are, they continue to drive innovations in practice.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;I want to conclude by saying you’re right when you say “It depends on the context.” Each situation is different. That’s true. But you must learn to recognize they have far more in common than what you may imagine. The goal of any software development project is to run instructions written by a bunch of developers. Problems are never totally new. Theories highlight those similarities so that you can better appreciate the differences.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;A theory is not a bad thing. A theory is an opportunity. Only if you decide to apply it into practice.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_1&quot;&gt;
+&lt;a href=&quot;#_footnoteref_1&quot;&gt;1&lt;/a&gt;. In the classic &lt;em&gt;A Brief History of Time&lt;/em&gt;, Stephen Hawking relates the history of the most popular theories about the universe, showing how observations played a central role in their development.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_2&quot;&gt;
+&lt;a href=&quot;#_footnoteref_2&quot;&gt;2&lt;/a&gt;. The inverse is not necessarily true. Many things happen in practice for which no theory exists to explain them&amp;#8212;&amp;#8203;for example the &lt;a href=&quot;https://en.wikipedia.org/wiki/Placebo#Effects&quot;&gt;placebo effect&lt;/a&gt;.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_3&quot;&gt;
+&lt;a href=&quot;#_footnoteref_3&quot;&gt;3&lt;/a&gt;. The full story reveals a publication bias where researchers going against the established theory were less likely to be published, but with enough evidence, the truth always wins. &lt;a href=&quot;https://hbr.org/2016/11/have-we-been-thinking-about-willpower-the-wrong-way-for-30-years&quot; class=&quot;bare&quot;&gt;https://hbr.org/2016/11/have-we-been-thinking-about-willpower-the-wrong-way-for-30-years&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+   </content>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>The Pyramid of Expertise</title>
+   <link href="https://www.juliensobczak.com/write/2020/12/08/the-pyramid-of-expertise.html"/>
+   <updated>2020-12-08T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/12/08/the-pyramid-of-expertise</id>
+   
+   <summary type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;/&gt;
+     &lt;p&gt;&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This post is the last part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. In the previous posts, we discussed the important role of exploration in learning. But if your destination is to reach expertise on a subject, you can’t just wander and hope for expertise to join you on your ride. You need a better strategy.&lt;/p&gt;
+&lt;/div&gt;&lt;/p&gt;
+   </summary>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>The Landscape of Knowledge</title>
+   <link href="https://www.juliensobczak.com/write/2020/12/08/the-landscape-of-knowledge.html"/>
+   <updated>2020-12-08T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/12/08/the-landscape-of-knowledge</id>
+   
+   <summary type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;/&gt;
+     &lt;p&gt;&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This post is the second part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. In this one, I compare knowledge with Nature. Both are ephemeral, constantly changing, and always full of surprises. We will explore the world around us from a new angle, using learning as our means of transport.&lt;/p&gt;
+&lt;/div&gt;&lt;/p&gt;
+   </summary>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>The City of Learning</title>
+   <link href="https://www.juliensobczak.com/write/2020/12/08/the-city-of-learning.html"/>
+   <updated>2020-12-08T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/12/08/the-city-of-learning</id>
+   
+   <summary type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;/&gt;
+     &lt;p&gt;&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This post is part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. The first step of our journey leads us to the city of learning. Like any tourist, our goal is to visit the most beautiful places and come back with great memories. Ready for the tour?&lt;/p&gt;
+&lt;/div&gt;&lt;/p&gt;
+   </summary>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>Employees First, Products Second</title>
+   <link href="https://www.juliensobczak.com/write/2020/06/17/employees-first-products-second.html"/>
+   <updated>2020-06-17T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/write/2020/06/17/employees-first-products-second</id>
+   
+   <content type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-write-lite.png&quot;&gt;
+     
+     &lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Take care of your employees, and they’ll take care of your business.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Richard Branson
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph lead&quot;&gt;
+&lt;p&gt;Tech companies are working hard to ship products that will delight their customers. The success of their products is essential for their development&amp;#8212;&amp;#8203;customers buy products and products generate money. Often, products become synonymous to the company&amp;#8217;s name. We are &quot;Googling&quot;, and when people talk about Facebook, they are mainly referencing their smartphone application. But are products the most valuable assets of a company? I don’t think so.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;human_first&quot;&gt;Human First&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Imagine that you&amp;#8217;ve just inherited the ownership of the most profitable products developed by Google (the source code, and the infrastructure to run them), but none of the people that contribute to their development. Should you call your investors to announce the good news? Probably not. The situation contains all the ingredients for failure. The value of an enterprise is not its products, but its capacity to create them. Products are valuable only if you are able to evolve them. Competition among companies has never been so rude. You need competent employees to succeed and stay ahead. Products without people are useless.&lt;br&gt;
+&lt;strong&gt;Employees: 1, Products: 0&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Imagine a major leak revealing the source code of your flagship product. Does that mean you definitely lose your advantage over your competitors? Certainly not. The energy for any company to dig into it, understand it, appropriate it, is so huge that you will have plenty of time to continue the development, updating your product quickly enough to make the leak obsolete. The velocity of an enterprise determines its value. The faster an enterprise is able to ship new features, the more it can experiment and satisfy its customers.&lt;br&gt;
+&lt;strong&gt;Employees: 2, Products: 0&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Imagine you’ve just released the first version of your product. It’s a huge success. Customers are excited, but slowly, employees stop being happy. For various reasons, they decide to leave the company. What are your chances of staying afloat? Not great. When the crew put the lifeboats at sea, the vessel is doomed to a shipwreck. Great products are always a side effect of happy employees.&lt;br&gt;
+&lt;strong&gt;Employees: 3, Products: 0&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Those (fictitious) situations teach us a valuable lesson. If you really care about your products, you should start by focusing on your employees. Numerous studies show that employees should be treated as an asset as they are the foundation of the company’s success.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_1&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_1&quot; title=&quot;View footnote.&quot;&gt;1&lt;/a&gt;]&lt;/sup&gt; So, what means putting people first?&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;human_first_in_practice&quot;&gt;Human First, In Practice&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Focusing on employees is not a new idea. Many companies have already adopted this counterintuitive approach to management, following the lead of popular authors such as Simon Sinek. His book &lt;em&gt;Leaders  Eat Last&lt;/em&gt; is a good start on the subject&amp;#8212;&amp;#8203;it highlights the importance of trust and empathy in the workplace.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this article, I’ve decided to focus on just one aspect I consider to be particularly representative of a human-first approach. I don’t pretend to have found a silver bullet. Management is inherently a complex problem, and no unique solution will never solve all of your problems. But I think this small aspect represents a good indicator, a kind of compass to determine if the company is heading in the right direction. This aspect is learning.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;But first, let’s begin with two common fallacies.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;hiring_is_not_the_solution&quot;&gt;Hiring is not the solution&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Companies often think hiring talents, or top employees, will guarantee them success. The reality is very different.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Most of the companies for which I worked declare hiring talents. What I understand is that talent must be more common than we imagine, or that companies distort the talent definition instead of admitting they simply hire the best developers who are looking for a job and who choose to apply for the position.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Anyway, nobody is really effective right from its first day in the company. It takes several months to be proficient in what we do. Hiring competent persons only shortens this adaptation period. Furthermore, nobody applies for a job to do the exact same thing they were doing previously. Challenge is an integral part of any fulfilling job.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_2&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_2&quot; title=&quot;View footnote.&quot;&gt;2&lt;/a&gt;]&lt;/sup&gt; You can&amp;#8217;t hire people to do what you want. You can only hire people that will be able to do what you need.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Furthermore, research shows that talent is not inborn but is the result of countless hours of practice. Practice makes perfect. Practice creates talent.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_3&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_3&quot; title=&quot;View footnote.&quot;&gt;3&lt;/a&gt;]&lt;/sup&gt; But practice infers acting out of our comfort zone to learn something new; in other words, we should be prepared to make mistakes, and we cannot do that in any environment.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Consequently, stop looking desperately for skilled developers. Hire people eager to learn, eager to solve challenges, and make sure to inspire them. Talent does not appear out of the blue. Hiring is nothing more than seeding. No flower can flourish without an abundant supply of water.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;What about Outsourcing?&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Almost all companies will use, sooner or later, outsourcing and/or consulting to develop its activities. Outsourcing is almost always easier than hiring. You can connect with dozens of developers having the skills you are looking for. On the contrary, hiring is a complicated process where you are mostly concerned about the long term, for example, does this employee fit the company’s culture? Hence, to boost an urgent project like a new corporate website, outsourcing is a serious option. But what are the disadvantages?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;When depending on outsourcing, you miss the opportunity to grow competency among your employees, in order to ship the product earlier. Outsourcing is acceptable but should be considered in the same way as your technical debt, it has to be paid later. It&amp;#8217;s a learning debt. You failed to learn.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;money_is_not_the_solution&quot;&gt;Money is not the solution&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Companies often think putting money on the table could solve their problems. In other words, can you make employees happy with money? Or can you remove what makes them unhappy with money? The answer is yes. But only partially&amp;#8230;&amp;#8203;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To understand the role of money in job satisfaction, we can use the &lt;a href=&quot;https://en.wikipedia.org/wiki/Two-factor_theory&quot;&gt;two-factor theory&lt;/a&gt;, devised by psychologist Frederick Herzberg in the 60&amp;#8217;s. This theory distinguishes between &lt;em&gt;Hygiene factors&lt;/em&gt; (e.g. job security, salary, working conditions, good pay, vacations) and &lt;em&gt;Motivators&lt;/em&gt; (e.g. challenging work, recognition, responsibility, opportunity to do something meaningful, involvement in decision making). Herzberg discovered that the absence of hygiene factors creates demotivation but their presence does not contribute to motivation. You have to introduce motivators. In short, you cannot create motivation by eliminating demotivation. So, even if money can take away the things that make people dissatisfied (the hygiene factors), money alone is not sufficient to solve the happiness equation. Only good management practices can.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To sum up, hiring and money play an important role in any successful company. But they represent only the tip of the iceberg. The real solution lies below the surface, inside the company, inside of you. You should imagine yourself at the command of a submarine. Nothing can enter. Nothing can leave. Management is about getting the most out of everyone present. This is exactly the story of David Marquet, the newly appointed captain of the USS nuclear-powered submarine with the worst crew retention. In his book &lt;em&gt;Turn the Ship Around!&lt;/em&gt;, Marquet explains how he challenged the U.S. Navy&amp;#8217;s traditional leader-follower approach, to inspire everyone taking responsibility for their actions, making them healthier and happier by the same token. Great management is mainly about transforming the present, not envisioning a bright future, and there could be no transformation without learning.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;learning_is_the_solution&quot;&gt;Learning is the solution&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;As a manager, if most of your discussions concern the development of your products and few of them concern the development of your employees, you are on the wrong track. If employees are not learning, the company is not growing. Peter Senge, renowned management expert, said: &quot;The rate at which an organization learns may soon become the only sustainable source of competitive advantage.&quot; Find what every one of your employees want to learn, aspire to do, and help them to get better at what they excel, and products will inevitably be better in the end.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Here are a few points to help you determine if you are building a strong learning culture:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Failure is always an option.&lt;/em&gt; Making mistakes is part of the learning process. A company where few mistakes are made can&amp;#8217;t be an innovative company. There are many ways to limit the impact of those mistakes like failing fast. Employees should not be afraid to report problems to their hierarchy. &lt;strong&gt;No mistakes, no learning&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Negative emotions are absent.&lt;/em&gt; Human emotion is a powerful driving force at work. It can be highly creative as well as highly destructive. Emotions are deeply rooted in our brain, and even if our rational brain fakes to ignore these emotions, things are not so simple. When chemicals such as cortisol (the stress hormone) are released, they can’t disappear by magic. To be productive, you need a fully integrated brain, where the two hemispheres operate as a whole. &lt;strong&gt;No happiness, no learning&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Empathy is real.&lt;/em&gt; People should demonstrate openness, and feel confident to be vulnerable. Even the most stupid ideas are freely exposed, and debated constructively. Problems are overcome through a blameless culture where the us-versus-them attitude has no place. &lt;strong&gt;No trust, no learning&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Knowledge is spreading.&lt;/em&gt; Sharing knowledge is not a synonym for delivering presentations. It means having time to help coworkers, providing constructive feedback, not always working alone, and making sure ideas can be confronted. &lt;strong&gt;No cooperation, no learning.&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Innovation happens bottom-up.&lt;/em&gt; Are great ideas coming from the top or from the bottom of the hierarchy? Do employees participate in the decisions impacting their job? &lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_4&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_4&quot; title=&quot;View footnote.&quot;&gt;4&lt;/a&gt;]&lt;/sup&gt; Recall that nobody likes to be told what to do (even if there are plentiful jobs where this is sadly a reality). &lt;strong&gt;No empowerment, no learning.&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Inspiration is the fuel.&lt;/em&gt; Who wakes up in the morning eager to work to generate higher profits? Presumably nobody, although everyone knows money is essential for a company to thrive.&lt;sup class=&quot;footnote&quot;&gt;[&lt;a id=&quot;_footnoteref_5&quot; class=&quot;footnote&quot; href=&quot;#_footnotedef_5&quot; title=&quot;View footnote.&quot;&gt;5&lt;/a&gt;]&lt;/sup&gt; Employees are motivated by a vision, a look ahead into the future, showing clearly how their work affects existing customers in a concrete way. Aspiring to be the worldwide leader of your market segment is not a vision. A vision is something we can see. &lt;strong&gt;No vision, no learning.&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Reflection is possible&lt;/em&gt;. When people are too busy, no time is spent analyzing what can be done differently. As the only way to have different results is to do things differently, employees need spare time to reflect on their practices and learn from it. &lt;strong&gt;No time, no learning.&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Clearly, management plays a crucial role for learning to happen. It is really easy to find management decisions that can deteriorate any of the above points. A recent &lt;a href=&quot;https://www.gallup.com/services/182138/state-american-manager.aspx?ays=n#aspnetForm&quot;&gt;poll&lt;/a&gt; reveals employees join companies but leave managers. Turnover is mostly a manager issue. You can&amp;#8217;t hope for stability in your products if there isn&amp;#8217;t stability in your staff. Create opportunities for employees to grow and learn new skills, and employees will take care of products for you. It’s a win-win moral contract.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Everyone agrees that a company without great products will not stay alive for a long time. But behind great products are hidden great teams, great players, and great managers. In fact, companies are not selling products, they are selling the know-how of their employees disguised as products. Focusing on the human side is crucial, especially in time of crisis like we are all living now.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Building a strong learning culture is therefore indispensable. Learning is the foundation for continual improvement, on which everything else will be built on. Learning is the superpower to turn challenges into opportunities. Learning is all about your employees. &quot;When you are putting your employees first, you are ultimately putting the customer first,&quot; said Vineet Nayar, businessman and author of &lt;em&gt;Employees First, Customers Second&lt;/em&gt;, &quot;Products will be greater, and will delight customers in a way that would not have been possible using traditional &quot;customer care&quot; first.&quot; I will end this article with one last quote:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;quoteblock&quot;&gt;
+&lt;blockquote&gt;
+Customers will never love a company until the employees love it first.
+&lt;/blockquote&gt;
+&lt;div class=&quot;attribution&quot;&gt;
+&amp;#8212; Simon Sinek
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_1&quot;&gt;
+&lt;a href=&quot;#_footnoteref_1&quot;&gt;1&lt;/a&gt;. Trillion Dollar Coach, written by Eric Schmidt, Jonathan Rosenberg, Alan Eagle, Harper Business
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_2&quot;&gt;
+&lt;a href=&quot;#_footnoteref_2&quot;&gt;2&lt;/a&gt;. According to the &lt;a href=&quot;https://insights.stackoverflow.com/survey/2019&quot;&gt;latest StackOverflow survey&lt;/a&gt;, developers assess opportunities for professional development as one of the most important job factor, along with flexible work conditions, as is the ability to learn new things.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_3&quot;&gt;
+&lt;a href=&quot;#_footnoteref_3&quot;&gt;3&lt;/a&gt;. Anders Ericsson&amp;#8217;s &lt;em&gt;Peak&lt;/em&gt; book is highly recommended if you are curious about the secrets behind expertise.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_4&quot;&gt;
+&lt;a href=&quot;#_footnoteref_4&quot;&gt;4&lt;/a&gt;. The book &lt;em&gt;Creativity Inc.&lt;/em&gt; is a wonderful source of inspiration on the topic of innovation.
+&lt;/div&gt;
+&lt;div class=&quot;footnote&quot; id=&quot;_footnotedef_5&quot;&gt;
+&lt;a href=&quot;#_footnoteref_5&quot;&gt;5&lt;/a&gt;. The same StackOverflow survey places financial results as one of the least important factors in job satisfaction.
+&lt;/div&gt;
+&lt;/div&gt;
+   </content>
+   
+ </entry>
+ 
+ 
+ 
+ <entry>
+   <title>Book Review: The One Thing: The Surprisingly Simple Truth Behind Extraordinary Results</title>
+   <link href="https://www.juliensobczak.com/read/2020/06/08/the-one-thing.html"/>
+   <updated>2020-06-08T00:00:00+00:00</updated>
+   <id>https://www.juliensobczak.com/read/2020/06/08/the-one-thing</id>
+   
+   <content type="html">
+   	 &lt;img class=&quot;webfeedsFeaturedVisual&quot; alt=&quot;Article Image&quot; src=&quot;https://www.juliensobczak.com/img/post-read-lite.png&quot;&gt;
+     
+     &lt;p&gt;
+       ONE forceful idea in ONE excellent book.
+     &lt;/p&gt;
+    &lt;img class=&quot;cover&quot; src=&quot;https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1559563270l/16256798._SX318_.jpg&quot; alt=&quot;Book Cover - Book Review: The One Thing: The Surprisingly Simple Truth Behind Extraordinary Results&quot; /&gt;
+    
+     &lt;p&gt;We all know by intuition trying to be the best at everything is a bad strategy. 
+Everything matters equally. Multitasking is the solution. Discipline is the condition. Willpower is a force. A balanced life is the key. Starting small is the way. There. Are. Lies.&lt;/p&gt;
+
+&lt;p&gt;What’s the ONE Thing you can do such that by doing it, everything else will be easier or unnecessary? By making this question a habit in every moment of your life, you will find your purpose, which will drive your next priority, and makes you truly productive. This simple but powerful idea is at the heart of this book and you will find plenty of evidence to measure how profound this ONE Thing is.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The ONE Thing&lt;/em&gt; is one of the most engaging books I’ve ever read. Great quotes. Profound insights. Simple ideas. Strong argumentation. Effective illustrations. I found the book so much fun to read, and so inspiring. I don’t think this is the only book you need to unlock your potential, but if there is ONE Thing you can do right now, it’s probably to stop reading my review and find a copy of this book.&lt;/p&gt;
+
+   </content>
+   
+ </entry>
+ 
+ 
+
+</feed>
