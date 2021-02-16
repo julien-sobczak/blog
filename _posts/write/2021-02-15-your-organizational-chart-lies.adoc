@@ -24,9 +24,9 @@ The Conway law states that companies design systems reflecting its communication
 
 == The Pros and Cons of Organizational Charts
 
-An organizational chart illustrates how formal communications happen inside an organization, that is how a manager higher in the ladder spreads information and how employees on the lower rung reports to them. By grouping employees in boxes, also called teams, an organizational chart also forces communications to happen. You are more likely to exchange with your teammates than with other employees, at least if you consider only formal meetings like daily standups or retrospectives. 
+An organizational chart illustrates how formal communications happen inside an organization, that is how a manager higher in the ladder spreads information and how employees on the lower rung reports to them. By grouping employees in boxes, called teams, an organizational chart also forces communications to happen. You are more likely to exchange with your teammates than with other employees, at least if you consider only formal meetings like daily standups or retrospectives. 
 
-But an organizational chart says nothing about the invisible organization where crucial, informal communications occur. Employees nurture relationships at lunch, during incidents, at the coffee machine that will help them overcome problems and solve challenges in their daily tasks. It is these interactions that define the most your company, and it is not using a tree model like an organizational chart that you can represent such a complex social network.footnote:[The book _Driving Results Through Social Networks: How Top Organizations Leverage Networks for Performance and Growth_ elaborates on the importance to visualize this network in order to drive your organization.]
+But an organizational chart says nothing about the invisible organization where crucial, informal communications happen. Employees nurture relationships -- at lunch, during incidents, at the coffee machine -- that will help them overcome problems and solve challenges in their daily tasks. These are the interactions that define the best your company, your culture, and using a tree model like an organizational chart cannot depicts such a complex social network.footnote:[The book _Driving Results Through Social Networks: How Top Organizations Leverage Networks for Performance and Growth_ elaborates on the importance to visualize this network in order to drive your organization.]
 
 [title="A graph depicting employees with their interactions."]
 image::graph.png[width=600, title="A graph depicting employees with their interactions."]
@@ -40,11 +40,11 @@ image::mapping.png[width=600, title="A comparison between the visible organizati
 
 An organizational chart is thus not the more accurate description of your company. You may even be tempted to completely remove it, but that would be a mistake...
 
-## Goodbye Organization Charts?
+## Goodbye Organizational Charts?
 
 Removing the organizational chart is wrong, especially if you fail to replace it by something more useful, more actionable.
 
-For example, saying "We don't need a hierarchy. We are all together in the same boat. We are one team" sounds appealing. I like this metaphor. But this simplistic model is useless. You need everyone to row in the same direction to reach our destination. 
+For example, saying "We don't need a hierarchy. We are all together in the same boat. We are one big team" sounds appealing. I like this metaphor. But this simplistic model is useless. You need everyone to row in the same direction to reach our destination. 
 
 [title="A bunch of employees in a small boat completely disorganized with no clear direction."]
 image::boat.png[title="A bunch of employees in a small boat completely disorganized with no clear direction."]
@@ -70,7 +70,7 @@ The first approach is the classic example of top-down management. The Product te
 [title="What happens when decision conflicts are settled by upper management."]
 image::parenting-analogy.png[width=500, title="What happens when decision conflicts are settled by upper management."]
 
-Few companies will admit making decisions like this, but most are doing it. An alternative is to empower one of the two teams to make the decision.
+Few companies will admit making decisions like this, but most are doing it. A better alternative is to empower one of the two teams to make the decision.
 
 === *Analogy 2*: The puppeteer analogy
 
@@ -81,14 +81,14 @@ image::puppeteer-analogy.png[width=500, title="What happens when a team decides 
 
 Depicted like that, that approach does not look great. You will not create strong product teams using this approach. And what if the marketing analysis were wrong. We have plenty of examples where customers didn't really know what they wanted. Henry Ford captured this idea with his quotation:  “If I had asked people what they wanted, they would have said faster horses.” Apple is famous for bringing products to the market that nobody asked. Therefore, if innovation is key to your business, you need to reconsider your decision making approach. 
 
-=== *Analogy 3*: The wind analogy
+=== *Analogy 3*: The turbine analogy
 
-Innovation happens when you are facing a problem. It is a bottom-up process, and you must trust your product teams to make the right decisions.
+Innovation happens when you are facing a problem. It is a bottom-up process, and you must empower your product teams to make the right decisions.
 
-[title="What happens when a team is empowered and all other teams focus on boosting that team."]
-image::turbine-analogy.png[width=600, title="What happens when a team is empowered."]
+[title="What happens when a team is empowered and other teams are working towards the same goal."]
+image::turbine-analogy.png[width=600, title="What happens when a team is empowered and other teams are working towards the same goal."]
 
-In this new analogy, product teams are giant wind turbines. The goal of your company is to make the turbines rotate as fast as possible. The marketing team acts like an air ventilator, providing the market analysis the product team needs to make well-informed decisions. The platform team acts as the soil on which the turbines can stand firmly. And the product team acts as the rotor, making continual adjustments to keep the turbines running as fast as possible. 
+Product teams are giant wind turbines. The goal of your company is to make the turbines rotate as fast as possible. The marketing team acts like an air ventilator, providing the market analysis the product team needs to make well-informed decisions. The platform team acts as the soil on which the turbines can stand firmly. And the product team acts as the rotor, making continual adjustments to keep the turbines running as fast as possible. 
 
 Using this analogy, it becomes obvious who must make the decisions. The product team is really empowered to do its job, which is one of the main motivation factors at work.footnote:[https://en.wikipedia.org/wiki/Two-factor_theory]
 
