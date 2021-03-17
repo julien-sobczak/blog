@@ -42,3 +42,21 @@ This blog was bootstraped using the https://github.com/asciidoctor/jekyll-asciid
 The blog is deployed using GitHub Actions and served by GitHub Pages (with enforced HTTPS enabled): https://juliensobczak.com
 
 A version including drafts is also deployed in parallel using Netlify directly: https://juliensobczak.netlify.app/
+
+== Operations
+
+=== Add a new book review
+
+A script is available to initialize a new post in the category `read`. This script is written in Python 3 and has some prerequisites:
+
+```
+$ python3 -m venv env
+$ pip install -r requirements.txt
+```
+
+Example:
+
+```
+$ python util/new-review-book.py --date 2021-01-11 --output _posts https://www.goodreads.com/book/show/22822839-the-thrilling-adventures-of-lovelace-and-babbage
+# A new file has been created under _posts/
+```
