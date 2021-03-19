@@ -20,18 +20,18 @@ Every company has two organizational structures: The formal one is written on th
 ____
 
 [.lead]
-The Conway law states that companies design systems reflecting its communication structure. This structure is commonly represented as an organizational chart that must be updated after every reorganization or restructuring. In practice, companies are often stuck in endless reorganizations and the organizational chart becomes quickly outdated. Do we really need this organizational chart? 
+The Conway law states that companies design systems reflecting its communication structure. This structure is commonly represented as an organizational chart that must be updated after every reorganization or restructuring. In practice, companies are often stuck in endless reorganizations and the organizational chart becomes quickly outdated. Do we really need this organizational chart?
 
 == The Pros and Cons of Organizational Charts
 
-An organizational chart illustrates how formal communications happen inside an organization, that is how a manager higher in the ladder spreads information and how employees on the lower rung reports to them. By grouping employees in boxes, called teams, an organizational chart also forces communications to happen. You are more likely to exchange with your teammates than with other employees, at least if you consider only formal meetings like daily standups or retrospectives. 
+An organizational chart illustrates how formal communications happen inside an organization, that is how a manager higher in the ladder spreads information and how employees on the lower rung reports to them. By grouping employees in boxes, called teams, an organizational chart also forces communications to happen. You are more likely to exchange with your teammates than with other employees, at least if you consider only formal meetings like daily standups or retrospectives.
 
 But an organizational chart says nothing about the invisible organization where crucial, informal communications happen. Employees nurture relationships -- at lunch, during incidents, at the coffee machine -- that will help them overcome problems and solve challenges in their daily tasks. These are the interactions that define the best your company, your culture, and using a tree model like an organizational chart cannot depicts such a complex social network.footnote:[The book _Driving Results Through Social Networks: How Top Organizations Leverage Networks for Performance and Growth_ elaborates on the importance to visualize this network in order to drive your organization.]
 
 [title="A graph depicting employees with their interactions."]
 image::graph.png[width=600, title="A graph depicting employees with their interactions."]
 
-Researches show leaders that understand this informal structure are more successful and for good reasons. The organizational chart (formal structure) highlights the divisions while the social network (informal structure) highlights the interactions. As explained in a previous post about link:TODO[complexity], complex systems are mostly defined by their interactions, not their structure. Holism (the whole is greater than the parts) beats reductionism (divide-and-conquer) when it comes to management.
+Researches show leaders that understand this informal structure are more successful and for good reasons. The organizational chart (formal structure) highlights the divisions while the social network (informal structure) highlights the interactions. As explained in a previous post about link:{% post_url write/2020-06-02-complexity-is-not-complex %}[complexity], complex systems are mostly defined by their interactions, not their structure. Holism (the whole is greater than the parts) beats reductionism (divide-and-conquer) when it comes to management.
 
 This social network explains for example that employees are not interchangeable. You can't replace an employee having complex interactions nurtured over time by a fresh one completely disconnected in this network on his first workday, even if they have the same skills.
 
@@ -44,7 +44,7 @@ An organizational chart is thus not the more accurate description of your compan
 
 Removing the organizational chart is wrong, especially if you fail to replace it by something more useful, more actionable.
 
-For example, saying "We don't need a hierarchy. We are all together in the same boat. We are one big team" sounds appealing. I like this metaphor. But this simplistic model is useless. You need everyone to row in the same direction to reach our destination. 
+For example, saying "We don't need a hierarchy. We are all together in the same boat. We are one big team" sounds appealing. I like this metaphor. But this simplistic model is useless. You need everyone to row in the same direction to reach our destination.
 
 [title="A bunch of employees in a small boat completely disorganized with no clear direction."]
 image::boat.png[title="A bunch of employees in a small boat completely disorganized with no clear direction."]
@@ -55,11 +55,11 @@ Saying that everyone is in the same boat hides the reality:
 
 - We still have decisions to take to reach our destination. The all-in-the-same-boat metaphor simply says that someone in the boat has to make them. Not very useful. We need to figure out how to solve decision conflicts that arise naturally when more than one brain is working on a problem.
 
-Let's take a practical example to illustrate this last point. Imagine that the marketing department is asking for a new feature on your flagship product. But the product team has a divergent opinion. Who must have the last say? Based on the boat metaphor, it's not clear. 
+Let's take a practical example to illustrate this last point. Imagine that the marketing department is asking for a new feature on your flagship product. But the product team has a divergent opinion. Who must have the last say? Based on the boat metaphor, it's not clear.
 
-== Analogical Thinking  
+== Analogical Thinking
 
-To continue on the previous example, there are clearly several options. What follows is the organizational chart of this fictive company. 
+To continue on the previous example, there are clearly several options. What follows is the organizational chart of this fictive company.
 
 image::chart.png[width=600, title="A basic organizational chart with 3 teams reporting to the CEO."]
 
@@ -74,12 +74,12 @@ Few companies will admit making decisions like this, but most are doing it. A be
 
 === *Analogy 2*: The puppeteer analogy
 
-You may decide that the marketing department is better advised and thus can make more informed decisions. In case of disagreement, the marketing must be responsible to decide what to include or not in the products. This strategy makes sense but let's try to find an analogy to illustrate this approach. 
+You may decide that the marketing department is better advised and thus can make more informed decisions. In case of disagreement, the marketing must be responsible to decide what to include or not in the products. This strategy makes sense but let's try to find an analogy to illustrate this approach.
 
 [title="What happens when a team decides the tasks of another team."]
 image::puppeteer-analogy.png[width=500, title="What happens when a team decides the tasks of another team."]
 
-Depicted like that, that approach does not look great. You will not create strong product teams using this approach. And what if the marketing analysis were wrong. We have plenty of examples where customers didn't really know what they wanted. Henry Ford captured this idea with his quotation:  “If I had asked people what they wanted, they would have said faster horses.” Apple is famous for bringing products to the market that nobody asked. Therefore, if innovation is key to your business, you need to reconsider your decision making approach. 
+Depicted like that, that approach does not look great. You will not create strong product teams using this approach. And what if the marketing analysis were wrong. We have plenty of examples where customers didn't really know what they wanted. Henry Ford captured this idea with his quotation:  “If I had asked people what they wanted, they would have said faster horses.” Apple is famous for bringing products to the market that nobody asked. Therefore, if innovation is key to your business, you need to reconsider your decision making approach.
 
 === *Analogy 3*: The turbine analogy
 
@@ -88,14 +88,14 @@ Innovation happens when you are facing a problem. It is a bottom-up process, and
 [title="What happens when a team is empowered and other teams are working towards the same goal."]
 image::turbine-analogy.png[width=600, title="What happens when a team is empowered and other teams are working towards the same goal."]
 
-Product teams are giant wind turbines. The goal of your company is to make the turbines rotate as fast as possible. The marketing team acts like an air ventilator, providing the market analysis the product team needs to make well-informed decisions. The platform team acts as the soil on which the turbines can stand firmly. And the product team acts as the rotor, making continual adjustments to keep the turbines running as fast as possible. 
+Product teams are giant wind turbines. The goal of your company is to make the turbines rotate as fast as possible. The marketing team acts like an air ventilator, providing the market analysis the product team needs to make well-informed decisions. The platform team acts as the soil on which the turbines can stand firmly. And the product team acts as the rotor, making continual adjustments to keep the turbines running as fast as possible.
 
 Using this analogy, it becomes obvious who must make the decisions. The product team is really empowered to do its job, which is one of the main motivation factors at work.footnote:[https://en.wikipedia.org/wiki/Two-factor_theory]
 
-Note that all analogies presented in this section are perfectly compatible with our organizational chart. This illustrates once again that organizational charts are only partially true. It's a great tool to communicate the structure, but not the interactions. 
+Note that all analogies presented in this section are perfectly compatible with our organizational chart. This illustrates once again that organizational charts are only partially true. It's a great tool to communicate the structure, but not the interactions.
 
 == To sum up
 
-In the same way that you cannot understand the human body by observing its skeleton, you cannot understand how a company is working simply by looking at its organizational chart. But learning about the human skeleton is useful and you still need your organizational chart. Any company has a global structure and you had better represent it as clearly as possible. 
+In the same way that you cannot understand the human body by observing its skeleton, you cannot understand how a company is working simply by looking at its organizational chart. But learning about the human skeleton is useful and you still need your organizational chart. Any company has a global structure and you had better represent it as clearly as possible.
 
 What we learned in this article is that you need to complement your organizational chart with other tools that focus more on the interactions. Using analogies is a great idea to foster the kind of interactions you want to observe more, but make sure they reflect the reality, and not an impossible ideal.

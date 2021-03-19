@@ -18,7 +18,7 @@ recommendations:
 
 [CAUTION.license]
 ====
-This post is a part of a two-parts series. This first post focuses on simplicity while link:TODO[the following one] focuses on complexity.
+This post is a part of a two-parts series. This first post focuses on simplicity while link:{% post_url write/2020-06-02-complexity-is-not-complex %}[the following one] focuses on complexity.
 ====
 
 [quote, Jon L. Bentley, Programming Pearls]
