@@ -2,8 +2,38 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  function gtag() {
+    dataLayer.push(arguments);
+  }
 
-  gtag('config', '{{ site.google_analytics }}');
+  // https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
+  // Not as solid as https://github.com/uuidjs/uuid but avoid a dependency
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  // Use localStorage instead of cookie to avoid the banner.
+
+  // defines window.localstorage key
+  const GA_LOCAL_STORAGE_KEY = 'ga:clientId';
+
+  // checks if localstorage is available
+  if (window.localStorage) {
+    let clientId = localStorage.getItem(GA_LOCAL_STORAGE_KEY);
+    // checks if user was already connected and loads client_id from localstorage
+    if (!clientId) {
+      clientId = uuidv4();
+      window.localStorage.setItem(GA_LOCAL_STORAGE_KEY, clientId);
+    }
+    // creates new tracker with same client_id as the last time the user visited
+    gtag('js', new Date());
+    gtag('config', '{{ site.google_analytics }}', {
+      send_page_view: true,
+      client_storage: 'none',
+      client_id: clientId,
+    });
+  }
 </script>
