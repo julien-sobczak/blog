@@ -1,0 +1,123 @@
+---
+layout: post-write
+title: "Common Sense Does Not Make Sense"
+author: Julien Sobczak
+date: '2021-03-24'
+category: "write"
+subject: Common Sense
+tags:
+  - learning
+---
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2021-03-24-common-sense-doesnt-make-sense/' | relative_url }}
+
+[quote, Nicholas Amhurst, "political writer, The Secret History of the University of Oxford, 1726"]
+____
+There is not [...] a more uncommon thing in the world than common sense.
+____
+
+
+[.lead]
+Starting the day without a good breakfast is unthinkable. Every morning, I eat a square of dark chocolate whose packaging mentions “a pleasure that makes sense.” Great! I am glad to hear that succumbing to my sugar addiction makes sense after all.
+
+[.lead]
+This slogan has become ubiquitous not just among organic food. The company for which I work uses the slogan “The Cloud that Makes Sense.” And younger employees–the so-called millennials–is the first generation to value a strong sense of purpose over anything else.footnote:[https://www.forbes.com/sites/afdhelaziz/2020/03/07/the-power-of-purpose-the-business-case-for-purpose-all-the-data-you-were-looking-for-pt-2/]
+
+[.lead]
+Common sense must make sense after all. Who wants something that does not make sense? When was the last time you were told not to use common sense? The truth is you must learn to stop using it.
+
+
+== A Common Sense Recipe
+Introduce the following ingredients in a bowl and stir delicately during many years:
+
+* `2 tablespoon` of hard-earned *knowledge*. +
+_If you are a software developer, It's common sense to check your email sender addresses to detect spams, but it's probably not so obvious for your whole family._
+* `3` *work experiences*. +
+_If you have contributed to a few projects using the waterfall model, it's common sense that agile methodologies are preferable to the detrimental building construction analogy, but it's probably not so obvious if you are just starting your career._
+* `2` GPS coordinates of your *location*. +
+_If you are living in the United Kingdom, it’s common sense that you must keep to the left while driving, but it's probably not so obvious for other drivers if you are driving in other European countries._
+* `1 cup` of *education*. +
+_If you grow up in a family where there was not always money for food, it’s common sense to never waste food even when the food is not tasty, but it's probably not so obvious if there was plentiful foods in the cupboards._
+* `1 ½ ounces` of *culture*. +
+_If you are nodding, it’s common sense that you agree with your interlocutor, but it's probably not so obvious if your interlocutor lives in India._
+* `1 slice` of *time*. +
+_If you are living now and not subject to controversy theories, it’s common sense that the Earth is spherical but it would be probably not so obvious if you were born a few centuries ago._
+* `1 teaspoon` finely sorted *priorities*. +
+_If the Christmas period is coming and your product is almost finished, it’s common to sacrifice the quality of your code to ship on time but it's probably not so obvious if you job is to maintain the code after that period._
+* `5 pounds` of *personality*. +
+_If you are introvert, it's common sense to stay alone after a long day of social interactions but it's probably not so obvious for extroverts._
+* `1 tablespoon` of life *purpose*. +
+_If your purpose is to leave the world a better place, it's common sense to reduce your carbon footprint but it's probably not so obvious if earning money is your goal._
+
+image::recipe.png[width=350]
+
+The quality of the ingredients is essential to the success of any recipe. As outlined by the previous examples, we are all following the same recipe but using ingredients from very diverse origins. It's not surprising that we all get a different result.
+
+== Common Sense Is Uncommon
+
+Common sense results from a lifetime learning from everyday situations. For my 1-year old toddler, going down head first from the couch was common sense until recently. *Common sense is not inborn. It is developed over time*. The right to bear arms was common sense when the Constitution of the United States was written but this right is more and more contested among US citizens, which proves common sense is not set in stone, and is certainly not as common as we think. Ask voters during an election if their ballot follows common sense and they will all answer affirmatively. Common sense is not common.
+
+image::uncommon.png[width=400]
+
+We must therefore learn to consider common sense as __our un__common sense. In fact, we don't really care if we don't have the same common sense. Cannibalism still makes sense in some cultures or in different times and places. This is not a problem as long as you plan your next vacation wisely. *Common sense is maybe not common, but is still useful*.
+
+We use our common sense thousands of times every day. When commuting, it is our common sense that keeps us safe, by not crossing the roads in front of a car, or by avoiding eye contact in the subway. *Common sense is reliable for these small, automatic decisions, but for important, challenging decisions, common sense is a liability*.
+
+== Common Sense Is Wrong
+
+Criticizing common sense is tricky, as it is widely regarded as a good thing. But as we have discussed, common sense is not as common as most people imagine. If using our common sense to reason about how we behave is acceptable, using it to reason about others is particularly wrong.
+
+To illustrate the limits of common sense, we must go back in time to the beginning of the Scientific Revolution. In 1514, Nicholas Copernicus discovered that the Earth orbits around the sun. Claiming that the Earth was not at the center of the Universe if you are a Polish priest and that common sense says the contrary is asking for trouble, and thus Copernicus published his landmark discovery anonymously... He finally published his model three decades later, and we will have to wait almost a century for two astronomers, Johannes Kepler and Galileo Galilei, to definitively approve his theory. *Common sense is stubborn.*
+
+This example illustrates that common sense changes over time, which means relying on *common sense cannot guarantee you to be right in the future*. What else that we believe to be self-evident now will seem wrong to us in the future?
+
+But why is common sense so wrong? The truth is common sense excels at filling the blanks to pretend things have sense. In _Everything Is Obvious_, sociology researcher Duncan J. Watts mentions: "Common sense is wonderful at making sense of the world, but not necessarily at understanding it."footnote:[Everything Is Obvious*, Duncan J. Watts, https://www.amazon.com/Everything-Obvious-Common-Nonsense-2011-07-01/dp/B01K92XR2G/] As we have seen in the previous section, common sense is uncommon, or personal. Common sense is therefore subject to our numerous cognitive biases. For example, the attentional bias makes us pay more attention to certain stimuli and ignore the vast majority of available information. We ignore for example that fonts can influence the confidence we have on what we read.footnote:[https://www.mdgadvertising.com/marketing-insights/how-typefaces-influence-perception-and-persuasion/] And by ignoring details, we often ignore what is really making sense.
+
+*But common sense is not just wrong, it is sometimes contradictory.* We say that birds of a feather flock together, but also that opposites attract. "When opposite ideas appear equally obvious, something must be wrong with the entire concept of obviousness," adds Duncan J. Watts in the same book. In a similar way, we can quote the Complementary Law: "Any two points of view are complementary." Even global warming can make sense for a country like Russian to turn Siberia into the breadbasket of the world and the Arctic sea the crossroad of the world as higher temperature means more favorable conditions for agriculture and new maritime navigation lines at the North pole.footnote:[Sapiens, Yuval Noah Harari, https://www.goodreads.com/quotes/9669896-global-warming-in-contrast-will-probably-have-different-impacts-on]
+
+What is obvious is that *common sense is of little help in decision making*. And when common sense fails us, we often ask for more common sense as if we didn't rely on it initially, and as if it could make a difference... We need a better approach.
+
+== Beyond (Un)Common Sense
+
+Relying less on common sense is hard. Using common sense feels natural, a lot more than relying on our intuition, although both are the same thing. If you doubt your intuition, you must doubt common sense too.
+
+We have elaborated previously that we cannot trust our common sense. We don't think the way we think we think.footnote:[I found this sentence in the same excellent book _Everything Is Obvious_. I really recommend this book to challenge your common sense about common sense.]. We are not rational creatures, even if we think we are. The seminal book _Thinking, Fast and Slow_ condenses in more than 400 pages the most surprising experiments about our irrationality. *We can't use common sense to make rational decisions.*
+
+The solution is instead to rely more on science footnote:[Peter Ellerton, We can’t trust common sense but we can trust science, https://theconversation.com/we-cant-trust-common-sense-but-we-can-trust-science-53042], and adopt a more systematic approach, especially at work. We need what professor Jim Taylor called "reasoned sense," that is, sound judgment based on rigorous study of an issue.footnote:[Jim Taylor Ph.D., Common Sense Is Neither Common nor Sense,
+https://www.psychologytoday.com/us/blog/the-power-prime/201107/common-sense-is-neither-common-nor-sense]
+
+*Common sense is the land of misinformation.* We need to look for facts. We need to read more books. We need to be better informed to make better decisions. We need to learn.
+
+
+[NOTE]
+.Running using common sense
+====
+I started running last year between two lockdowns when the sunny days were back. My initial goal was just to run 5 kilometers. It may seem an easy goal but to be honest, when I made my first step, I was not even sure that I could run more than 100 meters. It took me a month to reach my target. I usually finished each training session exhausted to feel a sense of accomplishment. I was thinking, “If it doesn’t hurt, I didn’t work out hard enough.” A good illustration of common sense?
+
+Damn, I was wrong! Even a movement as natural as running is far from being obvious. I started reading books on the subject and here are a few examples of uncommon lessons that, in fact, make sense.
+
+* *Running slowly makes you run faster*. Most training sessions must be run at low intensity. Champions broke all records not by running at higher intensity, but by running at lower intensity, and running more.footnote:[There is even a whole book dedicated to this principle.: 80/20 Running, Matt Fitzgerald, https://www.amazon.com/80-20-Running-Stronger-Training/dp/0451470885/ ]
+* *Running using proper form is not important*. Forcing a different posture is less efficient than simply trying to run naturally.footnote:[I have read a lot about the running posture. Opinions vary slightly but your posture must not be a priority to run faster, except of course if you are running using a very dangerous and unnatural style.]
+* *Running with low-cost and old shoes is preferable to lower the risk of injuries*. In fact, running barefoot can be even more profitable since cushioned shoes prevent our feet to behave naturally.footnote:[No other book had such an impact in the running world as _Born To Run_ written by Christopher McDougall,  https://www.amazon.com/Born-Run-Hidden-Superathletes-Greatest/dp/0307279189/]
+* *Stretching must not be done after a race or even after a simple training session*. You will not recover faster by putting pressure on a muscle that have been aggressed. footnote:[I learned about the possible danger of stretching in several books but the best explanations I have found are present in a French book that a friend of mine recommends to me: Bien-être et Jogging. Serge Cottereau, https://www.amazon.fr/Bien-%C3%AAtre-Jogging-Serge-Cottereau/dp/2912690633]
+====
+
+
+In the end, *common sense makes sense until you have thought critically about it*, in which case, common sense stops making sense. Learning is the antidote. Here is a better definition of common sense that I have found link:https://www.quora.com/What-exactly-is-common-sense[online]:
+
+[quote, Fred Landis]
+____
+Common sense is the ability to almost instantly eliminate false information because of a lifetime of learning how the world works.
+____
+
+
+I would like to conclude this article with my chocolate bar that makes sense. What the company really says is that they tried to do what is best for every actor in the process. Doing his best to create a positive impact in our world is, for sure, a great example of something that makes sense. Saying it is great. Doing it is better. Just make sure to not use your common sense to make sense 😉.
+
+[NOTE.remember]
+.Key Takeaways
+====
+* Don't say “it's common sense.” It’s a polite way to say “My opinion, stupid.”footnote:[I found this definition of common sense in a very long thread on Quora. https://qr.ae/pN0ny4]
+* Don't say “it's common sense.” Say instead that you are too lazy to learn.
+* Don't say “it's common sense.” There is no such thing as common sense.
+====
