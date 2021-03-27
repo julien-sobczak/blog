@@ -1,0 +1,185 @@
+---
+layout: post-write
+title: "Why I Write?"
+subtitle: "9 reasons why you should start writing"
+author: Julien Sobczak
+date: '2021-04-02'
+category: "write"
+subject: Writing
+tags:
+  - learning
+recommendations:
+  - 2018-11-16-why-i-read-books
+---
+
+:page-liquid:
+
+
+[quote, Ernest Hemingway]
+____
+There is nothing to writing. All you do is sit down at a typewriter and bleed.
+____
+
+
+[.lead]
+I started blogging a few years ago and I find it really hard to write consistently. Time is a scarce resource and I want to highlight the benefits from writing, and what motivates me to spend more and more time on it. Writing is a lot of fun as long as you are writing for the right reasons.
+
+
+== I Write to Learn
+
+[quote, William Zinsser]
+____
+Writing and learning and thinking are the same process.
+____
+
+I love link:{% post_url write/2018-11-16-why-i-read-books %}[reading]. But reading is not necessarily the best approach to learn, especially when it comes to developing skills like programming. I learn best by doing and writing is a great example.
+
+I don't write to share my knowledge. I write to transform it into something more interesting. Writing requires that I research more, and come up with better ideas. This is the difference between _knowledge telling_ (saying what you know) and _knowledge transforming_ (building on what you know). I learn to write and I write to learn.
+
+*Writing is learning.*
+
+[TIP]
+If you are curious about a subject, *try to write* and you will learn so much more than you may imagine.
+
+
+== I Write to Know
+
+[quote, Flannery O'Connor]
+____
+I write to discover what I know.
+____
+
+Learning without getting feedback is dangerous. Many students discover they failed to  master a concept only during the final exam, which is called the illusion of competence.
+
+Writing is active learning. I can only write what I have understood. Talking is different. I can talk about something that I barely understand as long as my interlocutor is able to fill the gaps in my explanations. Writing leaves no doubt about my understanding.
+
+*Writing is knowing.*
+
+[TIP]
+If you understand something, *try to write* and you will discover how limited your understanding is.
+
+
+== I Write to Question
+
+[quote, Irish saying]
+____
+Questioning is the door of knowledge.
+____
+
+After reading a few books on a subject, I often think my understanding is correct, when it is not. I write to fix these blind spots in my knowledge. Writing generates questions and finding the answers leads to even more questions! Writing is a superpower towards expertise. "How do you become an expert on something?", asked software engineer Eric Lippert, "Well, find a pile of questions or a place where people are asking questions about your topic. If you try and answer each one, you’ll become an expert quickly enough.”footnote:[https://stackoverflow.blog/2020/05/14/the-most-successful-developers-share-more-than-they-take/] Writing is a great way to find this pile of questions.
+
+*Writing expands knowledge.*
+
+[TIP]
+If you know something, *try to write* and you will discover how little you know.
+
+
+== I Write to Think
+
+[quote, David McCullough]
+____
+Writing is thinking. To write well is to think clearly. That's why it's so hard.
+____
+
+I cannot write if I do not clarify my thinking first. Writing implies to formulate, develop, defend, appraise, criticize, judge, argue, determine and evaluate my ideas.footnote:[https://uwaterloo.ca/centre-for-teaching-excellence/teaching-resources/teaching-tips/developing-assignments/cross-discipline-skills/using-writing-learning-tool] Writing is an opportunity to organise them, and more important, to reflect on them. Writing forces me to stop and to think deeper.
+
+I also write to challenge my opinion. Trying to find the right words often forced me to reconsider my position on a subject. Writing allows me to step back and observe the situation with different eyes, and spot incoherences in my reasoning. link:{% post_url write/2021-03-24-common-sense-doesnt-make-sense %}[Common sense rarely makes sense] and writing helps me find better answers than my intuition can provide.
+
+*Writing is reflecting.*
+
+[TIP]
+If you think you are right, *try to write* and you will discover truth is more complicated.
+
+
+== I Write to Master
+
+[quote, Samuel Ichiye Hayakawa]
+____
+Learning to write is learning to think. You don’t know anything clearly unless you can state it in writing.
+____
+
+I don't master most of what I use at work. For example, I work on Linux but ignore most of the kernel internals. The truth is that is not such a big problem. You don't have to understand every layer between your code and the physical server running it to be a software developer. That's the power of abstractions. But my curiosity disagrees.
+
+Since I cannot write about what I don't understand, I added a link:{{ site.url }}/categories/inspect.html[category on my blog] to close this gap. Using UTF-8 to write my code does not mean I understand Unicode. Writing such articles is not trivial, but the satisfaction to complete them is far greater than for simpler articles. Mastery makes me love my job even more.
+
+*Writing is mastery.*
+
+[TIP]
+If you think you have nothing more to learn, *try to write* and you will never stop learning.
+
+
+== I Write to Write
+
+[quote, Stephen King]
+____
+If you want to be a writer, you must do two things above all others: read a lot and write a lot.
+____
+
+Writing is a skill, and thus requires practice. So I write to get better at writing. I don't care if my writing style is far from being as engaging as the authors I admire. We all start as beginners. Rereading an old article and finding it not so great means that I'm getting better.
+
+In addition, I write to practice English (I'm French). I will not get better at writing in English by reviewing my flashcards. link:{% post_url read/2020/2020-05-07-ultralearning %}[Directness] means learning in as similar a way as the one we will actually use the skill. I want to write fluently in English. I have to write in English.
+
+*Writing is a skill.*
+
+[TIP]
+If you think writing is easy, *try to write* and you will change your mind.
+
+
+== I Write to Play
+
+[quote, C.S. Lewis]
+____
+You can make anything by writing.
+____
+
+Written words are special. You can read them at any pace. You can even reread them and understand something completely new. There are a finite number of words, but they can be combined indefinitely.
+
+Finding the right words, the right punctuation, the right sequence of sentences, the right length of paragraphs is a complex process, but a very creative one. I really appreciate writing and editing, editing, editing…
+
+*Writing unleashes creativity.*
+
+[TIP]
+If you think writing is boring, *try to write* and you will be surrounded by paths to explore.
+
+
+== I Write to Talk
+
+[quote, Anne Frank]
+____
+I think a lot, but I don’t say much.
+____
+
+As an introvert, It's hard to express my thoughts clearly when too many eyes are on me. Introverts think before they speak and I often keep my mouth shut to let the conversation continues too fast for me.footnote:[https://time.com/5373403/surprising-benefits-introvert/] Writing is different. It helps me express my ideas in a format that I can be proud of. Writing is the shy person's stage.footnote:[https://www.lifehack.org/articles/communication/10-reasons-you-should-start-blog.html] Not everything I write is great but trust me, it's far better than what I would have articulated.
+
+I also think writing is great not just for introverts. Many top companies like Amazon or Twitter understand its importance to prepare a meeting.footnote:[https://www.cnbc.com/2019/10/14/jeff-bezos-this-is-the-smartest-thing-we-ever-did-at-amazon.html]. Focusing on writing "[...] totally revolutionizes the way we do meetings at Amazon," declared Jeff Bezos. Writing is the soil on which talking can grow. Writing forces you to use both brain hemispheres to come up with your best ideas. Talking cannot do that.
+
+*Writing is talking.*
+
+[TIP]
+If you avoid talking, *try to write* and you will never stop writing.
+
+
+== I Write to Myself
+
+[quote, William Zinsser, On Writing Well]
+____
+Writing for yourself is a powerful search mechanism: there's no better way to find out who you are and what you know and what you think.
+____
+
+I always write for myself, even if I focus on a well-defined audience.footnote:[It happens most successful bloggers write for themselves too. https://stackoverflow.blog/2020/05/14/the-most-successful-developers-share-more-than-they-take/ ] If someone appreciates my writing, that's a bonus as I have already learned so much from writing. I think every developer must try to write. You cannot develop large applications alone and the best way to communicate your intent, your logic, your ideas, is to put them down.
+
+*Writing is personal.*
+
+[TIP]
+If you have nothing to share, *try to write* what you want to read, and you will have a lot to share.
+
+
+[quote, Thomas Mann]
+____
+A writer is a person for whom writing is more difficult than it is for other people.
+____
+
+*Writing is a wonderful learning tool. I write because I want to learn and because I learned to like it. As always, passion is the best motivation*.footnote:[https://www.shoutmeloud.com/top-10-reasons-why-people-blog.html] Attracting an audience, promoting yourself, or making money are bad reasons to start writing. They are simply side-effects. Writing is an opportunity to create opportunities, and it starts with a blank page. Now it's up to you.
+
+
+
