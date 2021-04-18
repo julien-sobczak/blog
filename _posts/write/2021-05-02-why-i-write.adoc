@@ -3,7 +3,7 @@ layout: post-write
 title: "Why I Write?"
 subtitle: "9 reasons why you should start writing"
 author: Julien Sobczak
-date: '2021-04-02'
+date: '2021-05-02'
 category: "write"
 subject: Writing
 tags:
