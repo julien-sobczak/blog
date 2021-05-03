@@ -1,0 +1,510 @@
+=== `apt install`
+
+The entry point if the command is the function `DoInstall` which is called by various commands: `install`, `reinstall`, `remove`, `purge`, ... The code will be simplified to consider only the basic install usage.
+
+[source,c++]
+.apt-private/private-install.cc
+----
+bool DoInstall(CommandLine &CmdL)
+{
+   CacheFile Cache;
+
+   if (Cache.OpenForInstall() == false) // Covered in step 1
+      return false;
+
+   std::set<pkgCache::VerIterator> verset;
+
+   // Covered in step 2
+   if (!DoCacheManipulationFromCommandLine(CmdL, Cache, verset))
+   {
+      return false;
+   }
+
+   // Covered in step 3
+   /* Print out a list of packages that are going to be installed extra
+      to what the user asked */
+   if (Cache->InstCount() != verset.size()) // <1>
+      std::list<pkgCache::PkgIterator> extras;
+      for (pkgCache::PkgIterator I = Cache->PkgBegin(); I.end() != true; ++I)
+      {
+        if ((*Cache)[Pkg].Install() == false)
+           continue;
+        pkgCache::VerIterator const Cand = (*Cache)[Pkg].CandidateVerIter(*Cache);
+        if (verset->find(Cand) == verset->end())
+        {
+           extra.insert(Pkg);
+        }
+      }
+      ShowList(_("The following additional packages will be installed:"), extras);
+
+   /* Print out a list of suggested and recommended packages */
+   {
+      std::list<std::string> Recommends, Suggests, SingleRecommends, SingleSuggests;
+      for (auto const &Pkg: pkgCache::PkgIterator(*Cache))
+      {
+         /* Just look at the ones we want to install */
+         if ((*Cache)[Pkg].Install() == false)
+           continue;
+
+         // get the recommends/suggests for the candidate ver
+         pkgCache::VerIterator CV = (*Cache)[Pkg].CandidateVerIter(*Cache);
+         for (pkgCache::DepIterator D = CV.DependsList(); D.end() == false; )
+         {
+            pkgCache::DepIterator Start;
+            pkgCache::DepIterator End;
+            D.GlobOr(Start, End); // advances D
+            if (Start->Type != pkgCache::Dep::Recommends && Start->Type != pkgCache::Dep::Suggests)
+               continue;
+
+            std::string target;
+            for (pkgCache::DepIterator I = Start; I != D; ++I)
+            {
+               if (target.empty() == false)
+                  target.append(" | ");
+               target.append(I.TargetPkg().FullName(true));
+            }
+            std::list<std::string> &Type = Start->Type == pkgCache::Dep::Recommends ? Recommends : Suggests;
+            if (std::find(Type.begin(), Type.end(), target) != Type.end())
+               continue;
+            Type.push_back(target);
+         }
+
+      }
+      ShowList(_("Suggested packages:"), Suggests);
+      ShowList(_("Recommended packages:"), Recommends);
+   }
+
+   bool result;
+
+   // Covered in step 4
+   result = InstallPackages(Cache, false);
+
+   return result;
+}
+----
+<1> The package problem resolver is launched during step 2 and can add new packages to install to satisfy dependencies. Therefore, the number of packages to install can be different from the packages specified in the command line.
+
+[start=1]
+. *Load the APT cache*
+
+The first step is without surprise to load the APT Cache using the method `pkgCacheFile::Open` which reused methods we have already discussed before.
+
+[source,c++]
+.apt-pkg/cachefile.cc
+----
+bool pkgCacheFile::Open(OpProgress *Progress)
+{
+   if (BuildCaches(Progress) == false)
+      return false;
+
+   if (BuildPolicy(Progress) == false)
+      return false;
+
+   if (BuildDepCache(Progress) == false)
+      return false;
+
+   if (Progress != NULL)
+      Progress->Done();
+   if (_error->PendingError() == true)
+      return false;
+
+   return true;
+}
+----
+
+[start=2]
+. *Determine the packages to install*
+
+Installing a package also means uninstalling some other packages. Maybe the new version of a package stops using a dependency that was used only by this package and APT will try to autoremove it. For this step, we ignore most of these problematic and focus on install new packages with new dependencies. The code will be adapted in consequence.
+
+This step executes many checks like ensuring the package is not already installed in this version, or checking APT configuration options to make sure packages can be downloaded. For every package to install, this step will update the state in `pkgDepCache` using the function `Cache->GetDepCache()->SetCandidateVersion()` and `Cache.MarkInstall()`.
+
+After that, the code executes the `pkgProblemResolver`. The goal is to fix broken packages, that based on the freshly list of packages to install, which are still missing some of their dependencies. The code is huge with more than 1000 lines of code as dependency management is a hard problem to tackle. Here is the relevant fields for the `nginx-core` package:
+
+[source]
+----
+Package: nginx-core
+Description: nginx web/proxy server (standard version)
+Version: 1.18.0-6+b1
+Architecture: amd64
+Replaces: nginx-full (<< 1.18.0-1)
+Depends: libnginx-mod-http-geoip (= 1.18.0-6+b1), libnginx-mod-http-image-filter (= 1.18.0-6+b1), libnginx-mod-http-xslt-filter (= 1.18.0-6+b1), libnginx-mod-mail (= 1.18.0-6+b1), libnginx-mod-stream (= 1.18.0-6+b1), libnginx-mod-stream-geoip (= 1.18.0-6+b1), nginx-common (= 1.18.0-6), iproute2, libc6 (>= 2.28), libcrypt1 (>= 1:4.1.0), libpcre3, libssl1.1 (>= 1.1.1), zlib1g (>= 1:1.1.4)
+Suggests: nginx-doc (= 1.18.0-6)
+Conflicts: nginx-extras, nginx-light
+Breaks: nginx (<< 1.4.5-1), nginx-full (<< 1.18.0-1)
+----
+
+The documentation says it become insanely complex and very sophisticated. The resolver may even not be able to fix all broken packages. Packages may be missing or conflicts may happen between different packages.
+
+The resolver proceed by marking packages to install, remove or skip and use the similar functions as before: `Cache.MarkInstall()`, `Cache.MarkDelete()`, `Cache.MarkKeep()`. The result is often more packages to change that the ones passed to the `apt install` command.
+
+Check the function `pkgProblemResolver::ResolveInternal()` defined in `apt-pkg/algorithms.cc` for more details.
+
+[source,c++]
+.apt-private/private-install.cc
+----
+bool DoCacheManipulationFromCommandLine(CommandLine &CmdL, CacheFile &Cache,
+                                        std::set<APT::VersionSet> &verset)
+{
+   std::unique_ptr<pkgProblemResolver> Fix(nullptr);
+   Fix.reset(new pkgProblemResolver(Cache));
+
+   for (const char **I = CmdL.FileList + 1; *I != 0; ++I) { // <1>
+      pkgCache::GrpIterator Grp = Cache.GetPkgCache()->FindGrp(pkg);
+      verset.insert(Grp.FindPreferredPkg())
+   }
+
+   TryToInstall InstallAction(Cache, Fix.get());
+
+   for (unsigned short i = 0; order[i] != 0; ++i)
+   {
+      InstallAction = std::for_each(verset.begin(), verset.end(), InstallAction); // <2>
+   }
+
+   // Call the scored problem resolver
+   OpTextProgress Progress(*_config);
+   bool resolver_fail = Fix->Resolve(true, &Progress); // <3>
+
+   if (resolver_fail == false)
+      return false;
+
+   return true;
+}
+----
+<1> Add one to `CmdL.FileList` to skip the `install` command name.
+<2> Mark this package version to be installed.
+<3> Ensure the resolver fixes broken packages to continue the installation.
+
+[start=3]
+. *Ask confirmation for additional packages to install*
+
+This step simply iterates over the package to install and inspect the calculed dependencies list to filter on package present in the fields `Recommends` and `Suggests`. The “recommended” dependencies are the most important and considerably improve the functionality offered by the package but are not indispensable to its operation (they are now installed by default by APT).
+
+Here is an example of a package with recommended and suggested packages:
+
+[source]
+./var/lib/apt/lists/deb.debian.org_debian_dists_bullseye_main_binary-amd64_Packages
+----
+...
+Package: ngraph-gtk
+Version: 6.09.01-1
+Maintainer: Hiroyuki Ito <ZXB01226@nifty.com>
+Architecture: amd64
+Depends: libc6 (>= 2.4), libngraph0 (>= 6.07.02)
+Recommends: ngraph-gtk-addins, ngraph-gtk-doc
+Suggests: fonts-liberation
+Description: create scientific 2-dimensional graphs
+...
+----
+
+Note that all dependencies of a package can also have recommended and suggested packages, and so on. Therefore, the final list displayed to the user is often pretty long:
+
+[source,sh]
+----
+vagrant# apt install ngraph-gtk
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  adwaita-icon-theme at-spi2-core dbus-user-session dconf-gsettings-backend dconf-service fontconfig fontconfig-config fonts-dejavu-core glib-networking glib-networking-common glib-networking-services gsettings-desktop-schemas
+  gtk-update-icon-cache hicolor-icon-theme libatk-bridge2.0-0 libatk1.0-0 libatk1.0-data libatspi2.0-0 libavahi-client3 libavahi-common-data libavahi-common3 libcairo-gobject2 libcairo2 libcolord2 libcups2 libdatrie1 libdconf1
+  libdeflate0 libepoxy0 libfontconfig1 libfribidi0 libgdk-pixbuf-2.0-0 libgdk-pixbuf-xlib-2.0-0 libgdk-pixbuf2.0-0 libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-common libgraphite2-3 libgsl25 libgslcblas0 libgtk-3-0 libgtk-3-bin libgtk-3-common
+  libgtksourceview-4-0 libgtksourceview-4-common libharfbuzz0b libjbig0 libjpeg62-turbo libjson-glib-1.0-0 libjson-glib-1.0-common liblcms2-2 libngraph0 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpixman-1-0 libproxy1v5
+  librest-0.7-0 librsvg2-2 librsvg2-common libsoup-gnome2.4-1 libsoup2.4-1 libthai-data libthai0 libtiff5 libwayland-client0 libwayland-cursor0 libwayland-egl1 libwebp6 libx11-6 libx11-data libxau6 libxcb-render0 libxcb-shm0 libxcb1
+  libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxtst6 ngraph-gtk-addins ngraph-gtk-addins-base ngraph-gtk-doc shared-mime-info x11-common xkb-data
+Suggested packages:
+  colord cups-common gsl-ref-psdoc | gsl-doc-pdf | gsl-doc-info | gsl-ref-html gvfs liblcms2-utils fonts-liberation librsvg2-bin
+The following NEW packages will be installed:
+  adwaita-icon-theme at-spi2-core dbus-user-session dconf-gsettings-backend dconf-service fontconfig fontconfig-config fonts-dejavu-core glib-networking glib-networking-common glib-networking-services gsettings-desktop-schemas
+  gtk-update-icon-cache hicolor-icon-theme libatk-bridge2.0-0 libatk1.0-0 libatk1.0-data libatspi2.0-0 libavahi-client3 libavahi-common-data libavahi-common3 libcairo-gobject2 libcairo2 libcolord2 libcups2 libdatrie1 libdconf1
+  libdeflate0 libepoxy0 libfontconfig1 libfribidi0 libgdk-pixbuf-2.0-0 libgdk-pixbuf-xlib-2.0-0 libgdk-pixbuf2.0-0 libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-common libgraphite2-3 libgsl25 libgslcblas0 libgtk-3-0 libgtk-3-bin libgtk-3-common
+  libgtksourceview-4-0 libgtksourceview-4-common libharfbuzz0b libjbig0 libjpeg62-turbo libjson-glib-1.0-0 libjson-glib-1.0-common liblcms2-2 libngraph0 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpixman-1-0 libproxy1v5
+  librest-0.7-0 librsvg2-2 librsvg2-common libsoup-gnome2.4-1 libsoup2.4-1 libthai-data libthai0 libtiff5 libwayland-client0 libwayland-cursor0 libwayland-egl1 libwebp6 libx11-6 libx11-data libxau6 libxcb-render0 libxcb-shm0 libxcb1
+  libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxtst6 ngraph-gtk ngraph-gtk-addins ngraph-gtk-addins-base ngraph-gtk-doc shared-mime-info x11-common
+  xkb-data
+0 upgraded, 93 newly installed, 0 to remove and 11 not upgraded.
+Need to get 38.5 MB of archives.
+After this operation, 137 MB of additional disk space will be used.
+Do you want to continue? [Y/n]
+----
+
+We observe from the previous output that recommended packages are installed automatically.
+
+
+[start=4]
+. *Proceed to the installation*
+
+The last step is managed by the function `InstallPackages`:
+
+[source,c++]
+.apt-private/private-install.cc
+----
+bool InstallPackages(CacheFile &Cache, bool ShwKept, bool Ask)
+{
+   // Create the download object
+   aptAcquireWithTextStatus Fetcher;
+   if (Fetcher.GetLock(_config->FindDir("Dir::Cache::Archives")) == false) // <1>
+      return false;
+
+   // Read the source list
+   if (Cache.BuildSourceList() == false)
+      return false;
+   pkgSourceList * const List = Cache.GetSourceList();
+
+   // Create the text record parser
+   pkgRecords Recs(Cache);
+   if (_error->PendingError() == true)
+      return false;
+
+   // Create the package manager and prepare to download
+   std::unique_ptr<pkgPackageManager> PM(_system->CreatePM(Cache)); // <2>
+   if (PM->GetArchives(&Fetcher, List, &Recs) == false ||
+       _error->PendingError() == true)
+      return false;
+
+   auto const FetchBytes = Fetcher.FetchNeeded(); // <3>
+   auto const FetchPBytes = Fetcher.PartialPresent(); // <3>
+
+   // Size delta
+   ioprintf(c1out,_("After this operation, %sB of additional disk space will be used.\n"),
+            SizeToStr(Cache->UsrSize()).c_str());
+
+   if (_error->PendingError() == true)
+      return false;
+
+   // Prompt to continue
+   if (Ask == true || Fail == true) // <4>
+   {
+      if (_config->FindI("quiet", 0) < 2 &&
+            _config->FindB("APT::Get::Assume-Yes", false) == false)
+      {
+         if (YnPrompt(_("Do you want to continue?")) == false)
+         {
+            cout << _("Abort.") << std::endl;
+            exit(1);
+         }
+      }
+   }
+
+   // Run it
+   bool Failed = false;
+   while (1)
+   {
+      bool Transient = false;
+      if (AcquireRun(Fetcher, 0, &Failed, &Transient) == false)
+         return false;
+
+      if (Failed == true && _config->FindB("APT::Get::Fix-Missing",false) == false)
+         return _error->Error(_("Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?"));
+
+      auto const progress = APT::Progress::PackageManagerProgressFactory();
+      _system->UnLockInner(); // <5>
+      pkgPackageManager::OrderResult const Res = PM->DoInstall(progress);
+      delete progress;
+
+      if (Res == pkgPackageManager::Failed || _error->PendingError() == true)
+         return false;
+      if (Res == pkgPackageManager::Completed)
+         break;
+
+      _system->LockInner();
+
+      Fetcher.Shutdown();
+      if (PM->GetArchives(&Fetcher, List, &Recs) == false)
+         return false;
+
+      Failed = false;
+   }
+
+   std::set<std::string> const disappearedPkgs = PM->GetDisappearedPackages();
+   if (disappearedPkgs.empty() == false) // <6>
+   {
+      ShowList(c1out, P_("The following package disappeared from your system as\n"
+               "all files have been overwritten by other packages:",
+               "The following packages disappeared from your system as\n"
+               "all files have been overwritten by other packages:", disappearedPkgs.size()), disappearedPkgs,
+            [](std::string const &Pkg) { return Pkg.empty() == false; },
+            [](std::string const &Pkg) { return Pkg; },
+            [](std::string const &) { return std::string(); });
+      cout << _("Note: This is done automatically and on purpose by dpkg.") << std::endl;
+   }
+
+   return true;
+}
+----
+<1> APT acquires a lock using the link:https://man7.org/linux/man-pages/man2/fcntl.2.html[`fcntl()` system call] which is used to manipulate file descriptors. When called using the flag `F_SETLK`, the call returns -1 if the lock is already held by another process.
+<2> APT supports multiple package manager but the default one commonly used is the `dpkg` command we covered in this article. APT uses the class `debSystem` and the associated `pkgDPkgPM` to interact with the `dpkg` command.
+<3> The Acquire subsystem is reused to download the archive. Internally, the code keep for every item to retrieve two fields `FileSize` and `PartialSize`, which are the size of the object to fetch and how much was already fetched. The methods `Fetcher.FetchNeeded()` and `Fetcher.FetchPartial()` iterates over the items to determine the total values.
+<4> APT asks for confirmation before proceeding to the installation, except if you use options like `apt -y install`.
+<5> Unlock Dpkg lock `/var/lib/dpkg/lock` to make sure the `dpkg` command can use it.
+<6> The package manager reads the `/var/lib/dpkg/status` to found out the packages that were removed because none of their files was referenced by another package.
+
+The installation logic is implemented by the class `pkgDPkgPM`.
+
+[source,c++]
+.apt-pkg/deb/dpkgpm.h
+----
+class pkgDPkgPM : public pkgPackageManager
+{
+   protected:
+
+   // progress reporting
+   struct DpkgState
+   {
+      const char *state;     // the dpkg state (e.g. "unpack")
+      const char *str;       // the human readable translation of the state
+   };
+
+   // the dpkg states that the pkg will run through, the string is
+   // the package, the vector contains the dpkg states that the package
+   // will go through
+   std::map<std::string,std::vector<struct DpkgState> > PackageOps;
+   // the dpkg states that are already done; the string is the package
+   // the int is the state that is already done (e.g. a package that is
+   // going to be install is already in state "half-installed")
+   std::map<std::string,unsigned int> PackageOpsDone;
+
+   // progress reporting
+   unsigned int PackagesDone;
+   unsigned int PackagesTotal;
+
+   public:
+   struct Item
+   {
+      enum Ops {Install, Configure, Remove, Purge, ConfigurePending, TriggersPending,
+         RemovePending, PurgePending } Op;
+      std::string File;
+      PkgIterator Pkg;
+      Item(Ops Op,PkgIterator Pkg,std::string File = "") : Op(Op),
+            File(File), Pkg(Pkg) {};
+      Item() {};
+   };
+   protected:
+   std::vector<Item> List; // <1>
+
+   virtual bool Install(PkgIterator Pkg,std::string File) override; // <2>
+   virtual bool Configure(PkgIterator Pkg) override;
+   virtual bool Remove(PkgIterator Pkg,bool Purge = false) override;
+
+   virtual bool Go(APT::Progress::PackageManager *progress) override; // <3>
+
+   virtual void Reset() override;
+
+   public:
+
+   explicit pkgDPkgPM(pkgDepCache *Cache);
+   virtual ~pkgDPkgPM();
+
+   APT_HIDDEN static bool ExpandPendingCalls(std::vector<Item> &List, pkgDepCache &Cache);
+};
+----
+<1> The package manager keeps a list of actions to perform.
+<2> The method `Install` simply append a new item in `List` of type `Install`.
+<3> The method `Go` reads the list of actions and execute them.
+
+The only remaining code is the `dpkg` command execution:
+
+[source,c++]
+.apt-pkg/deb/dpkgpm.cc
+----
+bool pkgDPkgPM::Go(APT::Progress::PackageManager *progress)
+{
+   ...
+
+   // Generate the base argument list for dpkg
+   std::vector<const char *> Args = { "dpkg" };
+
+   // this loop is runs once per dpkg operation
+   vector<Item>::const_iterator I = List.cbegin();
+   while (I != List.end())
+   {
+
+      int fd[2];
+      if (pipe(fd) != 0)
+         return _error->Errno("pipe","Failed to create IPC pipe to dpkg");
+
+      ADDARGC("--status-fd");
+      char status_fd_buf[20];
+      snprintf(status_fd_buf,sizeof(status_fd_buf),"%i", fd[1]);
+      ADDARG(status_fd_buf);
+      unsigned long const Op = I->Op;
+
+      switch (I->Op)
+      {
+         // Skip other operations
+
+         case Item::Install:
+         ADDARGC("--unpack");
+         ADDARGC("--auto-deconfigure");
+         break;
+      }
+
+      // Write in the file or package name
+      if (I->Op == Item::Install)
+      {
+         if (I->File[0] != '/')
+               return _error->Error("Internal Error, Pathname to install is not absolute '%s'",I->File.c_str());
+            Args.push_back(I->File.c_str());
+      }
+
+      pid_t Child = ExecFork(fd[1]);
+      if (Child == 0)
+      {
+         // This is the child
+         close(fd[0]); // close the read end of the pipe
+
+         debSystem::DpkgChrootDirectory();
+
+         if (chdir(_config->FindDir("DPkg::Run-Directory","/").c_str()) != 0)
+            _exit(100);
+
+         execvp(Args[0], (char**) &Args[0]);
+         cerr << "Could not exec dpkg!" << endl;
+         _exit(100);
+      }
+
+      // we read from dpkg here
+      int const _dpkgin = fd[0];
+      close(fd[1]); // close the write end of the pipe
+
+      // the result of the waitpid call
+      int Status = 0;
+      int res;
+      bool waitpid_failure = false;
+      bool dpkg_finished = false;
+      do
+      {
+         if (dpkg_finished == false)
+         {
+            if ((res = waitpid(Child, &Status, WNOHANG)) == Child)
+               dpkg_finished = true;
+            else if (res < 0)
+            {
+               // error handling, waitpid returned -1
+               if (errno == EINTR)
+                  continue;
+               waitpid_failure = true;
+               break;
+            }
+         }
+         if (dpkg_finished)
+            break;
+
+      } while (true);
+
+      if (waitpid_failure == true)
+      {
+         strprintf(d->dpkg_error, "Sub-process %s couldn't be waited for.",Args[0]);
+         _error->Error("%s", d->dpkg_error.c_str());
+         break;
+      }
+
+      ...
+   }
+}
+----
+
+After the `dpkg` command has been run to executed all necessary actions, the APT cache will be updated as the state of some packages has been updated.
+
+This close the last part of this article.
+

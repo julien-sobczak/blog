@@ -1,0 +1,146 @@
+=== `apt list`
+
+Here is a simplified.footnote:simplified[TODO] version of the command `apt list`. This version simply omits the optional argument to filter the list of results.
+
+[source,c++]
+----
+bool DoList(CommandLine &Cmd)
+{
+   pkgCacheFile CacheFile;
+   pkgCache * const Cache = CacheFile.GetPkgCache(); // <1>
+   pkgRecords records(CacheFile);
+
+   std::string format = "${color:highlight}${Package}${color:neutral}/${Origin} ${Version} ${Architecture}${ }${apt:Status}"; // <2>
+
+   std::list<pkgCache::VerIterator> bag; // <3>
+
+   GetVersionSet(CacheFile, &bag);
+   std::map<std::string, std::string> output_map;
+   for (std::list<pkgCache::VerIterator>::iterator V = bag.begin(); V != bag.end(); ++V)
+   {
+      std::stringstream outs;
+      ListSingleVersion(CacheFile, records, V, outs, format);
+      output_map.insert(std::make_pair<std::string, std::string>(
+               V.ParentPkg().FullName(), outs.str()));
+   }
+
+   // output the map
+   std::map<std::string, std::string>::const_iterator K;
+   for (K = output_map.begin(); K != output_map.end(); ++K)
+      std::cout << (*K).second << std::endl;
+
+   return true;
+}
+----
+<1> The function `CacheFile.GetPkgCache()` delegates to the method `BuildCaches()` we covered in the previous section about `apt-update`. This method is responsible to build the APT cache.
+<2> Concrete values will be replaced in the function `ListSingleVersion` by replacing `${Package}`, `${Origin}`, … by their real values.
+<3> The real implementation uses the type `LocalitySortedVersionSet` which is a set using caching to sort packages based on their names in the `Translation` files of the user locale.
+
+Like for the `apt update` command, once the cache is available, the remaining code is simply using the information present in the cache. In this case, the search of packages to display happens in the function `GetVersionSet`:
+
+[source,c++]
+.apt-private/private-cacheset.cc
+----
+bool GetVersionSet(pkgCacheFile &CacheFile,
+                   std::list<pkgCache::VerIterator> versions)
+{
+   pkgCache * const Cache = CacheFile.GetPkgCache();
+   pkgDepCache * const DepCache = CacheFile.GetDepCache();
+
+   bool const insertCurrentVer = _config->FindB("APT::Cmd::Installed", false);
+   bool const insertUpgradable = _config->FindB("APT::Cmd::Upgradable", false);
+
+   for (pkgCache::PkgIterator P = Cache->PkgBegin(); P.end() == false; ++P)
+   {
+      pkgDepCache::StateCache &state = (*DepCache)[P];
+      if (insertCurrentVer == true) // <1>
+      {
+         if (P->CurrentVer != 0)
+            versions->insert(P.CurrentVer());
+      }
+      else if (insertUpgradable == true) // <2>
+      {
+         if (P.CurrentVer() && state.Upgradable())
+            versions->insert(CacheFile.GetPolicy()->GetCandidateVer(P));
+      }
+      else // <3>
+      {
+         versions->insert(P.VersionList());
+      }
+   }
+   if (progress != NULL)
+      progress->Done();
+   return true;
+}
+----
+<1> The command `apt list --installed` search for installed packages.
+<2> The command `apt list --upgradable` search for installed packages that can be upgraded.
+<3> The command `apt list --all-versions` search for all packages in the APT cache.
+
+The packages are then formatted in the function `ListSingleVersion`:
+
+[source,c++]
+.apt-private/private-output.cc
+----
+void ListSingleVersion(pkgCacheFile &CacheFile, pkgRecords &records,        /*{{{*/
+                       pkgCache::VerIterator const &V, std::ostream &out,
+                       std::string const &format)
+{
+   pkgCache::PkgIterator const P = V.ParentPkg();
+   pkgDepCache * const DepCache = CacheFile.GetDepCache();
+   pkgDepCache::StateCache const &state = (*DepCache)[P];
+
+   std::string output = format; // <1>
+
+   output = SubstVar(output, "${db::Status-Abbrev}", GetFlagsStr(CacheFile, P));
+   output = SubstVar(output, "${Package}", P.Name());
+   std::string const ArchStr = GetArchitecture(CacheFile, P);
+   output = SubstVar(output, "${Architecture}", ArchStr);
+   std::string const InstalledVerStr = GetInstalledVersion(CacheFile, P);
+   output = SubstVar(output, "${installed:Version}", InstalledVerStr);
+   std::string const CandidateVerStr = GetCandidateVersion(CacheFile, P);
+   output = SubstVar(output, "${candidate:Version}", CandidateVerStr);
+   std::string const VersionStr = GetVersion(CacheFile, V);
+   output = SubstVar(output, "${Version}", VersionStr);
+   output = SubstVar(output, "${Origin}", GetArchiveSuite(CacheFile, V));
+
+   std::string StatusStr = ""; // <2>
+   if (P->CurrentVer != 0)
+   {
+      if (P.CurrentVer() == V)
+      {
+         if (state.Upgradable() && state.CandidateVer != NULL)
+            strprintf(StatusStr, _("[installed,upgradable to: %s]"),
+                  CandidateVerStr.c_str());
+         else if (V.Downloadable() == false)
+            StatusStr = _("[installed,local]");
+         else if(V.Automatic() == true && state.Garbage == true)
+            StatusStr = _("[installed,auto-removable]");
+         else if ((state.Flags & pkgCache::Flag::Auto) == pkgCache::Flag::Auto)
+            StatusStr = _("[installed,automatic]");
+         else
+            StatusStr = _("[installed]");
+      }
+      else if (state.CandidateVer == V && state.Upgradable())
+         strprintf(StatusStr, _("[upgradable from: %s]"),
+               InstalledVerStr.c_str());
+   }
+   else if (V.ParentPkg()->CurrentState == pkgCache::State::ConfigFiles)
+      StatusStr = _("[residual-config]");
+   output = SubstVar(output, "${apt:Status}", StatusStr);
+   output = SubstVar(output, "${color:highlight}", _config->Find("APT::Color::Highlight", ""));
+   output = SubstVar(output, "${color:neutral}", _config->Find("APT::Color::Neutral", ""));
+   output = SubstVar(output, "${Description}", GetShortDescription(CacheFile, records, P));
+   output = SubstVar(output, "${LongDescription}", GetLongDescription(CacheFile, records, P));
+   output = SubstVar(output, "${ }${ }", "${ }"); // <3>
+   output = SubstVar(output, "${ }\n", "\n"); // <3>
+   output = SubstVar(output, "${ }", " "); // <3>
+
+   out << output;
+}
+----
+<1> The function ignores which fields are present in the output format and thus will try to replace them all. If a field is missing, the replacement will do nothing.
+<2> The code uses the state information present in `depPkgCache` to determine if the package is installed, is upgradable, and so on.
+<3> The code ensures no remaining braces is left. This must not happen.
+
+We will close the APT section by covering the most useful command.

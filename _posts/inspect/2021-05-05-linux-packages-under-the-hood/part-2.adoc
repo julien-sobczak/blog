@@ -1,0 +1,753 @@
+== What happens when you install a package using dpkg
+
+The command to install a Debian binary package file is `dpkg -i archive.deb`:
+
+[source,sh]
+----
+vagrant# dpkg -i /vagrant/hello.deb
+Selecting previously unselected package hello.
+(Reading database ... 32264 files and directories currently installed.)
+Preparing to unpack /vagrant/hello.deb ...
+preinst says hello
+Unpacking hello (1.1-1) ...
+Setting up hello (1.1-1) ...
+postinst says hello
+
+vagrant# hello
+hello world
+----
+
+The command does a lot of interesting things and the C code is larger than the previous build command. We will split the code to focus on one concern at the time.
+
+The link:https://man7.org/linux/man-pages/man1/dpkg.1.html[man page] details the installation steps and we will present the main code for every one of them. The entry point for the installation of a single package is the function `archivefiles`, and most specifically the function `process_archive`, which process a single Debian archive and which will be discussed at length in the different steps. Let's go!
+
+[source,c]
+.src/archives.c
+----
+int
+archivefiles(const char *const *argv)
+{
+  int i;
+
+  modstatdb_open(msdbrw_readonly);
+
+  for (i = 0; argv[i]; i++) {
+    process_archive(argv[i]); // The subject of the next steps
+  }
+
+  process_queue();
+
+  trigproc_run_deferred();
+  modstatdb_shutdown();
+
+  return 0;
+}
+----
+
+[start=1]
+. Extract the control files of the new package.
+
+[source, c]
+.src/unpack.c
+----
+void process_archive(const char *filename) {
+  …
+  cidir = get_control_dir(cidir); // <1>
+  pid = subproc_fork();
+  if (pid == 0) {
+    cidirrest[-1] = '\0';
+    execlp("dpkg-deb", "dpkg-deb", "--control", filename, cidir, NULL); // <2>
+    ohshite(_("unable to execute %s (%s)"),
+            _("package control information extraction"), BACKEND);
+  }
+  subproc_reap(pid, "dpkg-deb --control", 0);
+  …
+}
+----
+<1> Create a temporary directory (commonly `/var/lib/dpkg/tmp.ci/`).
+<2> Run the command `dpkg --control` to extract the `DEBIAN/` directory into a temporary directory.
+
+Then, the code parses the `control` file to initialize the struct `pkginfo`, which is the main structure to represent a package. (You may check the const `fieldinfos` in `parse.c` to find the mapping between the file and the struct.) Here is a minimal version of this structure with the most important fields annotated:
+
+[source,c]
+.lib/dpkg/dpkg-db.h
+----
+/**
+ * Node describing an architecture package instance.
+ *
+ * This structure holds state information.
+ */
+struct pkginfo {
+  struct pkgset *set;
+
+  enum pkgwant want; // <1>
+  /** The error flag bitmask. */
+  enum pkgeflag eflag; // <2>
+  enum pkgstatus status;
+  enum pkgpriority priority;
+
+  struct pkgbin installed; // <3>
+  struct pkgbin available; // <3>
+
+  struct fsys_namenode_list *files; // <4>
+  bool files_list_valid; // <4>
+
+  /* The status has changed, it needs to be logged. */
+  bool status_dirty; // <5>
+}
+----
+<1> The enum `want` determines the expected action for this package, like `PKG_WANT_INSTALL` for installation, or `PKG_WANT_PURGE` for the removal of the package and its configuration files.
+<2> The `eflag` is initialized if the parser finds an error in the control file (ex: missing field), and also later during the installation process.
+<3> The `installed` and `available` fields contain most of the information present in the `control` files concerning a possible installed version of the package and the new version to install.
+<4> Some fields like `files` are initialized later by other functions like  `db-fsys-files.c#ensure_packagefiles_available`, which reads the file `/var/lib/dpkg/list/hello.list` to populate this field.
+<5> The `status_dirty` flag is set when the current status of the package changes, for example from `PKG_STAT_UNPACKED` to `PKG_STAT_INSTALLED`.
+
+And now, the function responsible to create this struct:
+
+[source,c]
+.src/unpack.c
+----
+void process_archive(const char *filename) {
+  struct pkginfo *pkg;
+  …
+  parsedb(cidir, parsedb_flags, &pkg); <1>
+  ...
+}
+----
+<1> The function `parsedb` simply reads a file in link:https://man7.org/linux/man-pages/man5/deb822.5.html[Debian RFC822 control data format], the format we used to write the `control` file.
+
+[start=2]
+. If another version of the same package was installed before the new installation, execute `prerm` script of the old package.
+
+[source,c]
+.unpack.c#process_archive
+----
+void process_archive(const char *filename) {
+  ...
+  oldversionstatus = pkg->status; // <1>
+
+  if (oldversionstatus == PKG_STAT_INSTALLED) {
+    pkg_set_eflags(pkg, PKG_EFLAG_REINSTREQ);
+    pkg_set_status(pkg, PKG_STAT_HALFCONFIGURED); // <2>
+    modstatdb_note(pkg); // <1>
+    if (dpkg_version_compare(&pkg->available.version,
+                             &pkg->installed.version) >= 0)
+      /* Upgrade or reinstall. */
+      maintscript_fallback(pkg, PRERMFILE, "pre-removal", cidir, cidirrest,
+                           "upgrade", "failed-upgrade"); // <3>
+    else /* Downgrade => no fallback */
+      maintscript_installed(pkg, PRERMFILE, "pre-removal",
+                            "upgrade",
+                            versiondescribe(&pkg->available.version,
+                                            vdew_nonambig),
+                            NULL); // <2>
+    pkg_set_status(pkg, PKG_STAT_UNPACKED); // <1>
+    oldversionstatus = PKG_STAT_UNPACKED;
+    modstatdb_note(pkg); // <1>
+  }
+  …
+}
+----
+<1> The status read during parsing is reused to determine if the package is already installed.
+<2> Update the package status to keep trace the package has been partially installed. The status will be changed several times during the installation. The function `modstatdb_note` persists the new state to disk.
+<3> `maintscript_fallback` and `maintscript_installed` delegates to `maintscript_exec` defined in the same file `src/script.c`. This function runs the script in a fork process and aborts if the return code is greater than 0. Differences between the various calls are explained in the next step.
+
+[start=3]
+. Run `preinst` script, if provided by the package.
+
+[source,c]
+.unpack.c#process_archive
+----
+void process_archive(const char *filename) {
+  ...
+  if (pkg->status == PKG_STAT_NOTINSTALLED) {
+    pkg->installed.version = pkg->available.version;
+    pkg->installed.multiarch = pkg->available.multiarch;
+  }
+  pkg_set_status(pkg, PKG_STAT_HALFINSTALLED);
+  modstatdb_note(pkg);
+  if (oldversionstatus == PKG_STAT_NOTINSTALLED) { // <1>
+    maintscript_new(pkg, PREINSTFILE, "pre-installation", cidir, cidirrest,
+                    "install", NULL);
+  } else if (oldversionstatus == PKG_STAT_CONFIGFILES) { // <1>
+    maintscript_new(pkg, PREINSTFILE, "pre-installation", cidir, cidirrest,
+                    "install",
+                    versiondescribe(&pkg->installed.version, vdew_nonambig),
+                    versiondescribe(&pkg->available.version, vdew_nonambig),
+                    NULL);
+  } else { // <1>
+    maintscript_new(pkg, PREINSTFILE, "pre-installation", cidir, cidirrest,
+                    "upgrade",
+                    versiondescribe(&pkg->installed.version, vdew_nonambig),
+                    versiondescribe(&pkg->available.version, vdew_nonambig),
+                    NULL);
+  }
+  ...
+}
+----
+<1> The function `maintscript_new` is a variadic function and all latest arguments are passed to the maintainer script to provide context. For example, the `preinst` maintainer script can be called using one of these formats: `preinst install`, `preinst install <old-version>`, or `preinst upgrade <old-version>`. This allows the package developer to take different actions based on the current state of the package.
+
+[start=4]
+. Unpack the new files, and at the same time back up the old files, so that if something goes wrong, they can be restored.
+
+This step is similar to running the command `dpkg --unpack`. The unpacking process is simple to understand: extract every file in the `data.tar` to their destination path but things are not so simple as outlined by this comment:
+
+[source,c]
+.unpack.c#process_archive
+----
+  /*
+   * Now we unpack the archive, backing things up as we go.
+   * For each file, we check to see if it already exists.
+   * There are several possibilities:
+   *
+   * + We are trying to install a non-directory ...
+   *  - It doesn't exist. In this case we simply extract it.
+   *  - It is a plain file, device, symlink, &c. We do an ‘atomic
+   *    overwrite’ using link() and rename(), but leave a backup copy.
+   *    Later, when we delete the backup, we remove it from any other
+   *    packages' lists.
+   *  - It is a directory. In this case it depends on whether we're
+   *    trying to install a symlink or something else.
+   *   = If we're not trying to install a symlink we move the directory
+   *     aside and extract the node. Later, when we recursively remove
+   *     the backed-up directory, we remove it from any other packages'
+   *     lists.
+   *   = If we are trying to install a symlink we do nothing - ie,
+   *     dpkg will never replace a directory tree with a symlink. This
+   *     is to avoid embarrassing effects such as replacing a directory
+   *     tree with a link to a link to the original directory tree.
+   * + We are trying to install a directory ...
+   *  - It doesn't exist. We create it with the appropriate modes.
+   *  - It exists as a directory or a symlink to one. We do nothing.
+   *  - It is a plain file or a symlink (other than to a directory).
+   *    We move it aside and create the directory. Later, when we
+   *    delete the backup, we remove it from any other packages' lists.
+   *
+   *                   Install non-dir   Install symlink   Install dir
+   *  Exists not               X               X                X
+   *  File/node/symlink       LXR             LXR              BXR
+   *  Directory               BXR              -                -
+   *
+   *    X: extract file/node/link/directory
+   *   LX: atomic overwrite leaving backup
+   *    B: ordinary backup
+   *    R: later remove from other packages' lists
+   *    -: do nothing
+   *
+   * After we've done this we go through the remaining things in the
+   * lists of packages we're trying to remove (including the old
+   * version of the current package). This happens in reverse order,
+   * so that we process files before the directories (or symlinks-to-
+   * directories) containing them.
+   *
+   * + If the thing is a conffile then we leave it alone for the purge
+   *   operation.
+   * + Otherwise, there are several possibilities too:
+   *  - The listed thing does not exist. We ignore it.
+   *  - The listed thing is a directory or a symlink to a directory.
+   *    We delete it only if it isn't listed in any other package.
+   *  - The listed thing is not a directory, but was part of the package
+   *    that was upgraded, we check to make sure the files aren't the
+   *    same ones from the old package by checking dev/inode
+   *  - The listed thing is not a directory or a symlink to one (ie,
+   *    it's a plain file, device, pipe, &c, or a symlink to one, or a
+   *    dangling symlink). We delete it.
+   *
+   * The removed packages' list becomes empty (of course, the new
+   * version of the package we're installing will have a new list,
+   * which replaces the old version's list).
+   *
+   * If at any stage we remove a file from a package's list, and the
+   * package isn't one we're already processing, and the package's
+   * list becomes empty as a result, we ‘vanish’ the package. This
+   * means that we run its postrm with the ‘disappear’ argument, and
+   * put the package in the ‘not-installed’ state. If it had any
+   * conffiles, their hashes and ownership will have been transferred
+   * already, so we just ignore those and forget about them from the
+   * point of view of the disappearing package.
+   *
+   * NOTE THAT THE OLD POSTRM IS RUN AFTER THE NEW PREINST, since the
+   * files get replaced ‘as we go’.
+   */
+----
+
+.What You Need to Know About Conffiles
+====
+We still haven't talked about conffiles. The problem is simple. When upgrading a package, you want the package manager to overwrite the previous version of the files, except for configuration files. You don't want to lose your customizations, don’t you?
+
+A Debian archive can therefore include a file `conffiles` in the `DEBIAN/` directory to list a subset of files present in the `data.tar` archive. These "conffiles" are files that must be managed specially to take care of preserving user changes.
+
+Conffiles explains the difference between the commands `dpkg remove` and `dpkg purge`. (The first command ignores conffiles while the second removes them completely.)
+
+The link:https://github.com/julien-sobczak/linux-packages-under-the-hood/tree/master/hello/2.1-1[version 2.1-1 of our package hello] defines a different version written in Python, which reads a configuration file `/etc/hello/settings.conf`, also present in the package. This conffile is referenced in `DEBIAN/conffiles`. If we try to create this configuration file manually first before installing this new version:
+
+[source,sh]
+----
+vagrant# mkdir /etc/hello
+vagrant# echo "Language: English" > /etc/hello/settings.conf
+
+vagrant# dpkg -i /vagrant/hello/hello_2.1-1_amd64.deb
+Selecting previously unselected package hello.
+(Reading database ... 25063 files and directories currently installed.)
+Preparing to unpack .../hello/hello_2.1-1_amd64.deb ...
+preinst says hello
+Unpacking hello (2.1-1) ...
+Setting up hello (2.1-1) ...
+
+Configuration file '/etc/hello/settings.conf'
+ ==> File on system created by you or by a script.
+ ==> File also in package provided by package maintainer.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainers version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a shell to examine the situation
+ The default action is to keep your current version.
+*** settings.conf (Y/I/N/O/D/Z) [default=N] ? Y
+Installing new version of config file /etc/hello/settings.conf ...
+postinst says hello
+
+vagrant# cat /etc/hello/settings.conf
+Language: French
+----
+
+The package manager detects the conflict by keeping a checkum of the last installed version of every conffile (files named `md5sums` in the database) and asks the user what to do when it knows that the user has edited the file. Options exist to avoid the prompt and the default is, of course, to preserve existing conffile.
+====
+
+The unpacking starts by running the command `dpkg-deb --fsys-tarfile` to extract the content of `data.tar`. The command sends each file to a pipe created in the `process_archive` function and delegates to the function `tar_extractor` defined in `lib/dpkg/tarfn.c`, to then come back to the function `tarobject` defined in `archives.c`. All the rules presented in the previous comment are implemented in this last function and as you may imagine, the code is just too long to introduce it in this article.
+
+The backup process consists mainly in extracting files with a special extension like `.dpkg-tmp`, `.dpkg-old` and `.dpkg-new`. Files are renamed to their definitive name if no problem occurs, except for conffiles, which must wait the last installation step to be renamed.
+
+
+[start=5]
+. If another version of the same package was installed before the new installation, execute the `postrm` script of the old package. Note that this script is executed after the `preinst` script of the new package, because new files are written at the same time old files are removed.
+
+The execution code of the maintainer script `postrm` is similar to the previous scripts. What is more interesting is what happens at the end of the unpacking step. Indeed, the Dpkg database is updated to reflect the changes.
+
+.What You Need to Know About the Dpkg Database
+====
+Dpkg maintains a database under `/var/lib/dpkg` which regroups various files including the followings:
+
+|===
+| file | description
+
+| `/var/lib/dpkg/status`
+| A DEB822 file contains the status information for all the packages (i.e., the current state of each package and the fields in their `control` file).
+
+| `/var/lib/dpkg/status-old`
+| The last backup of the `/var/lib/dpkg/status` file.
+
+| `/var/lib/dpkg/available`
+| The list of packages available for installation or upgrade from external origins only if you are using `dselect` as your package manager frontend instead of `apt` or `aptitude`. See link:https://wiki.debian.org/Teams/Dpkg/FAQ#Q:_What_is_the_dpkg_available_database.3F[details]. _(not described in this article)_
+
+| `/var/lib/dpkg/diversions`
+| The list of diversions used by `dpkg` and set by `dpkg-divert` to force a package file to be installed elsewhere. _(not described in this article)_
+
+| `/var/lib/dpkg/statoverride`
+| The stats used by `dpkg` and set by `dpkg-statoverride` to change the default ownership and mode of the package files. _(not described in this article)_
+
+|===
+
+In addition, for every installed package, Dpkg keeps a list of additional files:
+
+|===
+| file | description
+
+| `/var/lib/dpkg/info/<package_name>.list`
+| The list of files and directories installed by the package (the `data.tar` listing)
+
+| `/var/lib/dpkg/info/<package_name>.md5sums`
+| The list of MD5 hash values for files installed by the package. Used for example to detect if a conffile had been edited by the user.
+
+| `/var/lib/dpkg/info/<package_name>.conffiles`
+| The list of configuration files. Same as the `conffiles` file under `DEBIAN/`
+
+
+| `/var/lib/dpkg/info/<package_name>.{preinst, postinst, prerm, postrm}`
+| Copies of the maintainer scripts present in the package under `DEBIAN/`
+
+| `/var/lib/dpkg/info/<package_name>.config`
+|  link:https://wiki.debian.org/ConfigPackages#debconf-generated_configuration_files[Debconf-generated configuration files] used only by a minority of packages. _(not described in this article)_
+
+|===
+
+====
+
+Here are the different functions called to update the different files in the database:
+
+[source,c]
+.src/unpack.c
+----
+void process_archive(const char *filename) {
+  ...
+
+  /* OK, now we can write the updated files-in-this package list,
+   * since we've done away (hopefully) with all the old junk. */
+  write_filelist_except(pkg, &pkg->available, newfiles_queue.head, 0); // <1>
+
+  /* We also install the new maintainer scripts, and any other
+   * cruft that may have come along with the package. First
+   * we go through the existing scripts replacing or removing
+   * them as appropriate; then we go through the new scripts
+   * (any that are left) and install them. */
+  pkg_infodb_update(pkg, cidir, cidirrest); // <2>
+
+  /* We store now the checksums dynamically computed while unpacking. */
+  write_filehash_except(pkg, &pkg->available, newfiles_queue.head, 0); // <3>
+
+  /* Right, the package we've unpacked is now in a reasonable state.
+   * The only thing that we have left to do with it is remove
+   * backup files, and we can leave the user to fix that if and when
+   * it happens (we leave the reinstall required flag, of course). */
+  pkg_set_status(pkg, PKG_STAT_UNPACKED);
+  modstatdb_note(pkg); // <4>
+
+  ...
+}
+----
+<1> Edit the file `/var/lib/dpkg/info/hello.list`.
+<2> Copy all files under `DEBIAN/` into `/var/lib/dpkg/info/` by prefixing them with the package name `hello.`.
+<3> Edit the file `/var/lib/dpkg/info/hello.md5sums`.
+<4> Update the field `Status` in `/var/lib/dpkg/status` for the package `hello` to set the value `install ok unpacked`.
+
+We are getting close to the end of the function `process_archive`. The last instruction is `enqueue_package(pkg);`. This function is used to push a new package waiting to be configured. Since the `dpkg` command can be executed with several packages to install, the queue ensures all packages have been unpacked before proceeding to their final configuration.
+
+We are now back to the `archivefiles` function:
+
+[source,c]
+.src/archives.c
+----
+int
+archivefiles(const char *const *argv)
+{
+  int i;
+
+  modstatdb_open(msdbrw_readonly);
+
+  for (i = 0; argv[i]; i++) {
+    process_archive(argv[i]);
+  }
+
+  // WE ARE HERE
+  process_queue();
+
+  trigproc_run_deferred();
+  modstatdb_shutdown();
+
+  return 0;
+}
+----
+
+What follows is a simplified.footnote:simplified[TODO] version of the `process_queue` function, but first the data structure:
+
+[source,c]
+.src/packages.c
+----
+static struct pkg_queue queue = { .head = NULL, .tail = NULL, .length = 0 }; // <1>
+
+
+/*
+ * During the packages queue processing, the algorithm for deciding what to
+ * configure first is as follows:
+ *
+ * Loop through all packages doing a ‘try 1’ until we've been round and
+ * nothing has been done, then do ‘try 2’, and subsequent ones likewise.
+ * The incrementing of ‘dependtry’ is done by process_queue().
+ *
+ * Try 1:
+ *   Are all dependencies of this package done? If so, do it.
+ *   Are any of the dependencies missing or the wrong version?
+ *     If so, abort (unless --force-depends, in which case defer).
+ *   Will we need to configure a package we weren't given as an
+ *     argument? If so, abort ─ except if --force-configure-any,
+ *     in which case we add the package to the argument list.
+ *   If none of the above, defer the package.
+ *
+ * Try 2:
+ *   Find a cycle and break it (see above).
+ *   Do as for try 1.
+ *
+ * Try 3:
+ *   Start processing triggers if necessary.
+ *   Do as for try 2.
+ *
+ * Try 4:
+ *   Same as for try 3, but check trigger cycles even when deferring
+ *   processing due to unsatisfiable dependencies.
+ *
+ * Try 5 (only if --force-depends-version):
+ *   Same as for try 2, but don't mind version number in dependencies.
+ *
+ * Try 6 (only if --force-depends):
+ *   Do anyway.
+ */
+enum dependtry {
+	DEPEND_TRY_NORMAL = 1,
+	DEPEND_TRY_CYCLES = 2,
+	DEPEND_TRY_TRIGGERS = 3,
+	DEPEND_TRY_TRIGGERS_CYCLES = 4,
+	DEPEND_TRY_FORCE_DEPENDS_VERSION = 5,
+	DEPEND_TRY_FORCE_DEPENDS = 6,
+	DEPEND_TRY_LAST,
+};
+enum dependtry dependtry = DEPEND_TRY_NORMAL; // <2>
+int sincenothing = 0; // <2>
+----
+<1> The global variable containing the packages to configure.
+<2> These variables control the algorithm that decides which package must be configured first, which must be postponed, and when to abort the installation completely.
+
+Finally, the logic to empty the queue:
+
+[source,c]
+.src/archives.c
+----
+void process_queue(void) {
+  struct pkginfo *volatile pkg;
+  volatile enum action action_todo;
+
+  while (!pkg_queue_is_empty(&queue)) {
+    pkg = pkg_queue_pop(&queue);
+
+    ensure_package_clientdata(pkg);
+    pkg->clientdata->enqueued = false;
+
+    action_todo = cipaction->arg_int;
+
+    if (sincenothing++ > queue.length * 3 + 2) {
+      /* Make sure that even if we have exceeded the queue since not having
+       * made any progress, we are not getting stuck trying to progress by
+       * trigger processing, w/o jumping into the next dependtry. */
+      dependtry++;
+      sincenothing = 0;
+      if (dependtry >= DEPEND_TRY_LAST)
+        internerr("exceeded dependtry %d (sincenothing=%d; queue.length=%d)",
+                  dependtry, sincenothing, queue.length);
+    } else if (sincenothing > queue.length * 2 + 2) {
+      if (dependtry >= DEPEND_TRY_TRIGGERS &&
+          progress_bytrigproc && progress_bytrigproc->trigpend_head) {
+        enqueue_package(pkg);
+        pkg = progress_bytrigproc;
+        progress_bytrigproc = NULL;
+        action_todo = act_configure;
+      } else {
+        dependtry++;
+        sincenothing = 0;
+        if (dependtry >= DEPEND_TRY_LAST)
+          internerr("exceeded dependtry %d (sincenothing=%d, queue.length=%d)",
+                    dependtry, sincenothing, queue.length);
+      }
+    }
+
+    debug(dbg_general, "process queue pkg %s queue.len %d progress %d, try %d",
+          pkg_name(pkg, pnaw_always), queue.length, sincenothing, dependtry);
+
+    deferred_configure(pkg); // <1>
+  }
+
+  if (queue.length)
+    internerr("finished package processing with non-empty queue length %d",
+              queue.length);
+}
+----
+<1> The function `deferred_configure` is the function doing the configuration and is the subject of the next step.
+
+
+
+[start=6]
+. Configure the package.
+.. Unpack the conffiles, and at the same time back up the old conffiles, so that they can be restored if something goes wrong.
+.. Run `postinst` script, if provided by the package.
+
+The last step uses the same code as the command `dpkg --configure hello`, which may be used to reconfigure a package that had already been unpacked.
+
+The configuration step is implemented by the function `deferred_configure` which focuses on a single package to configure. If the configuration cannot proceed, we have seen that the package will be enqueued to be reprocessed later or not. Here is a simplified version.footnote:simplified[]:
+
+[source,c]
+.src/configure.c
+----
+/**
+ * Process the deferred configure package.
+ *
+ * @param pkg The package to act on.
+ */
+void
+deferred_configure(struct pkginfo *pkg)
+{
+	struct varbuf aemsgs = VARBUF_INIT;
+	struct conffile *conff;
+	struct pkginfo *otherpkg;
+	enum dep_check ok;
+
+	ok = dependencies_ok(pkg, NULL, &aemsgs); // <1>
+	if (ok == DEP_CHECK_DEFER) {
+		varbuf_destroy(&aemsgs);
+		ensure_package_clientdata(pkg);
+		pkg->clientdata->istobe = PKG_ISTOBE_INSTALLNEW;
+		enqueue_package(pkg);
+		return;
+	}
+
+	/*
+	 * At this point removal from the queue is confirmed. This
+	 * represents irreversible progress wrt trigger cycles. Only
+	 * packages in PKG_STAT_UNPACKED are automatically added to the
+	 * configuration queue, and during configuration and trigger
+	 * processing new packages can't enter into unpacked.
+	 */
+	sincenothing = 0;
+
+
+	printf(_("Setting up %s (%s) ...\n"), pkg_name(pkg, pnaw_nonambig),
+	       versiondescribe(&pkg->installed.version, vdew_nonambig));
+	log_action("configure", pkg, &pkg->installed);
+
+
+	if (pkg->status == PKG_STAT_UNPACKED) {
+		/* On entry, the ‘new’ version of each conffile has been
+		 * unpacked as ‘*.dpkg-new’, and the ‘installed’ version is
+		 * as-yet untouched in ‘*’. The hash of the ‘old distributed’
+		 * version is in the conffiles data for the package. If
+		 * ‘*.dpkg-new’ no longer exists we assume that we've
+		 * already processed this one. */
+		for (conff = pkg->installed.conffiles; conff; conff = conff->next) {
+			deferred_configure_conffile(pkg, conff); // <2>
+		}
+
+		pkg_set_status(pkg, PKG_STAT_HALFCONFIGURED);
+		modstatdb_note(pkg);
+	}
+
+	maintscript_postinst(pkg, "configure",	                     dpkg_version_is_informative(&pkg->configversion) ?
+	                     versiondescribe(&pkg->configversion,
+	                                     vdew_nonambig) : "",
+	                     NULL); // <3>
+
+	pkg_reset_eflags(pkg);
+	post_postinst_tasks(pkg, PKG_STAT_INSTALLED); // <4>
+}
+----
+<1> In case of a missing dependency, the installation will abort only at this step after the unpacking of the package files.
+<2> The function `deferred_configure_conffile` renames the conffiles still ending with the suffix `.dpkg-new` created during the unpacking. Note that the function will remove the new file to preserve the user modifications after showing the confirmation prompt.
+<3> Run the `postinst` maintainer script.
+<4> Change the status to `PKG_STAT_INSTALLED` and force the update in the `status` database file.
+
+The installation of our package is now completed. We can check the package has been installed by running the `hello` command:
+
+[source,sh]
+----
+vagrant# hello
+hello world!
+----
+
+Or by using the command `dpkg` to get the status of the package:
+
+[source,sh]
+----
+vagrant# dpkg -s hello
+Package: hello
+Status: install ok unpacked
+Priority: optional
+Section: base
+Maintainer: Julien Sobczak
+Architecture: amd64
+Version: 1.1-1
+Description: Say Hello
+----
+
+To review everything we discovered about the installation process, we will rewrite a basic version in Golang supporting only a fresh install. But first, let's remove the package or we will not be able to test our program:
+
+[source,sh]
+----
+# cp -R /var/lib/dpkg /before # Backup the database to compare
+
+# dpkg -r hello
+(Reading database ... 26963 files and directories currently installed.)
+Removing hello (1.1-1) …
+
+# hello
+bash: /usr/bin/hello: No such file or directory
+
+# cp -R /var/lib/dpkg /after
+# diff -r /before /after
+diff -r /before/info/hello.list /after/info/hello.list
+1,4d0
+< /.
+< /usr
+< /usr/bin
+< /usr/bin/hello
+Only in /before/info: hello.md5sums
+Only in /before/info: hello.postinst
+Only in /before/info: hello.preinst
+Only in /before/info: hello.prerm
+diff -r /before/status /after/status
+1431c1431
+< Status: install ok installed
+---
+> Status: deinstall ok config-files
+1436a1437
+> Config-Version: 1.1-1
+diff -r /before/status-old /after/status-old
+1429a1430,1438
+> Package: hello
+> Status: install ok installed
+> Priority: optional
+> Section: base
+> Maintainer: Julien Sobczak
+> Architecture: amd64
+> Version: 1.1-1
+> Description: Say Hello
+>
+----
+
+Here is the code:
+
+[source,go]
+.main.go
+----
+include::dpkg_install.go[]
+----
+
+Let's test the new command:
+
+[source,sh]
+----
+$ go build -o dpkg main.go
+$ vagrant destroy -f # Recreate the VM
+$ vagrant up         # to force a fresh installation.
+vagrant$ sudo su
+vagrant# /vagrant/dpkg --install /vagrant/hello.deb
+Preparing to unpack hello.deb ...
+preinst says hello
+Unpacking hello (1.1-1) ...
+Setting up hello (1.1-1) ...
+postinst says hello
+
+root@bullseye:/home/vagrant# hello
+hello world
+
+root@bullseye:/home/vagrant# dpkg -s hello
+Package: hello
+Status: install ok installed
+Priority: optional
+Section: base
+Maintainer: Julien Sobczak
+Architecture: amd64
+Version: 1.1-1
+Description: Say Hello
+----
+
+Our package has been correctly installed. The standard `dpkg` command recognized it and can be used to remove the package like any other installed package:
+
+[source,sh]
+----
+vagrant# dpkg -r hello
+(Reading database ... 25063 files and directories currently installed.)
+Removing hello (1.1-1) ...
+prerm says hello
+postrm says hello
+
+vagrant# hello
+bash: /usr/bin/hello: No such file or directory
+----
+
+We have finished with the command `dpkg`. We succeeded in creating a package manually and installed it using a basic Go program. We have a better understanding of how `dpkg` is working and what information is available in its database. We can now have a look at the package manager frontend `apt` to understand how these programs are working together to install a package.
