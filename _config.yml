@@ -16,6 +16,7 @@ twitter_username: julien_sobczak
 # baseurl: /
 
 asciidoctor:
+  base_dir: :docdir
   attributes:
     - idseparator=_
     - source-highlighter=coderay

@@ -1,0 +1,641 @@
+=== `apt update`
+
+[NOTE]
+.What You Need to Know About /var/cache/apt/
+====
+TODO
+[source,sh]
+----
+$ tree /var/cache/apt/
+|-- archives  # Storage area for downloaded files
+|   |-- lock      # Prevent two APT processes to update the cache simultaneously
+|   |-- partial/  # Storage area for files in transit
+|   |-- apt-transport-https_2.0.5_all.deb  # Debian downloaded package archives are kept
+|   |-- tree_1.8.0-1_amd64.deb             # for a configurable retention.
+|   `-- ...
+|-- pkgcache.bin    # Binary files loaded directry in C++ using the mmap() system call.
+`-- srcpkgcache.bin # Contains the local index files and the archives file lists.
+                    # Those are low-level files used for performance optimizations.
+----
+
+The APT Cache files under this directory (except the `lock` file) can be safely deleted using the command `apt clean` to recclaim disk space:
+
+[source,sh]
+----
+$ sudo apt clean --dry-run
+Del /var/cache/apt/archives/* /var/cache/apt/archives/partial/*
+Del /var/lib/apt/lists/partial/*
+Del /var/cache/apt/pkgcache.bin /var/cache/apt/srcpkgcache.bin
+----
+
+APT is highly configurable and there is several options to clean the cache regurlarly, like after each package installation.
+====
+
+
+
+
+
+
+Here is the function executed by that command:
+
+[source,c++]
+.apt-private/private-update.cc
+----
+bool DoUpdate(CommandLine &CmdL)
+{
+   CacheFile Cache;
+
+   // Get the source list
+   if (Cache.BuildSourceList() == false)
+      return false;
+   pkgSourceList *List = Cache.GetSourceList();
+
+   // do the work
+   AcqTextStatus Stat(std::cout, ScreenWidth,_config->FindI("quiet",0));
+   ListUpdate(Stat, *List);
+
+   // Rebuild the cache.
+   pkgCacheFile::RemoveCaches();
+   if (Cache.BuildCaches(false) == false)
+      return false;
+
+   // show basic stats (if the user whishes)
+   if (_config->FindB("APT::Cmd::Show-Update-Stats", false) == true)
+   {
+      int upgradable = 0;
+      if (Cache.Open(false) == false)
+         return false;
+      for (pkgCache::PkgIterator I = Cache->PkgBegin(); I.end() != true; ++I)
+      {
+         pkgDepCache::StateCache &state = Cache[I];
+         if (I->CurrentVer != 0 && state.Upgradable() && state.CandidateVer != NULL)
+            upgradable++;
+      }
+      const char *msg = P_(
+         "%i package can be upgraded. Run 'apt list --upgradable' to see it.\n",
+         "%i packages can be upgraded. Run 'apt list --upgradable' to see them.\n",
+         upgradable);
+      if (upgradable == 0)
+         c1out << _("All packages are up to date.") << std::endl;
+      else
+         ioprintf(c1out, msg, upgradable);
+   }
+
+   return true;
+}
+----
+
+The command is divided in four steps:
+
+[start=1]
+. *Read the `sources.list` and `sources.list.d/+++*+++` files*.
+
+[source,c++]
+----
+// Get the source list
+if (Cache.BuildSourceList() == false)
+   return false;
+pkgSourceList *List = Cache.GetSourceList();
+----
+
+Where `pkgSourceList` is defined like this:
+
+[source,c++]
+.apt-pkg/sourcelist.h
+----
+class pkgSourceList
+{
+   public:
+
+   typedef std::vector<metaIndex *>::const_iterator const_iterator;
+
+   protected:
+
+   std::vector<metaIndex *> SrcList;
+
+   public:
+
+   void Reset();
+   bool ReadMainList();
+   bool Read(std::string const &File);
+
+   // List accessors
+   inline const_iterator begin() const {return SrcList.begin();};
+   inline const_iterator end() const {return SrcList.end();};
+   inline unsigned int size() const {return SrcList.size();};
+   inline bool empty() const {return SrcList.empty();};
+
+   bool FindIndex(pkgCache::PkgFileIterator File,
+                  pkgIndexFile *&Found) const;
+   bool GetIndexes(pkgAcquire *Owner, bool GetAll=false) const;
+
+   pkgSourceList();
+   virtual ~pkgSourceList();
+};
+----
+
+And initialized by the method `BuildSourceList`:
+
+[source,c++]
+.apt-pkg/cachefile.cc
+----
+bool pkgCacheFile::BuildSourceList(OpProgress * /*Progress*/)
+{
+   std::unique_ptr<pkgSourceList> SrcList;
+   SrcList.reset(new pkgSourceList());
+   if (SrcList->ReadMainList() == false)
+      return _error->Error(_("The list of sources could not be read."));
+   this->SrcList = SrcList.release();
+   return true;
+}
+----
+
+The method `ReadMainList()` is used to read the sources.list files:
+
+[source,c++]
+.apt-pkg/sourcelist.cc
+----
+bool pkgSourceList::ReadMainList()
+{
+   Reset();
+   string Main = _config->FindFile("Dir::Etc::sourcelist", "sources.list");
+   string Parts = _config->FindDir("Dir::Etc::sourceparts", "sources.list.d");
+
+   _error->PushToStack();
+   if (RealFileExists(Main) == true)
+      ReadAppend(Main);
+   if (DirectoryExists(Parts) == true)
+      ReadSourceDir(Parts);
+
+   auto good = _error->PendingError() == false;
+   _error->MergeWithStack();
+   return good;
+}
+----
+
+The `Read*` methods parse the files, which can be written either in DEB822 format (old format), or in a new multiline format. We omit the parsing code for brievity but both parsers calls a method `CreateItem` for every repository found in these file. This method received the parsed content of a line such as `deb http://deb.debian.org/debian stable main` and pushes a new instance of `debReleaseIndex` in the `SrcList`.
+
+
+[start=2]
+. *Fetch index files from each repository (`InRelease`, `Packages`, ...).*
+
+[source,c++]
+----
+// do the work
+AcqTextStatus Stat(std::cout, ScreenWidth,_config->FindI("quiet",0)); // <1>
+ListUpdate(Stat, *List);
+----
+<1> `AcqTextStatus` is used to report progress of the file downloading.
+
+Here is the function `ListUpdate`:
+
+[source,c++]
+.apt-pkg/update.cc
+----
+bool ListUpdate(pkgAcquireStatus &Stat,
+                pkgSourceList &List,
+                int PulseInterval)
+{
+   pkgAcquire Fetcher(&Stat); // <1>
+   if (Fetcher.GetLock(_config->FindDir("Dir::State::Lists")) == false) // <2>
+      return false;
+
+   // Populate it with the source selection
+   if (List.GetIndexes(&Fetcher) == false) // <3>
+         return false;
+
+   return AcquireUpdate(Fetcher, PulseInterval, true); // <4>
+}
+----
+<1> The class `pkgAcquire` is the main component of the Acquire subsystem. APT is responsible to retrieve the packages from various sources, mainly remote repositories through HTTP and the Acquire system is responsible to fetch all `Item` required by APT in the most effective way. It uses for example a pool of workers to speed up the downloading and is able to test for diffs files before downloading full index files and apply them.
+<2> Most APT commands tries to acquire a lock to prevent two processes using the lib APT to run at the same time. The lock file is `/var/lib/apt/lists/lock` but other lock files exists for example to update the APT cache.
+<3> The method `GetIndexes()` creates new items to download `InRelease` files using the Acquire system.
+<4> The function `AcquireUpdate()` collects the results from the `Fetcher` and update the cache.
+
+
+[start=3]
+. *Read the package lists and build the dependency tree.*
+
+[source,c++]
+----
+// Rebuild the cache.
+pkgCacheFile::RemoveCaches();
+if (Cache.BuildCaches(false) == false)
+   return false;
+----
+
+The method `pkgCacheFile::BuildCaches` calls the method `BuildSourceList` we covered in the previous step, and then delegates to the method `pkgCacheGenerator::MakeStatusCache` for the effective cache initialization:
+
+[source,c++]
+.apt-pkg/pkgcachegen.cc
+----
+bool pkgCacheGenerator::MakeStatusCache(pkgSourceList &List,OpProgress *Progress,
+                        MMap **OutMap,pkgCache **OutCache, bool)
+{
+   std::vector<pkgIndexFile *> Files;
+   if (_system->AddStatusFiles(Files) == false)
+      return false;
+
+   // Decide if we can write to the files..
+   string const CacheFileName = _config->FindFile("Dir::Cache::pkgcache"); // <1>
+   string const SrcCacheFileName = _config->FindFile("Dir::Cache::srcpkgcache"); // <1>
+
+   if (Progress != NULL)
+      Progress->OverallProgress(0,1,1,_("Reading package lists"));
+
+   bool pkgcache_fine = false;
+   bool srcpkgcache_fine = false;
+
+   FileFd CacheFile;
+   if (CheckValidity(CacheFile, CacheFileName, List, Files.begin(), Files.end()) // <2>
+   {
+      pkgcache_fine = true;
+      srcpkgcache_fine = true;
+   }
+
+   FileFd SrcCacheFile;
+   if (pkgcache_fine == false)
+   {
+      if (CheckValidity(SrcCacheFile, SrcCacheFileName, List, Files.end(), Files.end()) == true) // <2>
+      {
+         srcpkgcache_fine = true;
+      }
+   }
+
+   if (srcpkgcache_fine == true && pkgcache_fine == true)
+   {
+      if (Progress != NULL)
+         Progress->OverallProgress(1,1,1,_("Reading package lists"));
+      return true; // <3>
+   }
+
+   bool Writeable = false;
+   if (srcpkgcache_fine == false || pkgcache_fine == false)
+   {
+      if (CacheFileName.empty() == false)
+         Writeable = access(flNotFile(CacheFileName).c_str(),W_OK) == 0;
+      else if (SrcCacheFileName.empty() == false)
+         Writeable = access(flNotFile(SrcCacheFileName).c_str(),W_OK) == 0;
+   }
+
+   // At this point we know we need to construct something, so get storage ready
+   std::unique_ptr<DynamicMMap> Map(CreateDynamicMMap(NULL, 0));
+
+   std::unique_ptr<pkgCacheGenerator> Gen{nullptr};
+   map_filesize_t CurrentSize = 0;
+   map_filesize_t TotalSize = 0;
+
+   if (srcpkgcache_fine == true && pkgcache_fine == false)
+   {
+      if (loadBackMMapFromFile(Gen, Map, Progress, SrcCacheFile) == false)
+         return false;
+      srcpkgcache_fine = true;
+      TotalSize += ComputeSize(NULL, Files.begin(), Files.end());
+   }
+   else if (srcpkgcache_fine == false)
+   {
+      Gen.reset(new pkgCacheGenerator(Map.get(),Progress));
+      if (Gen->Start() == false)
+         return false;
+
+      TotalSize += ComputeSize(&List, Files.begin(),Files.end());
+      if (BuildCache(*Gen, Progress, CurrentSize, TotalSize, &List,
+               Files.end(),Files.end()) == false)
+         return false;
+
+      if (Writeable == true && SrcCacheFileName.empty() == false)
+         if (writeBackMMapToFile(Gen.get(), Map.get(), SrcCacheFileName) == false)
+            return false;
+   }
+
+   if (pkgcache_fine == false)
+   {
+      if (BuildCache(*Gen, Progress, CurrentSize, TotalSize, NULL,
+               Files.begin(), Files.end()) == false)
+         return false;
+
+      if (Writeable == true && CacheFileName.empty() == false)
+         if (writeBackMMapToFile(Gen.get(), Map.get(), CacheFileName) == false)
+            return false;
+   }
+
+   if (OutMap != nullptr)
+      *OutMap = Map.release();
+
+   return true;
+}
+----
+<1> The cache is stored in `/var/cache/apt/pkgcache.bin` and `/var/cache/apt/srcpkgcache.bin`. There are binary files that will be loaded in memory using the `mmap()` system call.
+<2> The method `CheckValidity` loads each cache file in memory and checks that they are up-to-date, by verifying that every required index files for every source exist.
+<3> If both cache files are correct, we can returns immediately. Otherwise, we need to rebuild from scratch only the caches that are not fine.
+
+
+[NOTE]
+.What You Need to Know About APT Cache files
+====
+The APT Cache files are two binary files `/var/cache/apt/pkgcache.bin` and `/var/cache/apt/srcpkgcache.bin`.
+
+Basically, these cache files contains all index files (`InRelease`, `Packages`, `Sources`, and `Translations`) present in the APT repositories present in the list of sources (`/etc/apt/source.list` and `/etc/apt/source.list.d/`). The only difference between these two files is that the file `pkgcache.bin` appends also the content of `/var/lib/dpkg/status`.
+
+Therefore, every time a new index file is retrieved by APT or when the Dpkg status file changes, the APT cache must be updated too.
+
+The format of the cache files is optimized for the sole usage of APT and the main motivations is to speed up the loading of the cache in memory, and to reduce the memory usage of the full list of all available packages. Therefore, the cache does not include all fields present in index files and uses a binary format, which means you cannot read the files using your text editor. For example, `Header is the first struct copied and starts like this:
+
+[source]
+----
+struct Header
+{
+   // Signature information
+   unsigned long Signature; # 0x98FE76DC
+   short MajorVersion;      # 0
+   short MinorVersion;      # 2
+   ...
+}
+----
+
+Field names are logically omitted and only values (sometimes converted to enums like the status string `installed` that becomes `6` in the binary file) are appended in successive order as confirmed by the command `xxd` which dump a file in hexadecimal:
+
+[source,sh]
+----
+$ xxd /var/cache/apt/pkgcache.bin  | head -1
+00000000: dc76 fe98 1000 0000 a802 1c2c 4038 5818  .v.........,@8X.
+#
+#  long = 4 bytes, short = 2 bytes
+#  amd64 = little endian
+#
+#        dc --------+
+#        76 ------+ |
+#        fe ----+ |         10 ---+           00 ---+
+#        98 --+ | | |       00 -+ |           00 -+ |
+#             | | | |           | |               | |
+#  Signature: 98FE76DC   Minor: 0010 = 2   Major: 0000 = 0
+----
+
+When APT is launched, these two files are loaded in memory using the `mmap()` system call and the rest of the code interacts with an instance of the class `pkgCache` and another instance of the class `pkgDepCache`. Both supports iterators to traverse the loaded content without bothering with array indices. In fact, `pkgDepCache` wraps `pkgCache` to add state informations about the packages on the system so that `pkgCache` is mostly readonly.
+
+The code to build these instances is not covered in the article. Have a look at the files `apt-pkg/pkgcache.h`, `apt-pkg/cachefile.h` and `apt-pkg/pkgcachegen.h` if you are curious.
+
+*Further Documentation*: link:http://www.fifi.org/doc/libapt-pkg-doc/cache.html/ch1.html[APT Cache File Format]
+====
+
+
+We will not go deeper into the APT code. We have already inspected the structure of the different index files (`InRelease`, `Packages`, ...). The end result is available from `pkgCacheFile.GetPkgCache()` and `pkgCacheFile.GetDepCache()`. All APT commands rely on them.
+
+Here is a preview to show how much information in available in the class `pkgCache`:
+
+[source,c++]
+.apt-pkg/pkgcache.h
+----
+class pkgCache
+{
+   public:
+
+   struct Header; // The size and count of each following properties
+                  // required to jump to the index in the binary format.
+
+   struct Group; // Packages with the same name form a group, so we have
+                 // a simple way to access a package built for different architectures.
+                 // Groups are also used to iterate over all binaries produced by a source package.
+   struct Package; // A single package with all the available versions and the possible installed version.
+   struct ReleaseFile; // Release index file.
+   struct PackageFile; // Packages index file.
+   struct Version; // A single version of a package with the list of dependencies
+                   // and the list of files in this package.
+   struct Description; // Translation of a single version of a package
+   struct DependencyData; // Information for a single dependency (the version, the type, the package reference, ...)
+
+   // Iterators
+   class GrpIterator;
+   class PkgIterator;
+   class VerIterator;
+   class DescIterator;
+   class DepIterator;
+   class RlsFileIterator;
+   class PkgFileIterator;
+
+   class Namespace;
+
+   public:
+
+   // Pointers to the arrays of items
+   Header *HeaderP;
+   Group *GrpP;
+   Package *PkgP;
+   DescFile *DescFileP;
+   ReleaseFile *RlsFileP; // All Release files used to build the cache
+   PackageFile *PkgFileP; // All Packages files used to build the cache
+   Version *VerP;
+   Description *DescP;
+   DependencyData *DepDataP;
+
+   // Accessors
+   GrpIterator FindGrp(APT::StringView Name);
+   PkgIterator FindPkg(APT::StringView Name);
+
+   inline GrpIterator GrpBegin();
+   inline GrpIterator GrpEnd();
+   inline PkgIterator PkgBegin();
+   inline PkgIterator PkgEnd();
+   inline PkgFileIterator FileBegin();
+   inline PkgFileIterator FileEnd();
+   inline RlsFileIterator RlsFileBegin();
+   inline RlsFileIterator RlsFileEnd();
+};
+
+
+struct pkgCache::Package
+{
+   /** \brief Architecture of the package */
+   map_stringitem_t Arch;
+   /** \brief List of versions sorted from highest version to lowest version */
+   map_pointer<Version> VersionList;
+   /** \brief index to the installed version */
+   map_pointer<Version> CurrentVer;
+   /** \brief index of the group this package belongs to */
+   map_pointer<pkgCache::Group> Group;
+
+   /** \brief List of all dependencies on this package */
+   map_pointer<Dependency> RevDepends;
+   /** \brief List of all "packages" this package provide */
+   map_pointer<Provides> ProvidesList;
+
+   // Install/Remove/Purge etc
+   /** \brief state that the user wishes the package to be in */
+   map_number_t SelectedState;     // What
+   /** \brief installation state of the package */
+   map_number_t InstState;         // Flags
+   /** \brief indicates if the package is installed */
+   map_number_t CurrentState;      // State
+};
+
+struct pkgCache::ReleaseFile
+{
+   /** \brief physical disk file that this ReleaseFile represents */
+   map_stringitem_t FileName;
+   map_stringitem_t Archive;
+   map_stringitem_t Codename;
+   map_stringitem_t Version;
+   map_stringitem_t Origin;
+   map_stringitem_t Label;
+   /** \brief The site the index file was fetched from */
+   map_stringitem_t Site;
+};
+
+struct pkgCache::PackageFile
+{
+   /** \brief physical disk file that this PackageFile represents */
+   map_stringitem_t FileName;
+   /** \brief the release information to keep record of which
+    version belongs to which release e.g. for pinning. */
+   map_pointer<ReleaseFile> Release;
+
+   map_stringitem_t Component;
+   map_stringitem_t Architecture;
+};
+
+struct pkgCache::Version
+{
+   /** \brief complete version string */
+   map_stringitem_t VerStr;
+   /** \brief section this version is filled in */
+   map_stringitem_t Section;
+   /** \brief source package name this version comes from
+      Always contains the name, even if it is the same as the binary name */
+   map_stringitem_t SourcePkgName;
+   /** \brief source version this version comes from
+      Always contains the version string, even if it is the same as the binary version */
+   map_stringitem_t SourceVerStr;
+
+   /** \brief references all the PackageFile's that this version came from
+
+       FileList can be used to determine what distribution(s) the Version
+       applies to. If FileList is 0 then this is a blank version.
+       The structure should also have a 0 in all other fields excluding
+       pkgCache::Version::VerStr and Possibly pkgCache::Version::NextVer. */
+   map_pointer<VerFile> FileList;
+   /** \brief base of the dependency list */
+   map_pointer<Dependency> DependsList;
+   /** \brief links to the owning package
+
+       This allows reverse dependencies to determine the package */
+   map_pointer<Package> ParentPkg;
+   /** \brief list of pkgCache::Provides */
+   map_pointer<Provides> ProvidesList;
+};
+
+struct pkgCache::DependencyData
+{
+   /** \brief string of the version the dependency is applied against */
+   map_stringitem_t Version;
+   /** \brief index of the package this depends applies to
+
+       The generator will - if the package does not already exist -
+       create a blank (no version records) package. */
+   map_pointer<pkgCache::Package> Package;
+
+   /** \brief Dependency type - Depends, Recommends, Conflicts, etc */
+   map_number_t Type;
+   /** \brief comparison operator specified on the depends line
+
+       If the high bit is set then it is a logical OR with the previous record. */
+   map_flags_t CompareOp;
+};
+
+// Other structs are omitted for brievity.
+----
+
+Here is a preview to show how much information in available in the class `pkgDepCache`:
+
+[source,c++]
+.apt-pkg/depcache.h
+----
+class pkgDepCache
+{
+   public:
+
+   enum ModeList {ModeDelete = 0, ModeKeep = 1, ModeInstall = 2, ModeGarbage = 3};
+
+   struct StateCache
+   {
+      // text versions of the two version fields
+      const char *CandVersion;
+      const char *CurVersion;
+
+      // Pointer to the candidate install version.
+      Version *CandidateVer;
+
+      // Pointer to the install version.
+      Version *InstallVer;
+
+      // Various tree indicators
+      signed char Status;              // -1,0,1,2
+      unsigned char Mode;              // ModeList
+
+      // Various test members for the current status of the package
+      inline bool Keep() const {return Mode == ModeKeep;};
+      inline bool Upgrade() const {return Status > 0 && Mode == ModeInstall;};
+      inline bool Upgradable() const {return Status >= 1 && CandidateVer != NULL;};
+      inline bool Downgrade() const {return Status < 0 && Mode == ModeInstall;};
+      inline bool Held() const {return Status != 0 && Keep();};
+      // ...
+   };
+
+   protected:
+
+   // State information
+   pkgCache *Cache;
+   StateCache *PkgState;
+
+   public:
+
+   // Accessors
+   inline StateCache &operator [](PkgIterator const &I) {return PkgState[I->ID];};
+   inline StateCache &operator [](PkgIterator const &I) const {return PkgState[I->ID];};
+
+   // read persistent states
+   bool readStateFile(OpProgress * const prog);
+   bool writeStateFile(OpProgress * const prog, bool const InstalledOnly=true);
+
+   bool Init(OpProgress * const Prog);
+   // Generate all state information
+   void Update(OpProgress * const Prog = 0);
+
+   pkgDepCache(pkgCache * const Cache,Policy * const Plcy = 0);
+   virtual ~pkgDepCache();
+};
+----
+
+
+[start=4]
+. *Display statistics about package upgrades.*
+
+[source,c++]
+----
+// show basic stats (if the user whishes)
+if (_config->FindB("APT::Cmd::Show-Update-Stats", false) == true)
+{
+   int upgradable = 0;
+   if (Cache.Open(false) == false)
+      return false;
+   for (pkgCache::PkgIterator I = Cache->PkgBegin(); I.end() != true; ++I)
+   {
+      pkgDepCache::StateCache &state = Cache[I]; // <1>
+      if (I->CurrentVer != 0 && state.Upgradable() && state.CandidateVer != NULL) // <2>
+         upgradable++;
+   }
+   const char *msg = P_(
+      "%i package can be upgraded. Run 'apt list --upgradable' to see it.\n",
+      "%i packages can be upgraded. Run 'apt list --upgradable' to see them.\n",
+      upgradable); // <3>
+   if (upgradable == 0)
+      c1out << _("All packages are up to date.") << std::endl;
+   else
+      ioprintf(c1out, msg, upgradable);
+}
+----
+<1> The operator `[]` is overloaded in `pkgDepCache` to return `PkgState[I->ID]`, which is a struct `StateCache` containing the current installed and candidate versions.
+<2> The method `Upgradable()` simply reads the information determined at the previous step.
+<3> The macro `P_` is defined by `define P_(msg,plural,n) (n == 1 ? msg : plural)`
+
+As we can observe, most APT commands traverse the caches to extract the relevant information. For the command `apt update`, it means using the iterator over `Package` and inspecting the struct `StateCache` to know if a package is upgradable, and incrementing a counter if that is the case.
+
