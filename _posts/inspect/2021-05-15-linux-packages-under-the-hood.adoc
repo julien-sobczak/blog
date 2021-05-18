@@ -1,0 +1,92 @@
+---
+layout: post-inspect
+title: "Linux Packages Under The Hood"
+subtitle: "What happens when you install a Debian package on your machine?"
+author: Julien Sobczak
+date: '2021-05-15'
+category: inspect
+subject: Linux Packages
+excerpt: >
+  A Linux package is a bundle of files that your package manager knows how to unpack on your system. Installing packages is something you are doing regularly and I suggest that we are looking under the hood to understand the steps between the creation and the installation of a Linux package.
+excerpt_only: true
+---
+
+:page-liquid:
+:tabsize: 4
+
+[NOTE]
+.What You Will Learn
+====
+* How to create an archive manually?
+** How to create a simple package to install a Go binary using the `dpkg` command?
+** What is the format of the archive? How to check its content?
+** How to create the same package using standard Unix tools?
+** *Case study*: How to create a package in Go?
+* What happens when you install a package using `dpkg`?
+** What contains the database?
+** How files are copied to the host?
+** What changed in the database?
+** How to check that the package has been installed?
+** *Case study*: How to install a package like `dpkg` in Go?
+* What happens when you install a package using `apt`?
+** How does the command `apt` know where to search for packages?
+** What is the format of a repository?
+** What does the command `apt update`?
+** How `apt` uses `dpkg` under the hood?
+** *Case study*: How to install a package like `apt` in Go?
+====
+
+[.lead]
+A Linux package is a bundle of files that your package manager knows how to unpack on your system. Installing packages is something you are doing regularly and I suggest that we are looking under the hood to understand the steps between the creation and the installation of a Linux package.
+
+[NOTE]
+.Prerequisites
+====
+I assume you have already installed many Linux packages. A basic comprehension of the languages C and C++ is required and being familiar with the Go language will be helpful to follow the case studies.
+====
+
+== Table of Contents
+
+[.compact]
+* xref:sect-part1[How to create an archive manually?]
+** What you need to know about xref:wynk-debian-package-format[the Debian package format], xref:wynk-dpkg[the `dpkg` command], xref:wynk-deb822[the DEB822 format].
+** The command: xref:cmd-dpkg-build[`dpkg --build`]
+** xref:sect-part1-go[The implementation in Go]
+* xref:sect-part2[What happens when you install a package using `dpkg`?]
+** What you need to know about xref:wynk-conffiles[conffiles], xref:wynk-dpkg-database[the Dpkg database].
+** The command: xref:cmd-dpkg-i[`dpkg -i`]
+** xref:sect-part2-go[The implementation in Go]
+* xref:sect-part3[What happens when you install a package using `dpkg`?]
+** What you need to know about xref:wynk-apt-get-aptitude[`apt`, `apt-get`, `aptitude`], xref:wynk-apt-configuration-files[configuration files], xref:wynk-apt-configuration-options[configuration options], xref:wynk-source-lists[source lists], xref:wynk-repositories[repositories], xref:wynk-apt-diffs[diffs], xref:wynk-dir-apt-cache[`/var/cache/apt/`], xref:wynk-dir-apt-lib[`/var/lib/apt/`], xref:wynk-apt-cache-files[cache files].
+** The commands: xref:cmd-apt-update[`apt update`], xref:cmd-apt-list[`apt list`], xref:cmd-apt-install[`apt install`]
+** xref:sect-part3-go[The implementation in Go]
+
+[NOTE.tip]
+.This post is long, really long.
+====
+The repositories `dpkg` and `apt` contain more than 100,000 lines of code.
+
+*When trying to explain how code works, there is a though balance to find between showing the code untouched, and simplifying it at the risk of denaturing it.* In this post, I decide to use both approaches. I present the original code slightly annotated, removing only debug messages and the support of command flags not covered in this article. I also present a minimal rewrite of these programs in Go richly commented. Overall, that represents a lot of code, but as developers, we are used to skim over large codebase, and I hope you will find your way.
+
+In addition, there are many asides to explain some Dpkg and Apt features that you can safely skip if you are already familiar with the tools.
+
+Please remember that if you find the post too long to read, just imagine how long it was to write it 😁. *Happy reading!*
+====
+
+
+include::./2021-05-15-linux-packages-under-the-hood/part-1.adoc[]
+include::./2021-05-15-linux-packages-under-the-hood/part-2.adoc[]
+include::./2021-05-15-linux-packages-under-the-hood/part-3.adoc[]
+
+
+== "One" Last Word
+
+Linux packages are just archives containing files to extract into a different system. The problem is trivial but the evil always comes from details.
+
+In this article, we have glimpsed at some of the challenges that a package manager must address. Packages use others packages which means the package manager must face one of the most difficult problems in computing, link:https://en.wikipedia.org/wiki/Dependency_hell[dependency management]. Despite that, Dpkg and Apt are still approachable programs.
+
+We wrote basic versions from scratch using only a few hundreds of lines of Go code. The biggest obstacle was that the commands `dpkg` and `apt` are interactive and try do too much to avoid to rely on the user to fix problems, which explains why the sum of the two programs represents approximatively 100,000 lines of C and C++ code.
+
+If you are managing a large pool of servers like a datacenter, reimplementing your own package manager can be interesting. For example, you could centralize all local databases to ensure that all machines share the same state, or you can take corrective actions like excluding a server from the pool when an upgrade ends in a bad state. Google provides a great example of application. They decided to implement their own package management system. “Any package change is guaranteed to succeed, or the machine is rolled back completely to the previous state. If the rollback fails, the machine is sent through our repairs process for reinstallation and potential hardware replacement. This approach allows us to eliminate much of the complexity of the package states.”footnote:[Building Secure and Reliable Systems, O'Reilly, Chapter 9 - Design for Recovery, Footnote 18]. The decision was surely not obvious, but the benefits are for sure obvious.
+
+Implementing a package manager from scratch can be intimidating, but as we have seen in this article, the reality is not so bad, especially if we consider the long list of features that Apt supports that are not useful when managing a large number of homogenous machines in an automated way.

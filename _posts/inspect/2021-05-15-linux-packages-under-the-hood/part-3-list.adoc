@@ -1,6 +1,8 @@
+
+[[cmd-apt-list]]
 === `apt list`
 
-Here is a simplified.footnote:simplified[TODO] version of the command `apt list`. This version simply omits the optional argument to filter the list of results.
+Here is the code of the command `apt list`. This version omits optional arguments that are used to filter the list of results.
 
 [source,c++]
 ----
@@ -10,13 +12,16 @@ bool DoList(CommandLine &Cmd)
    pkgCache * const Cache = CacheFile.GetPkgCache(); // <1>
    pkgRecords records(CacheFile);
 
-   std::string format = "${color:highlight}${Package}${color:neutral}/${Origin} ${Version} ${Architecture}${ }${apt:Status}"; // <2>
+   std::string format = "${color:highlight}${Package}" +
+      "${color:neutral}/${Origin} ${Version} " +
+      "${Architecture}${ }${apt:Status}"; // <2>
 
    std::list<pkgCache::VerIterator> bag; // <3>
 
    GetVersionSet(CacheFile, &bag);
    std::map<std::string, std::string> output_map;
-   for (std::list<pkgCache::VerIterator>::iterator V = bag.begin(); V != bag.end(); ++V)
+   for (std::list<pkgCache::VerIterator>::iterator V = bag.begin();
+          V != bag.end(); ++V)
    {
       std::stringstream outs;
       ListSingleVersion(CacheFile, records, V, outs, format);
@@ -32,11 +37,11 @@ bool DoList(CommandLine &Cmd)
    return true;
 }
 ----
-<1> The function `CacheFile.GetPkgCache()` delegates to the method `BuildCaches()` we covered in the previous section about `apt-update`. This method is responsible to build the APT cache.
+<1> The function `CacheFile.GetPkgCache()` delegates to the method `BuildCaches()` we covered in the previous section about `apt update`. This method is responsible to build the APT cache.
 <2> Concrete values will be replaced in the function `ListSingleVersion` by replacing `${Package}`, `${Origin}`, … by their real values.
-<3> The real implementation uses the type `LocalitySortedVersionSet` which is a set using caching to sort packages based on their names in the `Translation` files of the user locale.
+<3> The real implementation uses the type `LocalitySortedVersionSet` which is a list ordering packages based on their names in the `Translation` files of the user locale.
 
-Like for the `apt update` command, once the cache is available, the remaining code is simply using the information present in the cache. In this case, the search of packages to display happens in the function `GetVersionSet`:
+Like for the `apt update` command, the code is simply using the information present in the APT cache. In this case, the search of packages happens in the function `GetVersionSet`:
 
 [source,c++]
 .apt-private/private-cacheset.cc
@@ -92,7 +97,8 @@ void ListSingleVersion(pkgCacheFile &CacheFile, pkgRecords &records,        /*{{
 
    std::string output = format; // <1>
 
-   output = SubstVar(output, "${db::Status-Abbrev}", GetFlagsStr(CacheFile, P));
+   output = SubstVar(output, "${db::Status-Abbrev}",
+                     GetFlagsStr(CacheFile, P));
    output = SubstVar(output, "${Package}", P.Name());
    std::string const ArchStr = GetArchitecture(CacheFile, P);
    output = SubstVar(output, "${Architecture}", ArchStr);
@@ -128,10 +134,14 @@ void ListSingleVersion(pkgCacheFile &CacheFile, pkgRecords &records,        /*{{
    else if (V.ParentPkg()->CurrentState == pkgCache::State::ConfigFiles)
       StatusStr = _("[residual-config]");
    output = SubstVar(output, "${apt:Status}", StatusStr);
-   output = SubstVar(output, "${color:highlight}", _config->Find("APT::Color::Highlight", ""));
-   output = SubstVar(output, "${color:neutral}", _config->Find("APT::Color::Neutral", ""));
-   output = SubstVar(output, "${Description}", GetShortDescription(CacheFile, records, P));
-   output = SubstVar(output, "${LongDescription}", GetLongDescription(CacheFile, records, P));
+   output = SubstVar(output, "${color:highlight}",
+                     _config->Find("APT::Color::Highlight", ""));
+   output = SubstVar(output, "${color:neutral}",
+                     _config->Find("APT::Color::Neutral", ""));
+   output = SubstVar(output, "${Description}",
+                     GetShortDescription(CacheFile, records, P));
+   output = SubstVar(output, "${LongDescription}",
+                     GetLongDescription(CacheFile, records, P));
    output = SubstVar(output, "${ }${ }", "${ }"); // <3>
    output = SubstVar(output, "${ }\n", "\n"); // <3>
    output = SubstVar(output, "${ }", " "); // <3>
@@ -140,7 +150,8 @@ void ListSingleVersion(pkgCacheFile &CacheFile, pkgRecords &records,        /*{{
 }
 ----
 <1> The function ignores which fields are present in the output format and thus will try to replace them all. If a field is missing, the replacement will do nothing.
-<2> The code uses the state information present in `depPkgCache` to determine if the package is installed, is upgradable, and so on.
-<3> The code ensures no remaining braces is left. This must not happen.
+<2> The code uses the state information present in `depPkgCache` to determine if the package is installed, or upgradable, and so on.
+<3> The code ensures no remaining braces is left.
 
 We will close the APT section by covering the most useful command.
+

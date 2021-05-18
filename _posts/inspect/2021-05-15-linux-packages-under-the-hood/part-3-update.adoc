@@ -1,0 +1,962 @@
+
+[[cmd-apt-update]]
+=== `apt update`
+
+Here is the entry point when running the command `apt update`:
+
+[source,c++]
+.apt-private/private-update.cc
+----
+bool DoUpdate(CommandLine &CmdL)
+{
+   CacheFile Cache;
+
+   // Covered in step 1
+   // Get the source list
+   if (Cache.BuildSourceList() == false)
+      return false;
+   pkgSourceList *List = Cache.GetSourceList();
+
+   // Covered in step 2
+   // do the work
+   AcqTextStatus Stat(std::cout, ScreenWidth,_config->FindI("quiet",0));
+   ListUpdate(Stat, *List);
+
+   // Covered in step 3
+   // Rebuild the cache.
+   pkgCacheFile::RemoveCaches();
+   if (Cache.BuildCaches(false) == false)
+      return false;
+
+   // Covered in step 4
+   // show basic stats (if the user whishes)
+   if (_config->FindB("APT::Cmd::Show-Update-Stats", false) == true)
+   {
+      int upgradable = 0;
+      if (Cache.Open(false) == false)
+         return false;
+      for (pkgCache::PkgIterator I = Cache->PkgBegin(); I.end() != true; ++I)
+      {
+         pkgDepCache::StateCache &state = Cache[I];
+         if (I->CurrentVer != 0 && state.Upgradable() && state.CandidateVer != NULL)
+            upgradable++;
+      }
+      const char *msg = P_(
+         "%i package can be upgraded. Run 'apt list --upgradable' to see it.\n",
+         "%i packages can be upgraded. Run 'apt list --upgradable' to see them.\n",
+         upgradable);
+      if (upgradable == 0)
+         c1out << _("All packages are up to date.") << std::endl;
+      else
+         ioprintf(c1out, msg, upgradable);
+   }
+
+   return true;
+}
+----
+
+The command is divided in four steps that we will cover separately:
+
+[start=1]
+. *Read the `sources.list` and `sources.list.d/+++*+++` files*.
+
+[source,c++]
+----
+// Get the source list
+if (Cache.BuildSourceList() == false)
+   return false;
+pkgSourceList *List = Cache.GetSourceList();
+----
+
+[[wynk-source-lists]]
+[NOTE]
+.What You Need to Know About Source Lists
+====
+Apt downloads packages from one or more software repositories, which are often remote servers. The precise list of repositories is determined by the file `/etc/apt/sources.list` and the ones inside `/etc/apt/sources.list.d`. Two formats are supported: one source per line (the widespread one-line style) or multiline stanzas defining one or more sources per stanza (the newer deb822 style).
+
+Example using the old format:
+
+[source]
+----
+deb http://us.archive.ubuntu.com/ubuntu focal main restricted
+deb http://security.ubuntu.com/ubuntu focal-security main restricted
+deb http://us.archive.ubuntu.com/ubuntu focal-updates main restricted
+----
+
+Example using the new format:
+
+[source,deb822]
+----
+Types: deb
+URIs: http://us.archive.ubuntu.com/ubuntu
+Suites: focal focal-updates
+Components: main restricted
+
+Types: deb
+URIs: http://security.ubuntu.com/ubuntu
+Suites: focal-security
+Components: main restricted
+----
+
+We will ignore the new DEB 822 format in this article.
+
+_Further documentation_: link:http://manpages.ubuntu.com/manpages/focal/man5/sources.list.5.html[`man 5 sources.list`]
+====
+
+The class `pkgSourceList` represents the list of configured sources and is defined like this:
+
+[source,c++]
+.apt-pkg/sourcelist.h
+----
+class pkgSourceList
+{
+   public:
+
+   typedef std::vector<metaIndex *>::const_iterator const_iterator;
+
+   protected:
+
+   std::vector<metaIndex *> SrcList;
+
+   public:
+
+   void Reset();
+   bool ReadMainList();
+   bool Read(std::string const &File);
+
+   // List accessors
+   inline const_iterator begin() const {return SrcList.begin();};
+   inline const_iterator end() const {return SrcList.end();};
+   inline unsigned int size() const {return SrcList.size();};
+   inline bool empty() const {return SrcList.empty();};
+
+   bool FindIndex(pkgCache::PkgFileIterator File,
+                  pkgIndexFile *&Found) const;
+   bool GetIndexes(pkgAcquire *Owner, bool GetAll=false) const;
+
+   pkgSourceList();
+   virtual ~pkgSourceList();
+};
+----
+
+The list is initialized by the method `BuildSourceList()`:
+
+[source,c++]
+.apt-pkg/cachefile.cc
+----
+bool pkgCacheFile::BuildSourceList(OpProgress * /*Progress*/)
+{
+   std::unique_ptr<pkgSourceList> SrcList;
+   SrcList.reset(new pkgSourceList());
+   if (SrcList->ReadMainList() == false)
+      return _error->Error(_("The list of sources could not be read."));
+   this->SrcList = SrcList.release();
+   return true;
+}
+----
+
+The method `ReadMainList()` is used to read the sources.list files:
+
+[source,c++]
+.apt-pkg/sourcelist.cc
+----
+bool pkgSourceList::ReadMainList()
+{
+   Reset();
+   string Main = _config->FindFile("Dir::Etc::sourcelist", "sources.list");
+   string Parts = _config->FindDir("Dir::Etc::sourceparts", "sources.list.d");
+
+   _error->PushToStack();
+   if (RealFileExists(Main) == true)
+      ReadAppend(Main); // <1>
+   if (DirectoryExists(Parts) == true)
+      ReadSourceDir(Parts); // <1>
+
+   auto good = _error->PendingError() == false;
+   _error->MergeWithStack();
+   return good;
+}
+----
+<1> The `Read*` methods parse the sources files. We omit the parsing code for brievity but both parsers pushes a new instance of `debReleaseIndex` in the `SrcList`.
+
+
+[start=2]
+. *Fetch index files from each repository (`InRelease`, `Packages`, ...).*
+
+[source,c++]
+----
+// do the work
+AcqTextStatus Stat(std::cout, ScreenWidth,_config->FindI("quiet",0)); // <1>
+ListUpdate(Stat, *List);
+----
+<1> `AcqTextStatus` is used to report progress of the file downloading.
+
+
+[[wynk-repositories]]
+[NOTE]
+.What You Need to Know About Repositories
+====
+A repository is a set of Debian binary or source packages organized in a special directory tree along various additional files--checksums, signatures, translations, ... APT downloads some these files to install a package on your system.
+
+Ex: `deb https://deb.debian.org/debian stable main contrib non-free`
+
+* `deb` is used for *binary packages*, `deb-src` for *source packages*.
+* `https://deb.debian.org/debian` specifies the root of the *repository*.
+* `stable` is the distribution, which is commonly a *suite* (`stable`, `oldstable`, `testing`, `unstable`), which is an alias for a Debian *codename* (`wheezy`, `jessie`, `stretch`), which is based on Toy Story characters.
+* `main contrib non-free` are the three *component* types and indicate the licensing terms of the software they contain.
+
+Here is a preview of files tree for this repository:
+
+[source]
+----
+https://deb.debian.org/debian
+└── dists/
+    |── Debian9.13/
+    |── Debian10.9/
+    |   ├── ChangeLog
+    |   ├── InRelease  # Same as Release + Release.gpg
+    |   |              # (recommended to have only 1 file to download)
+    |   ├── Release  # Lists the index files for this distribution
+    |   |            # with their checkums
+    |   ├── Release.gpg
+    |   ├── contrib/
+    |   ├── main/
+    |   │   └── binary-all/
+    |   │   |   |── Packages.gz
+    |   │   |   |── Packages.xz  # Several compression formats are accepted.
+    |   |   |   |                # xz compression is required.
+    |   │   |   |── Release  # Basic metadata about this directory.
+    |   |   |   |            # Not comparable with the main Release file.
+    |   │   |── binary-amd64/
+    |   │   |── ...
+    |   │   |── content-all.gz    # Index containing the list
+    |   |   |── content-amd64.gz  # of all files in package archives
+    |   │   |── content-arm64.gz  # and their corresponding package archive.
+    |   │   |── ...
+    |   |   |── i18n/  # Translations of Packages files
+    |   |   └── source/  # We ignore source packags in this article
+    |   │       |──  Release
+    |   │       |──  Sources.gz
+    |   │       |──  Sources.xz
+    |   └── non-free/
+    |── bullseye/  # Future Debian 11
+    |── buster/    # Symlink to Debian10.9
+    |── stable/    # Symlink to buster
+    |── stretch/   # Symlink to Debian9.13
+    └── testing/   # Symlink to bullseye
+----
+
+And now the explanations.
+
+The root directory contains a directory `dists/` which in turn has a directory for each release and suite, the latter usually symlinks to the former. Each release subdirectory contains a signed `Release` file and a directory for each component. Inside these are directories for the different architectures, named `binary-<arch>` and `sources`. And in these are files `Packages` and `Sources` that are text files (in DEB 822 format and often compressed) containing the metadata of available packages.
+
+Example of a `Packages` file:
+
+[source]
+.http://ftp.debian.org/debian/dists/Debian10.9/main/binary-amd64/Packages.gz
+----
+# 57849 binary packages declarations like this:
+Package: wget
+Version: 1.20.1-1.1
+Installed-Size: 3257
+Maintainer: Noël Köthe <noel@debian.org>
+Architecture: amd64
+Depends: libc6 (>= 2.28), libgnutls30 (>= 3.6.6), libidn2-0 (>= 0.6),
+  libnettle6, libpcre2-8-0 (>= 10.32), libpsl5 (>= 0.16.0),
+  libuuid1 (>= 2.16), zlib1g (>= 1:1.1.4)
+Recommends: ca-certificates
+Conflicts: wget-ssl
+Description: retrieves files from the web
+Multi-Arch: foreign
+Homepage: https://www.gnu.org/software/wget/
+Description-md5: 63a4a740bcd9e8e94bf661e4f1806e02
+Tag: implemented-in::c, interface::commandline, network::client,
+ protocol::ftp, protocol::http, protocol::ssl, role::program,
+ suite::gnu, use::downloading, works-with::file
+Section: web
+Priority: standard
+Filename: pool/main/w/wget/wget_1.20.1-1.1_amd64.deb
+Size: 901956
+MD5sum: a7e3faa711503bd9500650de8fc9835e
+SHA256: 3821cee0d331cf75ee79daff716f9d320f758f9dff3eaa6d6cf12bae9ef14306
+
+Package: libwget0
+Source: wget2
+Version: 1.99.1-2
+Installed-Size: 387
+Maintainer: Noël Köthe <noel@debian.org>
+Architecture: amd64
+Depends: libassuan0 (>= 2.0.1), libbrotli1 (>= 0.6.0), libbz2-1.0,
+  libc6 (>= 2.27), libgnutls30 (>= 3.5.10), libgpg-error0 (>= 1.14),
+  libgpgme11 (>= 1.1.2), libidn2-0 (>= 0.6),
+  liblzma5 (>= 5.1.1alpha+20120614), libnghttp2-14 (>= 1.3.0),
+  libpcre2-8-0 (>= 10.31), libpsl5 (>= 0.16.0), zlib1g (>= 1:1.1.4)
+Description: Download library for files and recursive websites
+Homepage: https://gitlab.com/gnuwget/wget2
+Description-md5: 3cb4ed03cbc78579a7e509e41156a73f
+Tag: role::shared-lib
+Section: libs
+Priority: optional
+Filename: pool/main/w/wget2/libwget0_1.99.1-2_amd64.deb
+Size: 146028
+MD5sum: 944b2824ee264e1b0cc0f91c1a86e6e2
+SHA256: 3bf97e4852e76dba5bf2261f4a949a445edda646d09d7d1175dccfdf77bdbc3f
+----
+
+Example of a `Sources` file:
+
+[source]
+.http://ftp.debian.org/debian/dists/Debian10.9/main/source/Sources.gz
+----
+# 28489 source packages declarations like this:
+Package: wget
+Binary: wget, wget-udeb
+Version: 1.20.1-1.1
+Maintainer: Noël Köthe <noel@debian.org>
+Build-Depends: debhelper (>> 11.0.0), pkg-config, gettext, texinfo,
+  libidn2-0-dev, uuid-dev, libpsl-dev, libpcre2-dev,
+  libgnutls28-dev (>= 3.3.15-5), automake,
+  libssl-dev (>= 0.9.8k), zlib1g-dev, dh-strip-nondeterminism
+Architecture: any
+Standards-Version: 4.3.0
+Format: 3.0 (quilt)
+Files:
+ 7a84dd8efb09001dcb9af1576b35992c 2092 wget_1.20.1-1.1.dsc
+ f6ebe9c7b375fc9832fb1b2028271fb7 4392853 wget_1.20.1.orig.tar.gz
+ e0ed66f143f4d81dd0f27a8f01a9c5c8 60872 wget_1.20.1-1.1.debian.tar.xz
+Checksums-Sha256:
+ b19...261 2092 wget_1.20.1-1.1.dsc
+ b78...1b3 4392853 wget_1.20.1.orig.tar.gz
+ 7ee...01e 60872 wget_1.20.1-1.1.debian.tar.xz
+Homepage: https://www.gnu.org/software/wget/
+Package-List:
+ wget deb web standard arch=any
+ wget-udeb udeb debian-installer optional arch=any
+Directory: pool/main/w/wget
+Priority: source
+Section: web
+----
+
+But still no `.deb` packages... We need to move to another directory at the root of the repository to find them:
+
+[source]
+----
+https://deb.debian.org/debian
+└── dists/
+    |── contrib/
+    |── main/
+    |   |── 0/
+    |   |── 1/
+    |   |── ...
+    |   |── 9/
+    |   |── a/
+    |   |── ...
+    |   |── w/
+    |       |── ....
+    |       └── wget/
+    |   |── ...
+    |   |── z/
+    |   |── liba/
+    |   |── ...
+    |   |── libw/
+    |   |   |── wget_1.21-1+b1_amd64.deb
+    |   |   |── wget_1.21-1.debian.tar.xz
+    |   |   |── wget_1.21-1.dsc
+    |   |   |── wget_1.21-1_arm64.deb
+    |   |   |── wget_1.21.orig.tar.gz
+    |   |   └── wget_1.21.orig.tar.gz.asc
+    |   |── ...
+    |   └── libz/
+    └── non-free/
+----
+
+The directory `pool/` has a directory for all the components, and in these are directories named `0`, ..., `9`, `a`, ... `z`, `liba`, ... , `libz`. And in these are directories named after the software packages they contain, and these directories finally contain the actual packages, i.e the `.deb` files.
+
+Notes:
+
+* The "single letter" directories are just a trick to avoid having too many entries in a single directory which is what many systems traditionally have performance problems with.
+* The `pool/` directory avoid file duplication as binary and source packages are stored only once even if used by many releases under `dists/`.
+* `Packages` and `Sources` index files are control files using a similar format as used in the first part of this article when creating our Debian archive package, with a special field `File` and `Directory` respectively, to link to the `pool/` directory.
+* `Release` is an index file in the DEB822 format but containing only a single document whose field names refers to the repository -- `Origin`, `Suite`, `Codename`, `Architectures` (plural), `Components` -- and whose field `MD5Sum` contains the checksums for all files in this repository.
+
+_Further documentation_: link:https://wiki.debian.org/DebianRepository[Debian Repository] and the more complete link:https://wiki.debian.org/DebianRepository/Format[Repository Format]
+====
+
+
+Here is the function `ListUpdate` that actively downloads index files from the repositories:
+
+[source,c++]
+.apt-pkg/update.cc
+----
+bool ListUpdate(pkgAcquireStatus &Stat,
+                pkgSourceList &List,
+                int PulseInterval)
+{
+   pkgAcquire Fetcher(&Stat); // <1>
+   if (Fetcher.GetLock(_config->FindDir("Dir::State::Lists")) == false) // <2>
+      return false;
+
+   // Populate it with the source selection
+   if (List.GetIndexes(&Fetcher) == false) // <3>
+         return false;
+
+   return AcquireUpdate(Fetcher, PulseInterval, true); // <4>
+}
+----
+<1> The class `pkgAcquire` is the main component of the Acquire subsystem. APT is responsible to retrieve the packages from various sources, mainly remote repositories through HTTP and the Acquire system is responsible to fetch all `Item` required by APT in the most efficient way. It uses for example a pool of workers to speed up the downloading and is able to test for xref:wynk-apt-diffs[diffs files] before downloading full index files and apply them.
+<2> Most APT commands tries to acquire a lock to prevent two processes using the lib APT to run at the same time. The lock file is `/var/lib/apt/lists/lock` but other lock files exists for example to update the APT cache.
+<3> The method `GetIndexes()` creates new items to download `InRelease` files using the Acquire system.
+<4> The function `AcquireUpdate()` collects the results from the `Fetcher` and update the cache.
+
+
+[[wynk-apt-diffs]]
+[NOTE]
+.What You Need to Know About APT Diffs
+====
+`Packages` files (and also some other indices files present in a Debian repository) can be relatively large. For example, the compressed `Package.xz` file for the architecture `amd64` and the component `main` of the stable Debian repository weights 8 MB. These files are typically retrieved when you run the command `apt update` and APT provides a solution to this problem.
+
+Indeed, a Debian repository can contains diff files (whose content are similar to the output of the command `diff`) along the standard files like `Packages`:
+
+[source]
+----
+https://deb.debian.org/debian
+└── dists/bullseye/main/binary-amd64
+    |── Packages.xz  7.8M
+    └── Packages.diff/
+        |── ... # The Debian official repository keeps ~30 days of diff files.
+        |── 2021-04-12-1400.57.gz        33
+        |── 2021-04-13-0200.48.gz        7.8K
+        |── 2021-04-13-1402.06.gz        637
+        |── 2021-04-13-2000.50.gz        660
+        |── 2021-04-14-0200.40.gz        2.7K
+        |── 2021-04-14-2000.54.gz        5.0K
+        |── 2021-04-15-0200.39.gz        3.8K
+        └── 2021-04-15-1400.39.gz        220
+----
+
+The `apt` command will try to retrieve these files and apply successives diffs on top of its previous index.
+====
+
+
+[start=3]
+. *Read the package lists and build the dependency tree.*
+
+[source,c++]
+----
+// Rebuild the cache.
+pkgCacheFile::RemoveCaches();
+if (Cache.BuildCaches(false) == false)
+   return false;
+----
+
+[[wynk-dir-apt-cache]]
+[NOTE]
+.What You Need to Know About `/var/cache/apt/`
+====
+This directory stores the latest version of the APT cache, used to speed up the execution of most commands:
+
+[source,sh]
+----
+$ tree /var/cache/apt/
+|-- archives  # Storage area for downloaded files
+|   |-- lock      # Prevent two APT processes to update the cache simultaneously
+|   |-- partial/  # Storage area for files in transit
+|   |-- apt-transport-https_2.0.5_all.deb  # Debian downloaded archives
+|   |__ ...                                # are kept for a configurable
+|   |-- tree_1.8.0-1_amd64.deb             # retention.
+|   `-- ...
+|-- pkgcache.bin     # Binary files loaded directly in C++
+|                    # using the mmap() system call.
+`-- srcpkgcache.bin  # Contains the local index files
+                     # and the archives file lists.
+                     # Those are low-level files used
+                     # for performance optimizations.
+----
+
+The APT Cache files under this directory (except the `lock` file) can be safely deleted using the command `apt clean` to reclaim disk space:
+
+[source,sh]
+----
+$ sudo apt clean --dry-run
+Del /var/cache/apt/archives/* /var/cache/apt/archives/partial/*
+Del /var/lib/apt/lists/partial/*
+Del /var/cache/apt/pkgcache.bin /var/cache/apt/srcpkgcache.bin
+----
+
+APT is highly configurable and there are several options to clean the cache regurlarly, like after each package installation.
+====
+
+[[wynk-dir-apt-lib]]
+[NOTE]
+.What You Need to Know About `/var/lib/apt/`
+====
+
+This directory stores the current state of APT, that is which packages have been installed, what is the latest version of retrieved index files used when updating the cache, etc.
+
+[source,sh]
+----
+$ tree /var/lib/apt/
+.
+|-- daily_lock  # Used by the Systemd apt-daily.timer for housekeeping tasks.
+|               # Runs /usr/lib/apt/apt.systemd.daily which clean the cache,
+|               # update the repositories, create backups of extended_states...
+|               # Not covered in this article.
+|-- extended_states  # Extension to /var/lib/dpkg/status to store which
+|                    # packages were installed manually or automatically
+|                    # (i.e., as a dependency of another packages).
+|                    # Useful to support autoremove of useless packages.
+|-- listchanges.db  # Used by the command apt-listchanges
+|                   # Not covered in this article.
+|-- lists  # Local version of index files retrieved
+|   |      # from repositories in sources.list
+|   |-- deb.debian.org_debian_dists_buster-backports_InRelease
+|   |-- deb.debian.org_debian_dists_buster-updates_InRelease
+|   |-- deb.debian.org_debian_dists_buster_InRelease
+|   |-- deb.debian.org_debian_dists_buster_main_binary-amd64_Packages
+|   |-- deb.debian.org_debian_dists_buster_main_binary-amd64_Packages.diff_Index
+|   |-- deb.debian.org_debian_dists_buster_main_i18n_Translation-en
+|   |-- deb.debian.org_debian_dists_buster_main_i18n_Translation-en.diff_Index
+|   |-- deb.debian.org_debian_dists_buster_main_source_Sources
+|   |-- deb.debian.org_debian_dists_buster_main_source_Sources.diff_Index
+|   |-- lock  # Same as /var/lib/dpkg/lock.
+|   |         # Prevent two processes to use the lib APT at the same time
+|   `-- partial/  # Storage area for index files in transit
+|-- mirrors  # Used when using repository mirrors.
+|   |        # Not covered in this article.
+|   `-- partial
+`-- periodic  # Empty files whose timestamps are updated
+    |         # by the Systemd apt-daily.timer
+    |         # to determine the last execution date.
+    |         # Not covered in this article.
+    |-- download-upgradeable-stamp
+    |-- unattended-upgrades-stamp
+    |-- update-stamp
+    `-- upgrade-stamp
+----
+
+This directory doesn't have to be edited like `/etc/apt/` and doesn't have to be cleaned like `/var/cache/apt/`. It can be safely ignored by the Apt user but we will still have to talk about it in this article.
+====
+
+
+The method `pkgCacheFile::BuildCaches()` calls the method `BuildSourceList()` we covered in the previous step, and then delegates to the method `pkgCacheGenerator::MakeStatusCache()` for the effective cache initialization:
+
+[source,c++]
+.apt-pkg/pkgcachegen.cc
+----
+bool pkgCacheGenerator::MakeStatusCache(pkgSourceList &List,OpProgress *Progress,
+                        MMap **OutMap,pkgCache **OutCache, bool)
+{
+   std::vector<pkgIndexFile *> Files;
+   if (_system->AddStatusFiles(Files) == false)
+      return false;
+
+   // Decide if we can write to the files..
+   string const CacheFileName = _config->FindFile("Dir::Cache::pkgcache"); // <1>
+   string const SrcCacheFileName = _config->FindFile("Dir::Cache::srcpkgcache"); // <1>
+
+   if (Progress != NULL)
+      Progress->OverallProgress(0,1,1,_("Reading package lists"));
+
+   bool pkgcache_fine = false;
+   bool srcpkgcache_fine = false;
+
+   FileFd CacheFile;
+   if (CheckValidity(CacheFile, CacheFileName, List, Files.begin(), Files.end()) // <2>
+   {
+      pkgcache_fine = true;
+      srcpkgcache_fine = true;
+   }
+
+   FileFd SrcCacheFile;
+   if (pkgcache_fine == false)
+   {
+      if (CheckValidity(SrcCacheFile, SrcCacheFileName, List,
+            Files.end(), Files.end()) == true) // <2>
+      {
+         srcpkgcache_fine = true;
+      }
+   }
+
+   if (srcpkgcache_fine == true && pkgcache_fine == true)
+   {
+      if (Progress != NULL)
+         Progress->OverallProgress(1,1,1,_("Reading package lists"));
+      return true; // <3>
+   }
+
+   bool Writeable = false;
+   if (srcpkgcache_fine == false || pkgcache_fine == false)
+   {
+      if (CacheFileName.empty() == false)
+         Writeable = access(flNotFile(CacheFileName).c_str(),W_OK) == 0;
+      else if (SrcCacheFileName.empty() == false)
+         Writeable = access(flNotFile(SrcCacheFileName).c_str(),W_OK) == 0;
+   }
+
+   // At this point we know we need to construct something, so get storage ready
+   std::unique_ptr<DynamicMMap> Map(CreateDynamicMMap(NULL, 0));
+
+   std::unique_ptr<pkgCacheGenerator> Gen{nullptr};
+   map_filesize_t CurrentSize = 0;
+   map_filesize_t TotalSize = 0;
+
+   if (srcpkgcache_fine == true && pkgcache_fine == false)
+   {
+      if (loadBackMMapFromFile(Gen, Map, Progress, SrcCacheFile) == false)
+         return false;
+      srcpkgcache_fine = true;
+      TotalSize += ComputeSize(NULL, Files.begin(), Files.end());
+   }
+   else if (srcpkgcache_fine == false)
+   {
+      Gen.reset(new pkgCacheGenerator(Map.get(),Progress));
+      if (Gen->Start() == false)
+         return false;
+
+      TotalSize += ComputeSize(&List, Files.begin(),Files.end());
+      if (BuildCache(*Gen, Progress, CurrentSize, TotalSize, &List,
+               Files.end(),Files.end()) == false)
+         return false;
+
+      if (Writeable == true && SrcCacheFileName.empty() == false)
+         if (writeBackMMapToFile(Gen.get(), Map.get(), SrcCacheFileName) == false)
+            return false;
+   }
+
+   if (pkgcache_fine == false)
+   {
+      if (BuildCache(*Gen, Progress, CurrentSize, TotalSize, NULL,
+               Files.begin(), Files.end()) == false)
+         return false;
+
+      if (Writeable == true && CacheFileName.empty() == false)
+         if (writeBackMMapToFile(Gen.get(), Map.get(), CacheFileName) == false)
+            return false;
+   }
+
+   if (OutMap != nullptr)
+      *OutMap = Map.release();
+
+   return true;
+}
+----
+<1> The cache is stored in `/var/cache/apt/pkgcache.bin` and `/var/cache/apt/srcpkgcache.bin`. There are binary files that are loaded in memory.
+<2> The method `CheckValidity` loads each cache file in memory and checks that they are up-to-date, by verifying that every required index files for every source exists.
+<3> If both cache files are correct, we can returns immediately. Otherwise, we need to rebuild from scratch the ones that are not fine.
+
+
+[[wynk-apt-cache-files]]
+[NOTE]
+.What You Need to Know About APT Cache Files
+====
+The APT Cache files are two binary files `/var/cache/apt/pkgcache.bin` and `/var/cache/apt/srcpkgcache.bin`.
+
+Basically, these cache files contains all index files (`InRelease`, `Packages`, `Sources`, and `Translations`) retrieved from the APT repositories present in the list of sources (`/etc/apt/source.list` and `/etc/apt/source.list.d/`). The only difference between these two files is that the file `pkgcache.bin` appends also the content of `/var/lib/dpkg/status`.
+
+Therefore, every time a new index file is retrieved by APT or when the Dpkg status file changes, the APT cache must be updated too.
+
+The format of the cache files is optimized for the sole usage of APT and the main motivations is to speed up the loading of the cache in memory, and to reduce the memory usage. Therefore, the cache uses a binary format, which means you cannot read the files using your text editor. For example, `Header` is the first struct copied and starts like this:
+
+[source]
+----
+struct Header
+{
+   // Signature information
+   unsigned long Signature; # 0x98FE76DC
+   short MajorVersion;      # 0
+   short MinorVersion;      # 2
+   ...
+}
+----
+
+Field names are logically omitted and only values (sometimes converted to enums like the status string `installed` that becomes `6` in the binary file) are appended in successive order as confirmed by the command `xxd` which dump a file in hexadecimal:
+
+[source,sh]
+----
+$ xxd /var/cache/apt/pkgcache.bin  | head -1
+00000000: dc76 fe98 1000 0000 a802 1c2c 4038 5818  .v.........,@8X.
+#
+#  long = 4 bytes, short = 2 bytes
+#  amd64 = little endian
+#
+#        dc --------+
+#        76 ------+ |
+#        fe ----+ |         10 ---+           00 ---+
+#        98 --+ | | |       00 -+ |           00 -+ |
+#             | | | |           | |               | |
+#  Signature: 98FE76DC   Minor: 0010 = 2   Major: 0000 = 0
+----
+
+When APT is launched, these two files are loaded in memory using the `mmap()` system call and the rest of the code interacts with an instance of the class `pkgCache` and another of the class `pkgDepCache`. In fact, `pkgDepCache` wraps `pkgCache` to add state informations about the packages on the system so that `pkgCache` is mostly read-only.
+
+The code to initialize these instances is not covered in the article. Check the files `apt-pkg/pkgcache.h`, `apt-pkg/cachefile.h` and `apt-pkg/pkgcachegen.h` if you are curious.
+
+_Further Documentation_: link:http://www.fifi.org/doc/libapt-pkg-doc/cache.html/ch1.html[APT Cache File Format]
+====
+
+
+We will not go deeper into the APT Cache code. We have already inspected the structure of the different index files (`InRelease`, `Packages`, ...) and we know that APT commands use `pkgCacheFile.GetPkgCache()` and `pkgCacheFile.GetDepCache()` to retrieve information from the cache.
+
+What follows are annotated definitions to give you an idea of the kind of information present in the APT Cache:
+
+[source,c++]
+.apt-pkg/pkgcache.h
+----
+class pkgCache
+{
+   public:
+
+   struct Header;  // The size and count of each following properties
+                   // required to jump to the index in the binary format.
+
+   struct Group;  // Packages with the same name form a group, so we have
+                  // a simple way to access a package built
+                  // for different architectures.
+                  // Groups are also used to iterate over all binaries
+                  // produced by a source package.
+   struct Package;  // A single package with all the available versions
+                    // and the possible installed version.
+   struct ReleaseFile;  // Release index file.
+   struct PackageFile;  // Packages index file.
+   struct Version;  // A single version of a package with the list of
+                    // dependencies and the list of files in this package.
+   struct Description;  // Translation of a single version of a package
+   struct DependencyData;  // Information for a single dependency
+                           // (the version, the type, ...)
+
+   // Iterators
+   class GrpIterator;
+   class PkgIterator;
+   class VerIterator;
+   class DescIterator;
+   class DepIterator;
+   class RlsFileIterator;
+   class PkgFileIterator;
+
+   class Namespace;
+
+   public:
+
+   // Pointers to the arrays of items
+   Header *HeaderP;
+   Group *GrpP;
+   Package *PkgP;
+   DescFile *DescFileP;
+   ReleaseFile *RlsFileP; // All Release files used to build the cache
+   PackageFile *PkgFileP; // All Packages files used to build the cache
+   Version *VerP;
+   Description *DescP;
+   DependencyData *DepDataP;
+
+   // Accessors
+   GrpIterator FindGrp(APT::StringView Name);
+   PkgIterator FindPkg(APT::StringView Name);
+
+   inline GrpIterator GrpBegin();
+   inline GrpIterator GrpEnd();
+   inline PkgIterator PkgBegin();
+   inline PkgIterator PkgEnd();
+   inline PkgFileIterator FileBegin();
+   inline PkgFileIterator FileEnd();
+   inline RlsFileIterator RlsFileBegin();
+   inline RlsFileIterator RlsFileEnd();
+};
+
+
+struct pkgCache::Package
+{
+   /** \brief Architecture of the package */
+   map_stringitem_t Arch;
+   /** \brief List of versions sorted from highest version to lowest version */
+   map_pointer<Version> VersionList;
+   /** \brief index to the installed version */
+   map_pointer<Version> CurrentVer;
+   /** \brief index of the group this package belongs to */
+   map_pointer<pkgCache::Group> Group;
+
+   /** \brief List of all dependencies on this package */
+   map_pointer<Dependency> RevDepends;
+   /** \brief List of all "packages" this package provide */
+   map_pointer<Provides> ProvidesList;
+
+   // Install/Remove/Purge etc
+   /** \brief state that the user wishes the package to be in */
+   map_number_t SelectedState;     // What
+   /** \brief installation state of the package */
+   map_number_t InstState;         // Flags
+   /** \brief indicates if the package is installed */
+   map_number_t CurrentState;      // State
+};
+
+struct pkgCache::ReleaseFile
+{
+   /** \brief physical disk file that this ReleaseFile represents */
+   map_stringitem_t FileName;
+   map_stringitem_t Archive;
+   map_stringitem_t Codename;
+   map_stringitem_t Version;
+   map_stringitem_t Origin;
+   map_stringitem_t Label;
+   /** \brief The site the index file was fetched from */
+   map_stringitem_t Site;
+};
+
+struct pkgCache::PackageFile
+{
+   /** \brief physical disk file that this PackageFile represents */
+   map_stringitem_t FileName;
+   /** \brief the release information to keep record of which
+    version belongs to which release e.g. for pinning. */
+   map_pointer<ReleaseFile> Release;
+
+   map_stringitem_t Component;
+   map_stringitem_t Architecture;
+};
+
+struct pkgCache::Version
+{
+   /** \brief complete version string */
+   map_stringitem_t VerStr;
+   /** \brief section this version is filled in */
+   map_stringitem_t Section;
+   /** \brief source package name this version comes from
+      Always contains the name, even if it is the same as the binary name */
+   map_stringitem_t SourcePkgName;
+   /** \brief source version this version comes from
+      Always contains the version string, even if it is the same as the binary version */
+   map_stringitem_t SourceVerStr;
+
+   /** \brief references all the PackageFile's that this version came from
+
+       FileList can be used to determine what distribution(s) the Version
+       applies to. If FileList is 0 then this is a blank version.
+       The structure should also have a 0 in all other fields excluding
+       pkgCache::Version::VerStr and Possibly pkgCache::Version::NextVer. */
+   map_pointer<VerFile> FileList;
+   /** \brief base of the dependency list */
+   map_pointer<Dependency> DependsList;
+   /** \brief links to the owning package
+
+       This allows reverse dependencies to determine the package */
+   map_pointer<Package> ParentPkg;
+   /** \brief list of pkgCache::Provides */
+   map_pointer<Provides> ProvidesList;
+};
+
+struct pkgCache::DependencyData
+{
+   /** \brief string of the version the dependency is applied against */
+   map_stringitem_t Version;
+   /** \brief index of the package this depends applies to
+
+       The generator will - if the package does not already exist -
+       create a blank (no version records) package. */
+   map_pointer<pkgCache::Package> Package;
+
+   /** \brief Dependency type - Depends, Recommends, Conflicts, etc */
+   map_number_t Type;
+   /** \brief comparison operator specified on the depends line
+
+       If the high bit is set then it is a logical OR with the previous record. */
+   map_flags_t CompareOp;
+};
+
+// Other structs are omitted for brievity.
+----
+
+Here is the definition of the class `pkgDepCache`:
+
+[source,c++]
+.apt-pkg/depcache.h
+----
+class pkgDepCache
+{
+   public:
+
+   enum ModeList {ModeDelete = 0, ModeKeep = 1, ModeInstall = 2, ModeGarbage = 3};
+
+   struct StateCache
+   {
+      // text versions of the two version fields
+      const char *CandVersion;
+      const char *CurVersion;
+
+      // Pointer to the candidate install version.
+      Version *CandidateVer;
+
+      // Pointer to the install version.
+      Version *InstallVer;
+
+      // Various tree indicators
+      signed char Status;              // -1,0,1,2
+      unsigned char Mode;              // ModeList
+
+      // Various test members for the current status of the package
+      inline bool Keep() const {return Mode == ModeKeep;};
+      inline bool Upgrade() const {return Status > 0 && Mode == ModeInstall;};
+      inline bool Upgradable() const {return Status >= 1 && CandidateVer != NULL;};
+      inline bool Downgrade() const {return Status < 0 && Mode == ModeInstall;};
+      inline bool Held() const {return Status != 0 && Keep();};
+      // ...
+   };
+
+   protected:
+
+   // State information
+   pkgCache *Cache;
+   StateCache *PkgState;
+
+   public:
+
+   // Accessors
+   inline StateCache &operator [](PkgIterator const &I) {return PkgState[I->ID];};
+   inline StateCache &operator [](PkgIterator const &I) const {return PkgState[I->ID];};
+
+   // read persistent states
+   bool readStateFile(OpProgress * const prog);
+   bool writeStateFile(OpProgress * const prog, bool const InstalledOnly=true);
+
+   bool Init(OpProgress * const Prog);
+   // Generate all state information
+   void Update(OpProgress * const Prog = 0);
+
+   pkgDepCache(pkgCache * const Cache,Policy * const Plcy = 0);
+   virtual ~pkgDepCache();
+};
+----
+
+
+[start=4]
+. *Display statistics about package upgrades.*
+
+This last step simply traverses the cache to extract the relevant information.
+
+[source,c++]
+----
+// show basic stats (if the user whishes)
+if (_config->FindB("APT::Cmd::Show-Update-Stats", false) == true)
+{
+   int upgradable = 0;
+   if (Cache.Open(false) == false)
+      return false;
+   for (pkgCache::PkgIterator I = Cache->PkgBegin(); I.end() != true; ++I)
+   {
+      pkgDepCache::StateCache &state = Cache[I]; // <1>
+      if (I->CurrentVer != 0 && state.Upgradable() && state.CandidateVer != NULL) // <2>
+         upgradable++;
+   }
+   const char *msg = P_(
+      "%i package can be upgraded. Run 'apt list --upgradable' to see it.\n",
+      "%i packages can be upgraded. Run 'apt list --upgradable' to see them.\n",
+      upgradable); // <3>
+   if (upgradable == 0)
+      c1out << _("All packages are up to date.") << std::endl;
+   else
+      ioprintf(c1out, msg, upgradable);
+}
+----
+<1> The operator `[]` is overloaded in `pkgDepCache` to return `PkgState[I->ID]`, which is a struct `StateCache` containing the current installed and candidate versions.
+<2> The method `Upgradable()` reads the state to determine if a new candidate version is available and increments a counter if true.
+<3> The macro `P_` is defined by `define P_(msg,plural,n) (n == 1 ? msg : plural)`.
+
+That's all for the command `apt update`. We will now cover other APT commands, reusing the knowledge we built about the APT cache.

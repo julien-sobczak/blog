@@ -1,0 +1,322 @@
+
+[[sect-part3]]
+== What happens when you install a package using `apt`
+
+The major reason to use `apt` is for the dependency management support. This command understands that in order to install a given package, other packages may need to be installed too, and `apt` can download these and install them. In practice, `dpkg` is called a package manager and `apt` is called a frontend package manager.
+
+[[wynk-apt-get-aptitude]]
+[NOTE]
+.What You Need to Know About `apt`, `apt-get`, `aptitude`?
+====
+APT is a vast project started in 1997 organized around a core library. The command `apt-get` was the first frontend developed within the project, and `apt` is the second command provided by APT which overcomes some design mistakes of `apt-get`, for example,  `apt` refuses to install dependencies that were not installed beforehand during an upgrade. Under the hood, both tools are built on top of the core library and are thus very close.
+
+External projects like `aptitude` have been developed later to support new features like auto-removing of packages when they are no longer required, but most of these features are now available in `apt` too.
+
+The most widespread command remains `apt`, and it is the one that we will use in this section.
+
+* Apt (`apt` and `apt-get`) Official Repository: https://salsa.debian.org/apt-team/apt
+* Apt GitHub Mirror: https://github.com/Debian/apt
+* Aptitude Official Repository: https://salsa.debian.org/apt-team/aptitude
+
+_Further documentation_: link:https://raphaelhertzog.com/2011/06/20/apt-get-aptitude-%e2%80%a6-pick-the-right-debian-package-manager-for-you/[apt-get, aptitude, … pick the right Debian package manager for you, Raphaël Hertzog]
+====
+
+APT makes software available to the user by doing the dirty work of downloading all the required packages and installing them using `dpkg` in the correct order to respect the dependencies. The scope of APT is larger than Dpkg and its behavior is highly configurable.
+
+[[wynk-apt-configuration-files]]
+[NOTE]
+.What You Need to Know About APT Configuration Files?
+====
+APT configuration resides under `/etc/apt/`, which contains the following files:
+
+* `apt.conf` and `apt.conf.d/`: The main configuration files where hundred of options are available (xref:wynk-apt-configuration-options[more about them soon]). The command `apt-config dump` can be used to view all available options with their default values:
++
+[source,sh]
+----
+$ apt-config dump
+...
+Dir "/";
+Dir::State "var/lib/apt";
+Dir::State::status "/var/lib/dpkg/status";
+Dir::Cache "var/cache/apt";
+Dir::Etc "etc/apt";
+Dir::Etc::sourcelist "sources.list";
+Dir::Etc::sourceparts "sources.list.d";
+Dir::Etc::main "apt.conf";
+Dir::Etc::parts "apt.conf.d";
+Dir::Etc::preferences "preferences";
+Dir::Etc::preferencesparts "preferences.d";
+Dir::Etc::trusted "trusted.gpg";
+Dir::Etc::trustedparts "trusted.gpg.d";
+...
+----
+* `sources.list` and `sources.list.d/`: lists of repositories (xref:wynk-repositories[more about them soon]). Here are the default repositories on my Debian server:
++
+[source,sh]
+----
+$ cat /etc/apt/sources.list
+deb http://deb.debian.org/debian buster main
+deb-src http://deb.debian.org/debian buster main
+deb http://security.debian.org/debian-security buster-security main
+deb-src http://security.debian.org/debian-security buster-security main
+deb http://deb.debian.org/debian buster-updates main
+deb-src http://deb.debian.org/debian buster-updates main
+deb http://deb.debian.org/debian buster-backports main
+deb-src http://deb.debian.org/debian buster-backports main
+----
+* `preferences` and `preferences.d/`: APT pinning is the only available preference. By default, when multiple repositories are configured, a package can exist in several of them and APT applies logic to decide which one must be installed. Pinning allows you to change this logic (called a policy) for some packages. The command `apt-cache policy [pkg]` can be used to view the global policy when called without argument:
++
+[source,sh]
+----
+$ apt-cache policy
+Package files:
+ 100 /var/lib/dpkg/status
+     release a=now
+ 500 http://security.debian.org/debian-security buster-security/main
+     amd64 Packages
+     release o=Debian,a=testing-security,n=buster-security,
+     l=Debian-Security,c=main,b=amd64
+     origin security.debian.org
+ 500 http://deb.debian.org/debian buster/main amd64 Packages
+     release o=Debian,a=testing,n=buster,l=Debian,c=main,b=amd64
+     origin deb.debian.org
+----
++
+You can create preferences files to privilege a specific repository for a given package or to prevent this package to be upgraded. _(not covered in this article)_
+* `trusted.gpg` and `trusted.gpg.d/`: keys for secure authentication of packages (known as "Secure APT" and used in Debian since 2005). The command `apt-key` can be used to show the keys, and to add or remove a key. APT uses public-key (asymmetric) cryptography using GPG:
++
+[source,sh]
+----
+$ ls -1 /etc/apt/trusted.gpg.d/
+debian-archive-buster-automatic.gpg
+debian-archive-buster-security-automatic.gpg
+debian-archive-buster-stable.gpg
+debian-archive-stretch-automatic.gpg
+debian-archive-stretch-security-automatic.gpg
+debian-archive-stretch-stable.gpg
+----
++
+When installing a package, APT retrieves the package from an external repository and the `Release` file, which is the entry file to find `Packages` index files, may have be altered (which means checking the MD5 sums inside these index files is useless if we can't guarantee that the `Release` file is safe against a man-in-the-middle attack). This is the goal of secure APT. Concretely, secure APT always downloads a `Release.gpg` file if existing before downloading a `Release` file. (NB: The file `InRelease` had now merged the intent of these two deprecated files.) Using cryptography, APT can be sure the file is safe and can trust the MD5 sums present inside this file to check other files like `Packages` files. Otherwise, APT will complain with the following message you have probably encountered before:
++
+[source,sh]
+----
+# When adding a new repository in `/etc/apt/sources.list.d/`:
+W: GPG error: http://ftp.us.debian.org testing Release:
+ The following signatures couldn't be verified
+ because the public key is not available:
+ NO_PUBKEY 010908312D230C5F
+# When installing a new package from this repository:
+WARNING: The following packages cannot be authenticated!
+  libglib-perl libgtk2-perl
+Install these packages without verification [y/N]?
+----
+* `auth.conf` and `auth.conf.d/`: APT configuration and repositories list must be accessible to any user on the system but some repositories may require login information to connect, which are stored in these restrictive files. For example, instead of specifying the user/password `apt:debian` in the source list file directly (`deb https://apt:debian@example.org/debian buster main`), you can create an entry in `auth.conf`:
++
+[source]
+----
+machine example.org
+login apt
+password debian
+----
+_(not covered in this article)_
+* `listchanges.conf` and `listchanges.conf.d`: Only used by the command `apt-listchanges` to show what has been changed in a new version of a Debian package, as compared to the version currently installed on the system. It does this by extracting the relevant entries from both the `NEWS.Debian` and `changelog[.Debian]` files, usually found in `/usr/share/doc/_package_` in Debian package archives. _(not covered in this article)_
+
+In practice, `.d` directories are privileged so that the configuration can be split into several files. Single file may not even exist on your machine and are often deprecated.
+
+_Further documentation_: link:https://wiki.debian.org/AptConfiguration[APT configuration], link:https://wiki.debian.org/SecureApt[Secure APT].
+====
+
+Now is the time to start looking at the code again. APT is written in C++. The entry point for any APT command is the file `cmdline/apt.cc` which contains a function `GetCommands()` that maps each command with a function defined in the directory `apt-private/`, which delegates to other functions in the main APT lib present in the directory `apt-pkg/` (i.e., cmdline/ -> apt-private/ -> apk-pkg/):
+
+[source,c++]
+.cmdline/apt.cc
+----
+static std::vector<aptDispatchWithHelp> GetCommands()                        /*{{{*/
+{
+   return {
+      {"list", &DoList, _("list packages based on package names")},
+      {"update", &DoUpdate, _("update list of available packages")},
+      {"install", &DoInstall, _("install packages")},
+
+      // ...
+
+      {nullptr, nullptr, nullptr}
+   };
+}
+----
+
+Before invoking the command function, APT simply initializes a few classes like `pkgSystem` to set the default configuration options.
+
+[[wynk-apt-configuration-options]]
+[NOTE]
+.What You Need to Know About APT Configuration Options
+====
+Unlike Dpkg, APT is highly configurable using the files `/etc/apt/apt.conf` and  `/etc/apt/apt.conf.d/`. The format is similar to some Linux tools like `bind` or `dhcp`.
+
+[source,sh]
+----
+vagrant$ cat /etc/apt/apt.conf.d/*
+APT
+{
+  NeverAutoRemove
+  {
+	"^firmware-linux.*";
+	"^linux-firmware$";
+	"^linux-image-[a-z0-9]*$";
+	"^linux-image-[a-z0-9]*-[a-z0-9]*$";
+  };
+};
+DPkg::Pre-Install-Pkgs { "/usr/bin/apt-listchanges --apt || test $? -lt 10"; };
+...
+----
+The configuration file is organized in a tree organized into functional groups. For instance, `APT::Get::Assume-Yes` is an option within the `APT` tool group, for the `Get` tool. A new scope can be opened with curly braces, like this:
+
+[source]
+----
+APT {
+  Get {
+    Assume-Yes "true";
+    Fix-Broken "true";
+  };
+};
+----
+
+You can retrieve the full list of options using the command `apt-config`:
+
+[source,sh]
+----
+vagrant# apt-config dump
+APT "";
+APT::Architecture "amd64";
+APT::Build-Essential "";
+APT::Build-Essential:: "build-essential";
+APT::Install-Recommends "1";
+APT::Install-Suggests "0";
+APT::Sandbox "";
+APT::Sandbox::User "_apt";
+… hundreds of other options ...
+----
+
+Inside the code, the configuration is accessible using the class `Configuration` (defined in `apt-pkg/contrib/configuration.h`):
+
+[source,c++]
+----
+#include <apt-pkg/configuration.h>
+
+Configuration *_config = new Configuration;
+
+// Example with a boolean option
+if (_config->FindB("pkgCacheFile::Generate", true) == false) {}
+
+// Example with an integer option
+int const Limit = _config->FindI("Acquire::QueueHost::Limit",DEFAULT_HOST_LIMIT)
+----
+
+_Further documentation_: link:https://www.commandlinux.com/man-page/man5/apt.conf.5.html[man page]
+====
+
+
+include::./part-3-update.adoc[]
+include::./part-3-list.adoc[]
+include::./part-3-install.adoc[]
+
+
+[[sect-part3-go]]
+=== Case Study
+
+Like for other parts, we will write a minimal version of the command `apt install` in Go. We will not bother with a cache and simply read the Debian repositories systematically.
+
+To test our program, we need a basic package so that we can focus on the core logic of the APT installation process without having to support arcane use cases. We will use a new version of our package `hello` (the code is available in the link:https://github.com/julien-sobczak/linux-packages-under-the-hood[companion GitHub repository]):
+
+[source,sh]
+----
+vagrant# tree /vagrant/hello/3.1-1/
+3.1-1/
+|-- DEBIAN
+|   `-- control
+`-- usr
+    `-- bin
+        `-- hello
+
+vagrant# cat /vagrant/hello/3.1-1/DEBIAN/control
+Package: hello
+Version: 3.1-1
+Section: base
+Priority: optional
+Architecture: amd64
+Maintainer: Julien Sobczak
+Description: Say Hello
+Depends: cowsay # <1>
+
+vagrant# cat /vagrant/hello/3.1-1/usr/bin/hello
+#!/bin/bash
+echo "hello world" | /usr/games/cowsay # <2>
+----
+<1> Declare a required dependency available in the standard Debian repository.
+<2> Use the binary installed by this dependency.
+
+To build the new package:
+
+[source,sh]
+----
+vagrant# $ dpkg --build 3.1-1 hello_3.1-1_amd64.deb # <1>
+----
+<1> We use the command `dpkg` but we could also have used our Go version created in the first part.
+
+Example of installation using APT:
+
+[source,sh]
+----
+vagrant# apt install /vagrant/hello/hello_3.1-1_amd64.deb
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  cowsay
+Suggested packages:
+  filters cowsay-off
+The following NEW packages will be installed:
+  cowsay hello
+0 upgraded, 2 newly installed, 0 to remove and 11 not upgraded.
+After this operation, 94.2 kB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+
+Get:1 /vagrant/hello/hello_3.1-1_amd64.deb hello amd64 3.1-1 [20.7 kB]
+Get:2 http://deb.debian.org/debian bullseye/main amd64 cowsay all 3.03+dfsg2-8 [21.4 kB]
+Fetched 21.4 kB in 0s (66.6 kB/s)
+Selecting previously unselected package cowsay.
+(Reading database ... 34384 files and directories currently installed.)
+Preparing to unpack .../cowsay_3.03+dfsg2-8_all.deb ...
+Unpacking cowsay (3.03+dfsg2-8) ...
+Selecting previously unselected package hello.
+Preparing to unpack .../hello/hello_3.1-1_amd64.deb ...
+preinst says hello
+Unpacking hello (3.1-1) ...
+Setting up cowsay (3.03+dfsg2-8) ...
+Setting up hello (3.1-1) ...
+postinst says hello
+Processing triggers for man-db (2.9.4-2) ...
+
+vagrant# hello
+ _____________
+< hello world >
+ -------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+----
+
+The challenge is to install the same package using a basic Go program. We will reuse the `dpkg` version we wrote in Go.
+
+Here is the code:
+
+[source,go]
+.main.go
+----
+include::apt_install.go[]
+----
+
+🎉 *We have finished with the command `apt`.* We have also finished with this article! We created a Debian archive using a basic Go program and we install the package using Go versions of `dpkg` and `apt`.
+
