@@ -1,6 +1,8 @@
+
+[[cmd-apt-install]]
 === `apt install`
 
-The entry point if the command is the function `DoInstall` which is called by various commands: `install`, `reinstall`, `remove`, `purge`, ... The code will be simplified to consider only the basic install usage.
+The entry point is the function `DoInstall()` which is called by various commands: `install`, `reinstall`, `remove`, `purge`, ... The code will be simplified to keep only the installation usage.
 
 [source,c++]
 .apt-private/private-install.cc
@@ -9,7 +11,8 @@ bool DoInstall(CommandLine &CmdL)
 {
    CacheFile Cache;
 
-   if (Cache.OpenForInstall() == false) // Covered in step 1
+   // Covered in step 1
+   if (Cache.OpenForInstall() == false)
       return false;
 
    std::set<pkgCache::VerIterator> verset;
@@ -29,13 +32,15 @@ bool DoInstall(CommandLine &CmdL)
       {
         if ((*Cache)[Pkg].Install() == false)
            continue;
-        pkgCache::VerIterator const Cand = (*Cache)[Pkg].CandidateVerIter(*Cache);
+        pkgCache::VerIterator const Cand =
+          (*Cache)[Pkg].CandidateVerIter(*Cache);
         if (verset->find(Cand) == verset->end())
         {
            extra.insert(Pkg);
         }
       }
-      ShowList(_("The following additional packages will be installed:"), extras);
+      ShowList(_("The following additional packages will be installed:"),
+               extras);
 
    /* Print out a list of suggested and recommended packages */
    {
@@ -53,7 +58,8 @@ bool DoInstall(CommandLine &CmdL)
             pkgCache::DepIterator Start;
             pkgCache::DepIterator End;
             D.GlobOr(Start, End); // advances D
-            if (Start->Type != pkgCache::Dep::Recommends && Start->Type != pkgCache::Dep::Suggests)
+            if (Start->Type != pkgCache::Dep::Recommends &&
+                Start->Type != pkgCache::Dep::Suggests)
                continue;
 
             std::string target;
@@ -63,7 +69,10 @@ bool DoInstall(CommandLine &CmdL)
                   target.append(" | ");
                target.append(I.TargetPkg().FullName(true));
             }
-            std::list<std::string> &Type = Start->Type == pkgCache::Dep::Recommends ? Recommends : Suggests;
+            std::list<std::string> &Type =
+                Start->Type == pkgCache::Dep::Recommends ?
+                  Recommends :
+                  Suggests;
             if (std::find(Type.begin(), Type.end(), target) != Type.end())
                continue;
             Type.push_back(target);
@@ -87,7 +96,7 @@ bool DoInstall(CommandLine &CmdL)
 [start=1]
 . *Load the APT cache*
 
-The first step is without surprise to load the APT Cache using the method `pkgCacheFile::Open` which reused methods we have already discussed before.
+The first step is without surprise to load the APT Cache using the method `pkgCacheFile::Open` which reuses methods we have already discussed before.
 
 [source,c++]
 .apt-pkg/cachefile.cc
@@ -115,11 +124,11 @@ bool pkgCacheFile::Open(OpProgress *Progress)
 [start=2]
 . *Determine the packages to install*
 
-Installing a package also means uninstalling some other packages. Maybe the new version of a package stops using a dependency that was used only by this package and APT will try to autoremove it. For this step, we ignore most of these problematic and focus on install new packages with new dependencies. The code will be adapted in consequence.
+Installing a package can also means uninstalling some other packages. Maybe the new version of a package stops using a dependency that was used only by this package and APT will try to autoremove it. The code is therefore a little more complicated for obvious reasons.
 
-This step executes many checks like ensuring the package is not already installed in this version, or checking APT configuration options to make sure packages can be downloaded. For every package to install, this step will update the state in `pkgDepCache` using the function `Cache->GetDepCache()->SetCandidateVersion()` and `Cache.MarkInstall()`.
+For this step, we ignore most of these problems and focus on the installation of new packages with only new dependencies to install. The code will be adapted in consequence.
 
-After that, the code executes the `pkgProblemResolver`. The goal is to fix broken packages, that based on the freshly list of packages to install, which are still missing some of their dependencies. The code is huge with more than 1000 lines of code as dependency management is a hard problem to tackle. Here is the relevant fields for the `nginx-core` package:
+For every package to install, the code will update the state in `pkgDepCache` using the function `Cache->GetDepCache()->SetCandidateVersion()` and `Cache.MarkInstall()`. After that, the code executes the `pkgProblemResolver`. The goal is to fix broken packages, that is packages with missing or conflicting dependencies if the installation continues. The code is huge with more than 1000 lines of code. To give you an idea of the kind of constraints the resolver must satisfy, here are the relevant fields for a common package:
 
 [source]
 ----
@@ -128,17 +137,15 @@ Description: nginx web/proxy server (standard version)
 Version: 1.18.0-6+b1
 Architecture: amd64
 Replaces: nginx-full (<< 1.18.0-1)
-Depends: libnginx-mod-http-geoip (= 1.18.0-6+b1), libnginx-mod-http-image-filter (= 1.18.0-6+b1), libnginx-mod-http-xslt-filter (= 1.18.0-6+b1), libnginx-mod-mail (= 1.18.0-6+b1), libnginx-mod-stream (= 1.18.0-6+b1), libnginx-mod-stream-geoip (= 1.18.0-6+b1), nginx-common (= 1.18.0-6), iproute2, libc6 (>= 2.28), libcrypt1 (>= 1:4.1.0), libpcre3, libssl1.1 (>= 1.1.1), zlib1g (>= 1:1.1.4)
+Depends: libnginx-mod-http-geoip (= 1.18.0-6+b1), nginx-common (= 1.18.0-6),
+  iproute2, libc6 (>= 2.28), libcrypt1 (>= 1:4.1.0), libpcre3,
+  libssl1.1 (>= 1.1.1), zlib1g (>= 1:1.1.4)
 Suggests: nginx-doc (= 1.18.0-6)
 Conflicts: nginx-extras, nginx-light
 Breaks: nginx (<< 1.4.5-1), nginx-full (<< 1.18.0-1)
 ----
 
-The documentation says it become insanely complex and very sophisticated. The resolver may even not be able to fix all broken packages. Packages may be missing or conflicts may happen between different packages.
-
-The resolver proceed by marking packages to install, remove or skip and use the similar functions as before: `Cache.MarkInstall()`, `Cache.MarkDelete()`, `Cache.MarkKeep()`. The result is often more packages to change that the ones passed to the `apt install` command.
-
-Check the function `pkgProblemResolver::ResolveInternal()` defined in `apt-pkg/algorithms.cc` for more details.
+The code documentation recognizes that the code has become complex and very sophisticated over time. In fact, the resolver may even not be able to fix all broken packages. Packages may be missing and conflicts may still exist. Check the function `pkgProblemResolver::ResolveInternal()` defined in `apt-pkg/algorithms.cc` for more details.
 
 [source,c++]
 .apt-private/private-install.cc
@@ -178,12 +185,12 @@ bool DoCacheManipulationFromCommandLine(CommandLine &CmdL, CacheFile &Cache,
 [start=3]
 . *Ask confirmation for additional packages to install*
 
-This step simply iterates over the package to install and inspect the calculed dependencies list to filter on package present in the fields `Recommends` and `Suggests`. The “recommended” dependencies are the most important and considerably improve the functionality offered by the package but are not indispensable to its operation (they are now installed by default by APT).
+This step simply iterates over the package to install and inspect the calculated dependencies list to keep packages present in the fields `Recommends` and `Suggests`. The “recommended” dependencies are the most important and considerably improve the functionality offered by the package and often indispensable to its operation (these recommended packages are now installed by default by APT).
 
 Here is an example of a package with recommended and suggested packages:
 
 [source]
-./var/lib/apt/lists/deb.debian.org_debian_dists_bullseye_main_binary-amd64_Packages
+./var/lib/apt/lists/deb.debian.org_debian_dists_buster_main_binary-amd64_Packages
 ----
 ...
 Package: ngraph-gtk
@@ -197,7 +204,7 @@ Description: create scientific 2-dimensional graphs
 ...
 ----
 
-Note that all dependencies of a package can also have recommended and suggested packages, and so on. Therefore, the final list displayed to the user is often pretty long:
+Note that dependencies of a package can also have recommended and suggested packages, and so on. Therefore, the final list displayed to the user is often pretty long:
 
 [source,sh]
 ----
@@ -206,29 +213,57 @@ Reading package lists... Done
 Building dependency tree... Done
 Reading state information... Done
 The following additional packages will be installed:
-  adwaita-icon-theme at-spi2-core dbus-user-session dconf-gsettings-backend dconf-service fontconfig fontconfig-config fonts-dejavu-core glib-networking glib-networking-common glib-networking-services gsettings-desktop-schemas
-  gtk-update-icon-cache hicolor-icon-theme libatk-bridge2.0-0 libatk1.0-0 libatk1.0-data libatspi2.0-0 libavahi-client3 libavahi-common-data libavahi-common3 libcairo-gobject2 libcairo2 libcolord2 libcups2 libdatrie1 libdconf1
-  libdeflate0 libepoxy0 libfontconfig1 libfribidi0 libgdk-pixbuf-2.0-0 libgdk-pixbuf-xlib-2.0-0 libgdk-pixbuf2.0-0 libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-common libgraphite2-3 libgsl25 libgslcblas0 libgtk-3-0 libgtk-3-bin libgtk-3-common
-  libgtksourceview-4-0 libgtksourceview-4-common libharfbuzz0b libjbig0 libjpeg62-turbo libjson-glib-1.0-0 libjson-glib-1.0-common liblcms2-2 libngraph0 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpixman-1-0 libproxy1v5
-  librest-0.7-0 librsvg2-2 librsvg2-common libsoup-gnome2.4-1 libsoup2.4-1 libthai-data libthai0 libtiff5 libwayland-client0 libwayland-cursor0 libwayland-egl1 libwebp6 libx11-6 libx11-data libxau6 libxcb-render0 libxcb-shm0 libxcb1
-  libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxtst6 ngraph-gtk-addins ngraph-gtk-addins-base ngraph-gtk-doc shared-mime-info x11-common xkb-data
+  adwaita-icon-theme at-spi2-core dbus-user-session dconf-gsettings-backend
+  dconf-service fontconfig fontconfig-config fonts-dejavu-core glib-networking
+  glib-networking-common glib-networking-services gsettings-desktop-schemas
+  gtk-update-icon-cache hicolor-icon-theme libatk-bridge2.0-0 libatk1.0-0
+  libatk1.0-data libatspi2.0-0 libavahi-client3 libavahi-common-data
+  libavahi-common3 libcairo-gobject2 libcairo2 libcolord2 libcups2
+  libdatrie1 libdconf1 libdeflate0 libepoxy0 libfontconfig1 libfribidi0
+  libgdk-pixbuf-2.0-0 libgdk-pixbuf-xlib-2.0-0 libgdk-pixbuf2.0-0
+  libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-common libgraphite2-3 libgsl25
+  libgslcblas0 libgtk-3-0 libgtk-3-bin libgtk-3-common libgtksourceview-4-0
+  libgtksourceview-4-common libharfbuzz0b libjbig0 libjpeg62-turbo
+  libjson-glib-1.0-0 libjson-glib-1.0-common liblcms2-2 libngraph0
+  libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpixman-1-0
+  libproxy1v5 librest-0.7-0 librsvg2-2 librsvg2-common libsoup-gnome2.4-1
+  libsoup2.4-1 libthai-data libthai0 libtiff5 libwayland-client0
+  libwayland-cursor0 libwayland-egl1 libwebp6 libx11-6 libx11-data libxau6
+  libxcb-render0 libxcb-shm0 libxcb1 libxcomposite1 libxcursor1 libxdamage1
+  libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2
+  libxrender1 libxtst6 ngraph-gtk-addins ngraph-gtk-addins-base
+  ngraph-gtk-doc shared-mime-info x11-common xkb-data
 Suggested packages:
-  colord cups-common gsl-ref-psdoc | gsl-doc-pdf | gsl-doc-info | gsl-ref-html gvfs liblcms2-utils fonts-liberation librsvg2-bin
+  colord cups-common gsl-ref-psdoc | gsl-doc-pdf | gsl-doc-info |
+  gsl-ref-html gvfs liblcms2-utils fonts-liberation librsvg2-bin
 The following NEW packages will be installed:
-  adwaita-icon-theme at-spi2-core dbus-user-session dconf-gsettings-backend dconf-service fontconfig fontconfig-config fonts-dejavu-core glib-networking glib-networking-common glib-networking-services gsettings-desktop-schemas
-  gtk-update-icon-cache hicolor-icon-theme libatk-bridge2.0-0 libatk1.0-0 libatk1.0-data libatspi2.0-0 libavahi-client3 libavahi-common-data libavahi-common3 libcairo-gobject2 libcairo2 libcolord2 libcups2 libdatrie1 libdconf1
-  libdeflate0 libepoxy0 libfontconfig1 libfribidi0 libgdk-pixbuf-2.0-0 libgdk-pixbuf-xlib-2.0-0 libgdk-pixbuf2.0-0 libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-common libgraphite2-3 libgsl25 libgslcblas0 libgtk-3-0 libgtk-3-bin libgtk-3-common
-  libgtksourceview-4-0 libgtksourceview-4-common libharfbuzz0b libjbig0 libjpeg62-turbo libjson-glib-1.0-0 libjson-glib-1.0-common liblcms2-2 libngraph0 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpixman-1-0 libproxy1v5
-  librest-0.7-0 librsvg2-2 librsvg2-common libsoup-gnome2.4-1 libsoup2.4-1 libthai-data libthai0 libtiff5 libwayland-client0 libwayland-cursor0 libwayland-egl1 libwebp6 libx11-6 libx11-data libxau6 libxcb-render0 libxcb-shm0 libxcb1
-  libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2 libxrender1 libxtst6 ngraph-gtk ngraph-gtk-addins ngraph-gtk-addins-base ngraph-gtk-doc shared-mime-info x11-common
-  xkb-data
+  adwaita-icon-theme at-spi2-core dbus-user-session dconf-gsettings-backend
+  dconf-service fontconfig fontconfig-config fonts-dejavu-core glib-networking
+  glib-networking-common glib-networking-services gsettings-desktop-schemas
+  gtk-update-icon-cache hicolor-icon-theme libatk-bridge2.0-0 libatk1.0-0
+  libatk1.0-data libatspi2.0-0 libavahi-client3 libavahi-common-data
+  libavahi-common3 libcairo-gobject2 libcairo2 libcolord2 libcups2 libdatrie1
+  libdconf1 libdeflate0 libepoxy0 libfontconfig1 libfribidi0
+  libgdk-pixbuf-2.0-0 libgdk-pixbuf-xlib-2.0-0 libgdk-pixbuf2.0-0
+  libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-common libgraphite2-3 libgsl25
+  libgslcblas0 libgtk-3-0 libgtk-3-bin libgtk-3-common libgtksourceview-4-0
+  libgtksourceview-4-common libharfbuzz0b libjbig0 libjpeg62-turbo
+  libjson-glib-1.0-0 libjson-glib-1.0-common liblcms2-2 libngraph0
+  libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpixman-1-0
+  libproxy1v5 librest-0.7-0 librsvg2-2 librsvg2-common libsoup-gnome2.4-1
+  libsoup2.4-1 libthai-data libthai0 libtiff5 libwayland-client0
+  libwayland-cursor0 libwayland-egl1 libwebp6 libx11-6 libx11-data libxau6
+  libxcb-render0 libxcb-shm0 libxcb1 libxcomposite1 libxcursor1 libxdamage1
+  libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon0 libxrandr2
+  libxrender1 libxtst6 ngraph-gtk ngraph-gtk-addins ngraph-gtk-addins-base
+  ngraph-gtk-doc shared-mime-info x11-common xkb-data
 0 upgraded, 93 newly installed, 0 to remove and 11 not upgraded.
 Need to get 38.5 MB of archives.
 After this operation, 137 MB of additional disk space will be used.
 Do you want to continue? [Y/n]
 ----
 
-We observe from the previous output that recommended packages are installed automatically.
+We can confirm from the previous output that recommended packages are well installed by default.
 
 
 [start=4]
@@ -266,7 +301,8 @@ bool InstallPackages(CacheFile &Cache, bool ShwKept, bool Ask)
    auto const FetchPBytes = Fetcher.PartialPresent(); // <3>
 
    // Size delta
-   ioprintf(c1out,_("After this operation, %sB of additional disk space will be used.\n"),
+   ioprintf(c1out,_("After this operation, %sB of additional disk space " +
+                    "will be used.\n"),
             SizeToStr(Cache->UsrSize()).c_str());
 
    if (_error->PendingError() == true)
@@ -295,7 +331,8 @@ bool InstallPackages(CacheFile &Cache, bool ShwKept, bool Ask)
          return false;
 
       if (Failed == true && _config->FindB("APT::Get::Fix-Missing",false) == false)
-         return _error->Error(_("Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?"));
+         return _error->Error(_("Unable to fetch some archives, " +
+           "maybe run apt-get update or try with --fix-missing?"));
 
       auto const progress = APT::Progress::PackageManagerProgressFactory();
       _system->UnLockInner(); // <5>
@@ -322,7 +359,8 @@ bool InstallPackages(CacheFile &Cache, bool ShwKept, bool Ask)
       ShowList(c1out, P_("The following package disappeared from your system as\n"
                "all files have been overwritten by other packages:",
                "The following packages disappeared from your system as\n"
-               "all files have been overwritten by other packages:", disappearedPkgs.size()), disappearedPkgs,
+               "all files have been overwritten by other packages:",
+               disappearedPkgs.size()), disappearedPkgs,
             [](std::string const &Pkg) { return Pkg.empty() == false; },
             [](std::string const &Pkg) { return Pkg; },
             [](std::string const &) { return std::string(); });
@@ -333,8 +371,8 @@ bool InstallPackages(CacheFile &Cache, bool ShwKept, bool Ask)
 }
 ----
 <1> APT acquires a lock using the link:https://man7.org/linux/man-pages/man2/fcntl.2.html[`fcntl()` system call] which is used to manipulate file descriptors. When called using the flag `F_SETLK`, the call returns -1 if the lock is already held by another process.
-<2> APT supports multiple package manager but the default one commonly used is the `dpkg` command we covered in this article. APT uses the class `debSystem` and the associated `pkgDPkgPM` to interact with the `dpkg` command.
-<3> The Acquire subsystem is reused to download the archive. Internally, the code keep for every item to retrieve two fields `FileSize` and `PartialSize`, which are the size of the object to fetch and how much was already fetched. The methods `Fetcher.FetchNeeded()` and `Fetcher.FetchPartial()` iterates over the items to determine the total values.
+<2> APT supports multiple package managers but the default is the `dpkg` command. APT uses the class `debSystem` and the associated `pkgDPkgPM` to interact with the `dpkg` command.
+<3> The Acquire subsystem is reused to download the archives. Internally, the code keeps for every item to retrieve two fields `FileSize` and `PartialSize`, which are the size of the object to fetch and how much was already fetched. The methods `Fetcher.FetchNeeded()` and `Fetcher.FetchPartial()` iterates over the items to determine the total values.
 <4> APT asks for confirmation before proceeding to the installation, except if you use options like `apt -y install`.
 <5> Unlock Dpkg lock `/var/lib/dpkg/lock` to make sure the `dpkg` command can use it.
 <6> The package manager reads the `/var/lib/dpkg/status` to found out the packages that were removed because none of their files was referenced by another package.
@@ -443,11 +481,12 @@ bool pkgDPkgPM::Go(APT::Progress::PackageManager *progress)
       if (I->Op == Item::Install)
       {
          if (I->File[0] != '/')
-               return _error->Error("Internal Error, Pathname to install is not absolute '%s'",I->File.c_str());
+               return _error->Error("Internal Error, " +
+               "Pathname to install is not absolute '%s'", I->File.c_str());
             Args.push_back(I->File.c_str());
       }
 
-      pid_t Child = ExecFork(fd[1]);
+      pid_t Child = ExecFork(fd[1]); // <1>
       if (Child == 0)
       {
          // This is the child
@@ -458,7 +497,7 @@ bool pkgDPkgPM::Go(APT::Progress::PackageManager *progress)
          if (chdir(_config->FindDir("DPkg::Run-Directory","/").c_str()) != 0)
             _exit(100);
 
-         execvp(Args[0], (char**) &Args[0]);
+         execvp(Args[0], (char**) &Args[0]); // <1>
          cerr << "Could not exec dpkg!" << endl;
          _exit(100);
       }
@@ -476,7 +515,7 @@ bool pkgDPkgPM::Go(APT::Progress::PackageManager *progress)
       {
          if (dpkg_finished == false)
          {
-            if ((res = waitpid(Child, &Status, WNOHANG)) == Child)
+            if ((res = waitpid(Child, &Status, WNOHANG)) == Child) // <1>
                dpkg_finished = true;
             else if (res < 0)
             {
@@ -494,7 +533,8 @@ bool pkgDPkgPM::Go(APT::Progress::PackageManager *progress)
 
       if (waitpid_failure == true)
       {
-         strprintf(d->dpkg_error, "Sub-process %s couldn't be waited for.",Args[0]);
+         strprintf(d->dpkg_error, "Sub-process %s couldn't be waited for.",
+                   Args[0]);
          _error->Error("%s", d->dpkg_error.c_str());
          break;
       }
@@ -503,8 +543,7 @@ bool pkgDPkgPM::Go(APT::Progress::PackageManager *progress)
    }
 }
 ----
+<1> The code is a classic example of Linux programming. The code uses the system calls `fork()`, `exec()`, and `wait()` to delegate to the command `dpkg`.
 
-After the `dpkg` command has been run to executed all necessary actions, the APT cache will be updated as the state of some packages has been updated.
-
-This close the last part of this article.
+After the `dpkg` command has run, the APT cache will still have to be updated as the state of some packages has been updated. There is nothing really new and we can stop our inspection of the APT code.
 

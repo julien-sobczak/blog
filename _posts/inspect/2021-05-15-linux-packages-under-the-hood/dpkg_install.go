@@ -16,11 +16,12 @@ import (
 )
 
 func main() {
+	// This program expects one or more package files to install.
 	if len(os.Args) < 2 {
 		log.Fatalf("Missing package archive(s)")
 	}
 
-	// Read the database
+	// Read the DPKG database
 	db, _ := loadDatabase()
 
 	// Unpack and configure the archive(s)
@@ -28,8 +29,8 @@ func main() {
 		processArchive(db, archivePath)
 	}
 
-	// Note: we don't manage a queue to defer the configuration of packages
-	// as we are going to test with a single package.
+	// For simplicity reasons, we don't manage a queue to defer
+	// the configuration of packages like in the official code.
 }
 
 //
@@ -44,14 +45,14 @@ type Database struct {
 }
 
 type PackageInfo struct {
-	Paragraph deb822.Paragraph // Extracted package section in /var/lib/dpkg/status
+	Paragraph deb822.Paragraph // Extracted section in /var/lib/dpkg/status
 
 	// info
 	Files             []string          // File <name>.list
 	Conffiles         []string          // File <name>.conffiles
-	MaintainerScripts map[string]string // File <name>.{preinst,prerm,postinst,postrm}
+	MaintainerScripts map[string]string // File <name>.{preinst,prerm,...}
 
-	Status      string // Current status (as also present in Paragraph under the field Status)
+	Status      string // Current status (as present in `Paragraph`)
 	StatusDirty bool   // True to ask for sync
 }
 
@@ -65,6 +66,7 @@ func (p *PackageInfo) Version() string {
 	return p.Paragraph.Value("Version")
 }
 
+// isConffile determines if a file must be processed as a conffile.
 func (p *PackageInfo) isConffile(path string) bool {
 	for _, conffile := range p.Conffiles {
 		if path == conffile {
@@ -74,7 +76,7 @@ func (p *PackageInfo) isConffile(path string) bool {
 	return false
 }
 
-// InfoPath returns the path a file under /var/lib/dpkg/info.
+// InfoPath returns the path a file under /var/lib/dpkg/info/.
 // Ex: "list" => /var/lib/dpkg/info/hello.list
 func (p *PackageInfo) InfoPath(filename string) string {
 	return filepath.Join("/var/lib/dpkg", p.Name()+"."+filename)
@@ -82,6 +84,8 @@ func (p *PackageInfo) InfoPath(filename string) string {
 
 // We now add a method to change the package status
 // and make sure the section in the status file is updated too.
+// This method will be used several times at the different steps
+// of the installation process.
 
 func (p *PackageInfo) SetStatus(new string) {
 	p.Status = new
@@ -89,7 +93,8 @@ func (p *PackageInfo) SetStatus(new string) {
 	// Override in DEB 822 document used to write the status file
 	old := p.Paragraph.Values["Status"]
 	parts := strings.Split(old, " ")
-	p.Paragraph.Values["Status"] = fmt.Sprintf("%s %s %s", parts[0], parts[1], new)
+	newStatus := fmt.Sprintf("%s %s %s", parts[0], parts[1], new)
+	p.Paragraph.Values["Status"] = newStatus
 }
 
 // Now, we are ready to read the database directory to initialize the structs.
@@ -103,7 +108,7 @@ func loadDatabase() (*Database, error) {
 	// Read the info directory
 	var packages []*PackageInfo
 	for _, statusParagraph := range status.Paragraphs {
-		statusField := statusParagraph.Value("Status") // Ex: "install ok installed"
+		statusField := statusParagraph.Value("Status") // install ok installed
 		statusValues := strings.Split(statusField, " ")
 
 		pkg := PackageInfo{
@@ -113,12 +118,13 @@ func loadDatabase() (*Database, error) {
 			StatusDirty:       false,
 		}
 
-		// Read configuration files
+		// Read the configuration files
 		pkg.Files, _ = ReadLines(pkg.InfoPath("list"))
 		pkg.Conffiles, _ = ReadLines(pkg.InfoPath("conffiles"))
 
-		// Read maintainer scripts
-		for _, script := range []string{"preinst", "postinst", "prerm", "postrm"} {
+		// Read the maintainer scripts
+		maintainerScripts := []string{"preinst", "postinst", "prerm", "postrm"}
+		for _, script := range maintainerScripts {
 			scriptPath := pkg.InfoPath(script)
 			if _, err := os.Stat(scriptPath); !os.IsNotExist(err) {
 				content, err := os.ReadFile(scriptPath)
@@ -131,17 +137,20 @@ func loadDatabase() (*Database, error) {
 		packages = append(packages, &pkg)
 	}
 
+	// We now have read everything that interest us and are ready
+	// to populate the Database struct.
+
 	return &Database{
 		Status:   status,
 		Packages: packages,
 	}, nil
 }
 
-// Now we are ready to process the archive to install.
+// Now we are ready to process an archive to install.
 
 func processArchive(db *Database, archivePath string) error {
 
-	// Read the debian archive file
+	// Read the Debian archive file
 	f, err := os.Open(archivePath)
 	if err != nil {
 		return err
@@ -162,7 +171,7 @@ func processArchive(db *Database, archivePath string) error {
 		return err
 	}
 
-	// Add new package in database
+	// Add the new package in the database
 	db.Packages = append(db.Packages, pkg)
 	db.Sync()
 
@@ -187,6 +196,11 @@ func processArchive(db *Database, archivePath string) error {
 
 // parseControl processes the control.tar archive.
 func parseControl(db *Database, buf bytes.Buffer) (*PackageInfo, error) {
+
+	// The control.tar archive contains the most important files
+	// we need to install the package.
+	// We need to extract metadata from the control file, determine
+	// if the package contains conffiles and maintainer scripts.
 
 	pkg := PackageInfo{
 		MaintainerScripts: make(map[string]string),
@@ -222,8 +236,10 @@ func parseControl(db *Database, buf bytes.Buffer) (*PackageInfo, error) {
 				Values: make(map[string]string),
 			}
 
-			// Make sure the field "Package' comes first, then "Status", then remaining fields.
-			pkg.Paragraph.Order = append(pkg.Paragraph.Order, "Package", "Status")
+			// Make sure the field "Package' comes first, then "Status",
+			// then remaining fields.
+			pkg.Paragraph.Order = append(
+				pkg.Paragraph.Order, "Package", "Status")
 			pkg.Paragraph.Values["Package"] = controlParagraph.Value("Package")
 			pkg.Paragraph.Values["Status"] = "install ok non-installed"
 			for _, field := range controlParagraph.Order {
@@ -251,6 +267,12 @@ func parseControl(db *Database, buf bytes.Buffer) (*PackageInfo, error) {
 
 // Unpack processes the data.tar archive.
 func (p *PackageInfo) Unpack(buf bytes.Buffer) error {
+
+	// The unpacking process consists in extracting all files
+	// in data.tar to their final destination, except for conffiles,
+	// which are copied with a special extension that will be removed
+	// in the configure step.
+
 	if err := p.runMaintainerScript("preinst"); err != nil {
 		return err
 	}
@@ -290,8 +312,14 @@ func (p *PackageInfo) Unpack(buf bytes.Buffer) error {
 				tmpdest += ".dpkg-new"
 			}
 
-			os.MkdirAll(filepath.Dir(tmpdest), 0755)
-			os.WriteFile(tmpdest, buf.Bytes(), 0755)
+			if err := os.MkdirAll(filepath.Dir(tmpdest), 0755); err != nil {
+				log.Fatalf("Failed to unpack directory %s: %v", tmpdest, err)
+			}
+
+			content := buf.Bytes()
+			if err := os.WriteFile(tmpdest, content, 0755); err != nil {
+				log.Fatalf("Failed to unpack file %s: %v", tmpdest, err)
+			}
 
 			p.Files = append(p.Files, dest)
 		}
@@ -305,6 +333,13 @@ func (p *PackageInfo) Unpack(buf bytes.Buffer) error {
 
 // Configure processes the conffiles.
 func (p *PackageInfo) Configure() error {
+
+	// The configure process consists in renaming the conffiles
+	// unpacked at the previous step.
+	//
+	// We ignore some implementation concerns like checking if a conffile
+	// has been updated using the last known checksum.
+
 	fmt.Printf("Setting up %s (%s) ...\n", p.Name(), p.Version())
 
 	// Rename conffiles
@@ -325,6 +360,11 @@ func (p *PackageInfo) Configure() error {
 }
 
 func (p *PackageInfo) runMaintainerScript(name string) error {
+
+	// The control.tar file can contains scripts to be run at
+	// specific moments. This function uses the standard Go library
+	// to run the `sh` command with a maintainer scrpit as an argument.
+
 	if _, ok := p.MaintainerScripts[name]; !ok {
 		// Nothing to run
 		return nil
@@ -339,7 +379,8 @@ func (p *PackageInfo) runMaintainerScript(name string) error {
 	return nil
 }
 
-// We still have to write the code to sync the database
+// We have covered the different steps of the installation process.
+// We still need to write the code to sync the database.
 
 func (d *Database) Sync() error {
 	newStatus := deb822.Document{
@@ -362,7 +403,8 @@ func (d *Database) Sync() error {
 	formatter := deb822.NewFormatter()
 	formatter.SetFoldedFields("Description")
 	formatter.SetMultilineFields("Conffiles")
-	if err := os.WriteFile("/var/lib/dpkg/status", []byte(formatter.Format(newStatus)), 0644); err != nil {
+	if err := os.WriteFile("/var/lib/dpkg/status",
+		[]byte(formatter.Format(newStatus)), 0644); err != nil {
 		return err
 	}
 
@@ -370,13 +412,18 @@ func (d *Database) Sync() error {
 }
 
 func (p *PackageInfo) Sync() error {
+	// This function synchronizes the files under /var/lib/dpkg/info
+	// for a single package.
+
 	// Write <package>.list
-	if err := os.WriteFile(p.InfoPath("list"), []byte(MergeLines(p.Files)), 0644); err != nil {
+	if err := os.WriteFile(p.InfoPath("list"),
+		[]byte(MergeLines(p.Files)), 0644); err != nil {
 		return err
 	}
 
 	// Write <package>.conffiles
-	if err := os.WriteFile(p.InfoPath("conffiles"), []byte(MergeLines(p.Conffiles)), 0644); err != nil {
+	if err := os.WriteFile(p.InfoPath("conffiles"),
+		[]byte(MergeLines(p.Conffiles)), 0644); err != nil {
 		return err
 	}
 

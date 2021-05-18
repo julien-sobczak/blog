@@ -1,6 +1,8 @@
+
+[[sect-part1]]
 == How to create a package manually?
 
-Linux packages are commonly available in a `.deb` and a `.rpm` file.footnote:[https://unix.stackexchange.com/questions/103531/what-are-deb-and-rpm-and-how-are-they-different-from-msi/103560]
+Linux packages are commonly available in a `.deb` and a `.rpm` file.
 
 * The `.deb` files are meant for distributions of Linux that derive from Debian (Ubuntu, Linux Mint, etc.).
 * The `.rpm` files are used primarily by distributions that derive from Redhat based distros (Fedora, CentOS, RHEL).
@@ -12,33 +14,45 @@ Because there are two main Linux distributions: Red Hat and Debian and each one 
 
 Both package formats have a lot in common and we will only discuss Debian packages in this document. The following table summarizes the main differences between the archive files.
 
+[cols="<,^,^"]
 |===
 || .rpm | .deb
 
 | Archive Format
-| Uses the link:https://en.wikipedia.org/wiki/Cpio[`cpio` command and file format], that mostly disappears, replaced by the classic `tar` command.
-| Uses the link:https://en.wikipedia.org/wiki/Ar_(Unix)[`ar`] command, also supersedes by the classic `tar` command.
+| Uses the link:https://en.wikipedia.org/wiki/Cpio[`cpio` command and file format].
+| Uses the link:https://en.wikipedia.org/wiki/Ar_(Unix)[`ar` command and file format].
 
 | Package Manager
-| `rpm`
-| `dpkg`
+| `rpm` +
+(1997, Written in C)
+| `dpkg` +
+(1993, Written in C)
 
 | Frontend Package Manager
-| `yum`
-| `apt`
+| `yum` +
+(2011, Written in Python)
+| `apt` +
+(1999, Written in C++)
 
 | Database
 | `/var/lib/rpm`
 | `/var/lib/dpkg`
+
+| Database Format
+| Berkeley DB files
+| DEB 822 flat files
 |===
 ====
 
-[NOTE]
-.What You Need to Know About the Debian package format?
-====
-A `.deb` file is an `ar` archive (the `ar` command is an ancestor of the common `tar` command and was already present in the first Unix version in 1971! Now, this command is mainly used by Debian packages). This archives contains 3 files:
+A package is a collection of files to distribute applications or libraries via the Debian package management system. The aim of packaging is to allow the automation of installing, upgrading, configuring, and removing computer programs in a consistent manner.
 
-* `debian-binary`: A text file containing `2.0\n`. This states the version of the deb file format. For 2.0 all other lines get ignored.
+[[wynk-debian-package-format]]
+[NOTE]
+.What You Need to Know About the Debian Package Format?
+====
+A `.deb` file is an `ar` archive. The `ar` command is an ancestor of the common `tar` command and was already present in the first Unix version in 1971! Now, this command is (mostly) only used by Debian packages. This archives contains 3 files:
+
+* `debian-binary`: A text file containing `2.0\n`. This states the version of the deb file format. For 2.0, all other lines get ignored.
 * `data.tar.gz`: A `tar` archive containing all files that will be installed with their destination paths
 [source]
 ----
@@ -57,7 +71,7 @@ A `.deb` file is an `ar` archive (the `ar` command is an ancestor of the common 
 ./usr/share/doc/parted/changelog.Debian.gz
 ./usr/share/doc/parted/changelog.gz
 ----
-* `control.tar.gz`: A `tar` archive containing various files useful for the `dpkg` command to do its job: metadata about the package (`control`) including the list of required dependency, the md5 sums of every data file to check integrity (`md5sums`), and also maintainer scripts (ex: `postinst` for post-installation and `prerm` for pre-removal), which are executable scripts that must be run when installing or removing a package.
+* `control.tar.gz`: A `tar` archive containing various files useful for the `dpkg` command to do its job: metadata about the package (`control`) including the list of required dependencies, the md5 sums of every data file to check integrity (`md5sums`), and also maintainer scripts (ex: `postinst` for post-installation, `prerm` for pre-removal, etc.), which are executables that must be run when installing or removing a package.
 [source]
 ----
 control
@@ -66,14 +80,13 @@ postinst
 prerm
 ----
 
-Note that the command `dpkg --build` redirects to the command `dpkg-deb --build` and the command `dpkg --list` redirects to the command `dpkg-query --list`. The code of these commands is present in the same repository under the subdirectories `./dpkg-deb/` and `./src/querycmd.c` respectively.
+_Further documentation_:
 
-_Further documentation_: link:https://raphaelhertzog.com/2010/11/08/5-reasons-why-a-debian-package-is-more-than-a-simple-file-archive/[5 reasons why a Debian package is more than a simple file archive, Raphaël Hertzog]
+* link:https://raphaelhertzog.com/2010/11/08/5-reasons-why-a-debian-package-is-more-than-a-simple-file-archive/[5 reasons why a Debian package is more than a simple file archive, Raphaël Hertzog]
+* link:https://www.debian.org/doc/manuals/maint-guide/[Debian New Maintainers' Guide], the official procedure to create a package the "Debian way".
 ====
 
-A package is a collection of files to distribute applications or libraries via the Debian package management system. The aim of packaging is to allow the automation of installing, upgrading, configuring, and removing computer programs in a consistent manner.
-
-The main introduction to Debian packages can be found by installing a Debian package :) (the PDF is also available link:https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf[online]):
+You can also learn more about Debian packages by installing a Debian package 😀 (the PDF is also available link:https://www.debian.org/doc/manuals/packaging-tutorial/packaging-tutorial.en.pdf[online]):
 
 [source]
 ----
@@ -81,20 +94,13 @@ $ apt install packaging-tutorial
 # Check /usr/share/doc/packaging-tutorial/packaging-tutorial.pdf
 ----
 
-* The *official procedure to create a package* the "Debian way" is the link:https://www.debian.org/doc/manuals/maint-guide/[Debian New Maintainers' Guide].
-* The complete *tutorial to create a package manually* is the link:https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/[Debian Binary Package Building HOWTO],
-
-Commands:
-
-* `dpkg-buildpackage` is the de facto standard tool to build Debian source and binary packages. When Debian developers are talking about packages, they surely reference the source package. For this blog post, we will skip this building step and directly build the binary archive, which is the archive that really gets installed on your system.
-* `dpkg-deb` packs, unpacks and provides information about Debian archives.
-* `dpkg` to install and remove packages from your system.
-
-
+[[wynk-dpkg]]
 [NOTE]
-.What You Need to Know About the command `dpkg`?
+.What You Need to Know About the Command `dpkg`?
 ====
 The project Dpkg started in 1994, at the same time the Debian package format was created, and thus the command `dpkg` works only with `.deb` binary archives. You must provide the archive as the command does not know how to retrieve it by itself. The command manages a database stored under `/var/lib/dpkg` to keep note of everything that is installed on the server, which is essential to determine what to clean when you remove a package.
+
+Note that the command `dpkg --build` redirects to the command `dpkg-deb --build` and the command `dpkg --list` redirects to the command `dpkg-query --list`. The code of these commands is present in the same repository in `./dpkg-deb/` and `./src/querycmd.c` respectively.
 
 * Official Repository: https://git.dpkg.org/cgit/dpkg/dpkg.git
 * GitHub Mirror: https://github.com/guillemj/dpkg
@@ -127,9 +133,9 @@ Our goal is to package this binary and the most popular solution to build a Debi
 
 === Prerequisites
 
-To play safely with the package we are going to build, we will use a Debian virtual server to prevent damages to your system and to be able to recreate easily the environment from scratch. We use link:https://www.vagrantup.com/[Vagrant] to create this virtual machine. Make sure Vagrant is installed on your system by following the link:https://learn.hashicorp.com/tutorials/vagrant/getting-started-install?in=vagrant/getting-started[installation procedure] for your operating system.
+To test the packages we are going to build and install, we will use a Debian VM in order to keep your system safe. We will use link:https://www.vagrantup.com/[Vagrant] to create this server. Make sure Vagrant is installed on your system by following the link:https://learn.hashicorp.com/tutorials/vagrant/getting-started-install?in=vagrant/getting-started[installation procedure] for your operating system.
 
-INFO: There is a companion GitHub repository link:https://github.com/julien-sobczak/linux-packages-under-the-hood[julien-sobczak/linux-packages-from-scratch] to this blog post. This repository is optional for this article. It mostly contains a `Vagrantfile` to start the virtual machines, the files to create various Debian versions of the Debian hello package, and also the Golang code source that reimplement minimal versions of the `dpkg` and `apt` commands. You will find more information in the link:https://github.com/julien-sobczak/linux-packages-under-the-hood/blob/master/README.md[`README.md`] file of this repository.
+NOTE: There is a companion GitHub repository link:https://github.com/julien-sobczak/linux-packages-under-the-hood[julien-sobczak/linux-packages-under-the-hood] to this blog post. This repository is optional for this article. It mostly contains a `Vagrantfile` to start the virtual machine, the files to create various Debian versions of the package `hello`, and also the Go code that reimplements minimal versions of the `dpkg` and `apt` commands. You will find more information in the link:https://github.com/julien-sobczak/linux-packages-under-the-hood/blob/master/README.md[`README.md`] file of this repository.
 
 Then:
 
@@ -143,14 +149,14 @@ $ echo > Vagranfile <<EOF
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/bullseye64"
+  config.vm.box = "debian/buster64"
 end
 EOF
 $ vagrant up
 # wait a few minutes
 $ vagrant ssh
 vagrant$ uname -a
-Linux bullseye 5.10.0-3-amd64 #1 SMP Debian 5.10.13-1 (2021-02-06) x86_64 GNU/Linux
+Linux buster 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19) x86_64 GNU/Linux
 ----
 
 When using Vagrant, the directory containing your `Vagrantfile` is accessible from the virtual machine from the directory `/vagrant`. We will use it to copy our `hello` binary program:
@@ -166,16 +172,16 @@ vagrant$ ls
 hello Vagrantfile
 ----
 
-NOTE: All commands whose prompt starts with `vagrant#` must be run inside the virtual machine. If this prompt is not specified, run the commands from your host.
+NOTE: All commands whose prompt starts with `vagrant#` must be run inside the virtual machine. Otherwise, run the commands from your host.
 
-Great! We are ready to create a Debian package for our Hello program.
+We are ready to create a Debian package for our Hello program.
 
 [source,sh]
 ----
 vagrant# cd /vagrant/
-vagrant# mkdir -p ./debian/usr/bin
+vagrant# mkdir -p ./debian/usr/bin # <1>
 vagrant# cp hello ./debian/usr/bin/
-vagrant# mkdir -p ./debian/DEBIAN
+vagrant# mkdir -p ./debian/DEBIAN # <1>
 vagrant# cat > ./debian/DEBIAN/control <<EOF
 Package: hello
 Version: 1.1-1
@@ -185,17 +191,36 @@ Architecture: amd64
 Maintainer: Julien Sobczak
 Description: Say Hello
 EOF
+vagrant# cat > ./debian/DEBIAN/preinst <<EOF # <2>
+#!/bin/sh
+echo "preinst says hello";
+EOF
+vagrant# cat > ./debian/DEBIAN/postinst <<EOF # <2>
+#!/bin/sh
+echo "postinst says hello";
+EOF
+vagrant# tree /vagrant/debian/
+|-- DEBIAN
+|   |-- control
+|   |-- preinst
+|   `-- postinst
+`-- usr
+    `-- bin
+        `-- hello
 ----
+<1> The first version of our package `hello` contains only the binary `hello` built previously and a DEB822 file `control` with the package metadata.
+<2> We also append basic maintainer scripts that displays a message in the console so that we will know when the installation process runs them.
 
 
+[[wynk-deb822]]
 [NOTE]
 .What You Need to Know About the DEB822 Format
 ====
-This format can be seen as an ancestor of YAML or JSON. Here is an example:
+This format can be seen as an ancestor of YAML or JSON. Here is an example showing the three supported types of fields:
 
 [source,deb822]
 ----
-FieldSimple:
+FieldSimple: simple value
 FieldFolded: very long value
  continuing on the next line starting with a space.
 FieldMultiline:
@@ -203,36 +228,38 @@ FieldMultiline:
  /usr/bin/cmd2
 ----
 
-The format is used by the file `control` but also by some files in the `dpkg` database such as `/var/lib/dpkg/status`.
+The format is used by the file `control` but also by some files in the `dpkg` database such as `/var/lib/dpkg/status`. This format is also used by the command `apt`, which will be covered later.
 
-Check the link:https://man7.org/linux/man-pages/man5/deb822.5.html[man page] for additional information.
+_Further documentation_: Check the link:https://man7.org/linux/man-pages/man5/deb822.5.html[man page] for additional information.
 ====
 
+[[cmd-dpkg-build]]
+=== `dpkg --build`
 
-To build using `dpkg`:
+We will use the command `dpkg --build` to build our package:
 
 [source,sh]
 ----
 $ apt install fakeroot # install the fakeroot command
-$ fakeroot dpkg --build debian hello_1.1-1_amd64.deb
+$ fakeroot dpkg --build debian hello_1.1-1_amd64.deb # <1>
 ----
+<1> This command builds a Debian package, which as outlined before, consists in building an `ar` archive containing two `tar` archives: the content of our directory `DEBIAN/` in `control.tar.gz` and the other files in `data.tar.gz`. We use the `fakeroot` command to make sure files inside the archive are created with the user `root`.
 
-This command builds a Debian package, which as discussed before, consists in building an `ar` archive containing two `tar` archives: the content of our directory `DEBIAN/` in `control.tar.gz` and the other files in `data.tar.gz`. We can reproduce its working using standard Bash commands:footnote:[https://unix.stackexchange.com/questions/30303/how-to-create-a-deb-file-manually]
+We can also reproduce its working link:https://unix.stackexchange.com/questions/30303/how-to-create-a-deb-file-manually[using standard Bash commands]:
 
 [source,sh]
 ----
 $ apt install binutils # install the ar command
 $ apt install fakeroot # install the fakeroot command
 $ echo 2.0 > debian-binary
-$ cd debian && tar czf ../data.tar.gz  [a-z]* && cd ..
+$ cd debian && tar czf ../data.tar.gz [a-z]* && cd ..
 $ cd debian/DEBIAN/ && tar czf ../../control.tar.gz * && cd ../..
-$ fakeroot ar r hello_1.1-1_amd64.deb  debian-binary control.tar.gz data.tar.gz
-ar: creating hello_1.1-1_amd64.deb
+$ fakeroot ar r hello_1.1-1_amd64.deb debian-binary control.tar.gz data.tar.gz
+ar: creating hello_1.1-1_amd64.deb # <1>
 ----
+<1> The package will fail most linter checks. Indeed, we ignored many of the best practices that higher-level commands ensure but we will still be able to install this package on our server.
 
-NOTE: The package will fail most linter checks. Indeed, we ignored many of the best practices that higher-level commands ensure but we will still be able to install this package on our server.
-
-The C function executed by the command `dpkg --build` is the link:https://github.com/guillemj/dpkg/blob/1.20.7/dpkg-deb/build.c#L552-L728[function `do_build` in `./dpkg-deb/build.c`. Here is a simplified version: footnote:simplified[TODO]
+Now is the time to look at the code. Dpkg is written in C, and the function executed by the command `dpkg --build` is the link:https://github.com/guillemj/dpkg/blob/1.20.7/dpkg-deb/build.c#L552-L728[function `do_build` in `./dpkg-deb/build.c`].
 
 .dpkg-deb/build.c
 [source, c]
@@ -333,30 +360,32 @@ do_build(const char *const *argv)
 <6> Same as above for `data.tar`
 <7> The function `dpkg_ar_close` is part of the housecleaning logic and simply closes the file descriptor.
 
-Here is a simplified and minimalist rewrite of the code in Go.footnote:simplified[] The full code is available on GitHub in the repository link:https://github.com/julien-sobczak/linux-packages-from-scratch[julien-sobczak/linux-packages-from-scratch].
+[[sect-part1-go]]
+=== Case Study
+
+What follows is a minimal rewrite of this code in Go. The full code is available on GitHub in the repository link:https://github.com/julien-sobczak/linux-packages-under-the-hood[julien-sobczak/linux-packages-under-the-hood].
 
 [source,go]
 .cmd/dpkg/main.go
 ----
-include::dpkg_build.go[]
+include::./dpkg_build.go[]
 ----
-
 
 To run the code:
 
 [source, sh]
 ----
-$ go run cmd/dpkg/main.go hello hello.deb
+$ go run main.go hello hello.deb
 ----
 
-To inspect the newly Debian archive `hello.deb`, we can use the command `dpkg -c` to view the data files or use the command `ar` to view the real content of the archive:
+To inspect the resulting archive `hello.deb`, we can use the command `dpkg -c` to view the data files or use the command `ar` to view the real content of the archive:
 
 [source, sh]
 ----
 vagrant# dpkg -c /vagrant/hello.deb
 -rw-r-x--- 0/0         2034781 1970-01-01 00:00 usr/bin/hello
 
-vagrant#ar -tf /vagrant/hello.deb
+vagrant# ar -tf /vagrant/hello.deb
 ar -tf /vagrant/hello.deb
 debian-binary
 control.tar
@@ -366,6 +395,6 @@ vagrant# tar -tf data.tar
 usr/bin/hello
 ----
 
-This completes the first part of this article. We created a Debian package from scratch! Now, we will have a look at the installation process.
+🎉 *We have finished with the format `.deb`.* This completes the first part of this article. We created a Debian package from scratch! Now, we will inspect the installation process.
 
 

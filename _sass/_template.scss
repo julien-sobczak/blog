@@ -200,7 +200,7 @@ button, html input[type=button], input[type=reset], input[type=submit] {
 }
 
 .navbar-checkbox-toggle:checked + .navbar-label-toggle + .navbar-collapse {
-  display: block; 
+  display: block;
   max-height: 100vh;
   width: 100%;
 }
@@ -256,11 +256,11 @@ button#zen-mode-out {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  
+
   display: none;
   font-size: 2rem;
   color: $color-gray;
-  
+
   /* Disable browser default link decoration */
   text-decoration: none;
   outline: 0;
@@ -278,10 +278,10 @@ button#zen-mode-out {
 }
 
 /* Responsive Menu */
-// On large-enough screen, the collapsed menu is displayed directly in the menu bar.  
+// On large-enough screen, the collapsed menu is displayed directly in the menu bar.
 
 @media (min-width: $screen-medium-min) {
- 
+
   /* Increase menu size */
   .navbar-default {
     transition: all 0.5s;
@@ -794,7 +794,11 @@ footer img.footer-me {
 
   .content {
     li {
-      margin: 20px 0;
+      margin: 1em 0;
+
+      p {
+        margin: 0;
+      }
     }
   }
 }
@@ -848,7 +852,7 @@ footer img.footer-me {
 /* A class for short list */
 #page-post .compact > ul {
   li {
-    margin: 0.75em 0 !important;
+    margin: 0.5em 0 !important;
   }
   p {
     margin: 0 !important;
@@ -934,7 +938,7 @@ figure {
   ul {
     max-width: 600px;
     margin: 0 auto;
-    
+
     li {
       list-style-type: disc;
       margin: 50px auto 25px;
@@ -967,7 +971,7 @@ figure {
 /* Asciidoc */
 
 .listingblock {
-  font-size: 0.8em; // Be sure to display 80 characters per line
+  font-size: 0.9rem; // Be sure to display 80 characters per line
   line-height: 1.5em;
   border-top: 1px solid gray;
 
@@ -1117,8 +1121,8 @@ figure {
 }
 
 .note li, .caution li, .experiment li, .tip li, .remember li, .congratulations li {
-  margin-top: 30px !important;
-  margin-bottom: 30px !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
 }
 
 .note a, .caution a, .experiment a, .tip a, .remember a, .congratulations a {
@@ -1202,3 +1206,39 @@ b.conum * {
 .colist td {
   padding: 5px 10px;
 }
+.colist tr > td:nth-child(1) { /* Callout Numbers */
+  vertical-align: top;
+}
+
+
+/* Tables */
+
+table.tableblock thead th, table.tableblock tfoot th { font-weight: bold; }
+table.tableblock { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table.tableblock thead, table.tableblock tfoot { background: whitesmoke; font-weight: bold; }
+table.tableblock thead tr th, table.tableblock thead tr td, table.tableblock tfoot tr th, table.tableblock tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #222222; text-align: left; }
+table.tableblock tr th, table.tableblock tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #222222; }
+table.tableblock tr.even, table.tableblock tr.alt, table.tableblock tr:nth-of-type(even) { background: #f9f9f9; }
+table.tableblock thead tr th, table.tableblock tfoot tr th, table.tableblock tbody tr td, table.tableblock tr td, table.tableblock tfoot tr td { display: table-cell; line-height: 1.6; }
+
+table.tableblock.grid-all { border-collapse: separate; border-spacing: 1px; -webkit-border-radius: 4px; border-radius: 4px; border-top: 1px solid grey; border-bottom: 1px solid grey; }
+
+table.tableblock.frame-topbot, table.tableblock.frame-none { border-left: 0; border-right: 0; }
+
+table.tableblock.frame-sides, table.tableblock.frame-none { border-top: 0; border-bottom: 0; }
+
+table.tableblock td .paragraph:last-child p, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+th.tableblock.halign-left, td.tableblock.halign-left { text-align: left; }
+
+th.tableblock.halign-right, td.tableblock.halign-right { text-align: right; }
+
+th.tableblock.halign-center, td.tableblock.halign-center { text-align: center; }
+
+th.tableblock.valign-top, td.tableblock.valign-top { vertical-align: top; }
+
+th.tableblock.valign-bottom, td.tableblock.valign-bottom { vertical-align: bottom; }
+
+th.tableblock.valign-middle, td.tableblock.valign-middle { vertical-align: middle; }
+
+p.tableblock.header { color: #222222; font-weight: bold; }
