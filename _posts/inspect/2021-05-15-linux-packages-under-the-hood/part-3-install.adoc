@@ -91,12 +91,12 @@ bool DoInstall(CommandLine &CmdL)
    return result;
 }
 ----
-<1> The package problem resolver is launched during step 2 and can add new packages to install to satisfy dependencies. Therefore, the number of packages to install can be different from the packages specified in the command line.
+<1> The package problem resolver is launched during step 2 and can add new packages to install to satisfy dependencies. Therefore, the number of packages to install can be different from the number of packages specified in the command line.
 
 [start=1]
 . *Load the APT cache*
 
-The first step is without surprise to load the APT Cache using the method `pkgCacheFile::Open` which reuses methods we have already discussed before.
+The first step is without surprise to load the APT Cache using the method `pkgCacheFile::Open()` which reuses methods we have already discussed before.
 
 [source,c++]
 .apt-pkg/cachefile.cc
@@ -124,7 +124,7 @@ bool pkgCacheFile::Open(OpProgress *Progress)
 [start=2]
 . *Determine the packages to install*
 
-Installing a package can also means uninstalling some other packages. Maybe the new version of a package stops using a dependency that was used only by this package and APT will try to autoremove it. The code is therefore a little more complicated for obvious reasons.
+Installing a package can also means uninstalling some other packages. Maybe the new version of a package stops using a dependency that was used only by this package and APT will try to autoremove it. The code is therefore a little more complicated.
 
 For this step, we ignore most of these problems and focus on the installation of new packages with only new dependencies to install. The code will be adapted in consequence.
 
@@ -145,7 +145,7 @@ Conflicts: nginx-extras, nginx-light
 Breaks: nginx (<< 1.4.5-1), nginx-full (<< 1.18.0-1)
 ----
 
-The code documentation recognizes that the code has become complex and very sophisticated over time. In fact, the resolver may even not be able to fix all broken packages. Packages may be missing and conflicts may still exist. Check the function `pkgProblemResolver::ResolveInternal()` defined in `apt-pkg/algorithms.cc` for more details.
+The code documentation recognizes that the code has become complex and very sophisticated over time. Moreover, the resolver may even not be able to fix all broken packages. Packages may be missing and conflicts may still exist. Check the function `pkgProblemResolver::ResolveInternal()` defined in `apt-pkg/algorithms.cc` for more details.
 
 [source,c++]
 .apt-private/private-install.cc
@@ -180,12 +180,12 @@ bool DoCacheManipulationFromCommandLine(CommandLine &CmdL, CacheFile &Cache,
 ----
 <1> Add one to `CmdL.FileList` to skip the `install` command name.
 <2> Mark this package version to be installed.
-<3> Ensure the resolver fixes broken packages to continue the installation.
+<3> Ensure the resolver fixed the broken packages before continuing the installation.
 
 [start=3]
 . *Ask confirmation for additional packages to install*
 
-This step simply iterates over the package to install and inspect the calculated dependencies list to keep packages present in the fields `Recommends` and `Suggests`. The “recommended” dependencies are the most important and considerably improve the functionality offered by the package and often indispensable to its operation (these recommended packages are now installed by default by APT).
+This step simply iterates over the package to install and inspects the calculated dependencies list to keep packages present in the fields `Recommends` and `Suggests`. The “recommended” dependencies are the most important and considerably improve the functionality offered by the package (these recommended packages are now installed by default by APT).
 
 Here is an example of a package with recommended and suggested packages:
 
@@ -437,7 +437,7 @@ class pkgDPkgPM : public pkgPackageManager
 };
 ----
 <1> The package manager keeps a list of actions to perform.
-<2> The method `Install` simply append a new item in `List` of type `Install`.
+<2> The method `Install` simply appends a new item in `List` of type `Install`.
 <3> The method `Go` reads the list of actions and execute them.
 
 The only remaining code is the `dpkg` command execution:

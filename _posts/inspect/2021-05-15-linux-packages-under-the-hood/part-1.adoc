@@ -1,6 +1,6 @@
 
 [[sect-part1]]
-== How to create a package manually?
+== How to create a package manually
 
 Linux packages are commonly available in a `.deb` and a `.rpm` file.
 
@@ -48,9 +48,9 @@ A package is a collection of files to distribute applications or libraries via t
 
 [[wynk-debian-package-format]]
 [NOTE]
-.What You Need to Know About the Debian Package Format?
+.What You Need to Know About the Debian Package Format
 ====
-A `.deb` file is an `ar` archive. The `ar` command is an ancestor of the common `tar` command and was already present in the first Unix version in 1971! Now, this command is (mostly) only used by Debian packages. This archives contains 3 files:
+A `.deb` file is an `ar` archive. The `ar` command is an ancestor of the common `tar` command and was already present in the first Unix version in 1971! Now, this command is (mostly) only used by Debian packages. This archive contains 3 files:
 
 * `debian-binary`: A text file containing `2.0\n`. This states the version of the deb file format. For 2.0, all other lines get ignored.
 * `data.tar.gz`: A `tar` archive containing all files that will be installed with their destination paths
@@ -96,7 +96,7 @@ $ apt install packaging-tutorial
 
 [[wynk-dpkg]]
 [NOTE]
-.What You Need to Know About the Command `dpkg`?
+.What You Need to Know About the Command `dpkg`
 ====
 The project Dpkg started in 1994, at the same time the Debian package format was created, and thus the command `dpkg` works only with `.deb` binary archives. You must provide the archive as the command does not know how to retrieve it by itself. The command manages a database stored under `/var/lib/dpkg` to keep note of everything that is installed on the server, which is essential to determine what to clean when you remove a package.
 
@@ -357,7 +357,7 @@ do_build(const char *const *argv)
 <3> The function `dpkg_ar_put_magic` defines the magic number `!<arch>\n` telling Linux the file is of type `ar`.
 <4> The function `dpkg_ar_member_put_mem` appends the file `debian-binary` with the content of the variable `deb_magic`.
 <5> The function `dpkg_ar_member_put_file` appends the file `control.tar` with the content of a temporary file.
-<6> Same as above for `data.tar`
+<6> Same as above for `data.tar`.
 <7> The function `dpkg_ar_close` is part of the housecleaning logic and simply closes the file descriptor.
 
 [[sect-part1-go]]

@@ -24,7 +24,7 @@ import (
 
 // The command `apt install` requires more code
 // than our previous implementation of the command `dpkg`.
-// We will introduce the different component successively.
+// We will introduce the different components successively.
 
 ///////////////////////////////////////////////////////////
 
@@ -32,9 +32,9 @@ import (
 // The Acquire subsystem
 //
 
-// Apt accepts package names and need to retrieve their archives
+// Apt accepts package names and needs to retrieve their archives
 // from repositories, commonly using HTTP.
-// The pkgAcquire struct download the various required files
+// The pkgAcquire struct downloads the various required files
 // using a pool of worker to process each item to download.
 // Like the real implementation, this system is not a generic downloader
 // but contains some Apt logic.
@@ -55,7 +55,7 @@ type pkgAcquire struct {
 // - `InRelease`: the metadata about the repository.
 // - `Packages`: the list of packages present in the repository.
 // - `.deb` files: the archives to install using `dpkg`.
-// Each item is accessible from an URI, must be stored locally, and requires
+// Each item is accessible from an URI, must be stored locally, and required
 // some postprocessing like checking the integrity of the files to prevent
 // MITM attacks.
 
@@ -280,7 +280,7 @@ func (i MetaIndexItem) String() string {
 /*
  * The second kind of Item we have to download are index files
  * (Packages and Sources files).
- * In this implementation, we are ignore Sources index files.
+ * In this implementation, we are ignoring Sources index files.
  * Packages index files list the Debian control files (DEBIAN/control)
  * with a few additional fields for every .deb package available.
  */
@@ -600,7 +600,7 @@ func (c *CacheFile) BuildCaches() {
 	}
 }
 
-// The second step is to read the lists of source to find the `Packages` files
+// The second step is to read the lists of sources to find the `Packages` files
 // containing the list of available packages.
 // So, we need a function to parse these local source files.
 
@@ -704,7 +704,7 @@ func (c *CacheFile) BuildDepCache() {
 	// Add state for packages already installed
 	for _, pkg := range status.Paragraphs {
 		// The status file also contains packages
-		// that was partially installed or removed.
+		// that were partially installed or removed.
 		if !strings.Contains(pkg.Value("Status"), "installed") {
 			continue
 		}
@@ -753,7 +753,7 @@ func (c *CacheFile) Open() {
 	}
 }
 
-// As we have glimpsed before, the cache content is populated
+// As we have implemented before, the cache content is populated
 // from the `Done()` methods of the different types of `Item`.
 // We need to expose additional methods to easily add or retrieve
 // these packages and their state.
@@ -782,7 +782,7 @@ func (c *CacheFile) GetState(pkg *Package) *StateCache {
 	state, ok := c.depCache.states[pkg.Name()]
 	if !ok {
 		// Only the state of installed packages is present.
-		// We defer the initializion for other packages until
+		// We defer the initialization for other packages until
 		// the first access.
 		state = &StateCache{
 			CandidateVersion: pkg.Version(),

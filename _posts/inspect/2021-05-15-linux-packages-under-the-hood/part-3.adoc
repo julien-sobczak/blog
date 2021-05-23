@@ -2,13 +2,13 @@
 [[sect-part3]]
 == What happens when you install a package using `apt`
 
-The major reason to use `apt` is for the dependency management support. This command understands that in order to install a given package, other packages may need to be installed too, and `apt` can download these and install them. In practice, `dpkg` is called a package manager and `apt` is called a frontend package manager.
+The main reason to use `apt` is for the dependency management support. This command understands that in order to install a given package, other packages may need to be installed too, and `apt` can download and install them. In practice, `dpkg` is called a package manager and `apt` is called a frontend package manager.
 
 [[wynk-apt-get-aptitude]]
 [NOTE]
-.What You Need to Know About `apt`, `apt-get`, `aptitude`?
+.What You Need to Know About `apt`, `apt-get`, `aptitude`
 ====
-APT is a vast project started in 1997 organized around a core library. The command `apt-get` was the first frontend developed within the project, and `apt` is the second command provided by APT which overcomes some design mistakes of `apt-get`, for example,  `apt` refuses to install dependencies that were not installed beforehand during an upgrade. Under the hood, both tools are built on top of the core library and are thus very close.
+APT is a vast project started in 1997 organized around a core library. The command `apt-get` was the first frontend developed within the project, and `apt` is the second command provided by APT, which overcomes some design mistakes of `apt-get`, for example,  `apt` refuses to install dependencies that were not installed beforehand during an upgrade. Under the hood, both tools are built on top of the core library and are thus very close.
 
 External projects like `aptitude` have been developed later to support new features like auto-removing of packages when they are no longer required, but most of these features are now available in `apt` too.
 
@@ -25,7 +25,7 @@ APT makes software available to the user by doing the dirty work of downloading 
 
 [[wynk-apt-configuration-files]]
 [NOTE]
-.What You Need to Know About APT Configuration Files?
+.What You Need to Know About APT Configuration Files
 ====
 APT configuration resides under `/etc/apt/`, which contains the following files:
 
@@ -96,7 +96,7 @@ debian-archive-stretch-security-automatic.gpg
 debian-archive-stretch-stable.gpg
 ----
 +
-When installing a package, APT retrieves the package from an external repository and the `Release` file, which is the entry file to find `Packages` index files, may have be altered (which means checking the MD5 sums inside these index files is useless if we can't guarantee that the `Release` file is safe against a man-in-the-middle attack). This is the goal of secure APT. Concretely, secure APT always downloads a `Release.gpg` file if existing before downloading a `Release` file. (NB: The file `InRelease` had now merged the intent of these two deprecated files.) Using cryptography, APT can be sure the file is safe and can trust the MD5 sums present inside this file to check other files like `Packages` files. Otherwise, APT will complain with the following message you have probably encountered before:
+When installing a package, APT retrieves the package from an external repository and the `Release` file, which is the entry file to find `Packages` index files, may have be altered (which means checking the MD5 sums inside these index files is useless if we can't guarantee that the `Release` file is safe against a man-in-the-middle attack). This is the goal of secure APT. Concretely, secure APT always downloads a `Release.gpg` file if existing before downloading a `Release` file. (NB: The file `InRelease` had now merged the intent of these two deprecated files.) Using cryptography, APT can be sure that the file is safe and can trust the MD5 sums present inside it to check other files like `Packages` files. Otherwise, APT will complain with the following message you have probably encountered before:
 +
 [source,sh]
 ----
@@ -226,7 +226,7 @@ include::./part-3-install.adoc[]
 
 Like for other parts, we will write a minimal version of the command `apt install` in Go. We will not bother with a cache and simply read the Debian repositories systematically.
 
-To test our program, we need a basic package so that we can focus on the core logic of the APT installation process without having to support arcane use cases. We will use a new version of our package `hello` (the code is available in the link:https://github.com/julien-sobczak/linux-packages-under-the-hood[companion GitHub repository]):
+To test our program, we need a basic package so that we can focus on the core logic of the APT installation process without having to support advanced logics. We will use a new version of our package `hello` (the code is available in the link:https://github.com/julien-sobczak/linux-packages-under-the-hood[companion GitHub repository]):
 
 [source,sh]
 ----

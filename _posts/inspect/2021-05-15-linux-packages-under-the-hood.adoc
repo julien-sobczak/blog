@@ -1,7 +1,7 @@
 ---
 layout: post-inspect
 title: "Linux Packages Under The Hood"
-subtitle: "What happens when you install a Debian package on your machine?"
+subtitle: "What happens when you install a Debian package on your machine"
 author: Julien Sobczak
 date: '2021-05-15'
 category: inspect
@@ -17,23 +17,23 @@ excerpt_only: true
 [NOTE]
 .What You Will Learn
 ====
-* How to create an archive manually?
-** How to create a simple package to install a Go binary using the `dpkg` command?
-** What is the format of the archive? How to check its content?
-** How to create the same package using standard Unix tools?
-** *Case study*: How to create a package in Go?
-* What happens when you install a package using `dpkg`?
-** What contains the database?
-** How files are copied to the host?
-** What changed in the database?
-** How to check that the package has been installed?
-** *Case study*: How to install a package like `dpkg` in Go?
-* What happens when you install a package using `apt`?
-** How does the command `apt` know where to search for packages?
-** What is the format of a repository?
-** What does the command `apt update`?
-** How `apt` uses `dpkg` under the hood?
-** *Case study*: How to install a package like `apt` in Go?
+* How to create an archive manually.
+** How to create a simple package to install a Go binary using the `dpkg` command.
+** What is the format of the archive. How to check its content.
+** How to create the same package using standard Unix tools.
+** *Case study*: How to create a package in Go.
+* What happens when you install a package using `dpkg`.
+** What contains the database.
+** How files are copied to the host.
+** What changed in the database.
+** How to check that the package has been installed.
+** *Case study*: How to install a package like `dpkg` in Go.
+* What happens when you install a package using `apt`.
+** How does the command `apt` know where to search for packages.
+** What is the format of a repository.
+** What does the command `apt update`.
+** How `apt` uses `dpkg` under the hood.
+** *Case study*: How to install a package like `apt` in Go.
 ====
 
 [.lead]
@@ -48,18 +48,18 @@ I assume you have already installed many Linux packages. A basic comprehension o
 == Table of Contents
 
 [.compact]
-* xref:sect-part1[How to create an archive manually?]
+* xref:sect-part1[How to create an archive manually].
 ** What you need to know about xref:wynk-debian-package-format[the Debian package format], xref:wynk-dpkg[the `dpkg` command], xref:wynk-deb822[the DEB822 format].
-** The command: xref:cmd-dpkg-build[`dpkg --build`]
-** xref:sect-part1-go[The implementation in Go]
-* xref:sect-part2[What happens when you install a package using `dpkg`?]
+** The command xref:cmd-dpkg-build[`dpkg --build`].
+** xref:sect-part1-go[The implementation in Go].
+* xref:sect-part2[What happens when you install a package using `dpkg`].
 ** What you need to know about xref:wynk-conffiles[conffiles], xref:wynk-dpkg-database[the Dpkg database].
-** The command: xref:cmd-dpkg-i[`dpkg -i`]
-** xref:sect-part2-go[The implementation in Go]
-* xref:sect-part3[What happens when you install a package using `dpkg`?]
+** The command xref:cmd-dpkg-i[`dpkg -i`].
+** xref:sect-part2-go[The implementation in Go].
+* xref:sect-part3[What happens when you install a package using `dpkg`].
 ** What you need to know about xref:wynk-apt-get-aptitude[`apt`, `apt-get`, `aptitude`], xref:wynk-apt-configuration-files[configuration files], xref:wynk-apt-configuration-options[configuration options], xref:wynk-source-lists[source lists], xref:wynk-repositories[repositories], xref:wynk-apt-diffs[diffs], xref:wynk-dir-apt-cache[`/var/cache/apt/`], xref:wynk-dir-apt-lib[`/var/lib/apt/`], xref:wynk-apt-cache-files[cache files].
-** The commands: xref:cmd-apt-update[`apt update`], xref:cmd-apt-list[`apt list`], xref:cmd-apt-install[`apt install`]
-** xref:sect-part3-go[The implementation in Go]
+** The commands xref:cmd-apt-update[`apt update`], xref:cmd-apt-list[`apt list`], and xref:cmd-apt-install[`apt install`].
+** xref:sect-part3-go[The implementation in Go].
 
 [NOTE.tip]
 .This post is long, really long.

@@ -189,14 +189,14 @@ bool pkgSourceList::ReadMainList()
 AcqTextStatus Stat(std::cout, ScreenWidth,_config->FindI("quiet",0)); // <1>
 ListUpdate(Stat, *List);
 ----
-<1> `AcqTextStatus` is used to report progress of the file downloading.
+<1> `AcqTextStatus` is used to report progress of the files downloading.
 
 
 [[wynk-repositories]]
 [NOTE]
 .What You Need to Know About Repositories
 ====
-A repository is a set of Debian binary or source packages organized in a special directory tree along various additional files--checksums, signatures, translations, ... APT downloads some these files to install a package on your system.
+A repository is a set of Debian binary or source packages organized in a special directory tree along various additional files--checksums, signatures, translations, ... APT downloads some of these files to install a package on your system.
 
 Ex: `deb https://deb.debian.org/debian stable main contrib non-free`
 
@@ -403,7 +403,7 @@ bool ListUpdate(pkgAcquireStatus &Stat,
    return AcquireUpdate(Fetcher, PulseInterval, true); // <4>
 }
 ----
-<1> The class `pkgAcquire` is the main component of the Acquire subsystem. APT is responsible to retrieve the packages from various sources, mainly remote repositories through HTTP and the Acquire system is responsible to fetch all `Item` required by APT in the most efficient way. It uses for example a pool of workers to speed up the downloading and is able to test for xref:wynk-apt-diffs[diffs files] before downloading full index files and apply them.
+<1> The class `pkgAcquire` is the main component of the Acquire subsystem. APT is responsible to retrieve the packages from various sources, mainly remote repositories through HTTP and the Acquire system is responsible to fetch all `Item` required by APT in the most efficient way. It uses for example a pool of workers to speed up the downloading and is able to test for xref:wynk-apt-diffs[diffs files] before downloading full index files.
 <2> Most APT commands tries to acquire a lock to prevent two processes using the lib APT to run at the same time. The lock file is `/var/lib/apt/lists/lock` but other lock files exists for example to update the APT cache.
 <3> The method `GetIndexes()` creates new items to download `InRelease` files using the Acquire system.
 <4> The function `AcquireUpdate()` collects the results from the `Fetcher` and update the cache.
@@ -434,7 +434,7 @@ https://deb.debian.org/debian
         └── 2021-04-15-1400.39.gz        220
 ----
 
-The `apt` command will try to retrieve these files and apply successives diffs on top of its previous index.
+The `apt` command will try to retrieve these files and apply successive diffs on top of its local index file.
 ====
 
 
@@ -483,7 +483,7 @@ Del /var/lib/apt/lists/partial/*
 Del /var/cache/apt/pkgcache.bin /var/cache/apt/srcpkgcache.bin
 ----
 
-APT is highly configurable and there are several options to clean the cache regurlarly, like after each package installation.
+APT is highly configurable and there are several options to clean the cache regurlarly, like after every package installation.
 ====
 
 [[wynk-dir-apt-lib]]
@@ -956,7 +956,7 @@ if (_config->FindB("APT::Cmd::Show-Update-Stats", false) == true)
 }
 ----
 <1> The operator `[]` is overloaded in `pkgDepCache` to return `PkgState[I->ID]`, which is a struct `StateCache` containing the current installed and candidate versions.
-<2> The method `Upgradable()` reads the state to determine if a new candidate version is available and increments a counter if true.
+<2> The method `Upgradable()` reads the state to determine if a new candidate version is available and increments a counter.
 <3> The macro `P_` is defined by `define P_(msg,plural,n) (n == 1 ? msg : plural)`.
 
 That's all for the command `apt update`. We will now cover other APT commands, reusing the knowledge we built about the APT cache.
