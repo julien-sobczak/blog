@@ -1242,3 +1242,13 @@ th.tableblock.valign-bottom, td.tableblock.valign-bottom { vertical-align: botto
 th.tableblock.valign-middle, td.tableblock.valign-middle { vertical-align: middle; }
 
 p.tableblock.header { color: #222222; font-weight: bold; }
+
+/* misc */
+
+hr {
+  border: 0;
+  height: 1px;
+  background: darkgrey;
+  margin: 4rem auto;
+  width: 50%;
+}
