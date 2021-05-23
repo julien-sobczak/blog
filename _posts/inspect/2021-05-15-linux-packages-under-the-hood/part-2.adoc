@@ -26,7 +26,7 @@ hello world
 
 The command does a lot of interesting things and the code is larger than the previous `build` command. The link:https://man7.org/linux/man-pages/man1/dpkg.1.html[man page] details the installation steps and we will present the main code for every one of them.
 
-The entry point for the installation of a single package is the function `archivefiles`, and most specifically the function `process_archive`:
+The entry point for the installation of a package is the function `archivefiles`, and most specifically the function `process_archive`:
 
 [source,c]
 .src/archives.c
@@ -201,7 +201,7 @@ void process_archive(const char *filename) {
 [start=4]
 . *Unpack the new files, and at the same time back up the old files, so that if something goes wrong, they can be restored.*
 
-This step is similar to running the command `dpkg --unpack`. The unpacking process is simple to understand: extract every file present in the `data.tar` to their destination path but things are not so simple as outlined by this comment:
+This step is similar to running the command `dpkg --unpack`. The unpacking process is simple to understand: extract every file present in the `data.tar` to their destination path. But things are not so simple as outlined by this comment:
 
 [source,c]
 .unpack.c#process_archive
@@ -647,7 +647,7 @@ deferred_configure(struct pkginfo *pkg)
 }
 ----
 <1> In case of a missing dependency, the installation will abort only at this step, after the unpacking of the package files.
-<2> The function `deferred_configure_conffile` renames the conffiles still ending with the suffix `.dpkg-new` created during the unpacking. This function is responsible to show the confirmation prompt.
+<2> The function `deferred_configure_conffile` renames the conffiles still ending with the suffix `.dpkg-new` created during the unpacking. This function also shows the confirmation prompt.
 <3> Run the `postinst` maintainer script.
 <4> Change the status to `PKG_STAT_INSTALLED` and force the update in the `status` database file.
 
@@ -707,7 +707,7 @@ $ go build -o dpkg main.go
 $ vagrant destroy -f # Recreate the VM
 $ vagrant up         # to force a fresh installation.
 vagrant$ sudo su
-vagrant# /vagrant/dpkg --install /vagrant/hello.deb
+vagrant# /vagrant/dpkg /vagrant/hello.deb
 Preparing to unpack hello.deb ...
 preinst says hello
 Unpacking hello (1.1-1) ...
@@ -742,4 +742,4 @@ vagrant# hello
 bash: /usr/bin/hello: No such file or directory
 ----
 
-🎉 *We have finished with the command `dpkg`.* We succeeded in creating a package manually and installed it using a basic Go program. We now have a better understanding of how `dpkg` is working and what information is available in its database. Now, we will have a look at the package manager frontend `apt` to understand how these programs are working together to install a package.
+🎉 *We have finished with the command `dpkg`.* We succeeded in creating a package manually and installed it using a basic Go program. We have a better understanding of how `dpkg` is working and what information is available in its database. Now, we will have a look at the package manager frontend `apt` to understand how these programs are working together to install a package.

@@ -76,7 +76,7 @@ func (p *PackageInfo) isConffile(path string) bool {
 	return false
 }
 
-// InfoPath returns the path a file under /var/lib/dpkg/info/.
+// InfoPath returns the path of a file under /var/lib/dpkg/info/.
 // Ex: "list" => /var/lib/dpkg/info/hello.list
 func (p *PackageInfo) InfoPath(filename string) string {
 	return filepath.Join("/var/lib/dpkg", p.Name()+"."+filename)
@@ -137,7 +137,7 @@ func loadDatabase() (*Database, error) {
 		packages = append(packages, &pkg)
 	}
 
-	// We now have read everything that interest us and are ready
+	// We have read everything that interest us and are ready
 	// to populate the Database struct.
 
 	return &Database{

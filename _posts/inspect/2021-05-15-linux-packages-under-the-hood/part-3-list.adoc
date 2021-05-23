@@ -41,7 +41,7 @@ bool DoList(CommandLine &Cmd)
 <2> Concrete values will be replaced in the function `ListSingleVersion` by replacing `${Package}`, `${Origin}`, … by their real values.
 <3> The real implementation uses the type `LocalitySortedVersionSet` which is a list ordering packages based on their names in the `Translation` files of the user locale.
 
-Like for the `apt update` command, the code is simply using the information present in the APT cache. In this case, the search of packages happens in the function `GetVersionSet`:
+Like for the `apt update` command, the code is simply using the information present in the APT cache. In this case, it happens in the function `GetVersionSet`:
 
 [source,c++]
 .apt-private/private-cacheset.cc
@@ -78,11 +78,11 @@ bool GetVersionSet(pkgCacheFile &CacheFile,
    return true;
 }
 ----
-<1> The command `apt list --installed` search for installed packages.
-<2> The command `apt list --upgradable` search for installed packages that can be upgraded.
-<3> The command `apt list --all-versions` search for all packages in the APT cache.
+<1> The command `apt list --installed` searches for installed packages.
+<2> The command `apt list --upgradable` searches for installed packages that can be upgraded.
+<3> The command `apt list --all-versions` searches for all packages in the APT cache.
 
-The packages are then formatted in the function `ListSingleVersion`:
+The packages are then formatted in the function `ListSingleVersion()`:
 
 [source,c++]
 .apt-private/private-output.cc
@@ -149,9 +149,9 @@ void ListSingleVersion(pkgCacheFile &CacheFile, pkgRecords &records,        /*{{
    out << output;
 }
 ----
-<1> The function ignores which fields are present in the output format and thus will try to replace them all. If a field is missing, the replacement will do nothing.
+<1> The function ignores which fields are present in the output format and thus will try to replace all of them. If a field is missing, the replacement will do nothing.
 <2> The code uses the state information present in `depPkgCache` to determine if the package is installed, or upgradable, and so on.
-<3> The code ensures no remaining braces is left.
+<3> The code ensures no remaining braces are left.
 
 We will close the APT section by covering the most useful command.
 

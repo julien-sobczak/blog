@@ -29,7 +29,7 @@ func main() {
 	defer fdeb.Close()
 
 	// A Debian package is an archive using the AR format.
-	// We use an external Go module to create the archive.
+	// We use an external Go module to create the archive
 	// as the standard library does not support it but supports
 	// the tar format that will be used for the control and data files.
 
@@ -40,7 +40,7 @@ func main() {
 	// added in a precise order.
 	// We use two utility functions that will be defined later:
 	// - arPutFile is a wrapper around the library to add an entry.
-	// - tarballPack creates a tarball using the Go
+	// - tarballPack creates a tarball using the Go library.
 
 	// Append debian-binary
 	arPutFile(writer, "debian-binary", []byte("2.0\n"))
