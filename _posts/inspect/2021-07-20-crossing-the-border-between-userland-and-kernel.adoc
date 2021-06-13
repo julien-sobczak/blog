@@ -1,0 +1,35 @@
+---
+layout: post-inspect
+title: Crossing the Border Between Userland and the Kernel
+subtitle: Everything That Happens When Calling a System Calls
+author: Julien Sobczak
+date: '2021-07-20'
+category: inspect
+subject: Linux System Calls
+excerpt: >
+  TODO.
+excerpt_only: true
+---
+
+:page-liquid:
+:tabsize: 4
+:imagesdir: {{ '/posts_resources/2021-07-20-crossing-the-border-between-userland-and-kernel/' | relative_url }}
+
+
+[quote, Linus Torvalds]
+____
+There are lots of Linux users who don't care how the kernel works, but only want to use it. That is a tribute to how good Linux is.
+____
+
+
+[.lead]
+TODO
+
+[NOTE]
+.What You Will Learn
+====
+* What are the steps when calling a system call.
+* How programming languages calls system calls.
+* ...
+====
+

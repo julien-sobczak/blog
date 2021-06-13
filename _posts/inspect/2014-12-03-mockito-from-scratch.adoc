@@ -1,0 +1,1072 @@
+---
+layout: post-inspect
+title: 'Implementing Mockito from Scratch'
+author: 'Julien Sobczak'
+date: '2014-12-03'
+category: inspect
+subject: Mockito
+tags:
+- frameworks
+unofficialTags:
+  - java
+---
+
+:page-liquid:
+
+[quote,"Dan North, créateur du terme BDD"]
+____
+We decided during the main conference that we should use JUnit 4 and Mockito because we think they are the future of TDD and mocking in Java.
+____
+
+[.lead]
+La syntaxe élégante de Mockito explique en grande partie son succès. Comment Mockito réussit-il à garder nos tests lisibles ? Que se cache-t-il derrière cette API ? C’est ce que nous allons découvrir.
+
+[CAUTION.license]
+link:https://github.com/mockito/mockito[Mockito] est publié sous link:http://opensource.org/licenses/MIT[licence MIT]. Le code présenté dans cet article a été simplifié pour des raisons évidentes et n’a pas pour vocation à être utilisé en dehors de ce contexte d’apprentissage. Cet article est basé sur la dernière version de Mockito (1.10.14) au moment de cet article.
+
+
+== Un exemple
+
+[source,java]
+----
+public interface Registry
+{
+    Object lookup(String name);
+}
+----
+
+Cette interface très basique reprend le principe d’une link:http://martinfowler.com/eaaCatalog/registry.html[registry]. Pour limiter les appels, on décide de mettre en place un simple cache :
+
+[source,java]
+----
+public class RegistryCacheDecorator implements Registry
+{
+
+    private Registry decoratedRegistry;
+    private Map<String, Object> cache = new HashMap<String, Object>();
+
+    public RegistryCacheDecorator(Registry registry) {
+        this.decoratedRegistry = registry;
+    }
+
+    public Object lookup(String name) {
+        if (!cache.containsKey(name)) {
+            cache.put(name, decoratedRegistry.lookup(name));
+        }
+        return cache.get(name);
+    }
+
+}
+----
+
+Comment tester cette dernière classe et garantir que la registry n’est pas appelée deux fois pour un même nom ? L’utilisation d’un Test Double de type mock est nécessaire (Voir link:http://martinfowler.com/articles/mocksArentStubs.html[ce post de Martin Fowler pour les différences entre les différents types de Test Double]).
+
+[source,java]
+----
+import static org.mockito.Mockito.*;
+
+public class RegistryCacheDecoratorUnitTest
+{
+
+    private RegistryCacheDecorator decorator;
+    private Registry registry;
+
+    @Before
+    public void before() {
+        registry = mock(Registry.class); // <1>
+
+        decorator = new RegistryCacheDecorator(registry);
+    }
+
+    @Test
+    public void registryShouldOnlyBeCalledOnceForTheSameName() {
+        // Given
+        when(registry.lookup(anyString())).thenReturn(new BasicDataSource()); // <2>
+
+        // When
+        decorator.lookup("datasource");
+        decorator.lookup("datasource");
+
+        // Then
+        verify(registry, times(1)).lookup("datasource"); // <3>
+    }
+}
+----
+<1> On instancie un nouveau mock pour chaque test.
+<2> On configure ce mock pour associer une instance de `DataSource` au nom `"dataSource"``.
+<3> On vérifie que la registry n’a été sollicitée qu’une seule fois avec ce nom.
+
+Au lancement, le test passe au vert. *L’objectif est maintenant de supprimer les imports Mockito et de réécrire le minimum de code pour faire fonctionner de nouveau ce test*. On veillera à être le plus fidèle possible à l’implémentation de Mockito, dans le nommage des classes, dans les algorithmes, etc, même si quelques libertés seront prises pour ne pas trop allonger cet article.
+
+
+== C’est parti !
+
+Suite à la suppression des imports, notre code ne compile plus. On commence donc par définir la signature des méthodes manquantes :
+
+[source,java]
+----
+public class Mockito
+{
+
+    public static <T> T mock(Class<T> classToMock) {
+        return null; // implémentée dans la partie "mock"
+    }
+
+    public static <T> OngoingStubbing<T> when(T methodCall) {
+        return null; // implémentée dans la partie "when"
+    }
+
+    public static <T> T verify(T mock, Object aDefinir) {
+        return mock; // implémentée dans la partie "verify"
+    }
+
+}
+----
+
+Notre code ne compile toujours pas à cause de la référence à `OngoingStubbing`. Le code suivant devrait corriger le problème :
+
+[source,java]
+----
+public interface OngoingStubbing<T>
+{
+    OngoingStubbing<T> thenReturn(T value);
+}
+----
+
+Vous pouvez pour le moment ignorer cette interface, nous y reviendrons en temps voulu.
+
+[#mockito-from-scratch-mock]
+== `mock` : La création d’un mock
+
+Créer un mock revient à créer un proxy, c’est-à-dire un objet qui se présente comme n’importe quel instance d’une classe mais dont le comportement est préprogrammé. Depuis Java 1.3, on peut utiliser les link:http://www.oracle.com/technetwork/java/generic-listener2-138155.html[Dynamic Proxies] pour créer dynamiquement une classe mais seulement à partir d’une interface. Cette restriction est problématique en pratique et c’est pour cette raison que la plupart des librairies comme Spring, Hibernate ou encore Mockito utilisent une librairie qui manipule directement le bytecode. La plus célèbre est link:https://github.com/cglib/cglib[cglib]. Ces librairies fonctionnent en créant une sous-classe de la classe donnée, ce qui s’avère bien plus souple (à condition que la classe ne soit pas `final`).
+
+Bien que reposant sur cglib, Mockito cherche à s’en abstraire à l’aide deux interfaces : `MockMaker` et `MockHandler`.
+
+[source,java]
+----
+public interface MockMaker {
+
+    <T> T createMock(Class<T> classToMock, MockHandler handler);
+}
+----
+
+Une implémentation de `MockMaker` est responsable d’instancier un proxy de manière à ce que chaque appel de méthodes soit délégué à la classe `MockHandler` :
+
+[source,java]
+----
+public interface MockHandler
+{
+    Object handle(Invocation invocation) throws Throwable;
+}
+----
+
+La classe `Invocation` est quant à elle un simple Wrapper regroupant les propriétés liées à l’appel :
+
+[source,java]
+----
+public class Invocation {
+
+    private final Object mock;
+    private final Method method;
+    private final Object[] arguments;
+    private final MethodProxy methodProxy; // Specific cglib
+
+    public Invocation(Object mock, Method method, Object[] args, MethodProxy methodProxy) {
+        this.method = method;
+        this.mock = mock;
+        this.methodProxy = methodProxy;
+        this.arguments = args;
+    }
+
+    public Object getMock() {
+        return mock;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public Object[] getArguments() {
+        return arguments;
+    }
+
+}
+----
+
+
+=== cglib/ASM/Objenesis : le trio gagnant
+
+On touche du doigt la partie la plus bas niveau de Mockito. Le code reste néanmoins facilement compréhensible grâce à l’API de cglib qui repose sur celle encore plus bas niveau d’link:http://asm.ow2.org/[ASM]. Voici l’implémentation de `MockMaker` :
+
+[source,java]
+----
+import org.mockito.cglib.core.CodeGenerationException;
+import org.mockito.cglib.proxy.Callback;
+import org.mockito.cglib.proxy.Enhancer;
+import org.mockito.cglib.proxy.Factory;
+import org.mockito.cglib.proxy.MethodInterceptor;
+import org.mockito.exceptions.base.MockitoException;
+import org.objenesis.ObjenesisStd;
+
+public class CglibMockMaker implements MockMaker {
+
+    public <T> T createMock(Class<T> mockedType, MockHandler handler) {
+
+        try {
+            MethodInterceptor interceptor = new MethodInterceptorFilter(handler);
+
+            Class<Factory> proxyClass = createProxyClass(mockedType);
+            Object proxyInstance = createProxy(proxyClass, interceptor);
+            return mockedType.cast(proxyInstance);
+        } catch (ClassCastException cce) {
+            throw new MockitoException(
+                "Exception occurred while creating the mockito proxy", cce);
+        }
+
+    }
+
+    public Class<Factory> createProxyClass(Class<?> mockedType) {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setUseFactory(true);
+        enhancer.setSuperclass(mockedType);
+        enhancer.setCallbackTypes(new Class[]{MethodInterceptor.class});
+
+        try {
+            return enhancer.createClass();
+        } catch (CodeGenerationException e) {
+            throw new MockitoException(
+                "Mockito cannot mock this class: " + mockedType);
+        }
+    }
+
+    private Object createProxy(Class<Factory> proxyClass, MethodInterceptor interceptor) {
+        ObjenesisStd objenesis = new ObjenesisStd();
+        Factory proxy = objenesis.newInstance(proxyClass);
+        proxy.setCallbacks(new Callback[] {interceptor});
+        return proxy;
+    }
+
+}
+----
+
+Pas de panible. Le code est bien moins obscur qu’il n’y parait. Déroulons le code pas à pas.
+
+[start=1]
+* On commence par créer une instance de link:http://cglib.sourceforge.net/apidocs/net/sf/cglib/proxy/Enhancer.html[`Enhancer`], la classe principale de cglib, chargée de créer de nouvelles classes dynamiquement.
+
+[source,java]
+----
+Enhancer enhancer = new Enhancer();
+----
+
+[start=2]
+* On décrit ensuite ce que l’on cherche à obtenir :
+
+[source,java]
+----
+enhancer.setUseFactory(true);
+enhancer.setSuperclass(mockedType);
+enhancer.setCallbackTypes(new Class[]{MethodInterceptor.class});
+----
+
+La ligne plus importante est la seconde où l’on spécifie la classe de notre mock. Pour comprendre la première ligne, il faut savoir que toutes les classes générées par cglib implémente par défaut l’interface `Factory`. Cette interface permet par exemple de changer de callback (patience nous y arrivons). La méthode `setUseFactory` permet de désactiver cela mais notre ligne ne fait que confirmer le défaut et est donc inutile. La dernière ligne indique le type de callback que l’on va utiliser. Plusieurs sont disponibles comme `FixedValue` qui retourne une valeur fixe à chaque appel de méthode. Le callback le plus souple est `MethodInterceptor` qui nous donne accès à toutes les informations concernant l’appel de méthode.
+
+[start=3]
+* Reste alors à créer notre classe dynamique qui va nous servir de modèle pour instancier notre mock.
+
+[source,java]
+----
+return enhancer.createClass();
+----
+
+[start=4]
+* Le moyen le plus simple pour créer une instance à partir d’un objet `Class` est la méthode `newInstance` :
+
+[source,java]
+----
+Class<T> cls = ...:
+return cls.newInstance();
+----
+
+Cette méthode s’appuie sur un constructeur par défaut. Cette restriction généralement acceptable peut poser quelques problèmes dans notre cas.
+
+Imaginons que la classe à mocker hérite d’une autre classe :
+
+[source,java]
+----
+public class Parent {
+  public Parent() {
+    // will be executed by Child.class.newInstance()...
+  }
+
+}
+
+public class Child extends Parent {
+
+}
+----
+
+Suivant le code du constructeur parent, le résultat peut être problématique.
+
+[TIP]
+.Peut-on instancier un objet en Java sans utiliser de constructeur ?
+====
+La réponse peut surprendre mais oui, grâce à la librairie link:http://objenesis.org/[Objenesis]. Là encore, il s’agit de manipulation de bytecode qui diffère selon la version de JVM, le vendeur et la version de la JVM du vendeur... (voir classe link:http://objenesis.org/apidocs/org/objenesis/strategy/StdInstantiatorStrategy.html[`StdInstantiatorStrategy`] pour les plus curieux).
+====
+
+Avec ces nouvelles connaissances, nous pouvons revenir à notre `MockHandler` :
+
+[source,java]
+----
+MethodInterceptor interceptor = new MethodInterceptorFilter(handler);
+ObjenesisStd objenesis = new ObjenesisStd();
+Factory proxy = objenesis.newInstance(proxyClass);
+proxy.setCallbacks(new Callback[] {interceptor});
+return proxy;
+----
+
+Objenesis crée une nouvelle instance de notre classe dynamique. Notre mock vient enfin de naître. On lui associe une instance de `MethodInterceptorFilter`, pour faire le lien entre cglib et notre `MockHandler`.
+
+[source,java]
+----
+import org.mockito.cglib.proxy.MethodInterceptor;
+
+public static class MethodInterceptorFilter implements MethodInterceptor {
+
+    private final MockHandler handler;
+
+    public MethodInterceptorFilter(MockHandler handler) {
+        this.handler = handler;
+    }
+
+    public Object intercept(Object proxy, Method method,
+        Object[] args, MethodProxy methodProxy)
+            throws Throwable {
+
+        Invocation invocation = new Invocation(proxy, method, args, methodProxy);
+        return handler.handle(invocation);
+    }
+}
+----
+
+Avant de clore cette première partie, certains auront peut-être remarqué que Mockito repackage cglib (et ASM) :
+
+[source,java]
+----
+import org.mockito.cglib.proxy.Enhancer;
+----
+
+[TIP]
+.Pourquoi repackager cglib ?
+====
+Cglib n’offre pas une maintenance à l’image de sa popularité. A cela s’ajoute quelques versions instables qui ont atteri dans le Central Maven qui forcent donc des librairies comme link:https://github.com/Sdogruyol/mockito/tree/master/cglib-and-asm[Mockito] ou link:http://docs.spring.io/spring/docs/3.2.5.RELEASE/javadoc-api/org/springframework/cglib/package-summary.html[Spring] à repackager la librairie dans leur propre namespace pour garantir une version stable.
+====
+
+Cela soulève une autre question<
+
+[TIP]
+.cglib reste-il toujours la solution incontournable ?
+====
+La tendance est clairement non. Les frameworks majeurs comme link:http://relation.to/16658.lace[Hibernate] ou link:https://jira.spring.io/browse/SPR-8190[Spring] ont ou envisage une migration vers une autre solution comme link:http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/[javassist].
+====
+
+Pour en savoir plus sur CGlib, link:http://java.dzone.com/articles/cglib-missing-manual[un excellent article est disponible] pour combler, soyons honnête, l’absence totale d’une documentation officielle.
+
+
+[#mockito-from-scratch-when]
+== `when` : programmation du mock
+
+Même si nous en avons fini avec le code bas niveau, la suite n’en est pas plus simple. L’API tellement bien pensée cache en réalité beaucoup d’ingéniosité pour la rendre opérationnelle.
+
+
+=== Un premier aperçu....
+
+[source,java]
+----
+when(registry.lookup(anyString())).thenReturn(new Object());
+----
+
+Lors de l’exécution de cette ligne :
+
+* La méthode `anyString` est d’abord appelée. On mémorise l’utilisation de cet `ArgumentMatcher` (dans une variable globale).
+* La méthode `registry#lookup(String)` est ensuite véritablement appelée (celle de notre mock). On mémorise l’invocation toujours de manière globale.
+* La méthode `when` est appelée. On sait seulement alors que nous sommes en train de configurer notre mock.
+* La méthode `thenReturn` est appelée. On exploite les données précédemment collectées, on sauvegarde la réponse pour être ensuite retournée quand le mock sera exercé pendant le test.
+
+Commençons par nous pencher sur cette fameuse variable globale, véritable boussole pour savoir à tout moment où nous nous trouvons. Cette variable est en réalité une instance de la classe `MockingProgress` :
+
+[source,java]
+----
+public class MockingProgress
+{
+
+    /** Variable globale */
+    public static MockingProgress INSTANCE = new MockingProgress();
+
+    private final List<Matcher> matcherStack = new ArrayList<Matcher>();
+    private OngoingStubbing ongoingStubbing;
+
+
+    /** Appelée à chaque ArgumentMatcher (anyString, eq, ...) */
+    public void reportMatcher(Matcher matcher) {
+        matcherStack.add(matcher);
+    }
+
+    /** Appelée lors de l'exécution du mock dans le when */
+    public void reportOngoingStubbing(OngoingStubbing ongoingStubbing) {
+        this.ongoingStubbing = ongoingStubbing;
+    }
+
+    /** Appelée par la méthode when pour confirmer le stubbing */
+    public void stubbingStarted() {
+
+    }
+
+    /** Retourne les ArgumentMatchers mémorisés. */
+    public List<Matcher> pullMatchers() {
+        if (matcherStack.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Matcher> matchers = new ArrayList<Matcher>(matcherStack);
+        matcherStack.clear();
+        return matchers;
+    }
+
+    /**
+     * Appelé par le when pour récupérer l'instance
+     * à retourner pour chainer les méthodes.
+     */
+    public OngoingStubbing pullOngoingStubbing() {
+        OngoingStubbing temp = ongoingStubbing;
+        ongoingStubbing = null;
+        return temp;
+    }
+
+}
+----
+
+Cette classe sera modifiée lorsque nous attaquerons la dernière partie. Son code peut dérouter mais son principe est assez simple : dès qu’on en sait plus sur notre position dans le code, on le communique à cette classe qui permet également de retrouver au moment voulu les informations sauvegardées.
+
+Son fonctionnement deviendra plus clair à travers les prochaines classes.
+
+Revenons à quelque chose de plus simple pour le moment : les `ArgumentMatcher`, basés sur l’excellente librairie link:http://hamcrest.org/[Hamcrest] :
+
+[source,java]
+----
+import org.hamcrest.BaseMatcher;
+
+public abstract class ArgumentMatcher<T> extends BaseMatcher<T> {
+
+    public abstract boolean matches(Object argument);
+
+}
+----
+
+Mockito propose de nombreux matchers. Pour notre exemple, seuls deux seront nécessaires :
+
+[source,java]
+----
+public class Any<T> extends ArgumentMatcher<T> {
+
+    @Override
+    public boolean matches(Object actual) {
+        return true; // n’importe quelle valeur autorisée
+    }
+
+    public void describeTo(Description description) {
+        description.appendText("<any>");
+    }
+}
+
+public class Equals<T> extends ArgumentMatcher<T> {
+
+    private final Object wanted;
+
+    public Equals(Object wanted) {
+        this.wanted = wanted;
+    }
+
+    @Override
+    public boolean matches(Object actual) {
+        return wanted == actual;
+    }
+
+    public void describeTo(Description description) {
+        description.appendText("<eq>");
+    }
+}
+----
+
+Leur utilisation passe forcément par une méthode factory qui a double emploi : communiquer leur usage et retourner le type adapté pour que notre code compile (Note : instancier directement un matcher à la place du `anyString()` ne compilerait pas) :
+
+[source,java]
+----
+public class Matchers
+{
+
+    public static String anyString() {
+        MockingProgress.INSTANCE.reportMatcher(new Any());
+        return "";
+    }
+
+    public static <T> T eq(T value) {
+        MockingProgress.INSTANCE.reportMatcher(new Equals(value));
+        return value;
+    }
+
+}
+----
+
+Avant de définitivement passer aux choses sérieuses, nous allons introduire la classe `InvocationMatcher` que l’on va retrouver à plusieurs reprises. Cette classe regroupe à la fois une `Invocation` (un appel de méthode) avec la liste des matchers utilisés. Même si nous disposons des arguments dans l’objet `Invocation`, les matchers eux ne sont pas présents comme en atteste la classe `Matchers` que nous venons de voir (`anyString` retourne par exemple une chaine vide). Voici le code de cette classe :
+
+[source,java]
+----
+public class InvocationMatcher {
+
+    private final Invocation invocation;
+    private final List<Matcher> matchers;
+
+    public InvocationMatcher(Invocation invocation, List<Matcher> matchers) {
+        this.invocation = invocation;
+        if (matchers.isEmpty()) {
+            this.matchers = argumentsToMatchers(invocation.getArguments());
+        } else {
+            this.matchers = matchers;
+        }
+    }
+
+    public static List<Matcher> argumentsToMatchers(Object[] arguments) {
+        List<Matcher> matchers = new ArrayList<Matcher>(arguments.length); // <1>
+        for (Object arg : arguments) {
+            matchers.add(new Equals(arg));
+        }
+        return matchers;
+    }
+
+    public Invocation getInvocation() {
+        return this.invocation;
+    }
+
+    public List<Matcher> getMatchers() {
+        return this.matchers;
+    }
+
+    public boolean matches(Invocation actual) {
+        return invocation.getMock() == actual.getMock()
+                && hasSameMethod(actual)
+                && hasMatchingArguments(this, actual);
+    }
+
+    private boolean hasSameMethod(Invocation candidate) {
+        Method m1 = this.getInvocation().getMethod();
+        Method m2 = candidate.getMethod();
+        return m1.equals(m2);
+    }
+
+    private boolean hasMatchingArguments(InvocationMatcher invocationMatcher,
+                                         Invocation actual) {
+        Object[] actualArgs = actual.getArguments();
+        if (actualArgs.length != invocationMatcher.getMatchers().size()) {
+            return false;
+        }
+        for (int i = 0; i < actualArgs.length; i++) {
+            if (!invocationMatcher.getMatchers().get(i).matches(actualArgs[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+}
+----
+<1> Lors d’un appel de méthode sur notre mock (aussi bien pour le `when` ou que pour le `verify`), Mockito autorise soit uniquement des littéraux/variables, ou uniquement des matchers. Par facilité d’implémentation, Mockito veille à ne travailler qu’avec des matchers. C’est le rôle de la méthode `argumentsToMatchers`.
+
+Il nous reste encore plusieurs classes à aborder. Continuons avec la classe `InvocationContainer`. Contrairement à `MockingProgress` qui est partagée entre tous les mocks et tous les tests, chaque mock dispose de sa propre instance de `InvocationContainer`. Cette classe conserve l’ensemble des invocations "stubbées", c’est-à-dire les invocations à l’aide du `when` permettant de programmer notre mock mais aussi l’ensemble des invocations réelles durant l’exécution du test, celles qui vont servir à valider nos affirmations (`verify`).
+
+[source,java]
+----
+public class InvocationContainer
+{
+
+    private final Map<InvocationMatcher, Answer> stubbed =
+      new HashMap<InvocationMatcher, Answer>(); // <1>
+    private InvocationMatcher invocationForStubbing; // <2>
+    private LinkedList<Invocation> registeredInvocations =
+      new LinkedList<Invocation>(); // <3>
+
+    public void setInvocationForPotentialStubbing(
+      InvocationMatcher invocationMatcher) {
+        registeredInvocations.add(invocationMatcher.getInvocation()); // <4>
+        invocationForStubbing = invocationMatcher;
+    }
+
+    public void addAnswer(Answer answer) {
+        registeredInvocations.removeLast();
+        stubbed.put(invocationForStubbing, answer);
+        invocationForStubbing = null;
+    }
+
+    public List<Invocation> getInvocations() {
+        return registeredInvocations;
+    }
+
+    public Answer findAnswerFor(Invocation invocation) {
+        for (Entry<InvocationMatcher, Answer> eachEntry : stubbed.entrySet()) {
+            InvocationMatcher eachInvocationMatcher = eachEntry.getKey();
+            Answer eachAnswer = eachEntry.getValue();
+            if (eachInvocationMatcher.matches(invocation)) {
+                return eachAnswer;
+            }
+        }
+
+        return null;
+    }
+
+}
+----
+<1> `stubbed` contient tous les appels stubbés enregistrés à l'aide du `when`.
+<2> `invocationForStubbing` contient l'appel en cours. On ne sait pas encore si il s'agit d'un appel stubbé (`when`), d'un appel normal, ou d'un appel dans le cadre du `verify`.
+<3> `registeredInvocations` contient tous les appels réels aux mocks, c'est-à-dire les appels qui n'interviennent pas lors d'un `when` ou `verify`.
+<4> Cette méthode est appelée à chaque appel d’une méthode sur un mock. Il peut s’agir d’un appel durant un `when` ou d’un appel réel. Dans le premier cas, la méthode `addAnwser` sera ensuite appelée (par le `thenReturn` par exemple) pour nous permettre d’ajouter cette invocation dans la liste des invocations "stubbées". Pour le second cas, nous n’avons pas d’équivalent. Il s’agit là de notre seule chance de prendre note de l’appel. On ajoute donc l’invocation à la liste des invocations réelles et on la supprimera si jamais la méthode `addAnswer` est appelée.
+
+Les réponses sont représentées par l’interface `Answer`. Elles peuvent correspondre à une valeur de retour (`thenReturn`), à une exception à lancer (`thenThrow`), etc.
+
+[source,java]
+----
+public interface Answer<T> {
+    T answer(Invocation invocation) throws Throwable;
+}
+
+public class Returns implements Answer<Object> {
+
+    private final Object value;
+
+    public Returns(Object value) {
+        this.value = value;
+    }
+
+    public Object answer(Invocation invocation) throws Throwable {
+        return value;
+    }
+
+}
+
+public class ThrowsException implements Answer<Object> {
+
+    private final Throwable throwable;
+
+    public ThrowsException(Throwable throwable) {
+        this.throwable = throwable;
+    }
+
+    public Object answer(Invocation invocation) throws Throwable {
+        throw throwable;
+    }
+
+}
+----
+
+L’enregistrement des réponses se fait par une des premières classes introduites dans cet article (çà remonte…). Il s’agit de la classe `OngoingStubbing` retournée par la méthode `when`. Voici son contenu modifié :
+
+[source,java]
+----
+public static class OngoingStubbing<T>
+{
+
+    private final InvocationContainer invocationContainer;
+
+    public OngoingStubbing(InvocationContainer invocationContainer) {
+        this.invocationContainer = invocationContainer;
+    }
+
+    public OngoingStubbing<T> thenReturn(T value) {
+        return thenAnswer(new Returns(value));
+    }
+
+    public OngoingStubbing<T> thenThrow(Throwable throwable) {
+        return thenAnswer(new ThrowsException(throwable));
+    }
+
+    public OngoingStubbing<T> thenAnswer(Answer<?> answer) {
+        invocationContainer.addAnswer(answer);
+        return this;
+    }
+}
+----
+
+Cette deuxième partie touche à sa fin. Reste à assembler toutes les briques ensemble. C’est le rôle de la classe déjà introduite `MockHandler`, appelée à chaque appel de méthode sur notre mock :
+
+[source,java]
+----
+public class MockHandlerImpl<T> implements MockHandler
+{
+
+    private MockingProgress mockingProgress = MockingProgress.INSTANCE;
+    private InvocationContainer invocationContainer;
+
+    public MockHandlerImpl() {
+        this.invocationContainer = new InvocationContainer(); // <1>
+    }
+
+    public Object handle(Invocation invocation) throws Throwable {
+
+        List<Matcher> lastMatchers = mockingProgress.pullMatchers(); // <2>
+        InvocationMatcher invocationWithMatchers =
+          new InvocationMatcher(invocation, lastMatchers);
+
+        invocationContainer.setInvocationForPotentialStubbing(
+          invocationWithMatchers); // <3>
+        OngoingStubbing<T> ongoingStubbing =
+          new OngoingStubbing<T>(invocationContainer);
+        mockingProgress.reportOngoingStubbing(ongoingStubbing);
+
+        // look for existing answer for this invocation
+        Answer answer = invocationContainer.findAnswerFor(invocation);
+
+        if (answer == null) { // when?
+            return null;
+        } else { // called by the test
+            return answer.answer(invocation); // <4>
+        }
+    }
+
+}
+----
+<1> Chaque `MockHandler` est associé à une instance de mock. C’est donc l’endroit idéal pour créer notre `InvocationContainer`.
+<2> On dépile les matchers pour créer notre `InvocationMatcher`.
+<3> On enregistre un début possible de stubbing (sera confirmé plus tard).
+<4> Si une réponse a déjà été enregistrée, on la retourne.
+
+N’oublions pas également de revoir notre implémentation initiale du `when` :
+
+[source,java]
+----
+public class Mockito
+{
+    // ...
+
+    public static <T> OngoingStubbing<T> when(T methodCall) {
+        mockingProgress.stubbingStarted();
+        return mockingProgress.pullOngoingStubbing();
+    }
+
+}
+----
+
+
+[#mockito-from-scratch-verify]
+== `verify``
+
+Comparée à la deuxième, cette troisième partie s’annonce bien moins périlleuse.
+
+=== Un premier aperçu...
+
+[source,java]
+----
+verify(registry, times(1)).lookup(anyString());
+----
+
+Lors de l’exécution de cette ligne :
+
+* La méthode `times` est appelée. Cette factory se contente de créer une instance de `VerificationMode`.
+* La méthode `verify` est appelée. On mémorise le résultat attendu passé en paramètre (`times(1)`) toujours dans notre objet globale `MockingProgress`.
+* La méthode `anyString()` est appelée. Comme toujours, on mémorise les matchers pour plus tard.
+* La méthode `registry#lookup(String)` est à nouveau appelée. On passe donc dans l’incontournable `MockHandler` et c’est véritablement là que la vérification se fait. On dépile les matchers et on recherche les invocations réelles satisfaisant cette invocation "stubbée".
+
+Commençons par introduire les `VerificationMode` :
+
+[source,java]
+----
+public interface VerificationMode
+{
+    void verify(VerificationData data);
+}
+----
+
+Comme pour les matchers, de nombreuses implémentations sont disponibles. Seule `times` nous intéresse ici :
+
+[source,java]
+----
+public class Times implements VerificationMode
+{
+
+    final int wantedCount;
+
+    public Times(int wantedNumberOfInvocations) {
+        this.wantedCount = wantedNumberOfInvocations;
+    }
+
+    public void verify(VerificationData data) {
+        int actualCount = 0;
+        for (Invocation eachInvocation : data.getAllInvocations()) {
+            if (data.getWanted().matches(eachInvocation)) {
+                actualCount++;
+            }
+        }
+        if (actualCount != wantedCount) {
+            throw new MockitoAssertionError(
+                "Actual: " + actualCount + ", expected: " + wantedCount);
+        }
+    }
+
+}
+----
+
+La vérification est aisée grâce à l’objet `VerificationData` qui regroupe toutes les invocations réelles et l’invocation "stubbée" (celle du `verify`). Il suffit de rechercher toutes celles correspondantes, et de comparer avec le nombre attendu.
+
+[source,java]
+----
+public class VerificationData
+{
+
+    private final InvocationMatcher wanted;
+    private final InvocationContainer invocations;
+
+    public VerificationData(InvocationContainer invocations,
+      InvocationMatcher wanted) {
+        this.invocations = invocations;
+        this.wanted = wanted;
+    }
+
+    public List<Invocation> getAllInvocations() {
+        return invocations.getInvocations();
+    }
+
+    public InvocationMatcher getWanted() {
+        return wanted;
+    }
+}
+----
+
+Il nous faut également revoir notre implémentation initiale de la méthode `verify` :
+
+[source,java]
+----
+public class Mockito
+{
+
+    // …
+
+    public static <T> T verify(T mock, VerificationMode mode) {
+        mockingProgress.verificationStarted(mode);
+        return mock;
+    }
+
+}
+----
+
+Ainsi que du `MockingProgress` :
+
+[source,java]
+----
+public class MockingProgress
+{
+
+    // …
+
+    private VerificationMode verificationMode;
+
+    public void verificationStarted(VerificationMode verify) {
+        ongoingStubbing = null;
+        verificationMode = verify;
+    }
+
+    public VerificationMode pullVerificationMode() {
+        VerificationMode temp = verificationMode;
+        verificationMode = null;
+        return temp;
+    }
+}
+----
+
+Sans oublier la classe centrale `MockHandler` qui se complexifie à nouveau :
+
+[source,java,linesums,highlight='13,18..22,38..40']
+----
+public static class MockHandlerImpl<T> implements MockHandler
+{
+
+    private MockingProgress mockingProgress = MockingProgress.INSTANCE;
+    private InvocationContainer invocationContainer;
+
+    public MockHandlerImpl() {
+        this.invocationContainer = new InvocationContainer();
+    }
+
+    public Object handle(Invocation invocation) throws Throwable {
+
+        VerificationMode verificationMode = mockingProgress.pullVerificationMode();
+
+        List<Matcher> lastMatchers = mockingProgress.pullMatchers();
+        InvocationMatcher invocationWithMatchers =
+          new InvocationMatcher(invocation, lastMatchers);
+
+        if (verificationMode != null) { // verify?
+            VerificationData data = createVerificationData(
+              invocationContainer, invocationWithMatchers);
+            verificationMode.verify(data);
+            return null;
+        }
+
+        invocationContainer.setInvocationForPotentialStubbing(invocationWithMatchers);
+        OngoingStubbing<T> ongoingStubbing =
+          new OngoingStubbing<T>(invocationContainer);
+        mockingProgress.reportOngoingStubbing(ongoingStubbing);
+
+        // look for existing answer for this invocation
+        Answer answer = invocationContainer.findAnswerFor(invocation);
+
+        if (answer == null) { // when?
+            return null;
+        } else { // called by the test
+            return answer.answer(invocation);
+        }
+    }
+
+    private VerificationData createVerificationData(
+      InvocationContainer invocationContainer, InvocationMatcher invocationMatcher) {
+        return new VerificationData(invocationContainer, invocationMatcher);
+    }
+}
+----
+
+
+[NOTE.congratulations]
+.Congratulations!
+====
+Bravo, vous venez de réaliser *une version de Mockito opérationnelle en moins de 500 lignes*. Le source complet est disponible link:https://github.com/julien-sobczak/mockito-from-scratch[ici].
+====
+
+
+== Et c’est pas fini !
+
+=== Bonus : le multithreading
+
+La plupart des classes sont associées à une instance de mock. Chaque mock dispose de son propre `MockHandler`. La seule classe à synchroniser est la classe `MockingProgress`, servant de variable statique pour supporter l’API mockito. Avec l’aide de la classe Java `ThreadLocal`, sa synchronisation est presque transparente :
+
+[source,java]
+----
+public class ThreadSafeMockingProgress {
+
+    private static final ThreadLocal<MockingProgress> mockingProgress =
+        new ThreadLocal<MockingProgress>();
+
+    static MockingProgress threadSafely() {
+        if (mockingProgress.get() == null) {
+            mockingProgress.set(new MockingProgress());
+        }
+        return mockingProgress.get();
+    }
+
+    // ...
+
+    public void verificationStarted(VerificationMode verify) {
+        threadSafely().verificationStarted(verify);
+    }
+
+    public VerificationMode pullVerificationMode() {
+        return threadSafely().pullVerificationMode();
+    }
+
+}
+----
+
+Chaque méthode commence systématiquement par récupérer l’instance associée au thread courant à l’aide de la méthode `get` de `ThreadLocal`. Il ne nous reste plus qu’à remplacer dans les classes qui en dépendent :
+
+[source,java]
+----
+MockingProgress mockingProgress = MockingProgress.INSTANCE;
+----
+
+Par :
+
+[source,java]
+----
+MockingProgress mockingProgress = new ThreadSafeMockingProgress();
+----
+
+Et le tour est joué !
+
+
+=== Bonus : La gestion des erreurs
+
+La gestion des erreurs passe bien évidemment par des exceptions mais ces exceptions ne sont pas lancées directement à chaque erreur détectée. Au contraire, Mockito délègue cette responsabilité à une classe `Reporter` qui regroupe l’ensemble des erreurs possibles. Pour chaque erreur, une méthode spécifique est proposée. Voici un extrait de cette classe :
+
+[source,java]
+----
+package org.mockito.exceptions;
+
+public class Reporter {
+
+    public void incorrectUseOfApi() {
+        throw new MockitoException(join(
+                "Incorrect use of API detected here:",
+                new LocationImpl(),
+                "",
+                "You probably stored a reference to OngoingStubbing ...",
+                "Examples of correct usage:",
+                "    when(mock.isOk()).thenReturn(true).thenThrow(exception);",
+                "    when(mock.isOk()).thenReturn(true, false).thenThrow(exception);",
+                ""
+        ));
+    }
+
+    public void notAMockPassedToWhenMethod() {
+        throw new NotAMockException(join(
+                "Argument passed to when() is not a mock!",
+                "Example of correct stubbing:",
+                "    doThrow(new RuntimeException()).when(mock).someMethod();"
+        ));
+    }
+
+    public void invalidUseOfMatchers(int expectedMatchersCount,
+                                     List<LocalizedMatcher> recordedMatchers) {
+        throw new InvalidUseOfMatchersException(join(
+                "Invalid use of argument matchers!",
+                expectedMatchersCount + " matchers expected, " + recordedMatchers.size() +
+                    " recorded:" + locationsOf(recordedMatchers),
+                "",
+                "This exception may occur if matchers are combined with raw values:",
+                "    //incorrect:",
+                "    someMethod(anyObject(), \"raw String\");",
+                "When using matchers, all arguments have to be provided by matchers.",
+                "For example:",
+                "    //correct:",
+                "    someMethod(anyObject(), eq(\"String by matcher\"));",
+                "",
+                "For more info see javadoc for Matchers class.",
+                ""
+        ));
+    }
+
+    // …
+}
+----
+
+L’avantage de cette approche est de rendre facile la personnalisation des messages en un endroit unique, garantissant une cohérence globale sur les messages affichés à l'utilisateur. Pour l’utiliser :
+
+[source,java]
+----
+new Reporter().invalidUseOfMatchers(...);
+----
+
+[NOTE.remember]
+.A retenir
+====
+* Une *API simple d’utilisation n’est pas synonyme d’une implémentation facile*.
+* Il est *possible d’instancier une classe en Java sans passer par un constructeur* à l’aide de librairies comme Objenesis.
+* Pour créer un *proxy d’une classe sans interface*, il faut recourir à de la *manipulation de bytecode* à l’aide de librairies comme Cglib ou Javassist.
+* Cglib reste incontournable dans les frameworks existants mais sa pérennité n’est plus assurée. Nombreux sont les projets migrant vers Javassist.
+* L’utilisation du `ThreadLocal` permet de partager un contexte global pour chaque thread de l’application.
+====
+
+[NOTE.experiment]
+.Try for yourself!
+====
+Notre découverte de Mockito nous aura entraîné dans les recoins les plus reculés de la librairie. Il reste pourtant tant de choses à découvrir. Voici quelques idées de fonctionnalités non présentées :
++
+* Mockito propose la vérification "inOrder" qui garantit que deux mocks sont sollicités dans un ordre bien précis. Sachant que InvocationContainer est associé à un seul mock, comment cette fonctionnalité est-elle implémentée ? _Indice_: La classe link:https://github.com/mockito/mockito/blob/master/src/org/mockito/internal/invocation/InvocationImpl.java[`InvocationImpl`] contient un attribut `sequenceNumber`.
+* Mockito propose une méthoe `verifyZeroInteractions`, qui comme son nom l’indique, garantit qu’aucune interaction autre que celle préprogrammée n’a eu lieu sur un mock. Comment cela fonctionne-t-il ? _Indice_ : La classe link:https://github.com/mockito/mockito/blob/master/src/org/mockito/internal/invocation/InvocationImpl.java[`InvocationImpl`] contient un attribut `verified`.
+* Mockito propose pour un même appel `when` d’enchainer plusieurs appels `thenReturn`, `thenThrow`, ... qui vont correspondre au résultat de la première, puis de la seconde, etc exécution de la méthode. _Indice_ : comparer `OngoingStubbingImpl` et `ConsecutiveStubbing`.
+====

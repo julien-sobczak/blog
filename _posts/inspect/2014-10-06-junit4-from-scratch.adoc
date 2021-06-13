@@ -1,0 +1,729 @@
+---
+layout: post-inspect
+title: 'Implementing JUnit 4 from Scratch'
+author: 'Julien Sobczak'
+date: '2014-10-06'
+category: inspect
+subject: JUnit
+tags:
+- frameworks
+unofficialTags:
+  - java
+---
+
+:page-liquid:
+
+[quote,"Gerard Meszaros, auteur de XUnit Test Patterns"]
+____
+Never in the field of software development have so many owed so much to so few lines of code
+____
+
+[.lead]
+Selon link:http://www.takipiblog.com/we-analyzed-30000-github-projects-here-are-the-top-100-libraries-in-java-js-and-ruby/[une étude de 2013], JUnit est la librairie la plus utilisée en Java (à égalité avec Slf4j). On peut retracer les racines du framework à link:http://www.xprogramming.com/testfram.htm[un papier de Kent Beck] datant de 1989. La version SUnit sera véritablement publiée en 1994 par ce même Kent Beck qui sera également à l’origine de la version Java (avec Eric Gamma). Si vous souhaitez en savoir plus sur l’histoire des tests, je vous conseille ces deux très bons articles : link:http://c2.com/cgi/wiki?TenYearsOfTestDrivenDevelopment[Ten Years Of Test Driven Development] et link:http://shebanator.com/2007/08/21/a-brief-history-of-test-frameworks/[A Brief History of Test Frameworks].
+
+Place au code maintenant. Nous allons réécrire une version de JUnit de zéro, très proche du code de production, même si quelques libertés seront nécessaires pour éviter à cet article de trop s’allonger. Les noms de classes/méthodes respectent ceux de la librairie.
+
+[CAUTION.license]
+JUnit est publié sous link:https://www.eclipse.org/legal/epl-v10.html[licence Eclipse]. Le code présenté dans cet article a été simplifié pour des raisons évidentes et n’a pas pour vocation à être utilisé en dehors de ce contexte d’apprentissage. Cet article est basé sur la version 4.11 de JUnit.
+
+== Un premier exemple
+
+Voici une suite de tests très simple.
+
+[source,java]
+----
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import java.util.ArrayList;
+import org.junit.*;
+
+public class ArrayListTest {
+
+  private ArrayList<String> instance;
+
+  @Before
+  public void setUp() {
+    instance = new ArrayList<String>();
+  }
+
+  @Test
+  public void newArrayListsHaveNoElements() {
+    assertThat(instance.size(), is(0));
+  }
+
+  @Test
+  public void sizeReturnsNumberOfElements() {
+    instance.add("Item 1");
+    instance.add("Item 2");
+    assertThat(instance.size(), is(2));
+  }
+
+  @Test
+  @Ignore
+  public void removeDeletesTheGivenElement() {
+    instance.remove("Item 1"); // FIXME
+    assertThat(instance.size(), is(0));
+  }
+
+  @Test
+  public void duplicateElementsAreNotAllowed() {
+    instance.add("Item 1");
+    instance.add("Item 1");
+    assertThat(instance.size(), is(1));
+  }
+}
+----
+
+Lancés avec JUnit, ces tests échouent à cause du dernier test en erreur. L’objectif est maintenant de réussir à ré-exécuter cette classe mais sans l'aide de la librairie JUnit.
+
+// ---------------------------------------------
+// -- C'est parti ! ----------------------------
+// ---------------------------------------------
+== C’est parti !
+
+Si on met de côté nos IDEs, le moyen le plus simple de link:https://github.com/junit-team/junit/wiki/Test-runners[lancer JUnit] sur une classe donnée se résume à la ligne suivante :
+
+[source,java]
+----
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+
+Result result = JUnitCore.runClasses(ArrayListTest.class);
+----
+
+Nous allons partir de cette même ligne et recoder chacune des classes. On commence donc par effacer les imports et proposer une implémentation pour les deux classes concernées. (`Result` et `JUnitCode`)
+
+La classe `Result` regroupe les informations qui vont nous permettre d’afficher le résultat de l’exécution, soit Green, soit Red. On retrouve donc le nombre de tests exécutés et les échecs :
+
+[source,java]
+----
+public class Result {
+    private int count;
+    private List<Failure> failures = new ArrayList<Failure>();
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<Failure> getFailures() {
+        return failures;
+    }
+}
+----
+
+Pour chaque échec, il est intéressant de connaître par exemple le nom du test et l’exception attrapée. C’est ce que représente la classe `Failure` :
+
+[source,java]
+----
+public class Failure {
+    private final Description description;
+    private final Throwable thrownException;
+
+    public Failure(Description description, Throwable thrownException) {
+        this.description = description;
+        this.thrownException = thrownException;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public Throwable getThrownException() {
+        return thrownException;
+    }
+
+}
+----
+
+Une `Description`, comme son nom l'indique, décrit un test donné, reprenant son nom, son annotation (`@Test` avec l’exception attendue éventuellement), la suite auquel il appartient, etc. Ici, on se contentera uniquement du nom mais on conservera l’abstraction représentée par `Description`.
+
+[source,java]
+----
+public class Description {
+
+    private final String displayName;
+
+    public Description(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * Create a <code>Description</code> of a single test named <code>name</code>
+     * in the class <code>clazz</code>.
+     */
+    public static Description createTestDescription(Class<?> clazz, String name) {
+        return new Description(String.format("%s(%s)", name, clazz.getName()));
+    }
+
+}
+----
+
+C’en est terminé pour l’objet `Result`. Tournons nous à présent vers la seconde classe `JUnitCore` qui joue le rôle de façade pour le reste de la librairie. Voici son implémentation. On y retrouve les principales abstractions que l’on va ensuite décrire.
+
+[source,java]
+----
+public class JUnitCore {
+
+    private RunNotifier notifier = new RunNotifier();
+
+    public static Result runClass(Class<?> testClass) {
+        return new JUnitCore().run(new OurSimpleClassRunner(testClass));
+    }
+
+    private Result run(Runner runner) {
+        Result result = new Result();
+        RunListener listener = result.createListener();
+        notifier.addListener(listener);
+        runner.run(notifier);
+        return result;
+    }
+
+}
+----
+
+La méthode `run` lève un peu plus le voile sur ce qui nous attend. Elle prend en entrée un `Runner`, élément central de la librairie puisque c’est cette classe qui se charge d’exécuter les tests tout en nous signalant sa progression à travers différents événements (lancement du test, test échoué, test terminé, ...). Il existe de nombreuses implémentations de `Runner` pour, par exemple, supporter les tests JUnit 3, link:https://github.com/junit-team/junit/wiki/Parameterized-tests[les tests paramétrés], link:https://github.com/junit-team/junit/wiki/Theories[les théories], etc. Il est tout à fait possible de créer son propre `Runner` comme l’ont fait Spring ou Mockito grâce à l’annotation link:http://junit.sourceforge.net/javadoc/org/junit/runner/RunWith.html[`@RunWith`]. Tous ces runners respectent une interface similaire à :
+
+[source,java]
+----
+public interface Runner {
+
+    /** Run the tests for this runner. */
+    void run(RunNotifier notifier);
+}
+----
+
+[TIP]
+.Comment les Runners nous communiquent-ils le résultat des tests
+====
+La classe `RunNotifier` implémente link:http://en.wikipedia.org/wiki/Observer_pattern[le pattern Observer]. Pour chaque événement possible, la classe `RunNotifier` propose une méthode de notification appelée par le `Runner` (ex : `fireTestStarted`). Chaque listener est alors prévenu et peut réagir en conséquence. Dans notre cas, c’est notre objet `Result` qui va écouter ces événements et construire pas à pas le résultat final.
+====
+
+Voici l'implémentation de la classe `RunNotifier`.
+
+[source,java]
+----
+public class RunNotifier {
+    private List<RunListener> listeners = new ArrayList<RunListener>();
+
+    public void addListener(RunListener listener) {
+        listeners.add(listener);
+    }
+
+    /** Invoke to tell listeners that an atomic test is about to start. */
+    public void fireTestStarted(final Description description) {
+        for (RunListener eachListener : listeners) {
+            eachListener.testStarted(description);
+        }
+    }
+
+    /** Invoke to tell listeners that an atomic test failed. */
+    public void fireTestFailure(Failure failure) {
+        for (RunListener eachListener : listeners) {
+            eachListener.testFailure(failure);
+        }
+    }
+
+    /** Invoke to tell listeners that an atomic test finished. */
+    public void fireTestFinished(final Description description) {
+        for (RunListener eachListener : listeners) {
+            eachListener.testFinished(description);
+        }
+    }
+}
+----
+
+Où `RunListener` correspond à la classe suivante :
+
+[source,java]
+----
+public abstract class RunListener {
+
+    /** Called when an atomic test is about to be started. */
+    public void testStarted(Description description) {}
+
+    /** Called when an atomic test has finished, whether the test succeeds or fails. */
+    public void testFinished(Description description) {}
+
+    /** Called when an atomic test fails, or when a listener throws an exception. */
+    public void testFailure(Failure failure) {}
+
+}
+----
+
+Pour que le code compile à nouveau, nous devons revenir sur notre classe `Result` pour implémenter la méthode `result.createListener()` :
+
+[source,java]
+----
+public class Result {
+    private int count;
+    private List<Failure> failures = new ArrayList<Failure>();
+
+    // ...
+
+    public RunListener createListener() {
+        return new Listener();
+    }
+
+    private class Listener extends RunListener { // <1>
+
+        @Override
+        public void testStarted(Description description) {
+        }
+
+        @Override
+        public void testFinished(Description description) {
+            count++; // <2>
+        }
+
+        @Override
+        public void testFailure(Failure failure) {
+            failures.add(failure); // <3>
+        }
+
+    }
+
+}
+----
+<1> On écoute les événements reportés par le runner.
+<2> On mémorise chaque exécution de test.
+<3> On sauvegarde également chaque échec.
+
+
+=== Le coeur de JUnit : le Runner
+
+Cela nous conduit tout droit vers la dernière étape : l’implémentation du `Runner`. L’implémentation standard actuelle est la classe `BlockJUnit4ClassRunner` qui hérite la plupart des fonctionnalités de sa superclasse `ParentRunner`. Elles deux représentent près de 1000 lignes sans compter les autres classes annexes. Nous allons donc nous éloigner du code de production actuel tout en conservant le plus possible a logique.
+
+Commençons par une première version supportant uniquement l’annotation `@Test` :
+
+[source,java]
+----
+public class OurSimpleClassRunner implements Runner {
+
+    private final Class<?> testClass;
+    private final TestIntrospector introspector;
+
+    public OurSimpleClassRunner2(Class<?> testClass) {
+        this.testClass = testClass;
+        this.introspector = new TestIntrospector(testClass);
+    }
+
+    public void run(RunNotifier notifier) {
+        List<Method> testMethods = introspector.getTestMethods(Test.class); // <1>
+
+        for (Method eachTestMethod : testMethods) {
+            invokeTestMethod(eachTestMethod, notifier);
+        }
+    }
+
+    private void invokeTestMethod(Method method, RunNotifier notifier) {
+        Description description =
+            Description.createTestDescription(testClass, method.getName());
+
+        try {
+            Object test = createTest();
+            notifier.fireTestStarted(description); // <2>
+
+            method.invoke(test);
+
+        } catch (Throwable t) {
+            Failure failure = new Failure(description, t);
+            notifier.fireTestFailure(failure); // <2>
+        } finally {
+            notifier.fireTestFinished(description); // <2>
+        }
+    }
+
+    private Object createTest() throws Exception {
+        return testClass.getConstructor().newInstance(); // <3>
+    }
+
+}
+----
+<1> On utilise une classe utilitaire pour connaître les méthodes de test à lancer.
+<2> On notifie à chaque étape de l'exécution.
+<3> On créée une nouvelle instance de notre classe de test avant chaque exécution de méthode (voir explications plus bas).
+
+Reprenons plus en détails ces précédents points.
+
+Le `Runner` utiliser une classe `TestIntrospector` pour extraire les méthodes de tests tout en veillant à exclure les méthodes avec l’annotation `@Ignore`. Voici l’implémentation de cette classe utilitaire (inspirée de la version 4.1 de JUnit) :
+
+[source,java]
+----
+public class TestIntrospector {
+    private final Class< ?> testClass;
+
+    public TestIntrospector(Class<?> testClass) {
+        this.testClass = testClass;
+    }
+
+    public List<Method> getTestMethods(Class<? extends Annotation> annotationClass) {
+        List<Method> results = new ArrayList<Method>();
+        Method[] methods = testClass.getDeclaredMethods();
+        for (Method eachMethod : methods) {
+            Annotation annotation = eachMethod.getAnnotation(annotationClass);
+            if (annotation != null && !isIgnored(eachMethod)) {
+                results.add(eachMethod);
+            }
+        }
+        return results;
+    }
+
+    private boolean isIgnored(Method eachMethod) {
+        return eachMethod.getAnnotation(Ignore.class) != null;
+    }
+
+}
+----
+
+[TIP]
+.JUnit garantit-il l’ordre d’exécution des tests?
+====
+La réponse est oui mais pas l’ordre que l’on voudrait... Comme pour notre code, JUnit utilise la méthode `java.lang.Class.getDeclaredMethods()` pour extraire les méthodes annotées. La Javadoc est particulièrement explicite sur ce point : "The elements in the array returned are not sorted and are not in any particular order."
+
+En pratique, l’ordre retourné correspondait à l’ordre des méthodes dans le source mais cela link:https://wikis.oracle.com/display/GlassFish/Method+Ordering+from+Class.getMethods[change depuis Java 7]. Pour garantir des tests reproductibles, JUnit impose un ordre par défaut (surchargeable). Cela se passe dans le `Comparator` `org.junit.internal.MethodSorter.DEFAULT` :
+
+[source,java]
+----
+public static final Comparator<Method> DEFAULT = new Comparator<Method>() {
+    public int compare(Method m1, Method m2) {
+        int i1 = m1.getName().hashCode();
+        int i2 = m2.getName().hashCode();
+        if (i1 != i2) {
+            return i1 < i2 ? -1 : 1;
+        }
+        return NAME_ASCENDING.compare(m1, m2);
+    }
+};
+----
+
+Basé avant tout sur le `hashCode` de la méthode `String`, l’ordre final n’est ni alphabétique, ni celui dans notre code source, mais est prévisible, et c’est là l’essentiel.
+====
+
+L'autre point concerne la création d'une nouvelle instance avant chaque exécution de test. L’intérêt a été décrit dans link:http://martinfowler.com/bliki/JunitNewInstance.html[un post de Martin Fowler] et se comprend mieux à travers un exemple :
+
+[source,java]
+----
+import static org.junit.Assert.*;
+import java.util.*;
+import org.junit.Test;
+
+public class WhyNewInstanceTest {
+
+    private List<String> list = new ArrayList<String>();
+
+    @Test
+    public void testFirst() {
+        list.add("one");
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testSecond() {
+        assertEquals(0, list.size());
+    }
+
+}
+----
+
+Avec JUnit, ces deux tests passent et ce, qu’importe l’ordre d’exécution. La création d’une nouvelle instance pour chaque test garantit que ces tests travaillent sur deux listes différentes. Ce comportement n’a malheureusement pas été repris dans NUnit pour cause d’incompréhension et impossible maintenant de revenir en arrière sans causer de régressions.
+
+[NOTE.congratulations]
+.Congratulations!
+====
+*Moins de 300 lignes auront été nécessaires pour refaire tourner nos tests*. Le résultat est identique : autant de tests au vert et toujours un seul échec.
+
+Le source complet est disponible link:https://github.com/julien-sobczak/junit-from-scratch[ici].
+====
+
+Voici la version finale supportant également les annotations `@Before` et `@After` :
+
+[source,java]
+----
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+public class JUnitLite {
+
+    public static void main(String[] args) throws Exception {
+
+        Result result = JUnitCore.runClass(ArrayListTest.class);
+        System.out.println(result);
+
+    }
+
+    public static class JUnitCore {
+
+        private RunNotifier notifier = new RunNotifier();
+
+        public static Result runClass(Class<?> testClass) {
+            return new JUnitCore().run(new OurSimpleClassRunner(testClass));
+        }
+
+        private Result run(Runner runner) {
+            Result result = new Result();
+            RunListener listener = result.createListener();
+            notifier.addListener(listener);
+            runner.run(notifier);
+            return result;
+        }
+
+    }
+
+
+    public interface Runner {
+
+        /** Run the tests for this runner. */
+        void run(RunNotifier notifier);
+    }
+
+
+    public static class TestIntrospector {
+        private final Class< ?> testClass;
+
+        public TestIntrospector(Class<?> testClass) {
+            this.testClass = testClass;
+        }
+
+        public List<Method> getTestMethods(
+          Class<? extends Annotation> annotationClass) {
+            List<Method> results = new ArrayList<Method>();
+            Method[] methods = testClass.getDeclaredMethods();
+            for (Method eachMethod : methods) {
+                Annotation annotation =
+                  eachMethod.getAnnotation(annotationClass);
+                if (annotation != null && !isIgnored(eachMethod)) {
+                    results.add(eachMethod);
+                }
+            }
+            return results;
+        }
+
+        private boolean isIgnored(Method eachMethod) {
+            return eachMethod.getAnnotation(Ignore.class) != null;
+        }
+
+    }
+
+
+    public static class OurSimpleClassRunner implements Runner {
+
+        private final Class<?> testClass;
+        private final TestIntrospector introspector;
+        private final List<Method> beforeMethods;
+        private final List<Method> afterMethods;
+
+        public OurSimpleClassRunner(Class<?> testClass) {
+            this.testClass = testClass;
+            this.introspector = new TestIntrospector(testClass);
+            this.beforeMethods = introspector.getTestMethods(Before.class);
+            this.afterMethods = introspector.getTestMethods(After.class);
+        }
+
+        public void run(RunNotifier notifier) {
+            List<Method> testMethods = introspector.getTestMethods(Test.class);
+
+            for (Method eachTestMethod : testMethods) {
+                invokeTestMethod(eachTestMethod, notifier);
+            }
+        }
+
+        private void invokeTestMethod(Method method, RunNotifier notifier) {
+            Description description = Description.createTestDescription(
+              testClass, method.getName());
+
+            try {
+                Object test = createTest();
+                notifier.fireTestStarted(description);
+
+                invokeBeforeMethods(test);
+                method.invoke(test);
+                invokeAfterMethods(test); // should be run in finally
+
+            } catch (Throwable t) {
+                Failure failure = new Failure(description, t);
+                notifier.fireTestFailure(failure);
+            } finally {
+                notifier.fireTestFinished(description);
+            }
+        }
+
+        private Object createTest() throws Exception {
+            return testClass.getConstructor().newInstance();
+        }
+
+        private void invokeBeforeMethods(Object test) throws Exception {
+            for (Method eachBeforeMethod : beforeMethods) {
+                eachBeforeMethod.invoke(test);
+            }
+        }
+
+        private void invokeAfterMethods(Object test) throws Exception {
+            for (Method eachAfterMethod : afterMethods) {
+                eachAfterMethod.invoke(test);
+            }
+        }
+
+    }
+
+
+
+    public static class Result {
+        private int count;
+        private List<Failure> failures = new ArrayList<Failure>();
+
+        public int getCount() {
+            return count;
+        }
+
+        public List<Failure> getFailures() {
+            return failures;
+        }
+
+
+        private class Listener extends RunListener {
+
+            @Override
+            public void testStarted(Description description) {
+            }
+
+            @Override
+            public void testFinished(Description description) {
+                count++;
+            }
+
+            @Override
+            public void testFailure(Failure failure) {
+                failures.add(failure);
+            }
+
+        }
+
+        public RunListener createListener() {
+            return new Listener();
+        }
+
+    }
+
+
+    public abstract static class RunListener {
+
+        /** Called when an atomic test is about to be started. */
+        public void testStarted(Description description) {}
+
+        /** Called when an atomic test has finished,
+            whether the test succeeds or fails. */
+        public void testFinished(Description description) {}
+
+        /** Called when an atomic test fails, or when a listener
+            throws an exception. */
+        public void testFailure(Failure failure) {}
+
+    }
+
+    public static class Failure {
+        private final Description description;
+        private final Throwable thrownException;
+
+        public Failure(Description description, Throwable thrownException) {
+            this.description = description;
+            this.thrownException = thrownException;
+        }
+
+        public Description getDescription() {
+            return description;
+        }
+
+        public Throwable getThrownException() {
+            return thrownException;
+        }
+
+    }
+
+
+    public static class Description {
+
+        private final String displayName;
+
+        public Description(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public static Description createTestDescription(
+          Class<?> clazz, String name) {
+            return new Description(
+            String.format("%s(%s)", name, clazz.getName()));
+        }
+
+    }
+
+
+    public static class RunNotifier {
+        private List<RunListener> listeners = new ArrayList<RunListener>();
+
+        public void addListener(RunListener listener) {
+            listeners.add(listener);
+        }
+
+        /** Invoke to tell listeners that an atomic test is about to start. */
+        public void fireTestStarted(final Description description) {
+            for (RunListener eachListener : listeners) {
+                eachListener.testStarted(description);
+            }
+        }
+
+        /** Invoke to tell listeners that an atomic test failed. */
+        public void fireTestFailure(Failure failure) {
+            for (RunListener eachListener : listeners) {
+                eachListener.testFailure(failure);
+            }
+        }
+
+        /** Invoke to tell listeners that an atomic test finished. */
+        public void fireTestFinished(final Description description) {
+            for (RunListener eachListener : listeners) {
+                eachListener.testFinished(description);
+            }
+        }
+    }
+
+}
+----
+
+[TIP]
+.Et les IDEs dans tout çà ?
+====
+Prenons le cas d’Eclipse et de son plugin link:http://www.eclipse.org/jdt/[Java Development Tools (JDT)] qui assure le support JUnit. Ce plugin réutilise la librairie JUnit et exploite le faible couplage offert par la classe `RunNotifier`. Le plugin ajoute link:http://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/tree/org.eclipse.jdt.junit4.runtime/src/org/eclipse/jdt/internal/junit4/runner/JUnit4TestListener.java[un listener] qui va non seulement consolider le résultat des tests mais également mettre à jour la vue JUnit, etc.
+====
+
+[NOTE.experiment]
+.Try for yourself!
+====
+Voici quelques unes des libertés prises par notre implémentation :
+
+* Le calcul du runner à utiliser est plus complexe qu’une simple instanciation. Pour en savoir plus : `org.junit.runner.JUnitCore`, `org.junit.runner.Computer`, `org.junit.runner.Request`.
+* Notre implémentation du runner, ne reflète pas la complexité des runners actuels qui doivent par exemple supporter d’autres annotations comme `@BeforeClass` et `@AfterClass` mais aussi les link:https://github.com/junit-team/junit/wiki/Assumptions-with-assume[Assumptions], les link:https://github.com/junit-team/junit/wiki/Categories[Categories], ... Pourquoi ne pas jeter un oeil au source pour découvrir comment ont été implémentées ces dernières évolutions.
+* Les tests peuvent également link:https://github.com/junit-team/junit/wiki/Developing-with-fast-tests[s’exécuter en parallèle]. La plupart des classes présentées sont en réalité thread-safe. Quand les objets ne peuvent être immutables, c’est vers l’API `java.util.concurrent` que l’on se tourne : `AtomicInteger`, `CopyOnWriteArrayList`, `Executors`, ...
+====
+
+[NOTE.remember]
+.A retenir
+====
+* Seulement *quelques lignes de code peuvent suffire à avoir un impact majeur* dans le monde du développement.
+* La *modélisation* de toutes les abstractions (`Result`, `Failure`, `Description`) offre un code *simple à comprendre*.
+* L'*utilisation de design patterns* apporte la *souplesse* nécessaire pour l'utilisation de la librairie dans de nombreux contextes.
+====
