@@ -1,0 +1,318 @@
+
+=== Rendering
+
+Until now, we still haven't try to render Unicode text. Sooner or later, the text will have to be displayed on the screen of a computer device.
+
+Rendering a text means converting a Unicode sequence of code points into a sequence of glyphs. These glyphs are present in font files, which are often provided by your operating system.
+
+image::unicode-standard-figure-2-3.png[title="Unicode Character Code to Rendered Glyphs (From Unicode Standard, Figure 2.3)", width=550]
+
+Here are the fonts available under MacOS:
+
+[source,]
+----
+$ ls -1 /System/Library/Fonts/
+Apple Braille Outline 6 Dot.ttf
+Apple Braille Outline 8 Dot.ttf
+Apple Braille Pinpoint 6 Dot.ttf
+Apple Braille Pinpoint 8 Dot.ttf
+Apple Braille.ttf
+Apple Color Emoji.ttc
+Apple Symbols.ttf
+AppleSDGothicNeo.ttc
+AquaKana.ttc
+ArabicUIDisplay.ttc
+ArabicUIText.ttc
+ArialHB.ttc
+Avenir Next Condensed.ttc
+Avenir Next.ttc
+Avenir.ttc
+Courier.dfont
+GeezaPro.ttc
+Geneva.dfont
+HelveLTMM
+Helvetica.ttc
+HelveticaNeue.ttc
+HelveticaNeueDeskInterface.ttc
+Hiragino Sans GB.ttc
+Keyboard.ttf
+Kohinoor.ttc
+KohinoorBangla.ttc
+KohinoorGujarati.ttc
+KohinoorTelugu.ttc
+LastResort.otf
+LucidaGrande.ttc
+MarkerFelt.ttc
+Menlo.ttc
+Monaco.dfont
+MuktaMahee.ttc
+NewYork.ttf
+NewYorkItalic.ttf
+Noteworthy.ttc
+NotoNastaliq.ttc
+NotoSansArmenian.ttc
+NotoSansKannada.ttc
+NotoSansMyanmar.ttc
+NotoSansOriya.ttc
+NotoSerifMyanmar.ttc
+Optima.ttc
+Palatino.ttc
+PingFang.ttc
+SFCompactDisplay.ttf
+SFCompactRounded.ttf
+SFCompactText.ttf
+SFCompactTextItalic.ttf
+SFNS.ttf
+SFNSDisplayCondensed-Black.otf
+SFNSDisplayCondensed-Bold.otf
+SFNSDisplayCondensed-Heavy.otf
+SFNSDisplayCondensed-Light.otf
+SFNSDisplayCondensed-Medium.otf
+SFNSDisplayCondensed-Regular.otf
+SFNSDisplayCondensed-Semibold.otf
+SFNSDisplayCondensed-Thin.otf
+SFNSDisplayCondensed-Ultralight.otf
+SFNSItalic.ttf
+SFNSMono.ttf
+SFNSMonoItalic.ttf
+SFNSRounded.ttf
+SFNSTextCondensed-Bold.otf
+SFNSTextCondensed-Heavy.otf
+SFNSTextCondensed-Light.otf
+SFNSTextCondensed-Medium.otf
+SFNSTextCondensed-Regular.otf
+SFNSTextCondensed-Semibold.otf
+STHeiti Light.ttc
+STHeiti Medium.ttc
+Supplemental
+Symbol.ttf
+Thonburi.ttc
+Times.ttc
+TimesLTMM
+ZapfDingbats.ttf
+ヒラギノ丸ゴ ProN W4.ttc
+ヒラギノ明朝 ProN.ttc
+ヒラギノ角ゴシック W0.ttc
+ヒラギノ角ゴシック W1.ttc
+ヒラギノ角ゴシック W2.ttc
+ヒラギノ角ゴシック W3.ttc
+ヒラギノ角ゴシック W4.ttc
+ヒラギノ角ゴシック W5.ttc
+ヒラギノ角ゴシック W6.ttc
+ヒラギノ角ゴシック W7.ttc
+ヒラギノ角ゴシック W8.ttc
+ヒラギノ角ゴシック W9.ttc
+----
+
+Fonts comes in different formats, like the OpenType format (`.otf`, `.otc`, `.ttf`, `.ttc`). A font is basically a collection of tables of glyphs. Here is a preview of the font `NotoSansArmenian.ttf`:
+
+image::NotoSansArmenian.png[title="Examples of glypths present in the font _Noto Sans Armenian_ using FontGoggles."]
+
+Most fonts (if not all) do not contains glyphs for every Unicode characters. For example, trying to display "Hello" using the same font found no glyphs and shows empty squares ☐:
+
+image::NotoSansArmenian-hello.png[title="The same font found no glyphs to display ASCII characters."]
+
+Applications use therefore a mechanism called _font fallback_ during text rendering. If some characters in a string are not supported in a given font, several fonts are tried successively until finding a matching font. If no glyph can be found, a white square ☐ will be displayed instead.
+
+To illustrate this point, I created a basic HTML page printing a sample of characters from every script defined by Unicode. The page is rendered by Chrome like this (or link:https://codepen.io/julien-sobczak/pen/JjWmvVw[try it in your browser]):
+
+image::UnicodeScripts.png[title="HTML page using characters from all Unicode scripts rendered in Chrome."]
+
+Using Chrome DevTools, we can easily find out which font were used to render characters on screen:
+
+image::UnicodeScripts-DevTools.png[title="Demo HTML page displayed in Chrome using characters from all Unicode scripts."]
+
+If we inspect the Greek script:
+
+image::UnicodeScripts-Greek.png[title="The Greek character `Greek Capital Letter Pamphylian Digamma` \U0376 is displayed using the font _Athelas_."]
+
+In addition, CSS allows us to influence the order of fonts tried during the font fallback mechanism. For example, if we import the link:https://fonts.google.com/specimen/Oi[font "Oi"], available from Google Fonts:
+
+[source,html]
+----
+<head>
+...
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oi&display=swap" rel="stylesheet">
+...
+</head>
+----
+
+And add the CSS declaration `font-family: 'Oi', Serif;` in our stylesheet:
+
+image::UnicodeScripts-Greek-Oi.png[title="The Chrome rendering engine favors the font _Oi_ when glyphs exist, and fallbacks to other fonts otherwise."]
+
+*The challenge to render Unicode text is thus to convert a sequence of Unicode characters into a sequence of glyphs, using a list of available fonts*. This process is called _text shaping_. The logic is not simple. There is not always a 1-1 mapping between characters and glyphs. Unicode contains for example, combining characters, emojis characters, and some emojis like flags are made by combining 2 abstract characters (ex: the US flag 🇺🇸 is represented by the two characters `REGIONAL INDICATOR SYMBOL LETTER U` 🇺 + `REGIONAL INDICATOR SYMBOL LETTER S` 🇸). Implementing these rules is the job of the shaping engine.
+
+Not all programs have to implement this logic from scratch. The library linK:https://www.freetype.org/[FreeType] is used by major systems (GNU/Linux, iOS, Android, Firefox, Ghostscript, etc.). This represents billion of devices!
+
+Under the hood, this library depends on the shaping engine link:https://github.com/harfbuzz/harfbuzz[HarfBuzz], which does a lot of the hard work. Both programs are written in C and are low-level code. Here is a simple program using FreeType to render a sequence of Unicode characters using a single font (the original code appears in this link:https://gist.github.com/jokertarot/7583938[StackOverflow thread]):
+
+
+[source,c++]
+.clfontpng.cc
+----
+include::./clfontpng.cc[]
+----
+
+Let's try the program on a simple Unicode emoji using the font link:https://www.google.com/get/noto/help/emoji/[_Noto Color Emoji_]. This font, developed by Google, is available by default on Ubuntu Desktop but not on Ubuntu Server, so we need to install it first:
+
+[source,shell]
+----
+$ sudo apt install fonts-noto-color-emoji
+$ sudo apt install fontconfig  # Install the command fc-list
+$ fc-list  # List of the fonts on your system
+/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf: DejaVu Serif:style=Bold
+/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf: DejaVu Sans Mono:style=Book
+/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: DejaVu Sans:style=Book
+/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf: DejaVu Sans:style=Bold
+/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf: DejaVu Sans Mono:style=Bold
+/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf: Noto Color Emoji:style=Regular
+/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf: DejaVu Serif:style=Book
+----
+
+[source,shell]
+----
+$ ./clfontpng /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf 🔫
+/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf is color font
+width: 136, height: 128
+U+0001F52B -> /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf
+----
+
+The emoji is correctly rendered:
+
+image::freetype-pistol-Noto.png[]
+
+The pistol has not always beeing a toy. If I rerun the same command using link:https://github.com/googlefonts/noto-emoji/blob/v2017-09-13-design-refresh/fonts/NotoColorEmoji.ttf[a previous version of the font]:
+
+[source,shell]
+----
+root@vagrant:/vagrant# ./clfontpng NotoColorEmoji-v2017.ttf 🔫
+NotoColorEmoji-v2017.ttf is color font
+width: 136, height: 128
+U+0001F52B -> NotoColorEmoji-v2017.ttf
+----
+
+The pistol is now a weapon:
+
+image::freetype-pistol-Noto-v2017.png[]
+
+The explanation dates back to 2016, when link:https://money.cnn.com/2016/08/01/technology/apple-pistol-emoji/index.html[Apple announced that in iOS 10, the pistol emoji (U+1F52B 🔫 ) would be changed from a real revolver to a water pistol]. At the same time, Microsoft decided the pistol emoji would be changed from a toy ray-gun to a real revolver to be more in line with industry-standard designs. Finally, in 2018, most platforms such as Google, Microsoft, Samsung, Facebook, and Twitter had transitioned their rendering of the pistol emoji to match Apple's water gun implementation, which means that during two years, the pistol could be understood as a joke or a threat depending if the sender was running on Android or iOS. This is not the only example of a link:https://en.wikipedia.org/wiki/Emoji#Controversial_emoji[controversial emoji].
+
+Let's now try a font that does not support emojis:
+
+[source,shell]
+----
+$ ./clfontpng SourceSansPro-Bold.ttf 🔫
+width: 0, height: 0
+Missing glyph for codepoint: 128299
+libpng warning: Image width is zero in IHDR
+libpng warning: Image height is zero in IHDR
+libpng error: Invalid IHDR data
+Failed to write PNG
+----
+
+The program correctly reports the missing glyph. Now, let's try to combine several fonts to simulate the font fallback mechanism:
+
+[source,shell]
+----
+$ ./clfontpng SourceSansPro-Bold.ttf NotoColorEmoji.ttf ђέlLƠ🎉
+NotoColorEmoji.ttf is color font
+width: 460, height: 128
+U+00000452 -> SourceSansPro-Bold.ttf
+U+00001F73 -> SourceSansPro-Bold.ttf
+U+0000006C -> SourceSansPro-Bold.ttf
+U+0000004C -> SourceSansPro-Bold.ttf
+U+000001A0 -> SourceSansPro-Bold.ttf
+U+0001F389 -> NotoColorEmoji.ttf
+----
+
+The output reveals that glyphs from different font files are used to render the final text:
+
+image::freetype-hello.png[]
+
+If you are curious about this text rendering, you can inspect the link:https://github.com/chromium/chromium/tree/93.0.4540.1/third_party/blink/renderer/platform/fonts[Chromium rendering engine] or read the link:https://harfbuzz.github.io/index.html:[documentation of the project HarfBuff].
+
+==== Example: Slack Emojis
+
+Slack and emojis are inseparable. Emojis makes long messages less boring and are indispensable to communicate about your mood, so that others can interpret your messages correctly. Slack even support custom emojis. How does Slack support so many different emojis? It's simple. They are not Unicode emojis.
+
+Indeed, Unicode is an evolving standard but Slack cannot wait for Unicode to approve your custom emoji during the next quarter meeting. Slack cannot neither use the private-use range of characters as it would mean regenerating new font files with your emojis and make sure your recipient receives the new font too. So, Slack is using images even for standard Unicode characters for its web client (image:./slack-pistol-emoji.png[link="https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f52b@2x.png", height=18px] for the Pistol Emoji 🔫 U+1F52B).
+
+Using images instead of Unicode characters is not problematic when the same application is used on both sides. When you are sending a message on Slack Desktop, you knows your recipient will check it using one of the clients provided by Slack (the web client, or the app for Windows/MacOS/Linux). Therefore, it is easy for Slack to make sure that the images for the emojis are available everywhere. The problem occurs when you try to copy/paste some text from Slack to a different application. In this case, what Slack is doing is replacing these images by textual representation like `:slightly_smiling_face:`:
+
+image::slack-message.png[width=300]
+
+When copied into a different application:
+
+[source]
+----
+Hey :wave:,
+What’s up? :slightly_smiling_face:
+----
+
+Gmail is using the same approach. As a web application, Gmail cannot be totally sure of the fonts available on every device and to make sure the recipient sees the email like the sender viewed it, Gmail relies on images too.
+
+image::gmail-message.png[]
+
+The HTLM source:
+
+[source,html]
+----
+<div id=":hb"
+     class="Am Al editable LW-avf tS-tW"
+     hidefocus="true"
+     aria-label="Message Body"
+     g_editable="true"
+     role="textbox"
+     aria-multiline="true"
+     contenteditable="true"
+     tabindex="1"
+     style="direction: ltr; min-height: 204px;"
+     itacorner="6,7:1,1,0,0"
+     spellcheck="false">
+  Hey&nbsp;
+  <img src="//ssl.gstatic.com/mail/emoji/v7/png48/emoji_u1f44b.png"
+       alt=""
+       goomoji="1f44b"
+       data-goomoji="1f44b"
+       style="vertical-align: middle; height: 24px; width: 24px;">
+  <div>What's up?&nbsp;
+    <img src="//ssl.gstatic.com/mail/emoji/v7/png48/emoji_u1f642.png"
+       alt=""
+       goomoji="1f642"
+       data-goomoji="1f642"
+       style="vertical-align: middle; height: 24px; width: 24px;">
+    </div>
+</div>
+----
+
+
+
+==== Example: YAT
+
+YAT allows users to generate a unique chain of emoji characters to be used as their universal identifier on the Internet. Interopability is thus important. Your YAT name will be used on many other sites and YAT is thus restricted by the emojis defined by Unicode.
+
+After creating your YAT account, YAT offers you a unique YAT URL to redirect to your profile using your emoji chain in the path:
+
+image::yat-url-website.png[]
+image::yat-url-browser.png[]
+
+When pressing the Enter key, the URL becomes:
+
+https://y.at/%F0%9F%93%96%F0%9F%92%BB%E2%9C%8D%EF%B8%8F%E2%9D%A4%EF%B8%8F
+
+The fact is an URI must be composed from a limited set of ASCII characters consisting of digits, letters, and a few graphic symbols—some unreserved (`-`, `.`, `_`, `~`), some reserved (`:`, `/`, `?`, `#`, ...) as used as delimiters. Emojis are not directly supported. For these characters, the link:https://datatracker.ietf.org/doc/html/rfc3986[URI RFC] defines a percent-encoding mechanism.
+
+A percent-encoded octet is encoded as a character triplet, consisting of the percent character `%` followed by the two hexadecimal digits representing that octet's numeric value. For example, `%20` is the percent-encoding for the binary octet `00100000`. And `%F0%9F%93%96` is the encoding for the binary `11110000 10011111 10010011 10010110`, which is the UTF-8 representation (`F0 9F 95 AE`) for the book emoji U+1F56E.
+
+If you navigate on the YAT website, you will see a ton of beautiful emojis displayed in large definition. These emojis are not Unicode emojis, but hand-crafted illustrations in PNG format that you can also link:https://emojis.y.at/our-emojis#download[browse online].
+
+image::YAT-Exploding_head.png[title="Shocked Face With Exploding Head Emoji U+1F92F rendered using the YAT artwork", width=350]
+image::Unicode-Exploding_head.png[title="Shocked Face With Exploding Head Emoji U+1F92F rendered using the HTML character", width=300]
+
+The Unicode character does not look good when displayed as a large text. The reason is most fonts like _Noto Color Emoji_ or _Apple Color Emoji_ are distributed with bitmap emoji glyphs. The link:https://help.fontself.com/en/articles/1241232-color-fonts-101[OpenType-SVG specification] adds support for vector-based glyphs using SVG. Font files will be larger as a consequence but the rendering will not be affected when scaling a glyph. The support is still partial, but Adobe is already supporting link:https://github.com/adobe-fonts/noto-emoji-svg[an OpenType-SVG font for Noto Color Emoji]. Here is the rendering in Chrome:
+
+image::Unicode-Exploding_head-SVG.png[title="Shocked Face With Exploding Head Emoji U+1F92F rendered using an OpenType-SVG font", width=300]]
+
+The output is still not ideal (colors are missing) but we observe that the browser enlarges the glyph like any vector illustration.

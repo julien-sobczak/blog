@@ -1,0 +1,15 @@
+
+== The Implementation
+
+Now that we understand the history of Unicode and what is the scope of the Unicode Standard, we may have a look at the implementation. What does it mean to support Unicode? For an operating system? For a programming language? For a desktop application? For a web application?
+
+We will split this section based on the different steps of a program. A program manipulates data that is often received and sent over networks and eventually displayed to a user. Unicode plays an important role in every step.
+
+=> TODO picture with read - process - write - render
+
+include::./the-implementation-reading.adoc[]
+include::./the-implementation-processing.adoc[]
+include::./the-implementation-writing.adoc[]
+include::./the-implementation-rendering.adoc[]
+
+This ends the part about the implementation of Unicode.

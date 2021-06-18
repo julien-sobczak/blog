@@ -1,0 +1,679 @@
+
+=== Processing
+
+Programming languages offers many functions operating on strings.
+
+
+==== Example: `length()`
+
+Determining the length of a string can be challenging with Unicode. A possible implementation is simply to return the number of code points in the string but the result can be surprising:
+
+[source,python]
+----
+# Python 3
+print(len("à"))
+# Output: 2
+----
+
+Why? The result is not as surprising as it may seem. We have mentionned that the Unicode Standard defines combining characters, like when defining accentuated letters. To understand the example, you need to remember that your editor (or browser) is rendering the text using glyphs, and thus have to manage these combining characters. The same example can be rewritten using the following syntax:
+
+[source,python]
+----
+# Python 3
+print(len("\N{LATIN SMALL LETTER A}\N{COMBINING GRAVE ACCENT}"))
+# Or "\u0061\u0300"
+----
+
+Like most examples in this section, you can easily reproduce the same behavior in other languages like Java or Go. The fact is our Unicode text is really composed of two Unicode characters. The result may be considered correct or wrong depending what you are looking.
+
+
+
+==== Example: `equals()`
+
+Comparing if two strings are equals is not without surprise neither.
+
+[source,go]
+----
+// Golang
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("à" == "à")
+	// Output: false
+}
+----
+
+Why? Convertibility is one of the core design principle behind Unicode. Converting between Unicode and any other encoding must be as easy as possible, which means if a character exists in an encoding, it must also exists in Unicode to have a simple one-to-one mapping between the two encodings. So, even if Unicode favors combining characters to represent accentuated letters, prior encodings often includes a single character for these letters such as `à`. The same example can be rewritten using the following syntax:
+
+[source,go]
+----
+// Golang
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("\u00E0" == "\u0061\u0300")
+	// Output: false
+}
+----
+
+According to the Unicode standard, these two strings are canonically equivalent and should be treated as equal even if their sequence of bytes are different.
+
+To solve this problem, Unicode defines different normalization algorithms to convert equivalent strings to the same normal form. These algorithms are implemented by programming languages but are rarely applied systematically (normalization isn't free). Java, Python, and link:https://blog.golang.org/normalization[Go] all provide such functions.
+
+[source,go]
+----
+package main
+
+import (
+	"fmt"
+
+	"golang.org/x/text/unicode/norm"
+)
+
+func main() {
+	norm1 := norm.NFD.String("\u00E0")
+	norm2 := norm.NFD.String("\u0061\u0300")
+	fmt.Println(norm1 == norm2)
+	// Output: true
+}
+
+----
+
+In practice, normalization is not always required  but it is important to understand why it exists, and to apply it when it makes sense, like when receiving a Unicode text from an external program.
+
+Normalization also occurs when you are not expecting it. Consider the following program in Python:
+
+[source,python]
+----
+# Python 3
+ℌ = "Me"
+H = "Funny"
+print(ℌ == H)
+# Output: True
+----
+
+Why? link:https://www.python.org/dev/peps/pep-3131/[Python accepts non-ASCII characters in identifiers] but all identifiers are passed to a function to normalize their name first. On this example, the character `ℌ` has the same normal form as the character `H`:
+
+[source,python]
+----
+# Python 3
+import unicodedata
+print(unicodedata.normalize('NFKC', "ℌ"))
+# Output: "H"
+----
+
+
+
+==== Example: `toUpperCase()`
+
+A function like `toUpperCase()` is often used to make case-insensitive comparison. But not all scripts have case, and there aren't just two cases (ex: titlecase is used for book titles).
+
+_Case folding_ is defined by the Unicode Standard as a solution for caseless comparison of text to overcome these limitations, but Unicode also provides support to implement classic functions using the _Unicode Character Database_—the set of data files containing character properties. In particular, we are looking for the property `Simple_Lowercase_Mapping` defined in the file `UnicodeData.txt`.
+
+[source]
+.UnicodeData.txt
+----
+0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;
+...
+0061;LATIN SMALL LETTER A;Ll;0;L;;;;;N;;;0041;;0041
+----
+
+The last three columns of the file are the properties `Simple_Uppercase_Mapping`, `Simple_Lowercase_Mapping`, and `Simple_Titlecase_Mapping`.
+
+Using this file, it is easy to implement a method to convert a string to uppercase:
+
+[source,python]
+.String.py
+----
+class String:
+
+    UnicodeData = {}
+
+    def __init__(self, codepoints=[]):
+        self.codepoints = codepoints
+
+    def __len__(self):
+        return len(self.codepoints)
+
+    def __getitem__(self, index):
+        if index < len(self.codepoints):
+            return self.codepoints[index]
+
+    def upper(self):
+        res = []
+        for cl in self.codepoints:
+            cu = String.UnicodeData[cl].get("Simple_Uppercase_Mapping", None)
+            if cu:
+                res.append(int("0x" + cu, 0))
+            else:
+                res.append(cl)
+        return String(res)
+
+def loadUCD():
+    ucd = {}
+    with open('./UnicodeData.txt') as fp:
+        for line in fp:
+            (codepoint, *_, upper, lower, title) = line.split(";")
+            ucd[int("0x" + codepoint, 0)] = {
+                "Simple_Uppercase_Mapping": upper,
+                "Simple_Lowercase_Mapping": lower,
+                "Simple_Titlecase_Mapping": title,
+            }
+    String.UnicodeData = ucd
+
+loadUCD()
+
+s = String([0x0068, 0x0065, 0x0079, 0x1F600]) # "hey😀"
+
+print("".join(map(chr, s.upper()))) # Convert bytes to string
+# Output: HEY😀
+----
+
+The implementation in popular programming languages follows the same logic with optimizations concerning the loading of the Unicode Character Database.
+
+===== Example (Python)
+
+The string type is implemented in C in the file link:https://github.com/python/cpython/blob/v3.9.5/Objects/unicodeobject.c[`unicodeobject.c`]. Here is the method to test if a character is uppercase:
+
+[source,c]
+.Objects/unicodectype.c
+----
+
+typedef struct {
+    /*
+       These are either deltas to the character or offsets in
+       _PyUnicode_ExtendedCase.
+    */
+    const int upper;
+    const int lower;
+    const int title;
+    /* Note if more flag space is needed, decimal and digit could be unified. */
+    const unsigned char decimal;
+    const unsigned char digit;
+    const unsigned short flags;
+} _PyUnicode_TypeRecord;
+
+...
+
+/* Returns 1 for Unicode characters having the category 'Lu', 0
+   otherwise. */
+
+int _PyUnicode_IsUppercase(Py_UCS4 ch)
+{
+    const _PyUnicode_TypeRecord *ctype = gettyperecord(ch);
+
+    return (ctype->flags & UPPER_MASK) != 0;
+}
+----
+
+The code relies on a global structure initialized using the Unicode Character Database. The script `Tools/unicode/makeunicodedata.py` converts Unicode database files (e.g., `UnicodeData.txt`) to `Modules/unicodedata_db.h`,
+`Modules/unicodename_db.h`, and `Objects/unicodetype_db.h`.
+
+[source,python]
+.Tools/unicode/makeunicodedata.py
+----
+def makeunicodetype(unicode, trace): # <1>
+    ...
+
+    for char in unicode.chars: # <2>
+        record = unicode.table[char]
+        # extract database properties
+        category = record.general_category
+        bidirectional = record.bidi_class
+        properties = record.binary_properties
+        flags = 0
+        if category in ["Lm", "Lt", "Lu", "Ll", "Lo"]:
+            flags |= ALPHA_MASK
+        if "Lowercase" in properties:
+            flags |= LOWER_MASK
+        if "Uppercase" in properties:
+            flags |= UPPER_MASK
+        ...
+----
+<1> The method `makeunicodetype` generates the file `Objects/unicodetype_db.h`.
+<2> The variable `unicode` contains the content of `UnicodeData.txt`.
+
+I invite you to check the generated files like link:https://github.com/python/cpython/blob/v3.9.5/Objects/unicodetype_db.h[`Objects/unicodetype_db.h`]. These files are not a simple list of all Unicode characters but use additional optimizations. We can ignore these low-level details for the purpose of this article.
+
+===== Example (Java)
+
+Java implements the string data type in the class link:https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/share/classes/java/lang/String.java[`java.lang.String`]. The code is large due to historical reasons (Java provides two implementations `StringLatin1` and `StringUTF16`, and recent features like compact strings can be disabled, which means there are a lof of `if` conditions in the code).
+
+Here is the code of the method `toUpperCase()`:
+
+[source,java]
+.src/java.base/share/classes/java/lang/String.java
+----
+package java.lang;
+
+public final class String
+    implements java.io.Serializable, Comparable<String>, CharSequence,
+               Constable, ConstantDesc {
+
+    /**
+     * Converts all of the characters in this {@code String} to upper
+     * case using the rules of the given {@code Locale}. Case mapping is based
+     * on the Unicode Standard version specified by the
+     * {@link java.lang.Character Character} class.
+     *
+     * @param locale use the case transformation rules for this locale
+     * @return the {@code String}, converted to uppercase.
+     */
+    public String toUpperCase(Locale locale) {
+        return isLatin1() ? StringLatin1.toUpperCase(this, value, locale)
+                          : StringUTF16.toUpperCase(this, value, locale);
+    }
+
+    ...
+}
+----
+
+We need to check the class link:https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/share/classes/java/lang/Character.java[`java.lang.Character`] to find out more about the conversion:
+
+[source,java]
+.src/java.base/share/classes/java/lang/Character.java
+----
+package java.lang;
+
+public final class Character {
+
+    /**
+     * Converts the character (Unicode code point) argument to
+     * uppercase using case mapping information from the UnicodeData
+     * file.
+     *
+     * @param   codePoint   the character (Unicode code point) to be converted.
+     * @return  the uppercase equivalent of the character, if any;
+     *          otherwise, the character itself.
+     */
+    public static int toUpperCase(int codePoint) {
+        return CharacterData.of(codePoint).toUpperCase(codePoint);
+    }
+
+    ...
+}
+----
+
+link:https://github.com/openjdk/jdk/blob/jdk-16%2B36/src/java.base/share/classes/java/lang/CharacterData.java[`java.lang.CharacterData`] is an abstract class:
+
+[source,java]
+.src/java.base/share/classes/java/lang/CharacterData.java
+----
+package java.lang;
+
+abstract class CharacterData {
+
+    abstract boolean isUpperCase(int ch);
+    abstract int toUpperCase(int ch);
+    // ...
+
+    static final CharacterData of(int ch) {
+        if (ch >>> 8 == 0) {     // fast-path <1>
+            return CharacterDataLatin1.instance;
+        } else {
+            switch(ch >>> 16) {  //plane 00-16
+            case(0):
+                return CharacterData00.instance;
+            case(1):
+                return CharacterData01.instance;
+            case(2):
+                return CharacterData02.instance;
+            case(3):
+                return CharacterData03.instance;
+            case(14):
+                return CharacterData0E.instance;
+            case(15):   // Private Use
+            case(16):   // Private Use
+                return CharacterDataPrivateUse.instance;
+            default:
+                return CharacterDataUndefined.instance;
+            }
+        }
+    }
+}
+----
+<1> The fast-path is an optimization for ASCII characters to avoid traversing the larger Unicode database.
+
+The classes `CharacterDataXX` contain the properties for each plane of the Unicode Character Table and are generated by the Java build process. The definition is present in `make/modules/java.base/gensrc/GensrcCharacterData.gmk`:
+
+[source]
+.make/modules/java.base/gensrc/GensrcCharacterData.gmk
+----
+#
+# Rules to create $(SUPPORT_OUTPUTDIR)/gensrc/java.base/sun/lang/CharacterData*.java
+#
+
+GENSRC_CHARACTERDATA :=
+
+CHARACTERDATA = $(TOPDIR)/make/data/characterdata
+UNICODEDATA = $(TOPDIR)/make/data/unicodedata
+
+define SetupCharacterData
+  $(SUPPORT_OUTPUTDIR)/gensrc/java.base/java/lang/$1.java: \
+      $(CHARACTERDATA)/$1.java.template
+	$$(call LogInfo, Generating $1.java)
+	$$(call MakeDir, $$(@D))
+	$(TOOL_GENERATECHARACTER) $2 $(DEBUG_OPTION) \
+	    -template $(CHARACTERDATA)/$1.java.template \
+	    -spec $(UNICODEDATA)/UnicodeData.txt \ # <1>
+	    -specialcasing $(UNICODEDATA)/SpecialCasing.txt \ # <1>
+	    -proplist $(UNICODEDATA)/PropList.txt \ # <1>
+	    -derivedprops $(UNICODEDATA)/DerivedCoreProperties.txt \ # <1>
+	    -o $(SUPPORT_OUTPUTDIR)/gensrc/java.base/java/lang/$1.java \
+	    -usecharforbyte $3
+
+  GENSRC_CHARACTERDATA += $(SUPPORT_OUTPUTDIR)/gensrc/java.base/java/lang/$1.java
+endef
+
+$(eval $(call SetupCharacterData,CharacterDataLatin1, , -latin1 8))
+$(eval $(call SetupCharacterData,CharacterData00, -string -plane 0, 11 4 1))
+$(eval $(call SetupCharacterData,CharacterData01, -string -plane 1, 11 4 1))
+$(eval $(call SetupCharacterData,CharacterData02, -string -plane 2, 11 4 1))
+$(eval $(call SetupCharacterData,CharacterData03, -string -plane 3, 11 4 1))
+$(eval $(call SetupCharacterData,CharacterData0E, -string -plane 14, 11 4 1))
+
+$(GENSRC_CHARACTERDATA): $(BUILD_TOOLS_JDK)
+
+TARGETS += $(GENSRC_CHARACTERDATA)
+----
+<1> The input files correspond to the UCD files we talked about in the section about the Unicode Character Database.
+
+Here is a preview of the resulting code:
+
+[source,java]
+./gensrc/java.base/java/lang/CharacterData00.java
+----
+package java.lang;
+
+class CharacterData00 extends CharacterData {
+
+    int toUpperCase(int ch) {
+        int mapChar = ch;
+        int val = getProperties(ch);
+
+        if ((val & 0x00010000) != 0) {
+            if ((val & 0x07FC0000) == 0x07FC0000) {
+                switch(ch) {
+                case 0x00B5 : mapChar = 0x039C; break;
+                case 0x017F : mapChar = 0x0053; break;
+                case 0x1FBE : mapChar = 0x0399; break;
+                case 0x1F80 : mapChar = 0x1F88; break;
+                case 0x1F81 : mapChar = 0x1F89; break;
+                case 0x1F82 : mapChar = 0x1F8A; break;
+                case 0x1F83 : mapChar = 0x1F8B; break;
+                case 0x1F84 : mapChar = 0x1F8C; break;
+                case 0x1F85 : mapChar = 0x1F8D; break;
+                case 0x1F86 : mapChar = 0x1F8E; break;
+                // Many more
+            }
+        }
+        else {
+            int offset = val  << 5 >> (5+18);
+            mapChar =  ch - offset;
+        }
+
+        return mapChar;
+    }
+}
+----
+
+Like Python, we observe various optimizations but the overall idea is similar—we generate static code from the Unicode data files. In Java, accessing the properties of a character is more obvious thanks to `switch` statements using code points, whereas in Python, we have to manipulates bytes to determine the index of the code point first.
+
+
+===== Example (Go)
+
+The Go implementation is really close to previous languages. Go strings are implemented in Go by the file link:https://github.com/golang/go/blob/go1.16.5/src/strings/strings.go[`src/strings/strings.go`], which declares the function `ToUpper()`:
+
+[source,go]
+.src/strings/strings.go
+----
+// ToUpper returns s with all Unicode letters mapped to their upper case.
+func ToUpper(s string) string {
+	isASCII, hasLower := true, false
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c >= utf8.RuneSelf { // <1>
+			isASCII = false
+			break
+		}
+		hasLower = hasLower || ('a' <= c && c <= 'z')
+	}
+
+	if isASCII { // optimize for ASCII-only strings.
+		if !hasLower {
+			return s
+		}
+		var b Builder
+		b.Grow(len(s))
+		for i := 0; i < len(s); i++ {
+			c := s[i]
+			if 'a' <= c && c <= 'z' {
+				c -= 'a' - 'A' // <2>
+			}
+			b.WriteByte(c)
+		}
+		return b.String()
+	}
+	return Map(unicode.ToUpper, s) // <3>
+}
+----
+<1> `RuneSelf` is a constant with the value `0x80` (128) to determine if the code point is a ASCII-compatible character.
+<2> Before Unicode, converting a string in uppercase was easily implemented by substracting the differences between the index `a` and `A` since characters were ordered in the character set.
+<3> The real implementation is defined by the `unicode` package.
+
+
+
+The Unicode Character Database (e.g., `UnicodeData.txt`) is link:https://github.com/golang/text/blob/v0.3.6/unicode/rangetable/gen.go[converted] to static code in the file link:https://github.com/golang/go/blob/2ebe77a2fda1ee9ff6fd9a3e08933ad1ebaea039/src/unicode/tables.go[`src/unicode/tables.go`]. Go implements various optimizations using different structures. For example, instead of storing the mapping between every single uppercase and lowercase letter, Go groups them in instances of `CaseRange`:
+
+
+[source,go]
+.src/unicode/letter.go
+----
+
+// Indices into the Delta arrays inside CaseRanges for case mapping.
+const (
+	UpperCase = iota
+	LowerCase
+	TitleCase
+	MaxCase
+)
+
+type d [MaxCase]rune // to make the CaseRanges text shorter
+
+// CaseRange represents a range of Unicode code points for simple (one
+// code point to one code point) case conversion.
+// The range runs from Lo to Hi inclusive, with a fixed stride of 1. Deltas
+// are the number to add to the code point to reach the code point for a
+// different case for that character. They may be negative. If zero, it
+// means the character is in the corresponding case. There is a special
+// case representing sequences of alternating corresponding Upper and Lower
+// pairs. It appears with a fixed Delta of
+//	{UpperLower, UpperLower, UpperLower}
+// The constant UpperLower has an otherwise impossible delta value.
+type CaseRange struct {
+	Lo    uint32
+	Hi    uint32
+	Delta d
+}
+----
+
+For example:
+
+[source,go]
+.src/unicode/tables.go
+----
+var _CaseRanges = []CaseRange{
+	{0x0041, 0x005A, d{0, 32, 0}},    // <1>
+	{0x0061, 0x007A, d{-32, 0, -32}}, // <2>
+    ...
+}
+----
+<1> For Unicode characters in the range `A`—`Z`, add 32 to the code point to get the uppercase character.
+<2> For Unicode characters in the range `a`—`z`, substract 32 to the code point to get the lowercase or titlecase character.
+
+This variable is then used by the function `to`, which is called by the higher-level functions such as `ToUpper`, `ToLower`:
+
+[source,go]
+.src/unicode/letter.go
+----
+// to maps the rune using the specified case mapping.
+// It additionally reports whether caseRange contained a mapping for r.
+func to(_case int, r rune, caseRange []CaseRange) (mappedRune rune, foundMapping bool) { // <1>
+	if _case < 0 || MaxCase <= _case {
+		return ReplacementChar, false // as reasonable an error as any
+	}
+	// binary search over ranges
+	lo := 0
+	hi := len(caseRange)
+	for lo < hi { // <2>
+		m := lo + (hi-lo)/2
+		cr := caseRange[m]
+		if rune(cr.Lo) <= r && r <= rune(cr.Hi) {
+			delta := cr.Delta[_case]
+			if delta > MaxRune {
+				// In an Upper-Lower sequence, which always starts with
+				// an UpperCase letter, the real deltas always look like:
+				//	{0, 1, 0}    UpperCase (Lower is next)
+				//	{-1, 0, -1}  LowerCase (Upper, Title are previous)
+				// The characters at even offsets from the beginning of the
+				// sequence are upper case; the ones at odd offsets are lower.
+				// The correct mapping can be done by clearing or setting the low
+				// bit in the sequence offset.
+				// The constants UpperCase and TitleCase are even while LowerCase
+				// is odd so we take the low bit from _case.
+				return rune(cr.Lo) + ((r-rune(cr.Lo))&^1 | rune(_case&1)), true
+			}
+			return r + delta, true // <3>
+		}
+		if r < rune(cr.Lo) { // <2>
+			hi = m
+		} else {
+			lo = m + 1
+		}
+	}
+	return r, false
+}
+----
+<1> The function is called with a constant `UpperCase` or `LowerCase` as the first argument and a single character to convert.
+<2> Go uses binary search to locale the Unicode range in O(log N).
+<3> Once the range is found, simply add the delta to the code point.
+
+
+
+
+==== Example: `matches()`
+
+We will close the string manipulation section with a classic example: regular expressions.
+
+Consider the following example in Python 3:
+
+[source,python]
+----
+# Python 3
+import re
+
+s = "100 µAh 10 mAh"
+res = re.findall(r'\\d+ \\wAh', s)
+print(len(res))
+# Output: 1
+----
+
+Now, consider the same program with a small difference (we declare the regular expression using a `str`):
+
+[source,python]
+----
+# Python 3
+import re
+s = "100 µAh 10 mAh"
+res = re.findall("\\d+ \\wAh", s)
+print(len(res))
+# Output: 2
+----
+
+Why? The reason is specific to the Python regex engine implementation. If the regex pattern is in bytes (e.g., when using `r'\\w'`),`\w` matches any alphanumeric character (`[a-zA-Z0-9_]`). If the regex pattern is a string (e.g., when using `"\\w"`), `\w` matches all characters marked as letters in the Unicode database.
+
+In practice, most languages are subject to this restriction:
+
+[source,java]
+----
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class StringTest {
+
+    public static void main(String[] args) {
+        String s = "100 µAh 10 mAh";
+        Pattern p = Pattern.compile("\\d+ \\wAh");
+        Matcher m = p.matcher(s);
+        System.out.println(m.results().count());
+        // Output: 1
+
+        // Using a special character class
+        p = Pattern.compile("\\d+ \\p{L}Ah");
+        m = p.matcher(s);
+        System.out.print(m.results().count());
+        // Output: 2
+    }
+}
+----
+
+In Java, the metacharacter `\w` also matches `[a-zA-Z_0-9]` (which is faster than checking the Unicode Character Database). Other character classes exists like `\p{L}` (`L` matches a single code point in the category "letter", but other values are possible: `N` for any kind of numeric character in any script, etc.). This implementation is also supported by Go.
+
+
+[NOTE]
+.Emojis in identifiers?
+====
+Most languages requires source files to encoded in Unicode but that does not mean these languages accept any Unicode character in variable names. link:https://rosettacode.org/wiki/Unicode_variable_names[Rules differs among languages] but most languages like Java, [Python](https://www.python.org/dev/peps/pep-3131/), and [Go](https://golang.org/ref/spec#Identifiers) accepts only characters considered as letters or digits in the Unicode table (ex: ツ, Δ, π). Other languages do not have these restrictions. You can write link:https://twitter.com/t3xtm0de/status/600711130324008961[hieroglyphs in Hashell]:
+
+[source,haskell]
+----
+𓆲 :: (𓅂 -> 𓃀) -> [𓅂] -> [𓃀]
+𓆲 𓆑 (𓇋:𓇌) = 𓆑 𓇋 : 𓆲 𓆑 𓇌
+𓆲 _ _ = []
+----
+
+Or write entier program in PHP without using any ASCII character for identifiers:
+
+[source,php]
+----
+<?php
+
+class 😀 {
+    public function 🍽(...$🥪) {
+        $📜 = [
+            '🥝' => 61,
+            '🍫' => 546,
+            '🍪' => 502,
+            '🍔' => 515,
+            '🍟' => 624,
+            '🍏' => 52,
+            '🥗' => 280,
+        ];
+
+        $∑ = 0;
+        foreach($🥪 as $🍞) {
+            $∑ += $📜[$🍞];
+        }
+        if ($∑ < 1000) {
+            return '🙂';
+        } else if ($∑ < 2000) {
+            return '🤢';
+        } else {
+            return '🤮';
+        }
+    }
+}
+
+$🙍‍♀️ = new 😀();
+$🙍‍♂️ = new 😀();
+echo $🙍‍♀️->🍽('🥝', '🍏', '🥗');
+echo $🙍‍♂️->🍽('🍪', '🍔', '🍟', '🍫');
+----
+====

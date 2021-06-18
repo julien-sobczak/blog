@@ -5,7 +5,7 @@
   text-align: center;
 }
 
-/* 
+/*
  * Post Filters
  */
 
@@ -245,7 +245,7 @@
   }
 
   .post-preview .title h4 {
-    margin: 0; /* TODO delete with reset.css */
+    margin: 0; /* FIXME delete with reset.css */
     margin-top: 25px;
     margin-bottom: 25px;
     font-family: $font-base;
@@ -311,8 +311,8 @@
   }
   /* Exception(s): */
   .post-read-preview.style4 .review-note,
-  .post-write-preview.style4 .review-note { 
-    color: $item-dark-color; 
+  .post-write-preview.style4 .review-note {
+    color: $item-dark-color;
   }
 
 }
