@@ -1,0 +1,38 @@
+
+=== Writing
+
+A program should usually output some texts, for example when printing messages in the console, or when sending documents to another program when calling a remote API.
+
+What this means is we have to convert Unicode texts to bytes. We need to encode them using one of the Unicode encodings.
+
+For example, when printing a hello message in the standard output:
+
+[source,python]
+----
+# output.py
+print("Hello 👋")
+----
+
+The Python interpreter outputs:
+
+[source,shell]
+----
+$ python3 output.py | hexdump
+0000000 48 65 6c 6c 6f 20 f0 9f 91 8b 0a // <1>
+----
+<1> The BOM is not included in the resulting representation. The emoji is the only one character using four bytes (`f0 9f 91 8b`), which confirms the UTF-8 encoding.
+
+Writing to the console is no different than writing to a file. The function `print` will send bytes to the file descriptor 1 ("stdout") using a specific encoding. The same rules that we covered before applies here too.
+
+Here is a different version of the same code showing the logic explicitly:
+
+[source,python]
+----
+import os
+
+with os.fdopen(1, 'wb') as stdout:
+    stdout.write("Hello 👋\n".encode("utf-8"))
+----
+
+Writing texts to the console, a file, or a socket makes no difference concerning Unicode.
+

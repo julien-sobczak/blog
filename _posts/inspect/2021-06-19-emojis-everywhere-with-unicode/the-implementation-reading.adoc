@@ -1,0 +1,151 @@
+
+=== Reading
+
+When a program receives or reads a text, it needs to know the encoding. Having a text without knowing its encoding is useless—just a suite of 0s and 1s. Several strategies exist to determine the encoding. For example, the source code of your program is also a text that the compiler or the interpreter must decode. The common solutions are:
+
+* *Use the charset of the underlying operating system* (ex: Java). Unix operating system family use UTF-8 encoding by default, which means the Java compiler expects source files to be encoded in UTF-8 too. Otherwise, the developer needs to define the encoding explicitly from the command line (`java -Dfile.encoding=UTF-16`) or when reading a text:
++
+[source,java]
+----
+// $LC_CTYPE returns "UTF-8"
+File file = new File("/path/to/file");
+BufferedReader br = new BufferedReader(new InputStreamReader(
+    new FileInputStream(file), "UTF16")); // Override default encoding
+...
+----
+* *Use a default encoding and allows the developer to override it.* (ex: Python). The Python interpreter expects UTF-8 files but supports link:https://www.python.org/dev/peps/pep-0263/[various syntaxes to specify a different encoding].
++
+[source,python]
+----
+#!/usr/bin/python env
+# -*- coding: utf-16 -*-
+----
+This magic comment must be the first or second line. As the interpreter ignores the encoding when reading the file, all characters until the encoding must only be ASCII characters. This technique was already used by browsers to determine the encoding of a web page. Initially, web servers were expected to return the HTTP header `Content-Type` (ex: `text/plain; charset="UTF-8"`) so that the browser knows the encoding before reading the HTML file but in practice, a web server can serve different files written by different persons in different languages, and thus would also need to know the encoding... The common solution was instead to include the charset directly in the document as the first meta under the `<head>` section:
++
+[source,html]
+----
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+...
+----
+* *Force a specific encoding.* (ex: Go). Go source code can only be written in UTF-8 files. Period.
++
+[source,shell]
+----
+$ cat > hello.go << EOF
+package main
+
+import "fmt"
+
+func main() {
+        fmt.Println("hello world")
+}
+EOF
+$ iconv -f UTF-8 -t UTF-16 hello_UTF-16.go
+$ go run hello_UTF-16.go
+go: reading hello_UTF-16.go: unexpected NUL in input
+----
+
+[NOTE]
+.The Byte Order Mark (BOM)
+====
+In practice, if a program only works with Unicode encodings (which is the goal of Unicode after all), it can also check the _byte order mark_ (BOM), a magic number representing the Unicode character, `U+FEFF BYTE ORDER MARK`. Depending on the starting byte sequence (`0xEF,0xBB,0xBF` for UTF-8, `0xFE 0xFF` for UTF-16 in big endian, `0xFF 0xFE` for UTF-16 in little endian, link:https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding[etc.]), the parser can detect the encoding (and the endianness). But the BOM is optional and is often missing in UTF-8 text because the BOM character is not a valid ASCII character and that would break the ASCII backward-compatiblity supported by UTF-8.
+====
+
+Once the encoding is known, the next step is to decode the text. We have already covered the Unicode encoding algorithms in the second part. The decoding algorithms are very similar and the code is ommited. What is more interesting is the question of how to represent Unicode text in memory. The most basic string representation for a programming language is to store a sequence of Unicode points:
+
+[source,python]
+----
+# A custom string implementation for illustration purposes.
+class String:
+
+    def __init__(self, codepoints=[]):
+        self.codepoints = codepoints
+
+    def __len__(self):
+        return len(self.codepoints)
+
+    def __getitem__(self, index):
+        if index < len(self.codepoints):
+            return self.codepoints[index]
+
+s = String([0x0068, 0x0065, 0x0079, 0x1F600]) # "hey\N{Grinning Face Emoji}"
+print(len(s)) # 4
+print(s[0] == ord("h")) # True
+----
+
+In theory, this representation makes sense. A Unicode string is a sequence of code points. Encoding and decoding should only be performed when reading text or sending text to another program.
+
+In practice, most Unicode characters lands in the first plane (BMP) requiring only two bytes, and a lot of strings are only composed of ASCII characters requiring only one byte. This explains why most programming languages decide to represent strings differently. Unicode support is great but comes with a performance cost that implementations must limit.
+
+For example, create a file `hello_UTF-8.py`:
+
+[source,python]
+----
+print("Voila\u0300 \N{winking face}")
+----
+
+Then, convert the file in the different Unicode encodings:
+
+[source,shell]
+----
+$ iconv -f UTF-8 -t UTF-32 hello.py > hello_UTF-32.py
+$ iconv -f UTF-8 -t UTF-16 hello.py > hello_UTF-16.py
+----
+
+[source,shell]
+----
+$ hexdump hello_UTF-8.py
+0000000 70 72 69 6e 74 28 22 56 6f 69 6c 61 5c 4e 7b 63
+0000010 6f 6d 62 69 6e 69 6e 67 20 61 63 63 65 6e 74 20
+0000020 67 72 61 76 65 7d 20 5c 4e 7b 77 69 6e 6b 69 6e
+0000030 67 20 66 61 63 65 7d 22 29 0a
+000003a
+
+$ hexdump hello_UTF-16.py
+0000000 fe ff 00 70 00 72 00 69 00 6e 00 74 00 28 00 22
+0000010 00 56 00 6f 00 69 00 6c 00 61 00 5c 00 4e 00 7b
+0000020 00 63 00 6f 00 6d 00 62 00 69 00 6e 00 69 00 6e
+0000030 00 67 00 20 00 61 00 63 00 63 00 65 00 6e 00 74
+0000040 00 20 00 67 00 72 00 61 00 76 00 65 00 7d 00 20
+0000050 00 5c 00 4e 00 7b 00 77 00 69 00 6e 00 6b 00 69
+0000060 00 6e 00 67 00 20 00 66 00 61 00 63 00 65 00 7d
+0000070 00 22 00 29 00 0a
+0000076
+
+$ hexdump hello_UTF-32.py
+0000000 00 00 fe ff 00 00 00 70 00 00 00 72 00 00 00 69
+0000010 00 00 00 6e 00 00 00 74 00 00 00 28 00 00 00 22
+0000020 00 00 00 56 00 00 00 6f 00 00 00 69 00 00 00 6c
+0000030 00 00 00 61 00 00 00 5c 00 00 00 4e 00 00 00 7b
+0000040 00 00 00 63 00 00 00 6f 00 00 00 6d 00 00 00 62
+0000050 00 00 00 69 00 00 00 6e 00 00 00 69 00 00 00 6e
+0000060 00 00 00 67 00 00 00 20 00 00 00 61 00 00 00 63
+0000070 00 00 00 63 00 00 00 65 00 00 00 6e 00 00 00 74
+0000080 00 00 00 20 00 00 00 67 00 00 00 72 00 00 00 61
+0000090 00 00 00 76 00 00 00 65 00 00 00 7d 00 00 00 20
+00000a0 00 00 00 5c 00 00 00 4e 00 00 00 7b 00 00 00 77
+00000b0 00 00 00 69 00 00 00 6e 00 00 00 6b 00 00 00 69
+00000c0 00 00 00 6e 00 00 00 67 00 00 00 20 00 00 00 66
+00000d0 00 00 00 61 00 00 00 63 00 00 00 65 00 00 00 7d
+00000e0 00 00 00 22 00 00 00 29 00 00 00 0a
+00000ec
+----
+
+We better understand why UTF-8 is preferred for writing code. The same motivation applies when designing the internal string representation.
+
+
+==== Example: Python
+
+Python supports, since the version 3.3, link:https://www.python.org/dev/peps/pep-0393/[multiple internal representations], depending on the character with the largest Unicode code point (1, 2, or 4 bytes). This saves space in most cases, but give access to the full "UTF-32" if needed.
+
+
+==== Example: Java
+
+Java adopts a similar strategy link:https://openjdk.java.net/jeps/254[named compacts strings] since Java 9. Before that, strings were represented in the UTF-16 format in which supplementary characters are represented by surrogate pairs.
+
+
+==== Example: Go
+
+Go encodes strings as link:https://blog.golang.org/strings[a read-only slice of bytes]. These bytes can be anything, even invalid Unicode code points. But as Go source code is always UTF-8, the slice of bytes for a string literal is always UTF-8 text.
