@@ -1,0 +1,109 @@
+---
+layout: post-inspect
+title: Unicode for Curious Developers Loving Emojis and Code 😉
+subtitle: The "Minimum" Every Developer Must Know About Unicode
+author: Julien Sobczak
+date: '2021-06-19'
+category: inspect
+subject: Unicode
+excerpt: >
+  Unicode is what allows me to say hello in over 100 languages—እው ሰላም ነው (Amharic), 你好 (Chinese), γεια (Greek), שלום (Hebrew), नमस्ते (Hindi), こんにちは (Japanese), سلام (Persian), cześć (Polish), Привет (Russian), and Unicode is what allows you to understand the difference between "You are funny 🤣" and "You are funny 👎." The web would clearly not be the same without Unicode. But Unicode is not magic and developers have to understand it to create applications running in a multilingual world.
+excerpt_only: true
+---
+
+:page-liquid:
+:tabsize: 4
+:imagesdir: {{ '/posts_resources/2021-06-19-unicode-for-developers/' | relative_url }}
+
+
+[quote, Unicode Consortium co-founder and president Mark Davis]
+____
+Our goal is to make sure that all of the text on computers for every language in the world is represented but we get a lot more attention for emojis than for the fact that you can type Chinese on your phone and have it work with another phone.
+____
+
+
+image::emojis-everywhere.png[width=700]
+
+
+[.lead]
+Unicode is what allows me to say hello in over 100 languages—እው ሰላም ነው (Amharic), 你好 (Chinese), γεια (Greek), שלום (Hebrew), नमस्ते (Hindi), こんにちは (Japanese), سلام (Persian), cześć (Polish), Привет (Russian), and Unicode is what allows you to understand the difference between "You are funny 🤣" and "You are funny 👎." The web would clearly not be the same without Unicode. But Unicode is not magic and developers have to understand it to create applications running in a multilingual world.
+
+
+[NOTE]
+.What You Will Learn
+====
+* **The Story**
+** Why Unicode makes the web possible.
+** Why emojis exist in Unicode.
+** How you can suggest a new emoji.
+* **The Standard**
+** Why Unicode is not just a character set.
+** How characters are allocated in the codespace.
+** Why UTF-8 is different from Unicode, and why Unicode is different from UTF-8.
+* **The Implementation**
+** Why "à" == "à" is false in most languages.
+** Why the pistol emoji is now a toy.
+** How emojis are implemented on your device.
+====
+
+
+[NOTE]
+.Why Learning About Unicode?
+====
+During my career, I came across the famous link:https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/[Joel Spoky's blog post] about Unicode and character encodings several times. The truth is I still didn't understand what was really Unicode.
+
+As often, if you want to have a good overview of a topic, you have to understand the details. Details create the Big Picture. The reverse is not true. Therefore, I read the Unicode Standard, I read a ton of articles, and I inspected the code of some programming languages and libraries to understand how Unicode works. The result is this article. I hope it will help you better understand the challenges of Unicode, and why developers need to learn more about it.
+====
+
+
+
+== Table of Contents
+
+[.compact]
+* xref:sect-story[The Story]
+** xref:sect-story-characters[The Rise of Characters]
+** xref:sect-story-computers[The Rise of Computers]
+** xref:sect-story-unicode[The Rise of Unicode]
+** xref:sect-story-emojis[The Rise of Emojis]
+* xref:sect-standard[The Standard]
+** xref:sect-standard-standard[The Unicode Standard]
+** xref:sect-standard-character-table[The Unicode Character Table]
+** xref:sect-standard-character-database[The Unicode Character Database]
+** xref:sect-standard-encodings[The Unicode Encodings]
+*** xref:sect-standard-encodings-utf32[UTF-32]
+*** xref:sect-standard-encodings-utf16[UTF-16]
+*** xref:sect-standard-encodings-utf8[UTF-8]
+* xref:sect-implementation[The Implementation]
+** xref:sect-implementation-reading[Reading]
+** xref:sect-implementation-processing[Processing]
+** xref:sect-implementation-writing[Writing]
+** xref:sect-implementation-rendering[Rendering]
+* xref:sect-future[The Future]
+
+
+include::./2021-06-19-unicode-for-developers/the-story.adoc[]
+include::./2021-06-19-unicode-for-developers/the-standard.adoc[]
+include::./2021-06-19-unicode-for-developers/the-implementation.adoc[]
+
+
+'''
+
+[[sect-future]]
+== The Future
+
+Unicode provides a unique code for every character, in every program, on every platform. Unicode exists to preserve the world’s heritage. But with link:http://www.unicode.org/education/consortwork.html[approximately 6,000 languages spoken in the world today], there are still many characters, writing systems to encode, and also many new emojis to make Unicode even more popular.
+
+Unicode is widely suppported. Modern operating systems, programming languages, and software applications have support for Unicode, but the devil is in the details. Unicode support does not mean you can ignore Unicode completely. You need to understand what Unicode is, and how your programming language implements it if you want to create truly multilingual applications.
+
+
+[NOTE.experiment]
+.To Go Further
+====
+The scope of Unicode is more vast than simply assigning code points to characters. Unicode give programmers a vast amount of data about the handling of text:
+
+* link:https://www.unicode.org/reports/tr14/[How to divide words and break lines],
+* link:http://unicode.org/reports/tr10/[How to sort text],
+* link:http://cldr.unicode.org/[How to format numbers, dates, times], and other elements appropriate to different locales,
+* link:https://unicode.org/reports/tr9/[How to display text for languages whose written form flows from right to left], such as Arabic or Hebrew,
+* link:https://unicode.org/reports/tr36/[How to deal with security concerns] regarding the many look-alike characters from writing systems around the world.
+====

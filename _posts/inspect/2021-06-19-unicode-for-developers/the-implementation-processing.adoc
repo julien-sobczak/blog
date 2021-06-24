@@ -1,10 +1,12 @@
 
+[[sect-implementation-processing]]
 === Processing
 
-Programming languages offers many functions operating on strings.
+Programming languages offers many functions operating on strings. We will cover a few of them.
 
 
-==== Example: `length()`
+[[sect-implementation-processing-length]]
+==== `length()`
 
 Determining the length of a string can be challenging with Unicode. A possible implementation is simply to return the number of code points in the string but the result can be surprising:
 
@@ -24,11 +26,11 @@ print(len("\N{LATIN SMALL LETTER A}\N{COMBINING GRAVE ACCENT}"))
 # Or "\u0061\u0300"
 ----
 
-Like most examples in this section, you can easily reproduce the same behavior in other languages like Java or Go. The fact is our Unicode text is really composed of two Unicode characters. The result may be considered correct or wrong depending what you are looking.
+Like most examples in this section, you can easily reproduce the same behavior in other languages like Java or Go. The fact is our Unicode text is really composed of two Unicode characters. The result may be considered correct or wrong depending on what you are looking for.
 
 
-
-==== Example: `equals()`
+[[sect-implementation-processing-equals]]
+==== `equals()`
 
 Comparing if two strings are equals is not without surprise neither.
 
@@ -107,12 +109,12 @@ print(unicodedata.normalize('NFKC', "ℌ"))
 ----
 
 
+[[sect-implementation-processing-case]]
+==== Example: `upper()`
 
-==== Example: `toUpperCase()`
+A function like `upper()` in Python is often used to make case-insensitive comparisons. But not all scripts have case, and there aren't just two cases (ex: titlecase is used for book titles).
 
-A function like `toUpperCase()` is often used to make case-insensitive comparison. But not all scripts have case, and there aren't just two cases (ex: titlecase is used for book titles).
-
-_Case folding_ is defined by the Unicode Standard as a solution for caseless comparison of text to overcome these limitations, but Unicode also provides support to implement classic functions using the _Unicode Character Database_—the set of data files containing character properties. In particular, we are looking for the property `Simple_Lowercase_Mapping` defined in the file `UnicodeData.txt`.
+_Case folding_ is defined by the Unicode Standard as a solution for caseless comparison of text to overcome these limitations, but Unicode also provides support to implement these classic functions using the _Unicode Character Database_—the set of data files containing character properties. In particular, we are looking for the property `Simple_Lowercase_Mapping` defined in the file `UnicodeData.txt`.
 
 [source]
 .UnicodeData.txt
@@ -175,7 +177,7 @@ print("".join(map(chr, s.upper()))) # Convert bytes to string
 
 The implementation in popular programming languages follows the same logic with optimizations concerning the loading of the Unicode Character Database.
 
-===== Example (Python)
+===== Example: Python
 
 The string type is implemented in C in the file link:https://github.com/python/cpython/blob/v3.9.5/Objects/unicodeobject.c[`unicodeobject.c`]. Here is the method to test if a character is uppercase:
 
@@ -239,9 +241,9 @@ def makeunicodetype(unicode, trace): # <1>
 
 I invite you to check the generated files like link:https://github.com/python/cpython/blob/v3.9.5/Objects/unicodetype_db.h[`Objects/unicodetype_db.h`]. These files are not a simple list of all Unicode characters but use additional optimizations. We can ignore these low-level details for the purpose of this article.
 
-===== Example (Java)
+===== Example: Java
 
-Java implements the string data type in the class link:https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/share/classes/java/lang/String.java[`java.lang.String`]. The code is large due to historical reasons (Java provides two implementations `StringLatin1` and `StringUTF16`, and recent features like compact strings can be disabled, which means there are a lof of `if` conditions in the code).
+Java implements the string data type in the class link:https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/share/classes/java/lang/String.java[`java.lang.String`]. The code is large due to several evolutions like compact strings.
 
 Here is the code of the method `toUpperCase()`:
 
@@ -424,7 +426,7 @@ class CharacterData00 extends CharacterData {
 Like Python, we observe various optimizations but the overall idea is similar—we generate static code from the Unicode data files. In Java, accessing the properties of a character is more obvious thanks to `switch` statements using code points, whereas in Python, we have to manipulates bytes to determine the index of the code point first.
 
 
-===== Example (Go)
+===== Example: Go
 
 The Go implementation is really close to previous languages. Go strings are implemented in Go by the file link:https://github.com/golang/go/blob/go1.16.5/src/strings/strings.go[`src/strings/strings.go`], which declares the function `ToUpper()`:
 
@@ -461,7 +463,7 @@ func ToUpper(s string) string {
 	return Map(unicode.ToUpper, s) // <3>
 }
 ----
-<1> `RuneSelf` is a constant with the value `0x80` (128) to determine if the code point is a ASCII-compatible character.
+<1> `RuneSelf` is a constant with the value `0x80` (128) to determine if the code point is an ASCII-compatible character.
 <2> Before Unicode, converting a string in uppercase was easily implemented by substracting the differences between the index `a` and `A` since characters were ordered in the character set.
 <3> The real implementation is defined by the `unicode` package.
 
@@ -515,7 +517,7 @@ var _CaseRanges = []CaseRange{
 <1> For Unicode characters in the range `A`—`Z`, add 32 to the code point to get the uppercase character.
 <2> For Unicode characters in the range `a`—`z`, substract 32 to the code point to get the lowercase or titlecase character.
 
-This variable is then used by the function `to`, which is called by the higher-level functions such as `ToUpper`, `ToLower`:
+This variable is then used by the function `to`, which is called by higher-level functions such as `ToUpper`, `ToLower`:
 
 [source,go]
 .src/unicode/letter.go
@@ -564,8 +566,8 @@ func to(_case int, r rune, caseRange []CaseRange) (mappedRune rune, foundMapping
 
 
 
-
-==== Example: `matches()`
+[[sect-implementation-processing-regex]]
+==== `matches()`
 
 We will close the string manipulation section with a classic example: regular expressions.
 
@@ -624,13 +626,15 @@ public class StringTest {
 }
 ----
 
-In Java, the metacharacter `\w` also matches `[a-zA-Z_0-9]` (which is faster than checking the Unicode Character Database). Other character classes exists like `\p{L}` (`L` matches a single code point in the category "letter", but other values are possible: `N` for any kind of numeric character in any script, etc.). This implementation is also supported by Go.
+In Java, the metacharacter `\w` also matches `[a-zA-Z_0-9]` (which is faster than checking the Unicode Character Database). Other character classes exists like `\p{L}`. (`L` matches a single code point in the category "letter", but other values are possible: `N` for any kind of numeric character in any script, etc.) This syntax is also supported by Go.
 
 
 [NOTE]
 .Emojis in identifiers?
 ====
-Most languages requires source files to encoded in Unicode but that does not mean these languages accept any Unicode character in variable names. link:https://rosettacode.org/wiki/Unicode_variable_names[Rules differs among languages] but most languages like Java, [Python](https://www.python.org/dev/peps/pep-3131/), and [Go](https://golang.org/ref/spec#Identifiers) accepts only characters considered as letters or digits in the Unicode table (ex: ツ, Δ, π). Other languages do not have these restrictions. You can write link:https://twitter.com/t3xtm0de/status/600711130324008961[hieroglyphs in Hashell]:
+Most languages requires source files to be encoded in Unicode but that does not mean these languages accept any Unicode character in variable names. link:https://rosettacode.org/wiki/Unicode_variable_names[Rules differs among languages] but most languages like Java, link:https://www.python.org/dev/peps/pep-3131/[Python], and link:https://golang.org/ref/spec#Identifiers[Go] accept only characters considered as letters or digits in the Unicode table (ex: ツ, Δ, π).
+
+Some languages do not have these restrictions. You can write link:https://twitter.com/t3xtm0de/status/600711130324008961[hieroglyphs in Hashell]:
 
 [source,haskell]
 ----
@@ -639,7 +643,7 @@ Most languages requires source files to encoded in Unicode but that does not mea
 𓆲 _ _ = []
 ----
 
-Or write entier program in PHP without using any ASCII character for identifiers:
+Or write entire programs in PHP without using any ASCII character for identifiers:
 
 [source,php]
 ----
