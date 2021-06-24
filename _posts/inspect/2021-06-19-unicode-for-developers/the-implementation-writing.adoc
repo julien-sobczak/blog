@@ -1,4 +1,5 @@
 
+[[sect-implementation-writing]]
 === Writing
 
 A program should usually output some texts, for example when printing messages in the console, or when sending documents to another program when calling a remote API.

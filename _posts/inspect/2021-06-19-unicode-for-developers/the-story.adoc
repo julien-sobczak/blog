@@ -1,0 +1,74 @@
+
+[[sect-story]]
+== The Story
+
+
+[[sect-story-characters]]
+=== The Rise of Characters
+
+The story begins well after the origin of speech in the oldest known cave painting, located in France within Chauvet Cave. These paintings, which dated to around 30,000 BC, were mostly symbols and even if a picture is worth a thousand words, we cannot really consider these link:https://en.wikipedia.org/wiki/Proto-writing[_proto-writing_] systems to be expressive enough to be considered like link:https://en.wikipedia.org/wiki/Writing_system[_writing systems_]. Drawing is not writing.
+
+We have to move forward to the beginning of the Bronze Age (around 3000 BC) to discover the earliest writing systems, in particular, the famous Egyptian hieroglyphs. They were still symbols, but once their significance was revealed, the meaning of hieroglyphs was unequivocal. *A writing system represents communication visually, using a shared understanding between writers and readers of the meaning behind the sets of characters that make up a script.*
+
+Concerning hieroglyphs, this shared understanding was completely lost during the medieval period. The breakthrough in decipherment finally came only when Napoleon's troops discovered the Rosetta Stone in 1799. The stone refuted the assumption that hieroglyphs recorded ideas and not the sounds of the language. Hieroglyphs are not drawing, but true characters. This idea will serve as the main inspiration for the first alphabets including the Latin alphabet that I am currently using on my computer.
+
+
+[[sect-story-computers]]
+=== The Rise of Computers
+
+Computers are not as convenient as papyrus for hieroglyphs. Computers just deal with numbers composed of 0 and 1. They store letters and other characters by assigning a number to each of them, a process called link:https://en.wikipedia.org/wiki/Character_encoding[_character encoding_], just like the link:https://en.wikipedia.org/wiki/Morse_code[Morse code] uses signal durations to encode characters.
+
+The earlier character encodings were limited and did not cover characters for all the world’s languages. They even didn't cover all the symbols in common use in English... The fact is there exists so many writing systems that classifying them is already a challenge. Chinese uses roughly 50,000 characters representing meanings (日 for "sun"), Japanese uses approximately 100 characters representing whole syllables (た for "ta"), and Greek uses 34 characters representing sounds (α and β for "alpha" and "beta", the two first letters which serves as the etymology of the word "alphabet"). In addition, if we consider the limited space of the first computers, we can understand why *the main problem was not how to support all languages, but how to save bytes*.footnote:[The motivation for ASCII to save bytes was not really new. The  problem occurred with the publication of the first books. link:http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.41.9729[Gutenberg used 250 characters to produce in 1455 the 42-line Bible], the first printed book. Then, character sets became smaller and smaller in successive fonts, to reduce the costs of cutting, founding, composing, and
+distributing type.]
+
+ASCII was the first widely used encoding and uses only seven bytes, enough to represent 128 unique characters (2^7^ = 128):
+
+image::ascii-charset.png[title="ASCII character set", width=600]
+
+Note that ASCII reserves link:http://www.catb.org/esr/faqs/things-every-hacker-once-knew/#_ascii[the first 32 codes for non-printable control characters]. For example, the character 10 represents a line feed, causing a __printer__ to advance its paper to the next line and the character 8 is emitted by the __terminal__ when pressing Ctrl+D to represent the "end of file."
+
+Gradually people wanted more characters and new character encodings started to use the other 128 values available when taking all 8 bits of a byte.footnote:[ Nowadays, a byte is always considered to be 8 bits but first computers did use different sizes for a byte, which was based on the size of information it needed to hold.] The most famous were link:https://en.wikipedia.org/wiki/ISO/IEC_8859-1[ISO 8859-1] and link:https://en.wikipedia.org/wiki/Windows-1252[Windows 1252], the latter being a superset of the former.
+
+image::ascii-8bits.png[title="Common character sets extending ASCII", width=650]
+
+These encodings are just two examples among so many others.
+
+image::extended-ascii.png[title="Examples of incompatible character sets extended ASCII", width=650]
+
+In practice, whenever textual data was exchanged between different programs or
+computers, the risk of corruption was high as different character encodings often use different codes for the same character. Moreover, computers did not support all characters encodings, and many languages lacked character support altogether. Clearly, *256 unique codes was nowhere near enough*, especially to create multilingual documents.
+
+
+[[sect-story-unicode]]
+=== The Rise of Unicode
+
+The origins of Unicode dates back to 1987, but the name Unicode first appeared the next year in the document link:https://unicode.org/history/unicode88.pdf[_Unicode 88_]. *The intent of Unicode was to create "a __uni__que, __uni__fied, __uni__versal en__cod__ing," so that computers would only have to implement a single encoding to support all languages*.
+
+Unicode began with a 16-bit design (i.e., 65,536 codes "to encompass the characters of all the world's living languages"footnote:[In the document _Unicode 88_, the authors estimate the total number of characters to be less than 2^14^ = 16,384, based on the union of all newspapers and magazines printed in the world in 1988.]), but was extended in 1996 to support more than a million code points. The motivation was to allow the encoding of many historic scripts (e.g., the Egyptian hieroglyphs) and thousands of rarely used or obsolete characters that had not been anticipated as needing encoding (e.g., rarely used Kanji or Chinese characters, many of which are part of personal and place names, making them rarely used, but much more essential than envisioned in the original architecture of Unicode). History is always surprising.
+
+In the meantime, the link:https://en.wikipedia.org/wiki/Unicode_Consortium[Unicode Consortium] was created in 1991. This nonprofit organization, which counts only three employees, has still the same ambitious goal of replacing all existing character encodings. This goal has almost become a reality. link:https://w3techs.com/technologies/details/en-utf8[More than 95% of the Internet] uses Unicode (link:https://googleblog.blogspot.com/2010/01/unicode-nearing-50-of-web.html[it was just 50% a decade ago]) and almost all electronic devices support Unicode too.
+
+This organization is funded by link:https://home.unicode.org/membership/membership-levels/[membership fees] (from $75 for an individual to $21,000 for a full-member company) and link:https://www.unicode.org/consortium/donations.html[donations], but you can also support them by link:https://home.unicode.org/adopt-a-character/about-adopt-a-character/[adopting a character] for $100 (or $1000-$5000 for exclusivity).
+
+
+
+[[sect-story-emojis]]
+=== The Rise of Emojis
+
+The number of available code points exploded when Unicode dropped the 16-bit limitation. If 65,536 codes may seem a lot at that time, Unicode was now able to represent more than one million of codes! Not all codes are in use. *Unicode is an evolving standard*. The current version Unicode 13.0.0 uses "only" 143,859 codes including link:https://unicode.org/emoji/charts/full-emoji-list.html[more than 2000 special characters] that we call emojis.
+
+image::emojis-history-infography.jpeg[title="Emojis are probably the fatest growing language in the world (Source: Statista)", width=700, link="https://www.statista.com/chart/17275/number-of-emojis-from-1995-bis-2019/"]
+
+*Emojis didn't appear with Unicode*. They were born in the 90s in Japan ( 絵文字 [emodʑi] means "picture character"), and must not to be confused with emoticons such as :-), which are text-based. Emojis were called __smileys__ at that time. They were mostly used by mobile manufacturers and implemented using custom fonts like link:https://en.wikipedia.org/wiki/Wingdings[Wingdings]:
+
+image::Wingdings.png[title="Mosaic of Wingdings characters (Source: Wikipedia)"]
+
+If the receiver of your message didn't have the font on his device, letters were displayed instead. For example, the national park pictogram 🏞 was available in Webdings at 0x50, which corresponded to the capital letter P encoded in ASCII. To solve this problem, new character encodings were introduced to not mix characters and emojis by using different codes. Unicode as the universal character encoding was in danger.
+
+Therefore, Google employees requested that Unicode looks into the possibility of a uniform emoji set. As a result, 722 emojis were released in 2010 as Unicode 6.0 and each new version now integrates new emojis. Unicode entered a new era.
+
+Emoji standardization has put pressure on the Unicode Consortium, overtaking the initial focus on standardizing characters used for minority languages. But the desire for more emojis has put pressure on vendors too to improve their Unicode support, leading to a better support for Unicode's minority languages. A good example of a win-win situation. *Emojis contributes in preserving the writing of the past while making the writing of the future more fun*.
+
+The primary function of emojis was to fill in emotional cues otherwise missing from typed conversation (😢🤣😉😍🥳). But emojis have been extended to include a lot more (👶👰🧛‍♂️🕶🐼🍀☀️🥝⚽️🚴‍♀️✈️).
+
+Now, when the Unicode Technical Committee meets quarterly to decide which new characters will be encoded, they also decide about link:https://www.unicode.org/emoji/future/emoji-candidates.html[new emojis]. *Any individual or organization can suggest a new emoji by writing a proposal* (the link:https://unicode.org/L2/L2019/19232-n5085-troll-emoji.pdf[proposal for a troll emoji] is a 10-page document using Google Trends, and film references to justify its introduction). The selection process uses link:http://unicode.org/emoji/proposals.html#selection_factors[well-documented rules]. A quorum of half of the Consortium's link:https://home.unicode.org/membership/members/[full members] is required. There are currently ten full members, only one of which, the Ministry of Endowments and Religious Affairs of Oman, is not a tech company. The other nine are Adobe, Apple, Facebook, Google, IBM, Microsoft, Netflix, SAP, Salesforce, and a newcomer, link:https://y.at/[Yat].footnote:[Yat was created recently with the ambitious link:https://thedefiant.io/emoji-based-username-project-yat-wants-to-become-universal-internet-identity-system/[goal to create a new censorship resistant internet identity system] using a personalized string of emojis as your universal username.]
