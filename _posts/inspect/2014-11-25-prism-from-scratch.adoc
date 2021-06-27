@@ -14,24 +14,29 @@ unofficialTags:
 :page-liquid:
 :imagesdir: {{ '/posts_resources/2014-11-25-prism-from-scratch/' | relative_url }}
 
-[quote, "Brendan Eich, créateur of JavaScript"]
+
+[CAUTION.license]
+====
+You are reading a translation of an link:https://julien-sobczak.github.io/blog-fr/inspect/2014/11/25/prism-from-scratch.html[old blog post] published on my previous blog in French.
+====
+
+
+[quote, "Brendan Eich, creator of JavaScript"]
 ____
 Many thanks to Lea Verou, et al., for Prism.js!
 ____
 
-[.lead]
-De nombreuses librairies JavaScript proposent depuis bien longtemps la coloration syntaxique de code. Mais c’est une librairie récente, puisque datant de 2013, qui tire le mieux son épingle du jeu en ayant déjà été adoptée par des sites comme Mozilla. Cette librairie s’appelle Prism et est l’oeuvre de Lea Verou, à qui on doit également la librairie link:"{% post_url inspect/2014-11-06-prefix-free-from-scratch %}[-prefix-free] et le Code Playground link:http://dabblet.com/[Dabblet]. Avec Prism, notre code n’aura jamais été aussi joli. Peu de thèmes mais une qualité et un rendu remarquable. Le plus surprenant survient quand on inspecte le source de la librairie : seulement 400 lignes de JavaScript (là où Google Prettify et SyntaxHighlighter avoisinent les 2000 lignes).
+Many JavaScript libraries support syntaxic coloration since a long time. A recent newcomer has become highly popular and is already used by major website like Mozlla. This library is Prism and was created by Lea Verou, to whom we also owe the library link:"{% post_url inspect/2014-11-06-prefix-free-from-scratch %}[-prefix-free] and the code playbook link:http://dabblet.com/[Dabblet]. Using Prism, our code is even more beautiful. Few themes are supported but there are of high quality. What is the most surprising about Prims is the size of the code: only 400 lignes de JavaScript (Google Prettify and SyntaxHighlighter both counts more than 2000 lines for comparison).
 
-[.lead]
-Comment Prism réalise-t-il ce tour de force ? C’est ce que nous allons découvrir en recodant Prism de zéro.
+How does Prism achieve this tour de force? This is what we'll find out by rewriting Prism from scratch.
 
 [CAUTION.license]
-link:http://prismjs.com/[Prism] est publié sous link:http://opensource.org/licenses/MIT[licence MIT]. Le code présenté dans cet article a été simplifié pour des raisons évidentes et n’a pas pour vocation à être utilisé en dehors de ce contexte d’apprentissage. Cet article est basé sur la dernière de Prism au moment de cet article.
+link:http://prismjs.com/[Prism] is published under the link:http://opensource.org/licenses/MIT[MIT license]. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the latest version of Prism at the moment of the publication of this article.
 
 
-== C’est parti
+== Let's Go!
 
-link:http://prismjs.com/extending.html[La documentation pour étendre Prism] nous donne un premier regard sur le fonctionnement interne de la librairie. Très peu de fonctions sont nécessaires. Commençons donc par dresser la structure générale :
+link:http://prismjs.com/extending.html[The documentation to extend Prism] gives us interesting details about the inner working of the library. Let's start by outlining the global structure:
 
 [source,javascript]
 ----
@@ -39,7 +44,7 @@ var Prism = (function() {
 
  var self = {
 
-  languages : {}, // Chaque langage supporté vient ajouter sa définition ici
+  languages : {}, // Every supported langague is added here
 
   highlightAll : function() { // <1>
    var elements = document.querySelectorAll('code[class*="language-"]');
@@ -70,7 +75,8 @@ var Prism = (function() {
   },
 
   tokenize : function(text, grammar) {
-  // La fonction de plus bas niveau représentant l’analyseur lexical
+  // This is the most low-level function implementing the
+  // lexical analyzer.
   }
  };
 
@@ -80,22 +86,22 @@ var Prism = (function() {
 
 document.addEventListener('DOMContentLoaded', Prism.highlightAll);
 ----
-<1> Point d'entrée. Recherche tous les codes source dans la page.
-<2> On remplace le contenu précédent par le contenu stylisé.
-<3> On découpe le code par tokens qui vont être colorisés à l'aide de classes CSS.
+<1> This is the entry point. We look for all source code present in the document.
+<2> We replace the previous content by the stylized one.
+<3> We tokenize the source code to colorize it using CSS classes.
 
-En lisant attentivement le code, on constate qu'il y a peu de difficultés. On recherche les balises `<code>` avec une classe commençant par `language-`. On extrait leur contenu qui va être découpé en lexème comme le ferait un compilateur. La différence est qu’un compilateur va bien plus loin en recréant un link:http://fr.wikipedia.org/wiki/Arbre_syntaxique_abstrait[arbre syntaxique abstrait] dans le but degénérer le langage cible. Ici, rien de tout çà, on ne cherche même pas à valider que la syntaxe du langage est respectée, on cherche juste des lexèmes (token) pour leur appliquer des classes CSS.
+The code is relatively simple to apprehend. We search the tags `<code>` having a CSS class starting with `language-`. We extract their content to split it into tokens as a compiler or an interpreter would do. The main difference is that a compiler goes well beyond by creating an link:https://en.wikipedia.org/wiki/Abstract_syntax_tree[abstract syntaxic tree] as an intermediate representation before generating code in the target language. Here, nothing of the sort, we don't even try to ensure the code is valid. On are just looking for tokens to surround them with new tags having CSS classes on them.
 
 
-== L’analyseur lexical
+== The Lexical Analyzer
 
-La fonction `tokenize` accepte deux paramètres :
+The function `tokenize` accepts two parameters:
 
 [.compact]
-* `text` : le contenu de la balise `<code>`
-* `grammar` : la définition du langage, souvent définie dans des fichiers séparés
+* `text`: the content of a tag `<code>`.
+* `grammar`: the definition of the programming language, often defined in different files.
 
-Prenons un exemple pour mieux illustrer le comportement de cette fonction :
+Let's take an example to illustrate the working of this function:
 
 [source,html]
 ----
@@ -111,6 +117,8 @@ public class HelloWorld {
 </code></pre>
 ----
 
+We define a subset of the Java language named `javalite`:
+
 [source,javascript]
 ----
 // prism-javalite.js
@@ -121,21 +129,21 @@ Prism.languages.javalite = {
 };
 ----
 
-La variable `text` contient notre programme HelloWorld et `grammar` contient l’objet `Prism.languages.javalite`.
+The variable `text` contains the code of our program `HelloWorld` et `grammar` contains the object `Prism.languages.javalite`.
 
-La définition du langage reste très basique. Prism supporte bien plus d’options pour gérer de nombreux cas particuliers que nous discuterons par la suite. Notre définition identifie 3 tokens avec à chaque fois une expression régulière décrivant le format de chacun d’entre eux.
+Note that the definition of this `javalite` language is very basic. Prism supports a lot more options to address more exotic rules that will be discussed later in this article. Our definition defines only three tokens with a regular expression to found them.
 
 [TIP]
-.Token ou lexème ?
+.Token ou Lexeme?
 ====
-Le link:https://www.goodreads.com/book/show/703102.Compilers[Dragon Book] nous apporte la réponse: "A lexeme is a sequence of characters in the source program that matches the pattern for a token and is identified by the lexical analyzer as an instance of that token."
+The link:https://www.goodreads.com/book/show/703102.Compilers[Dragon Book] brings us the answer: "A lexeme is a sequence of characters in the source program that matches the pattern for a token and is identified by the lexical analyzer as an instance of that token."
 
-Pour revenir à notre exemple, notre définition du langage Java est constitué de 3 tokens (ex : `keyword`). Les chaînes de caractères `"public"` ou `"static"` sont deux lexèmes du même token `keyword`.
+To illustrate this difference using the previous example, our definition du langage `javalite` uses three tokens (ex : `keyword`). The strings `"public"` or `"static"` are examples of lexemes of the same token `keyword`.
 
-Cette définition n'est pas reprise au sein du source de Prism où lexèmes et tokens sont confondus sous le même terme de token.
+This better definition is not followed in the source code of Prism where lexemes and tokens are named using the same term token.
 ====
 
-Voici ce que nous retourne la fonction `tokenize` :
+Here is the result returned by the function `tokenize` :
 
 [source,javascript]
 ----
@@ -181,7 +189,7 @@ Voici ce que nous retourne la fonction `tokenize` :
 ]
 ----
 
-On retrouve notre code source découpé en lexèmes. Pour chaque lexème ayant un token associé (mot-clé, ponctuation ou chaîne de caractères), un objet `Token` est créé contenant la valeur du lexème et le nom du token :
+We retrieve our code sample divided in lexemes. For each lexeme having an associated token (`string`, `punctuation`, `keyword`), an object `Token` is created containing the text of the lexeme and the name of the token:
 
 [source,javascript]
 ----
@@ -191,22 +199,21 @@ Token: function(type, content) {
 }
 ----
 
-Toujours obscur ? Pas d'inquiétude, nous reviendrons sur l'analyseur lexical dans la dernière partie de cet article.
+Still confused? Don't worry. We will go back on the lexical analyzer in the last part.
 
 
-== La coloration syntaxique
+== The Syntaxic Coloration
 
-Une fois la liste de lexèmes en notre possession, il ne nous reste plus grand chose pour réaliser la coloration syntaxique. C’est la méthode `Token.stringify` qui s’en charge :
+Once the list of lexemes identified, there is little reamining to do to colorize the code. It's the job of the method `Token.stringify`:
 
 [source,javascript]
 ----
 Token.stringify = function(o, language, parent) {
- if (typeof o == 'string') { // Lexème sans token associé ?
+ if (typeof o == 'string') { // Lexeme without defined token?
   return o;
  }
 
- if (Array.isArray(o)) { // Liste de lexème
-                         // => on construit le résultat de manière récurvise
+ if (Array.isArray(o)) { // List of lexemes => recurse
   return o.map(function(element) {
    return Token.stringify(element, language, o);
   }).join('');
@@ -219,9 +226,9 @@ Token.stringify = function(o, language, parent) {
 };
 ----
 
-Cette méthode récursive est d’abord appelée avec le tableau complet. Pour chaque lexème sans token, la valeur est conservée. Pour les autres, on décore chaque valeur par une balise `<span>` avec les classes `token` et le nom du token (`keyword`, `punctuation`, `string`, ...).
+This recursive method is called initially with the full list of lexemes. For every lexeme without token found, the original value is simply preserved. For other lexemes, we decorate the value using a new tag `<span>` having the CSS classes `token` and the name of the token (`keyword`, `punctuation`, `string`, ...).
 
-Quelques déclarations CSS est le tour est joué. La balise `<pre>` se chargeant quant à elle de conserver l’espacement et les retours à la ligne.
+Then, we just have to define a few CSS declarations and that's it. (The tag `<pre>` is useful to preserve the spacing and newlines).
 
 [source,css]
 ----
@@ -241,7 +248,7 @@ pre {
 }
 ----
 
-Voici à quoi ressemble notre HelloWorld avec ces styles :
+Here is what our code looks like when these styles are applied:
 
 ++++
 <iframe src="{{ '/posts_resources/2014-11-25-prism-from-scratch/prism-demo-simple.html' | prepend: site.baseurl }}"
@@ -250,15 +257,15 @@ Voici à quoi ressemble notre HelloWorld avec ces styles :
 </iframe>
 ++++
 
-La dernière pièce manquante à notre puzzle reste toujours l’analyseur lexical.
+The last missing piece from our puzzle is still the lexical analyzer.
 
 
 // -----------------------------------------
-// -- L'analyseur lexical ------------------
+// -- The Lexical Analyzer -----------------
 // -----------------------------------------
-== L'analyseur lexical (le retour)
+== The Lexical Analyzer (the comeback)
 
-Commençons par une première version supportant la grammaire précédente.
+Let's get started with a first version supporting the previous basic grammar:
 
 [source,javascript]
 ----
@@ -313,9 +320,9 @@ tokenize : function(text, grammar) {
 }
 ----
 
-Au premier abord, la fonction peut paraître complexe mais son fonctionnement est assez simple. Pour chaque token du langage, on itère sur la liste, qui initialement contient le code source complet, mais qui va, itération après itération devenir notre liste de lexèmes.
+At first, the function may seem obscur mais the logic is more simple as it may seems. For every token of the language, Pour chaque token du langage, we iterate over the input list, which contains initially a single string containing the complete source code, but after several iterations, will be split into lexemes.
 
-Déroulons l’algorithme toujours sur notre exemple en ne considérant que le token `keyword` dont l’expression régulière est pour rappel : `/\b(public|static|class|void)\b/g`:
+Let's unwind the algorithm on our example, considering only the token `keyword` defined by the regular expression: `/\b(public|static|class|void)\b/g`:
 
 [source,javascript]
 ----
@@ -323,14 +330,14 @@ strarray = ['public class HelloWorld { … }'];
 i = 0       +-----------------------------+
 ----
 
-`'public class HelloWorld { … }'` satisfait-il notre expression ? *Oui*
+Does `'public class HelloWorld { … }'` matches the regular expression? *Yes*
 
-On remplace alors l’élément du tableau par 3 éléments :
+We replace this elemet by 3 new elements:
 
 [.compact]
-* La chaine avant la correspondance : chaine vide ici donc aucun élément à ajouter.
-* Le lexème identifié : `public`.
-* La chaine après la correspondance : `' class HelloWorld { … }'`.
+* The string before the match: the string is empty so nothing to add.
+* The found lexeme: `public`.
+* The string after the match: `' class HelloWorld { … }'`.
 
 [source,javascript]
 ----
@@ -338,14 +345,14 @@ strarray = [Token, ' class HelloWorld { … }'];
 i = 1              +-----------------------+
 ----
 
-`' class HelloWorld { … }'` satisfait-il notre expression ? *Oui*
+Does `' class HelloWorld { … }'` matches the regular expression? *Yes*
 
-Idem, on remplace l’élément par 3 éléments :
+Similarly, we replace the element by 3 new elements:
 
 [.compact]
-* La chaine avant la correspondance : le caractère espacement ' '.
-* Le lexème identifié : `class`.
-* La chaine après la correspondance : `' HelloWorld { … }'``.
+* The string before the match: the space character.
+* The found lexeme: `class`.
+* The string after the match: `' HelloWorld { … }'``.
 
 [source,javascript]
 ----
@@ -353,7 +360,7 @@ strarray = [Token, ' ', Token, ' HelloWorld { … }'];
 i = 2                   +---+
 ----
 
-Il s’agit d’un lexème déjà identifié, on continue.
+The element is already a previously-found token, we continue.
 
 [source,javascript]
 ----
@@ -361,48 +368,49 @@ strarray = [Token, ' ', Token, ' HelloWorld { … }'];
 i = 3                          +-----------------+
 ----
 
-`' HelloWorld { … }'` satisfait-il notre expression ? *Non*
+Does `' HelloWorld { … }'` matches the regular expression? *No*
 
-Après plusieurs itérations, on atteint enfin la fin du tableau avant de recommencer avec le prochain token, et ainsi de suite jusqu’à parcourir la grammaire complète.
+After several more iterations, we finally reach the end of the array, before restarting the same logic with the next token, and so on, until having processed the whole grammar.
 
 [NOTE.congratulations]
 .Congratulations!
 ====
-Cela termine notre tour de Prism. *Moins de 120 lignes auront été nécessaires*. Vous pouvez consulter le source complet de l’exemple link:https://github.com/julien-sobczak/prism-from-scratch[ici].
+This ends the rewrite of Prism. *Less than 120 lines of code have been necessary*. You can find the complete source code link:https://github.com/julien-sobczak/prism-from-scratch[here].
 ====
 
 
-== Bonus : La réalité des langages
+== Bonus: The Reality of Programming Languages
 
-Exprimer les tokens à l’aide d’expressions régulières est incontournable. Le link:http://en.wikipedia.org/wiki/Lex_(software)[programme LEX], créé en 1975 par Mike Lesk et Eric Schmidt, ancien PDF de Google, fonctionnait déjà de la sorte. Malheureusement, les expressions régulières ont des limitations, surtout que leur support dans certains langages comme JavaScript est limité.
+Defining tokens using regular expressions is common. The link:http://en.wikipedia.org/wiki/Lex_(software)[program LEX], created in 1975 by Mike Lesk et Eric Schmidt, worked already like that. Sadly, regular expressions have limitations, especially as their support in some languages like JavaScript is not as complete as reference languages like Perl.
 
-=== Un exemple : nom de classe en Java
 
-Une première proposition serait : `[a-z0-9_]+`
+=== An example: Java class names
 
-*Problème* : Cette expression régulière retourne également les noms variables et de constantes. +
-*Solution* : On peut s’en sortir soit en supportant uniquement les conventions de nommages Java (Camel Case avec première lettre en majuscule pour une classe) mais cela est trop restrictif pour une librairie comme Prism. La solution retenue est différente. Un nom de classe en Java ne peut figurer qu’à certains endroits bien définis (ex : après le mot clé `class`). L’idée est donc de rechercher les identifiants immédiatement précédé par un des mots-clés. Peut-on faire çà avec une expression régulière ? La réponse est oui. (mais...)
+A first regular expression would be: `[a-z0-9_]+`
+
+*Problem*: This regular expression returns also variables and constants. +
+*Solution*: We can use Java conventions to only matches identifiers starting with an uppercase letter mais this solution is probably too restrictive for a library like Prism. The solution implemented by Prims is different. A class name is expected at well-defined places (ex: after the keyword `class`). The idea is therefore to look around the matches. We can do that with regular expressions. But...
 
 [TIP]
 .lookbehind + lookahead = lookaround
 ====
-Le Lookahead et le Lookbehind permettent d’exprimer des assertions sur ce qui doit précéder ou suivre la correspondance trouvée par une expression régulière. Un exemple s’impose :
+Lookahead et Lookbehind allows to define assertions about what must precede or follow the match. For example:
 
-* `java(?!script)` recherche les occurrences de `java` qui ne sont pas suivies de `script` (java, javafx mais pas javascript). +
-On parle de *Negative Lookahead*.
-* `java(?=script)` recherche les occurrences de `java` suivies de `script` (javascript mais pas java ou javafx). +
-On parle de *Positive Lookahead*.
-* `(?&lt;!java)script` recherche les occurrences de `script` qui ne sont pas précédées de `java` (script, postscript mais pas javascript). +
-On parle de *Negative Lookbehind*.
-* `(?&lt;=java)script` recherche les occurences de `script` précédées de `java` (javascript mais pas postscript). +
-On parle de *Positive Lookbehind*.
+* `java(?!script)` searches for occurrences of `java` not followed by `script` (`java`, `javafx` mais pas `javascript`). +
+We talk about *Negative Lookahead*.
+* `java(?=script)` searches for occurrences of `java` followed by `script` (`javascript` mais pas `java` ou `javafx`). +
+We talk about *Positive Lookahead*.
+* `(?&lt;!java)script` searches for occurrences of `script` not preceded by `java` (`script`, `postscript` mais pas `javascript`). +
+We talk about *Negative Lookbehind*.
+* `(?&lt;=java)script` recherche les occurences de `script` preceded by `java` (`javascript` mais pas `postscript`). +
+We talk about *Positive Lookbehind*.
 
-Attention : L’expression régulière `(?&lt;=java)script` est différente de `javascript`. Les caractères satisfaisant les lookarounds ne sont pas retournés dans la correspondance (le résultat est `script` pour la première et `javascript` pour la seconde).
+Caution: The regular expression `(?&lt;=java)script` is different from `javascript`. The characters satisfying the lookarounds are not returned in the matching string (the result is `script` for the first regular expression and `javascript` for the second one).
 ====
 
-L’idée des lookarounds est assez facile à saisir. La difficulté est dans leur utilisation car les différences entre les langages est assez marquée. Par exemple, de nombreux langages y compris Perl limitent les caractères autorisés dans un lookbehind (pas de métacaractères ou autres, Perl doit être capable de déterminer de combien de caractères il doit revenir en arrière). Vous trouverez plus d’informations link:http://www.regular-expressions.info/lookaround.html[ici].
+The idea behind lookarounds is relatively easy to grasp. The main challenge is their support varies between languages. For example, many languages including Perl restrict the characters allowed in a lookbehind (no metacharacters, Perl must be able to determine the number of characters he must go back). You can find more information link:http://www.regular-expressions.info/lookaround.html[here].
 
-Qu’en est-il en JavaScript ? La réponse ne va pas nous arranger : *JavaScript ne supporte que les lookaheads*. Prism tente d’atténuer ce manque en proposant un support limité des Positive Lookbehinds :
+What about JavaScript? The answer is simple: *JavaScript does not support lookaheads*. Therefore, Prism has to implement a workaround:
 
 [source,javascript]
 ----
@@ -415,9 +423,9 @@ Prism.languages.javalite = {
 };
 ----
 
-Avec cette nouvelle définition, on recherche les identifiants précédés d'un des mot-clés définis. Côté implémentation, si le lookbehind est activé, Prism retire la valeur du premier groupe capturé pour définir la valeur du lexème.
+With this new definition, we are looking for identifiers preceded by one of the defined keywords. From the implementation, if lookbehind is enabled, Prism removes the value of the first captured group to define the real value of the lexeme.
 
-Voici à nouveau la méthode `tokenize` avec les lignes modifiées mises en évidence :
+Here the method `tokenize` with the changed lines highlighted:
 
 [source,javascript,linenums,highlight='10,26..28,30..31']
 ----
@@ -481,9 +489,7 @@ tokenize : function(text, grammar) {
 }
 ----
 
-NOTE: L’expression régulière actuelle dans Prism ignore notamment les déclarations de variables ou les casts.
-
-Avec cette nouvelle fonctionnalité, on peut désormais envisager des exemples plus poussés comme celui-ci :
+With this new feature, we can now test our code with more advanced examples:
 
 ++++
 <iframe src="{{ '/posts_resources/2014-11-25-prism-from-scratch/prism-demo-advanced.html' | prepend: site.baseurl }}"
@@ -492,20 +498,22 @@ Avec cette nouvelle fonctionnalité, on peut désormais envisager des exemples p
 </iframe>
 ++++
 
+
 [TIP]
-.Quiz : Trouvez à quel token correspond l’expression régulière suivante ?
+.Quiz: Which token matches this regular expression?
 ====
 [source,javascript]
 ----
 /(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\r\n])+\/[gim]{0,3}(?=\s*($|[\r\n,.;})]))/g
 ----
 +
-_Indice_ : Cette expression a quelque chose de méta en elle.
+_Solution_: This regular expression matches... regular expressions.
 +
-Remarquez aussi l’utilisation de la solution lookbehind de Prism et le lookahead supporté par tous les navigateurs.
+You may notice the use of the lookbehind workaround supported by Prism and the lookahead supported by all browsers.
 ====
 
-Voici l’implémentation complète :
+
+Here is the complete rewrite:
 
 [source,javascript]
 ----
@@ -667,14 +675,14 @@ Prism.languages.java = {
 [NOTE.experiment]
 .Try for yourself!
 ====
-* Prism propose un système de "hooks" pour l’écriture de plugins. Pour comprendre son implémentation et surtout comment les plugins l’exploitent, vous pouvez vous tourner vers link:https://github.com/LeaVerou/prism/blob/gh-pages/components/prism-core.js[prism-core.js] et vers le dossier link:https://github.com/LeaVerou/prism/tree/gh-pages/plugins[plugins].
-* Prism supporte l’intégration d’un langage au sein d’un autre (ex : du HTML contenant du JavaScript ou du CSS). L’implémentation se révèle élégante, ne nécessitant que quelques dizaines de lignes. Pour en savoir plus : link:https://github.com/LeaVerou/prism/blob/gh-pages/components/prism-core.js[prism-core.js]. Indice : regarder du côté des propriétés `inside` et `rest`.
+* Prism supports hooks for write plugins. To understand this extension point and how plugins use it, you can check link:https://github.com/LeaVerou/prism/blob/gh-pages/components/prism-core.js[prism-core.js] and the directory link:https://github.com/LeaVerou/prism/tree/gh-pages/plugins[plugins].
+* Prism supports one language to include other languages (ex: HTML files often contains JavaScript and CSS blocks). The implementation is elegant, requiring only a dozen of lines of code. Check the file link:https://github.com/LeaVerou/prism/blob/gh-pages/components/prism-core.js[prism-core.js]. Hint: Search for properties `inside` and `rest`.
 ====
 
 [NOTE.remember]
-.A retenir
+.To Remember
 ====
-* *Connaître les expressions régulières* est un sérieux atout pour un développeur.
-* *JavaScript ne supporte pas les lookbehinds*.
-* Token != Lexème.
+* *Mastering regular expressions* is a superpower for a developer.
+* *JavaScript does not support lookbehinds*.
+* *Token != Lexème*.
 ====

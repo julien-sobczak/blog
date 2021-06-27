@@ -13,22 +13,28 @@ unofficialTags:
 
 :page-liquid:
 
-[quote,"Gerard Meszaros, auteur de XUnit Test Patterns"]
+
+[CAUTION.license]
+====
+You are reading a translation of an link:https://julien-sobczak.github.io/blog-fr/inspect/2014/10/06/junit-from-scratch-6-octobre-2014-lire.html[old blog post] published on my previous blog in French.
+====
+
+
+[quote,"Gerard Meszaros, author of book _XUnit Test Patterns_"]
 ____
 Never in the field of software development have so many owed so much to so few lines of code
 ____
 
-[.lead]
-Selon link:http://www.takipiblog.com/we-analyzed-30000-github-projects-here-are-the-top-100-libraries-in-java-js-and-ruby/[une étude de 2013], JUnit est la librairie la plus utilisée en Java (à égalité avec Slf4j). On peut retracer les racines du framework à link:http://www.xprogramming.com/testfram.htm[un papier de Kent Beck] datant de 1989. La version SUnit sera véritablement publiée en 1994 par ce même Kent Beck qui sera également à l’origine de la version Java (avec Eric Gamma). Si vous souhaitez en savoir plus sur l’histoire des tests, je vous conseille ces deux très bons articles : link:http://c2.com/cgi/wiki?TenYearsOfTestDrivenDevelopment[Ten Years Of Test Driven Development] et link:http://shebanator.com/2007/08/21/a-brief-history-of-test-frameworks/[A Brief History of Test Frameworks].
+According link:http://www.takipiblog.com/we-analyzed-30000-github-projects-here-are-the-top-100-libraries-in-java-js-and-ruby/[a study of 2013], JUnit is the most used library in Java (tied with Slf4j). We can trace the roots of the framework to link:http://www.xprogramming.com/testfram.htm[a paper written by Kent Beck] in 1989. The version of SUnit will truly be published in 1994 by the same author that will be at the origin of the Java version too (with Eric Gamma). If you want to know more about the history of automated testing, I recommend these two excellent articles: link:http://c2.com/cgi/wiki?TenYearsOfTestDrivenDevelopment[Ten Years Of Test Driven Development] and link:http://shebanator.com/2007/08/21/a-brief-history-of-test-frameworks/[A Brief History of Test Frameworks].
 
-Place au code maintenant. Nous allons réécrire une version de JUnit de zéro, très proche du code de production, même si quelques libertés seront nécessaires pour éviter à cet article de trop s’allonger. Les noms de classes/méthodes respectent ceux de la librairie.
+Now, let's check the code. We are going to rewrite a minimal version of JUnit from scratch, trying to stay as close as possible from the original code, even if some compromises will be necessary to keep this article short. The name of classes and methods will follow the same naming as the official JUnit library.
 
 [CAUTION.license]
-JUnit est publié sous link:https://www.eclipse.org/legal/epl-v10.html[licence Eclipse]. Le code présenté dans cet article a été simplifié pour des raisons évidentes et n’a pas pour vocation à être utilisé en dehors de ce contexte d’apprentissage. Cet article est basé sur la version 4.11 de JUnit.
+JUnit is published under the link:https://www.eclipse.org/legal/epl-v10.html[Eclipse license]. The code presented here has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the version 4.11 of JUnit.
 
-== Un premier exemple
+== A First Example
 
-Voici une suite de tests très simple.
+Here is a small suite of basic tests:
 
 [source,java]
 ----
@@ -74,14 +80,14 @@ public class ArrayListTest {
 }
 ----
 
-Lancés avec JUnit, ces tests échouent à cause du dernier test en erreur. L’objectif est maintenant de réussir à ré-exécuter cette classe mais sans l'aide de la librairie JUnit.
+When run with JUnit, these tests fail on the last test method. The goal is now to rerun the same tests, but without depending on the JUnit library.
 
 // ---------------------------------------------
-// -- C'est parti ! ----------------------------
+// -- Let's Go!  -------------------------------
 // ---------------------------------------------
-== C’est parti !
+== Let's Go!
 
-Si on met de côté nos IDEs, le moyen le plus simple de link:https://github.com/junit-team/junit/wiki/Test-runners[lancer JUnit] sur une classe donnée se résume à la ligne suivante :
+If we ignore the support of our favorite IDE, the easiest way to link:https://github.com/junit-team/junit/wiki/Test-runners[launch JUnit] on a given class is the following line:
 
 [source,java]
 ----
@@ -91,9 +97,9 @@ import org.junit.runner.Result;
 Result result = JUnitCore.runClasses(ArrayListTest.class);
 ----
 
-Nous allons partir de cette même ligne et recoder chacune des classes. On commence donc par effacer les imports et proposer une implémentation pour les deux classes concernées. (`Result` et `JUnitCode`)
+We are going to start our implementation from this class. So, we start by removing all `import` statement and create instead new versions of these classes. (`Result` and `JUnitCode`)
 
-La classe `Result` regroupe les informations qui vont nous permettre d’afficher le résultat de l’exécution, soit Green, soit Red. On retrouve donc le nombre de tests exécutés et les échecs :
+The class `Result` groups all informations that will be useful to display the result of a test execution, either Green, or Red. We find logically fields to keep trace of the number of executed tests and the number of failures:
 
 [source,java]
 ----
@@ -111,7 +117,7 @@ public class Result {
 }
 ----
 
-Pour chaque échec, il est intéressant de connaître par exemple le nom du test et l’exception attrapée. C’est ce que représente la classe `Failure` :
+For every test failure, we need to save the name of the failing test and the catched exception. This is the job of the class `Failure`:
 
 [source,java]
 ----
@@ -135,7 +141,7 @@ public class Failure {
 }
 ----
 
-Une `Description`, comme son nom l'indique, décrit un test donné, reprenant son nom, son annotation (`@Test` avec l’exception attendue éventuellement), la suite auquel il appartient, etc. Ici, on se contentera uniquement du nom mais on conservera l’abstraction représentée par `Description`.
+The class `Description` describes a single test, including the name, the  annotation (`@Test` with the possible expected exception class), the test suite to which it belongs, etc. For our basic implementation, we will only represents the name but still keep the abstraction represented by `Description`.
 
 [source,java]
 ----
@@ -162,7 +168,7 @@ public class Description {
 }
 ----
 
-C’en est terminé pour l’objet `Result`. Tournons nous à présent vers la seconde classe `JUnitCore` qui joue le rôle de façade pour le reste de la librairie. Voici son implémentation. On y retrouve les principales abstractions que l’on va ensuite décrire.
+We are done with the class `Result`. Now, we have to implement the second class `JUnitCore`, which is essentially a facade to the library other classes. Here is the implementation showing the main abstractions we are going to implement just after.
 
 [source,java]
 ----
@@ -185,7 +191,7 @@ public class JUnitCore {
 }
 ----
 
-La méthode `run` lève un peu plus le voile sur ce qui nous attend. Elle prend en entrée un `Runner`, élément central de la librairie puisque c’est cette classe qui se charge d’exécuter les tests tout en nous signalant sa progression à travers différents événements (lancement du test, test échoué, test terminé, ...). Il existe de nombreuses implémentations de `Runner` pour, par exemple, supporter les tests JUnit 3, link:https://github.com/junit-team/junit/wiki/Parameterized-tests[les tests paramétrés], link:https://github.com/junit-team/junit/wiki/Theories[les théories], etc. Il est tout à fait possible de créer son propre `Runner` comme l’ont fait Spring ou Mockito grâce à l’annotation link:http://junit.sourceforge.net/javadoc/org/junit/runner/RunWith.html[`@RunWith`]. Tous ces runners respectent une interface similaire à :
+The method `run` exposes some details for the following of this article. The method defines a single parameter of type `Runner`, the main class of JUnit as it is this class that is responsible to execute all tests and report the progression through various events (starting execution of test, failed test, completed test, ...). There are many implementations de `Runner` to support, for example, tests written using the JUnit 3 syntax, link:https://github.com/junit-team/junit/wiki/Parameterized-tests[parameterized tests], link:https://github.com/junit-team/junit/wiki/Theories[theories], etc. It is also possible to implement new runners as Spring or Mockito did that can be used using the annotation link:http://junit.sourceforge.net/javadoc/org/junit/runner/RunWith.html[`@RunWith`]. All these runners must satisfy the following interface:
 
 [source,java]
 ----
@@ -197,12 +203,12 @@ public interface Runner {
 ----
 
 [TIP]
-.Comment les Runners nous communiquent-ils le résultat des tests
+.How Runners report the result of tests execution?
 ====
-La classe `RunNotifier` implémente link:http://en.wikipedia.org/wiki/Observer_pattern[le pattern Observer]. Pour chaque événement possible, la classe `RunNotifier` propose une méthode de notification appelée par le `Runner` (ex : `fireTestStarted`). Chaque listener est alors prévenu et peut réagir en conséquence. Dans notre cas, c’est notre objet `Result` qui va écouter ces événements et construire pas à pas le résultat final.
+The class `RunNotifier` implements link:http://en.wikipedia.org/wiki/Observer_pattern[the Observer pattern]. For every possible event, the class `RunNotifier` offers a notification method called by the `Runner` instance (ex : `fireTestStarted`). Each registered listener is then notified and can react in consequence. In our case, this is the object `Result` that will listen for these events to build the final result step by step.
 ====
 
-Voici l'implémentation de la classe `RunNotifier`.
+Here is the implementation of the class `RunNotifier`:
 
 [source,java]
 ----
@@ -236,7 +242,7 @@ public class RunNotifier {
 }
 ----
 
-Où `RunListener` correspond à la classe suivante :
+Where `RunListener` is defined like this:
 
 [source,java]
 ----
@@ -254,7 +260,7 @@ public abstract class RunListener {
 }
 ----
 
-Pour que le code compile à nouveau, nous devons revenir sur notre classe `Result` pour implémenter la méthode `result.createListener()` :
+For the code to compile again, we need to go back to the class `Result` to implement the missing method `result.createListener()`:
 
 [source,java]
 ----
@@ -288,16 +294,16 @@ public class Result {
 
 }
 ----
-<1> On écoute les événements reportés par le runner.
-<2> On mémorise chaque exécution de test.
-<3> On sauvegarde également chaque échec.
+<1> We listen events triggered by the runner.
+<2> We memorize every test execution.
+<3> We save every failure.
 
 
-=== Le coeur de JUnit : le Runner
+=== The Heart of JUnit: Runner
 
-Cela nous conduit tout droit vers la dernière étape : l’implémentation du `Runner`. L’implémentation standard actuelle est la classe `BlockJUnit4ClassRunner` qui hérite la plupart des fonctionnalités de sa superclasse `ParentRunner`. Elles deux représentent près de 1000 lignes sans compter les autres classes annexes. Nous allons donc nous éloigner du code de production actuel tout en conservant le plus possible a logique.
+We are getting closer to the final step—the implementation of the class `Runner`. The official implementation is the class `BlockJUnit4ClassRunner`, which extends the class `ParentRunner` to inherit from most of the logic. Both classes count more than 1000 lines of code. We will make some compromises.
 
-Commençons par une première version supportant uniquement l’annotation `@Test` :
+Let's get started with a first version supporting only the annotation `@Test`:
 
 [source,java]
 ----
@@ -343,13 +349,13 @@ public class OurSimpleClassRunner implements Runner {
 
 }
 ----
-<1> On utilise une classe utilitaire pour connaître les méthodes de test à lancer.
-<2> On notifie à chaque étape de l'exécution.
-<3> On créée une nouvelle instance de notre classe de test avant chaque exécution de méthode (voir explications plus bas).
+<1> We use an utility class to find the test methods to execute.
+<2> We notify about the progression after every step.
+<3> We create a new instance of our test class before every test method execution (see explanations below).
 
-Reprenons plus en détails ces précédents points.
+Let's explain these points a little more.
 
-Le `Runner` utiliser une classe `TestIntrospector` pour extraire les méthodes de tests tout en veillant à exclure les méthodes avec l’annotation `@Ignore`. Voici l’implémentation de cette classe utilitaire (inspirée de la version 4.1 de JUnit) :
+The class `Runner` uses the class `TestIntrospector` to extract the test methods, making sure to ignore methods with the annotation `@Ignore`. Here is the implementation of this utility class (inspired from the version 4.1 de JUnit):
 
 [source,java]
 ----
@@ -380,11 +386,11 @@ public class TestIntrospector {
 ----
 
 [TIP]
-.JUnit garantit-il l’ordre d’exécution des tests?
+.Do tests are executed in a predictable order?
 ====
-La réponse est oui mais pas l’ordre que l’on voudrait... Comme pour notre code, JUnit utilise la méthode `java.lang.Class.getDeclaredMethods()` pour extraire les méthodes annotées. La Javadoc est particulièrement explicite sur ce point : "The elements in the array returned are not sorted and are not in any particular order."
+The truth is test methods are well ordered but not by their position in our code. JUnit uses the method `java.lang.Class.getDeclaredMethods()` to extract the annotated methods. The Javadoc is explicit on this point: "The elements in the array returned are not sorted and are not in any particular order."
 
-En pratique, l’ordre retourné correspondait à l’ordre des méthodes dans le source mais cela link:https://wikis.oracle.com/display/GlassFish/Method+Ordering+from+Class.getMethods[change depuis Java 7]. Pour garantir des tests reproductibles, JUnit impose un ordre par défaut (surchargeable). Cela se passe dans le `Comparator` `org.junit.internal.MethodSorter.DEFAULT` :
+In practice, the order was the order of methods as defined in our code but link:https://wikis.oracle.com/display/GlassFish/Method+Ordering+from+Class.getMethods[it changes since Java 7]. To ensure tests are reproductible, JUnit imposes a specific order by default. This is implemented by `org.junit.internal.MethodSorter.DEFAULT`, which is instance of `Comparator`:
 
 [source,java]
 ----
@@ -400,10 +406,10 @@ public static final Comparator<Method> DEFAULT = new Comparator<Method>() {
 };
 ----
 
-Basé avant tout sur le `hashCode` de la méthode `String`, l’ordre final n’est ni alphabétique, ni celui dans notre code source, mais est prévisible, et c’est là l’essentiel.
+The code relies on the `hashCode` defined by the method `String`. The final order is not alphabetic, nor the one in our source code, but is still previsible and reproductible, and this is the essential.
 ====
 
-L'autre point concerne la création d'une nouvelle instance avant chaque exécution de test. L’intérêt a été décrit dans link:http://martinfowler.com/bliki/JunitNewInstance.html[un post de Martin Fowler] et se comprend mieux à travers un exemple :
+The other point concerns the creation of a new instance before each execution of a test method. The motivation is described in link:http://martinfowler.com/bliki/JunitNewInstance.html[a post by Martin Fowler] and is better illustrated through an example:
 
 [source,java]
 ----
@@ -429,17 +435,17 @@ public class WhyNewInstanceTest {
 }
 ----
 
-Avec JUnit, ces deux tests passent et ce, qu’importe l’ordre d’exécution. La création d’une nouvelle instance pour chaque test garantit que ces tests travaillent sur deux listes différentes. Ce comportement n’a malheureusement pas été repris dans NUnit pour cause d’incompréhension et impossible maintenant de revenir en arrière sans causer de régressions.
+With JUnit, both tests are successful, independenly of their execution order. The creation of a new instance of our test class guarantees that every test method is working on its own list, without being affected by previous tests. This behavior has not been implemented by NUnit, the .Net version of JUnit, probably due to misunderstanding, and now, it's impossible to revert without causing regressoin in existing test suites.
 
 [NOTE.congratulations]
 .Congratulations!
 ====
-*Moins de 300 lignes auront été nécessaires pour refaire tourner nos tests*. Le résultat est identique : autant de tests au vert et toujours un seul échec.
+*Less than 300 lines of code have being necessary to make our tests run again*. The result is identical: we still have the same number of passing tests and only one failing test.
 
-Le source complet est disponible link:https://github.com/julien-sobczak/junit-from-scratch[ici].
+The complete code source is available link:https://github.com/julien-sobczak/junit-from-scratch[here].
 ====
 
-Voici la version finale supportant également les annotations `@Before` et `@After` :
+Here is the final version supporting also the annotations `@Before` and `@After`:
 
 [source,java]
 ----
@@ -705,25 +711,25 @@ public class JUnitLite {
 ----
 
 [TIP]
-.Et les IDEs dans tout çà ?
+.What about IDE support?
 ====
-Prenons le cas d’Eclipse et de son plugin link:http://www.eclipse.org/jdt/[Java Development Tools (JDT)] qui assure le support JUnit. Ce plugin réutilise la librairie JUnit et exploite le faible couplage offert par la classe `RunNotifier`. Le plugin ajoute link:http://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/tree/org.eclipse.jdt.junit4.runtime/src/org/eclipse/jdt/internal/junit4/runner/JUnit4TestListener.java[un listener] qui va non seulement consolider le résultat des tests mais également mettre à jour la vue JUnit, etc.
+Let's consider Eclipse and its plugin link:http://www.eclipse.org/jdt/[Java Development Tools (JDT)] that implement the JUnit support. This plugin reuses the JUnit library and exploits the extensions point supported by the class `RunNotifier`. The plugin implements link:http://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/tree/org.eclipse.jdt.junit4.runtime/src/org/eclipse/jdt/internal/junit4/runner/JUnit4TestListener.java[a custom listener] that will still consolidate the test results but also updates the JUnit view in the Eclipse IDE..
 ====
 
 [NOTE.experiment]
 .Try for yourself!
 ====
-Voici quelques unes des libertés prises par notre implémentation :
+We took a few shortcuts in our implementation:
 
-* Le calcul du runner à utiliser est plus complexe qu’une simple instanciation. Pour en savoir plus : `org.junit.runner.JUnitCore`, `org.junit.runner.Computer`, `org.junit.runner.Request`.
-* Notre implémentation du runner, ne reflète pas la complexité des runners actuels qui doivent par exemple supporter d’autres annotations comme `@BeforeClass` et `@AfterClass` mais aussi les link:https://github.com/junit-team/junit/wiki/Assumptions-with-assume[Assumptions], les link:https://github.com/junit-team/junit/wiki/Categories[Categories], ... Pourquoi ne pas jeter un oeil au source pour découvrir comment ont été implémentées ces dernières évolutions.
-* Les tests peuvent également link:https://github.com/junit-team/junit/wiki/Developing-with-fast-tests[s’exécuter en parallèle]. La plupart des classes présentées sont en réalité thread-safe. Quand les objets ne peuvent être immutables, c’est vers l’API `java.util.concurrent` que l’on se tourne : `AtomicInteger`, `CopyOnWriteArrayList`, `Executors`, ...
+* The determination of the runner to use is more complex than a simple class instanciation. To know more: `org.junit.runner.JUnitCore`, `org.junit.runner.Computer`, `org.junit.runner.Request`.
+* Our Runner implementation does not reflect the complexity found in the real runners that must for eaxmple support many other annotations such as `@BeforeClass` and `@AfterClass` but also link:https://github.com/junit-team/junit/wiki/Assumptions-with-assume[assumptions], link:https://github.com/junit-team/junit/wiki/Categories[categories], ... Why not have a look at the JUnit source code Pourquoi to discover how these features have been implemented.
+* The tests can be link:https://github.com/junit-team/junit/wiki/Developing-with-fast-tests[run in parallel]. The real implemenations of classes introduces in this article are thread-safe. Quand objects could not be made immutable, we have to use concurrency building blocks defined in the package `java.util.concurrent`: `AtomicInteger`, `CopyOnWriteArrayList`, `Executors`, ...
 ====
 
 [NOTE.remember]
-.A retenir
+.To Remember
 ====
-* Seulement *quelques lignes de code peuvent suffire à avoir un impact majeur* dans le monde du développement.
-* La *modélisation* de toutes les abstractions (`Result`, `Failure`, `Description`) offre un code *simple à comprendre*.
-* L'*utilisation de design patterns* apporte la *souplesse* nécessaire pour l'utilisation de la librairie dans de nombreux contextes.
+* Only *a few hundred lines of code can have a major impact* in the software development landscape.
+* The *modelisation* of well-defined abstractions (`Result`, `Failure`, `Description`) ensure the code is *simple to comprendre* and extend.
+* The *use of design patterns* brings a lot of *flexibility* required for the library to be used in many contexts.
 ====
