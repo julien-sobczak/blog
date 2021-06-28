@@ -14,17 +14,25 @@ unofficialTags:
 :page-liquid:
 :imagesdir: {{ '/posts_resources/2015-03-03-revealjs-revealed/' | relative_url }}
 
-[.lead]
-Fini les diapos assommantes. Le temps est venu d’exprimer votre créativité et de libérer vos idées. Jamais entendu parler de Reveal.js ? Prenez quelques minutes pour découvrir la link:http://lab.hakim.se/reveal-js/#/[démo officielle].
-
-[.lead]
-Comment cette librairie basée sur les technologies HTML5 et CSS3 réussit-elle l’exploit de nous faire oublier l’existence de PowerPoint ? C’est ce que nous allons découvrir en recodant de zéro une version incomplète mais suffisamment poussée pour nous aider à comprendre son fonctionnement.
 
 [CAUTION.license]
-link:https://github.com/hakimel/reveal.js/[Reveal.js] est publié sous link:https://github.com/hakimel/reveal.js/blob/master/LICENSE[licence OpenSource]. Le code présenté dans cet article a été simplifié pour des raisons évidentes et n'a pas pour vocation à être utilisé en dehors de ce contexte d'apprentissage. Cet article est basé sur la dernière version de Reveal au moment de cet article.
+====
+You are reading a translation of an link:https://julien-sobczak.github.io/blog-fr/inspect/2015/03/03/revealjs-revealed.html[old blog post] published on my previous blog in French.
+====
 
 
-== Un exemple
+[.lead]
+No more boring slides with Reveal.js. If you have never used seen this tool in live before, take a few minutes to watch the link:http://lab.hakim.se/reveal-js/#/[official demo].
+
+[.lead]
+How does this library based on HTML5 and CSS3 technologies challenges the existence of PowerPoint? This is what we will find out by rewriting from scratch a minimal version.
+
+
+[CAUTION.license]
+link:https://github.com/hakimel/reveal.js/[Reveal.js] is published under an link:https://github.com/hakimel/reveal.js/blob/master/LICENSE[OpenSource license]. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the latest version at the moment of publication.
+
+
+== A First Example
 
 [source,html]
 ----
@@ -98,7 +106,7 @@ link:https://github.com/hakimel/reveal.js/[Reveal.js] est publié sous link:http
 </html>
 ----
 
-Voici le résultat de notre première présentation :
+Here is the rendered result of our presentation:
 
 ++++
 <iframe src="{{ '/posts_resources/2015-03-03-revealjs-revealed/example.html' | prepend: site.baseurl}}"
@@ -106,12 +114,12 @@ Voici le résultat de notre première présentation :
 </iframe>
 ++++
 
-Cette simple présentation ne reflète nullement les possibilités de l’outil. La liste des link:https://github.com/hakimel/reveal.js[fonctionnalités de Reveal] est conséquente : nombreuses animations, overview, fragments, mode speaker, export PDF, ... Nous n’allons pas tout reprendre mais nous concentrer uniquement sur l’enchainement des slides (horizontal et vertical), les liens entre les slides, la navigation au clavier sans oublier ce qui donne à reveal.js ce style si séduisant, les animations.
+Reveal.js is far more powerful than what this simple presentation suggests. The lists of link:https://github.com/hakimel/reveal.js[features supported by Reveal] is huge : a ton of animations, overview, fragments, mode speaker, PDF export, ... We are not going to implement all of these features but instead focus on the navigation between slides (horizontal et vertical), the links, the keyboard shortcuts, and also a few animations that make reveal.js so attractive.
 
 
 == Slide by slide
 
-L’initialisation de Reveal débute lors de l’appel à la méthode `Reveal.initialize()``. Commençons donc par définir le squelette de notre script que nous allons renommer au passage `reveal.lite.js`.
+The initialization of Reveal starts with the method `Reveal.initialize()`. Here is the skeleton of your implementation defined in a file `reveal.lite.js`:
 
 [source,javascript]
 ----
@@ -162,13 +170,11 @@ var Reveal;
 
 })();
 ----
-<1> On définit tout de suite les principaux sélecteurs : pour récupérer l’intégralité des slides ou uniquement celles horizontales et verticales. Ces constantes seront utilisées maintes et maintes fois par la suite.
-<2> Les variables `indexh` et `indexv` représentent notre position actuelle dans notre diaporama, l’équivalent d’un numéro de slide.
-<3> On termine par demander l’affichage du premier slide (c’est-à-dire le premier horizontalement et verticalement). Pour le moment, tout reste à implémenter dans cette méthode.
+<1> We predefine main CSS selectors to retrieve all slides or just the horizontal and vertical ones. These constants will be reused several times during the next steps.
+<2> We define two variables `indexh` and `indexv` to represent our current position inside the presentation, like a slide number.
+<3> We end by requesting the display of the first slide (i.e., the first horizontal and vertical slide). For the moment, everything remains to be implemented in this method.
 
-Avant d’aller plus, basculons côté CSS pour comprendre l’affichage. Sans rien faire, l’intégralité des slides s’affiche. On est loin d’un diaporama où seul un slide doit être présent à l’écran.
-
-Appliquons le style suivant :
+Before going further, we need to define a basic CSS stylesheet, otherwise the browser will simply display all slides at once.
 
 [source,css]
 ----
@@ -195,13 +201,13 @@ html, body {
   width: 100%; }
 ----
 
-Grâce à ces définitions, notre page prend la forme suivante :
+THe page now looks like this:
 
 image::layout.png[width=90%]
 
-La balise parent `.reveal` (appelée wrapper dans le source) est positionnée pour occuper tout l’espace. Cela permet aux slides contenues dans cette balise d’occuper à leur tour l’écran complet. Le position `relative` permet également de définir les slides de manière absolue, bien pratique pour les animer.
+The parent tag with the CSS class `.reveal` (called wrapper in the code) is positioned to use all available space on screen. This allows slides inside this wrapper to occupy the screen. Note that the relative position will be useful to position slides using absolute values when defining CSS animations.
 
-Les slides se retrouvent donc superposées les unes au dessus des autres. Côté JavaScript, on va venir positionner quelques classes CSS (`past`, `present`, `future`) qui vont évoluer au fil de notre présentation. Afficher la slide courante revient alors à :
+All slides are thus superimposed on top of each other. The JavaScript code will use a few CSS classes (`past`, `present`, `future`) to change the slides on screen. For example, to display the current slide:
 
 [source,css]
 ----
@@ -213,7 +219,7 @@ Les slides se retrouvent donc superposées les unes au dessus des autres. Côté
   opacity: 0; }
 ----
 
-Repartons côté JavaScript pour voir comment sont positionnées ces classes. Cela se passe dans la méthode `slide`.
+The transition from one slide to a different one is done by the method `slide`:
 
 [source,javascript]
 ----
@@ -228,7 +234,7 @@ function slide( h, v ) {
 }
 ----
 
-On procède à deux translations, une pour l’axe horizontal, et une pour l’axe vertical. C’est donc dans cette nouvelle méthode `updateSlides` que nous allons trouver la réponse à nos questions :
+The code operates two translations, on the horizontal and vertical axis. The core logic resides in the method `updateSlides`:
 
 [source,javascript]
 ----
@@ -290,24 +296,24 @@ function updateSlides( selector, index ) {
 }
 ----
 
-Il s’agit de la première méthode de taille importante. Son fonctionnement reste pour autant relativement simple. Le première paramètre est un sélecteur CSS. En pratique, il permet juste de dire si on s’intéresse aux slides horizontales ou verticales, le deuxième paramètre étant l’indice sur l’axe choisi. Le code parcourt alors chaque slide de cet axe, et positionne la bonne classe. Notons la classe `stack` qui est assignée sur les slides de type parent (celles ayant des slides verticales imbriquées).
+This is the first method with a lot of implementation details. The code logic is relatively simple. The first parameter is a CSS selector. In practice, this parameter is mainly used to indicate if we are sliding horizontally or vertically. The second parameter is the index on the chosen axis. The code traverses each slide on this axis to configure the right CSS classes. Note the presence of a class `stack` assigned on slides of type parent (i.e., the slides having vertical slides inside).
 
-La valeur retournée par cette méthode permet d’ajuster nos deux variables `indexh` et `indexv` dans la méthode `slide`.
+The value returned by this method updateSlides is the new index used to adjust the previous variables `indexh` and `indexv` in the method `slide`.
 
 [TIP]
-.Zoom sur `element.classList`
+.Zoom on `element.classList`
 ====
-Supporté par tous les navigateurs récents, link:https://developer.mozilla.org/fr/docs/Web/API/Element/classList[la propriété `classList`] présente dans link:https://developer.mozilla.org/fr/docs/Web/API/Element[’objet `Element`] offre la même facilité que l’API jQuery. Fini de parser link:https://developer.mozilla.org/fr/docs/Web/API/Element/className[l’attribut `className`] pour ajouter ou supprimer des classes CSS, grâce à l’interface link:https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList[`DOMTokenList`], on retrouve les méthodes courantes `add`, `remove`, `toggle`, ...
+Supported by modern browsers, link:https://developer.mozilla.org/fr/docs/Web/API/Element/classList[the property `classList`] defined in the link:https://developer.mozilla.org/fr/docs/Web/API/Element[’object `Element`] offers the same convenience as the jQuery API. We no longer need to parse the link:https://developer.mozilla.org/fr/docs/Web/API/Element/className[attribute `className`] to add or remove CSS classes, as the interface link:https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList[`DOMTokenList`] defines methods like `add`, `remove`, `toggle`, ...
 ====
 
 
-== Le redimensionnement automatique
+== Automatic Resizing
 
-Vous l’aurez surement remarqué en jouant avec la démo de Reveal.js, la taille du diaporama s’adapte automatiquement à celle de votre navigateur. Avec notre implémentation, les slides occupent l’espace total mais le contenu ne s’adapte nullement à la taille réelle du navigateur :
+You have probably noticed on the Reveal.js demo, the size of the presentation (i.e., the slides) adjusts automatically when you resize your browser window. With our current implementation, the slides occupy the full screen but their content does not scale in consequence:
 
 image::slides-no-layout.png[]
 
-Comment peut-on adapter le contenu des slides à la taille d’écran ? Comment réduire/agrandir les tailles de police, les images et vidéos présentées ? La solution élégante retenue repose sur les animations CSS et en particulier la link:https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function#scale%28%29[fonction `scale()`]. Les calculs sont regroupés au sein de la méthode `layout` :
+How can the content of the slides be adapted to the screen size? How to reduce/enlarge the font size, images and videos shown? The solution is elegant, using CSS animations like the link:https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function#scale%28%29[function `scale()`]. The calculations are grouped inside the method `layout`:
 
 [source,javascript]
 ----
@@ -341,9 +347,9 @@ function layout() {
 
 }
 ----
-<1> On compare la taille par défaut d’une slide (960x700) avec la taille effective de l’écran. Cela nous permet de calculer le ratio à appliquer pour que la slide occupe l’écran complet.
+<1> We compare the default size for a slide (960x700) with the effective screen size. We thus obtain the ratio to apply to scale the slide to match the full screen.
 
-Modifions la méthode `slide` pour tenir compte de cette nouvelle méthode :
+Let's modify the method `slide` to use this new method:
 
 [source,javascript,linenums,highlight='7']
 ----
@@ -354,11 +360,10 @@ function slide( h, v ) {
     indexv = updateSlides( VERTICAL_SLIDES_SELECTOR, v === undefined ? indexv : v );
 
     layout();
-
 }
 ----
 
-Le résultat est tout de suite plus satisfaisant. Les slides s’adaptent à la taille du navigateur sauf quand celui-ci est redimensionné. Une simple formalité suffit à corriger ce point en s’appuyant sur la méthode `layout` :
+The result is immediately more satisfactory. The slides resizes to match the window size, except if you are trying to resize the browser window. This is easy to fix by reusing the method `layout` and listening for this event:
 
 [source,javascript,linenums,highlight='8']
 ----
@@ -383,9 +388,9 @@ function onWindowResize( event ) {
 image::slides-with-layout.png[]
 
 
-== La navigation au clavier
+== Keyboard Navigation
 
-Pour le moment, seul le premier slide s’affiche. A l’aide des touches directionnelles, nous allons proposer à l’utilisateur de faire avancer le diaporama. On commence donc par intercepter l’événement `keydown`. On en profite également pour refactoriser la méthode `initialize`:
+For now, only the first slide is displayed. Using the directional keys, we will allow the user to change the current slide. We start by listening for events of type `keydown`. We also take the opportunity to refactor the method `initialize`:
 
 [source,javascript,linenums,highlight='34']
 ----
@@ -428,7 +433,7 @@ function addEventListeners() {
 ----
 
 
-Le handler s’appuie sur les codes des touches pour déterminer la direction à suivre :
+The handler uses standard codes to determine the direction to follow in the presentation:
 
 
 [source,javascript]
@@ -456,9 +461,9 @@ function navigateRight() { slide( indexh + 1 );         } // <1>
 function navigateUp()    { slide( indexh, indexv - 1 ); } // <1>
 function navigateDown()  { slide( indexh, indexv + 1 ); } // <1>
 ----
-<1> On s’appuie sur les deux variables `indexh`, `indexv` pour connaitre notre position courante, avant d’appeler la méthode `slide` pour se déplacer en conséquence.
+<1> We use the two variables `indexh` and `indexv` to determine our current position, before calling the method `slide` to move in the right direction.
 
-La navigation est désormais opérationnelle mais ne contraint pas l’utilisateur sur les choix possibles. En fin de diaporama, inutile de continuer à avancer. Pour éviter cela, nous allons nous appuyer une fois de plus sur notre position actuelle, avec l’aide de sélecteurs CSS pour connaître le nombre de slides :
+The navigation is now operational but the code does not prevent the user to move beyond the last slide. Using CSS selectors, we will determine the maximum number of slides and compare with our current position to determine if the move is possible:
 
 [source,javascript,linenums,highlight='24,32,40,48']
 ----
@@ -517,16 +522,18 @@ function navigateDown() {
 ----
 
 
-== Les animations
+== Animations
 
-Reveal.js ne serait pas ce qu’il est sans les animations qui donnent à nos présentations un style original. Ces animations reposent bien évidemment sur les animations CSS3. Grâce aux classes précédemment positionnées, très peu de lignes de code sont en réalité nécessaires. Commençons par l’effet le plus simple : `fade`.
+Reveal.js would not be the same without animations. Under the hood, these animations uses logically animations supported by CSS 3. Using the already defined CSS classes, only a few lines of CSS is necessary to animation our slides.
+
+Let's start by the most simple effect: `fade`.
 
 
-=== L’effet fade
+=== The fade effect
 
-(link:http://lab.hakim.se/reveal-js/?transition=slide#/transitions[Démonstration])
+(link:http://lab.hakim.se/reveal-js/?transition=slide#/transitions[Demo])
 
-Pour rappel, voici les déclarations CSS qui nous concernent directement :
+As a reminder, here are the CSS declarations that will be enriched:
 
 [source,css]
 ----
@@ -537,7 +544,7 @@ Pour rappel, voici les déclarations CSS qui nous concernent directement :
   opacity: 0; }
 ----
 
-L’effet `fade` consiste simplement à configurer une transition sur cette propriété `opacity` :
+The `fade` effect consists in defining a transition for the property `opacity`:
 
 [source,css]
 ----
@@ -545,14 +552,16 @@ L’effet `fade` consiste simplement à configurer une transition sur cette prop
   transition: opacity 0.5s; }
 ----
 
-A chaque changement, la slide précédente disparait en une demi seconde pendant que la nouvelle apparait progressivement. Trop facile ? Tournons nous maintenant vers l’effet `slide`.
+Every time the user is changing the current slide, the previous one disappears in half a second while the new slide appears simulatenously. Easy? Let's try to implement the `slide` effect.
 
 
-=== L’effet slide
+=== The slide effect
 
-(link:http://lab.hakim.se/reveal-js/?transition=slide#/transitions[Démonstration])
+(link:http://lab.hakim.se/reveal-js/?transition=slide#/transitions[Demo])
 
-Avec cet effet, la précédente slide disparait vers la gauche pendant que la nouvelle apparait par la droite de l’écran. Pour les slides verticales, c’est le même principe mais sur l’axe vertical. Les diaporamas apparaissent en bas de l’écran pendant que le précédent disparait disparait par le haut. Niveau CSS, voici à quoi cela ressemble :
+When using this effect, the previous slide disappears on the left while the next one appears on the right of the screen. For vertical slides, the principle is the same, except we are using the vertical axis.
+
+Here are the CSS declarations to support this effect:
 
 [source,css]
 ----
@@ -571,17 +580,19 @@ Avec cet effet, la précédente slide disparait vers la gauche pendant que la no
 .reveal .slides > section > section.future {
   transform: translate(0, 150%); } // <2>
 ----
-<1> On configure la durée de l’animation en choisissant une accélération et décélaration progressive.
-<2> Tout repose sur la fonction link:https://developer.mozilla.org/fr/docs/Web/CSS/transform#translate[`translate`]. Le pourcentage choisi garantit que le slide sorte complètement de l’écran.
+<1> We configure the animation to start slowly.
+<2> We rely on the function link:https://developer.mozilla.org/fr/docs/Web/CSS/transform#translate[`translate`]. Using a large percent, we are sure the slide will completely exit the screen.
 
-Une immersion dans la 3D pour finir ? Terminons avec l’effet `concave`.
+An immersion in 3D to finish? Let's finish with the `concave` effect.
 
 
-=== L’effet concave
+=== The concave effect
 
-(link:http://lab.hakim.se/reveal-js/?transition=slide#/transitions[Démonstration])
+(link:http://lab.hakim.se/reveal-js/?transition=slide#/transitions[Demo])
 
-Cet effet est l’équivalent 3D de l’animation `slide`.
+This effect is the 3D equivalent of the previous `slide`.
+
+The CSS declarations is slightly more advanced but only a few lines are required to support this effect:
 
 [source,css]
 ----
@@ -610,29 +621,29 @@ Cet effet est l’équivalent 3D de l’animation `slide`.
 
 
 [TIP]
-.Zoom sur la fonction `cubier-bezier`
+.Zoom on function `cubier-bezier`
 ====
-La propriété CSS `transition` propose de spécifier ce qu’on appelle une link:https://developer.mozilla.org/fr/docs/Web/CSS/timing-function[fonction de timing] (ou easing function). Plusieurs sont prédéfinies (`linear`, `ease-in`, …). Grâce à la fonction `cubic-bezier`, nous pouvons définir de nouvelles fonctions à l’aide, comme son nom l’indique, d’une link:http://fr.wikipedia.org/wiki/Courbe_de_B%C3%A9zier[courbe de Bézier], bien connu des utilisateurs d’Abode Illustrator. Pas forcément adapté à toutes les situations, les courbes de Bézier apportent toutefois souplesse et facilité.
+The CSS property `transition` supports what is called a link:https://developer.mozilla.org/fr/docs/Web/CSS/timing-function[timing function] (or easing function). Several functions are predefined (`linear`, `ease-in`, …). Using the function `cubic-bezier`, we can define new custom functions using, as its name suggests, a link:http://fr.wikipedia.org/wiki/Courbe_de_B%C3%A9zier[Bezier curve], well-known to users of Adobe Illustrator. Bezier curves are not adapted in every context but they are very flexible and easy to use.
 +
-Le site link:http://lea.verou.me/2011/09/a-better-tool-for-cubic-bezier-easing/[cubic-bezier.com] propose de créer facilement la link:http://cubic-bezier.com/#.26,.86,.44,.98[courbe voulue], de manière très visuelle. Ce site est l’oeuvre de Lea Verou, à qui on doit également les librairies link:{% post_url inspect/2014-11-06-prefix-free-from-scratch %}[-prefix-free] et link:{% post_url inspect/2014-11-25-prism-from-scratch %}[prism].
+The website link:http://lea.verou.me/2011/09/a-better-tool-for-cubic-bezier-easing/[cubic-bezier.com] allows you to link:http://cubic-bezier.com/#.26,.86,.44,.98[create visually your curve] and generates the corresponding CSS code. This site is the work of Lea Verou, to whom we also owe the projects link:{% post_url inspect/2014-11-06-prefix-free-from-scratch %}[-prefix-free] and link:{% post_url inspect/2014-11-25-prism-from-scratch %}[prism].
 ====
 
 
-== Les liens
+== Links
 
-Avant de clôre ce post, intéressons nous à une fonctionnalité moins indispensable mais tout aussi intéressante à étudier : les liens entre les slides.
+Before ending this article, let's look at a less essential feature but just as interesting to study: the links between slides.
 
-Techniquement, tout repose sur le hash (ce qui suit le caractère `#` dans l’URL) pour identifier la slide cible. Par exemple `#/1/2` représente la deuxième slide verticale de la première slide horizontable. Lors du clic sur un lien, on modifie le hash comme suit :
+The solution relies on the URL fragment (the optional hash value following the character `#` in an URL) to identify the slide to display. For example `#/1/2` represents the second vertical slide below the first horizontal slide. When clicking on a link, the code modifies the hash like this:
 
 [source,html]
 ----
 <p>
-  <!-- Exemple of internal link -->
+  <!-- Example of internal link -->
   We will support link between slides, <a href="#/2">like this</a>.
 </p>
 ----
 
-Côté JavaScript, on va donc écouter les changements grâce à l’événement `hashchange`, extraire la destination, et tout simplement, réutiliser la méthode `slide` pour naviguer dans le diaporama :
+In JavaScript, we need to listen for changes using the event `hashchange`, and extract the value to delegates to the method `slide` to move to the destination:
 
 [source,javascript,linenums,highlight='6,28']
 ----
@@ -669,7 +680,7 @@ function readURL() {
 }
 ----
 
-L’utilisation du hash a d’autres avantages. Il permet par exemple de bookmarker facilement une slide en particulier. Cela implique de lire cet éventuel hash dès l’ouverture de la page :
+Using the hash has many advantages. It also allows the user to bookmark a given slide. This requires a slight modification to read the hash during initialization:
 
 [source,javascript]
 ----
@@ -689,23 +700,23 @@ function initialize() {
 
 }
 ----
-<1> La méthode `slide` cède sa place à la méthode `readURL`, qui de toute façon, délègue à cette méthode. Si aucun hash n’est présent, la première slide sera sélectionnée. Pour que cette fonctionnalité soit totalement opérationnelle, il nous faudrait également modifier le hash à chaque changement de slide. Rien d’insurmontable mais nous n’irons pas plus loin. C’est ici que notre voyage au coeur de Reveal.js s’arrête.
+<1> The method `slide` is wrapped inside a new method `readURL`. If no hash is present, we simply display the first slide as before.
 
 
 [NOTE.congratulations]
 .Congratulations!
 ====
-*Bravo, vous venez de réaliser une version de Reveal opérationnelle en seulement 200 lignes de JavaScript, ainsi que 100 lignes de CSS*. Le diaporama exemple est consultable link:{{ '/posts_resources/2015-03-03-revealjs-revealed/example.html' | prepend: site.baseurl }}[ici], tout comme le link:https://github.com/julien-sobczak/reveal-from-scratch[source complet].
+*Congratulations, you have written a minimal and operational version of Reveal.js in less than 200 lines of JavaScript code, with just 100 lines of CSS code*. The example presentation is available link:{{ '/posts_resources/2015-03-03-revealjs-revealed/example.html' | prepend: site.baseurl }}[here], just like the link:https://github.com/julien-sobczak/reveal-from-scratch[complete source code].
 ====
 
 
-== Pour aller plus loin..
+== To Go Further
 
-=== Le support AMD & Node
+=== AMD Support & Node
 
-Reveal.js, comme de nombreuses autres librairies, a débuté en exposant une unique variable globale (`Reveal`). Avec l’apparition des modules AMD ou encore le succès de Node.js, Reveal a dû s’adapter pour supporter ces nouveaux cas d’utilisation. La solution choisie n’est pas nouvelle et a été capturée à travers le link:https://github.com/umdjs/umd[pattern UMD (Universal Module Definition)].
+Reveal.js, like many existing libraries, started by exposing a single global variable (`Reveal`). With the introduction of AMD modules and following the success of Node.js, Reveal needs to support these new use cases. The solution is not new and has been well documented through the link:https://github.com/umdjs/umd[UMD Pattern (Universal Module Definition)].
 
-Le pattern UMD permet de s'interopérer facilement avec les loaders actuels. Comme souvent en JavaScript, on inspecte les objets présents pour détecter les fonctionnalités supportées. Voici à quoi cela ressemble :
+The UMD pattern makes possible to interoperate with existing loaders. As often in JavaScript, we inspect the objects present in the global namespace to detect the environment. Here is a preview of the code:
 
 [source,javascript]
 ----
@@ -732,26 +743,26 @@ Le pattern UMD permet de s'interopérer facilement avec les loaders actuels. Com
 
 }));
 ----
-<1> Les fonctions représentent le seul scope possible en JavaScript. C’est pourquoi on utilise une fonction immédiate pour ne pas polluer inutilement l’espace de nommage global.
-<2> Grâce à la méthode `define`, avec comme propriété `amd`, nous savons qu’une implémentation comme RequireJS est présente. Reveal.js s’enregistre alors comme module anonyme, sans aucune dépendance.
-<3> Comme pour AMD, la présence d’un objet `exports` nous en dit plus sur l’environnement d’exécution. Il suffit alors de déclarer notre module comme n’importe quel autre module Node.
-<4> Le classique ! Notre module devient une variable globale, ou plus précisément une propriété de l’objet `window`.
+<1> Functions are the only possible scope in JavaScript. This is why we use an immediate function to not pollute the global namespace uselessly.
+<2> We test for a method `define` having a property `amd` to determine if RequireJS is available. Reveal.js declares itself as an anonymous module without any  dependancy.
+<3> Like for AMD, we test for an object `exports`. Reveals declares itself like any other Node module.
+<4> As before, our module is defined as a global variable, or more precisely a property of the object `window`.
 
 [NOTE.remember]
-.A retenir
+.To Remember
 ====
-* *Quelques centaines de lignes suffisent à nous faire oublier PowerPoint* et ses link:http://blogs.msdn.com/b/macmojo/archive/2006/11/03/it-s-all-in-the-numbers.aspx[millions de lignes de code].
-* *Les animations CSS3 rendent la 3D étonnamment accessible*.
-* L’utilisation du hash dans l’URL est incontournable pour la navigation des applications de type single-page.
+* *Only a few hundred of lines of code are enough to make PowerPoint a remembering of the past*. (PowerPoint totals link:http://blogs.msdn.com/b/macmojo/archive/2006/11/03/it-s-all-in-the-numbers.aspx[millions of lines de code]!.)
+* *CSS animations makes accessible 3D effects*.
+* The URL hash is the favorite solution to preserve the navigation in a SPA.
 ====
 
 [NOTE.experiment]
 .Try for yourself!
 ====
-Reveal.js est une solution très complète. Il suffit de regarder le mode speaker pour s’en convaincre. Beaucoup de fonctionnalités ont été mises de côté dans ce post. Pourquoi ne pas s’aventurer dans le source remarquablement codé de Reveal.js pour découvrir le code derrière toutes ces fonctionnalités. Quelques idées :
+Reveal.js is a very complete solution. Just look at the speaker mode to convince you. We omit a lot of features in this article. Why not adventure in the original source code to discover how these advanced features are implemented. For example:
 
-* Reveal-js propose de naviguer aussi bien par les flèches qu’à l’aide de boutons, sans oublier le tactile. Grâce à un code bien organisé, l’ajout de ces contrôles est très simple. Note : Le link:https://github.com/julien-sobczak/reveal-from-scratch[code complet] de notre exemple intègre les contrôles à la souris.
-* Le contenu des slides apparaît immédiatement sur notre exemple. Grâce aux *fragments*, Reveal.js propose d’afficher leur contenu étape par étape. Comment cela fonctionne-t-il ?
-* Les présentations créées avec Reveal.js peuvent être exportées en PDF. Entre calculs en JavaScript et déclarations CSS, l’essentiel se passe dans la méthode `setupPDF`.
-* Le *mode overview* est du plus bel effet. Comme toujours avec Reveal.js, le code est parfaitement organisé et cette fonctionnalité trouve refuge dans la méthode `activateOverview`. Indice : cette fonctionnalité est rendu possible par les animations CSS et leur support de la 3D.
+* Reveal.js supports the navigation between slides using also *buttons* and *gesture movements*. As the code is modular, adding these controls is very easy. Note: The link:https://github.com/julien-sobczak/reveal-from-scratch[complete code source of this article] supports the mouse.
+* The integrality of every slide content is displayed immediately with our implementation. Using *fragments*, Reveal.js supports the display of a slide content step by step. How does it work?
+* Presentations created with Reveal.js can be exported in *PDF*. This requires a few calculations in JavaScript and a few CSS declarations. Check the method `setupPDF`.
+* The *overview mode* displays a global picture of all your slides. This feature is implemented by the method `activateOverview`. Hint: The implementation also relies on CSS animations to create 3D effects.
 ====
