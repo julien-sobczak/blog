@@ -1,0 +1,323 @@
+---
+layout: post-inspect
+title: Unicode for Impatient Developers Loving Puzzlers 🤔
+subtitle: The Bare "Minimum" Every Developer Must Know About Unicode
+author: Julien Sobczak
+date: '2021-06-29'
+category: inspect
+subject: Unicode
+---
+
+:page-liquid:
+:tabsize: 4
+
+[CAUTION.license]
+====
+This post is a shorter version of my previous post link:{% post_url inspect/2021-06-19-unicode-for-curious-developers %}[Unicode for Curious Developers Loving Code 😉]. My motivation is to persuade you that you must learn more about Unicode and that you should read my other post 😀.
+====
+
+
+[quote, "Guido van Rossum, Inventor of Python"]
+____
+Modern programs must handle Unicode—Python has excellent support for Unicode, and will keep getting better.
+____
+
+[.lead]
+Unicode is omnipresent. Your operating system, your programming language, and your everyday applications all support Unicode so that you can use your own language in a multilingual environment like the internet. All this is possible because developers before you learned about Unicode. What about you?
+
+
+
+== Puzzler 1: Normalization
+
+What is the output of this program?
+
+[source,python]
+----
+# Python 3
+print("à" == "à")
+----
+
+=== Answer
+
+The answer is `False`. That's right. You read correctly. Try to copy/paste this snippet in your terminal using the Python interpreter. You can even convert this line to your favorite (modern) programming language and get the same result. But why?
+
+=== Explanation
+
+Unicode defines more than 100,000 characters (and has room for more than one million more!). *Unicode characters are code points, not glyphs*. This means that Unicode declares that U+0041 is A, U+03B1 is α, etc. Unicode doesn't care how characters look like. It's commonly your operating system that is responsible to display these characters on screen using glyphs defined in font files.
+
+So, when you are reading the previous example, you are viewing the rendered representation of this Python program (also made of Unicode characters). You are seeing glyphs, not code points. Right?
+
+The program can be made more explicit like this:
+
+[source,python]
+----
+# Using Unicode Character code points:
+print("\u00E0" == "\u0061\u0300")
+# Using Unicode Character names:
+print("\N{LATIN SMALL LETTER A WITH GRAVE}" ==
+      "\N{LATIN SMALL LETTER A}\N{COMBINING GRAVE ACCENT}")
+----
+
+Both lines returns `False` again but the result now seems a lot more obvious. *Unicode defines several characters (or sequences of characters) resulting in the same glyph*. For example, both Unicode text U+00E0 and U+0061 U+0300 represent the latin letter `à`. These representations are link:https://en.wikipedia.org/wiki/Unicode_equivalence[canonically equivalent] in Unicode, which means they must be considered identical. Why not just avoid duplicates instead?
+
+Unicode encourages the use of combining characters to define accentuated letters. For example, the combining character U+0300 `COMBINING GRAVE ACCENT` modifies the base character U+0061 `LATIN SMALL LETTER A`. But Unicode was introduced after hundreds of incomplete character sets like ASCII. Therefore, texts created before Unicode would have to be converted, and Unicode was designed to make this conversion as simple as possible. If a character (e.g., `à`) was defined by an existing character set (e.g., Windows-1252), Unicode included this character to support a one-to-one mapping with this character set. But why Python considers the two strings as different?
+
+Python, like almost all programming languages, considers two Unicode strings to be equals if they are composed of the same sequence of code points. To solve this problem, *Unicode defines several text normalization algorithms that replaces equivalent sequences of characters so that any two texts that are equivalent will be reduced to the same sequence of code points*. Unicode normalization is often implemented by programming languges in special modules:
+
+[source,python]
+----
+# Python 3
+from unicodedata import normalize
+print(normalize("NFKC", "\u00E0") == normalize("NFKC", "\u0061\u0300")) # True
+----
+
+Normalization is not applied systematically. But you should probably use it when sorting or indexing texts. (Imagine if Google didn't normalize texts in its index, you would miss a lot of results when searching for accentuated texts.)
+
+
+== Puzzler 2: Encoding
+
+Unicode is also famous for its emojis. Consider the following program in Go. What is the output?
+
+[source,go]
+----
+// Go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println(len("✋"))
+	fmt.Println(len("🤚"))
+}
+----
+
+=== Answer
+
+The answer is `3/4` (not `1/1`. That's right. You read correctly. You can try this example in different languages and get different results (Python 3 outputs `1/1`, Java outputs `2/2`). Why?
+
+=== Explanation
+
+One million of code points is a lot! Imagine that you are creating a new programming language and must define a string data type to store a sequence of Unicode code points. Computers only work with 0s and 1s and this sequence of Unicode code points needs to be converted to bytes. *Each code point must logically be stored using 32 bits* (e.g., 1,000,000~10~ = 11110100001001000000~2~), which means a naive implementation would used a variable of type `[]int32` to store a Unicode text. Right?
+
+*The fact is almost all characters in everyday use are stored in the first 65,536 code points* (requiring only 16 bits) and the vast majority of characters in Latin languages are still the famous ASCII characters which are the first 128 Unicode characters (required only 8 bits).
+
+For example, saving the following Python program in a file encoded in UTF-32 (Note: UTF-32 is one of the encodings defined by Unicode and simply output each code point using 32 bits):
+
+[source,python]
+.hello.py
+----
+print("Voila\u0300 \N{winking face}")
+----
+
+Produces the following bytes:
+
+[source,shell]
+----
+$ hexdump hello.py
+0000000 00 00 fe ff 00 00 00 70 00 00 00 72 00 00 00 69
+0000010 00 00 00 6e 00 00 00 74 00 00 00 28 00 00 00 22
+0000020 00 00 00 56 00 00 00 6f 00 00 00 69 00 00 00 6c
+0000030 00 00 00 61 00 00 00 5c 00 00 00 4e 00 00 00 7b
+0000040 00 00 00 63 00 00 00 6f 00 00 00 6d 00 00 00 62
+0000050 00 00 00 69 00 00 00 6e 00 00 00 69 00 00 00 6e
+0000060 00 00 00 67 00 00 00 20 00 00 00 61 00 00 00 63
+0000070 00 00 00 63 00 00 00 65 00 00 00 6e 00 00 00 74
+0000080 00 00 00 20 00 00 00 67 00 00 00 72 00 00 00 61
+0000090 00 00 00 76 00 00 00 65 00 00 00 7d 00 00 00 20
+00000a0 00 00 00 5c 00 00 00 4e 00 00 00 7b 00 00 00 77
+00000b0 00 00 00 69 00 00 00 6e 00 00 00 6b 00 00 00 69
+00000c0 00 00 00 6e 00 00 00 67 00 00 00 20 00 00 00 66
+00000d0 00 00 00 61 00 00 00 63 00 00 00 65 00 00 00 7d
+00000e0 00 00 00 22 00 00 00 29 00 00 00 0a
+00000ec
+----
+
+That's a lot of `00`. This is not optimal. Imagine if Go was using this representation internally and your application works mainly with strings. We can do better. How?
+
+*Programming languages adopt different solutions to represent strings*, which explains why we have different results. For example, Go stores string literals as a `[]byte` containing the UTF-8 encoding (UTF-8 requires 1 bytes for ASCII characters, 3 bytes for most non-ASCII characters, and 4 bytes for most emojis and rare characters). The function `len` in Go simply returns the number of bytes in the UTF-8 representation of a string. For example, the U+270B `RAISED HAND` (✋) requires 3 bytes in UTF-8 and U+1F91A `RAISED BACK OF HAND EMOJI` (🤚) requires 4 bytes in UTF-8 since characters are not stored in the same block inside the vast Unicode table. So, yes, rotating your hand have its importance when working with Unicode 😀.
+
+To illustrate the gain of using UTF-8, here is the same file stored using this encoding:
+
+[source,shell]
+----
+$ hexdump hello_UTF-8.py
+0000000 70 72 69 6e 74 28 22 56 6f 69 6c 61 5c 4e 7b 63
+0000010 6f 6d 62 69 6e 69 6e 67 20 61 63 63 65 6e 74 20
+0000020 67 72 61 76 65 7d 20 5c 4e 7b 77 69 6e 6b 69 6e
+0000030 67 20 66 61 63 65 7d 22 29 0a
+000003a
+----
+
+You now understand why we commonly save our files in UTF-8, and why this encoding is the default on most systems.
+
+Other languages like Java use UTF-16 encoding for their internal string data type representation (UTF-16 uses 2 bytes for the first 65,536 characters and 4 bytes for the remaining ones). Python uses a similar approach but the implementation does not expose these details to the developer. In short, *you must understand how your programming language works*.
+
+
+== Puzzler 3: Emojis
+
+Here is another program using flags. What is the output?
+
+[source,python]
+----
+# Python 3
+print("🇫🇷"[0] == "🇫🇮"[0])
+print("🇫🇷"[1] == "🇧🇷"[1])
+----
+
+=== Answer
+
+The program outputs `True` and `True`. That's weird. Why would different flags be considered equal? It just doesn't make sense. Or maybe it is.
+
+
+=== Explanation
+
+We have already discussed how accentuated letters can be formed using combining characters like U+0300 `COMBINING GRAVE ACCENT`. To understand this puzzler, you need to know that *some Emojis are also defined by combining characters*. For example, Unicode defines a series of `Regional Indicator Symbol` for every letter A-Z. *Emoji country flags combine two regional symbols corresponding to the two-letter country code defined by the link:https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2[ISO 3166-1 standard]*. For example,
+
+* 🇫🇷 (France, `FR`) is defined by the sequence U+1F1EB `Regional Indicator Symbol Letter F` **+** U+1F1F7 `Regional Indicator Symbol Letter R`.
+* 🇫🇮 (Finland, `FI`) is defined by the sequence U+1F1EB `Regional Indicator Symbol Letter F` **+** U+1F1EE `Regional Indicator Symbol Letter I`.
+* 🇧🇷(Brazil, `BR`) is defined by the sequence U+1F1E7 `Regional Indicator Symbol Letter B` **+** U+1F1F7 `Regional Indicator Symbol Letter R`.
+
+In Python, string indexing returns the __i__-nth code point in the Unicode sequence. So `"🇫🇷"[0]` returns the `Regional Indicator Symbol Letter F` and `"🇫🇷"[1]` returns the `Regional Indicator Symbol Letter R`. This explains the output (**F**R=**F**I and F**R**=B**R**).
+
+*Combining characters are also used by skin tones*. Unicode defines a code point for every color defined by the link:https://en.wikipedia.org/wiki/Fitzpatrick_scale[Fitzpatrick scale]: U+1F3FF `Dark skin tone`, U+1F3FE `Medium Dark skin tone`, U+1F3FD `Medium skin tone`, U+1F3FC `Medium Light skin tone`, and U+1F3FB `Light skin tone`. For example:
+
+[source,python]
+----
+print("👋\N{Emoji Modifier Fitzpatrick Type-1-2}") # 👋🏻
+print("👋\N{Emoji Modifier Fitzpatrick Type-3}")   # 👋🏼
+print("👋\N{Emoji Modifier Fitzpatrick Type-4}")   # 👋🏽
+print("👋\N{Emoji Modifier Fitzpatrick Type-5}")   # 👋🏾
+print("👋\N{Emoji Modifier Fitzpatrick Type-6}")   # 👋🏿
+----
+
+Comparing Unicode texts containing the same emoji using different skin tones is tricky:
+
+[source,python]
+----
+print("👋🏻" == "👋🏿") # False
+----
+
+Unicode Normalization that we covered in Puzzler 1 doesn't help:
+
+[source,python]
+----
+from unicodedata import normalize
+print(normalize("NFKC", "👋🏻") == normalize("NFKC", "👋🏿")) # False
+----
+
+As there is no current support in standard libraries, the most obvious solution is to ignore skin tones completely and compare only the base Unicode character:
+
+[source,python]
+----
+print("👋🏻"[0] == "👋🏿"[0]) # True 🎉
+----
+
+
+== Puzzler 4: Regex
+
+What is the output of the following program?
+
+[source,java]
+----
+// Java
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Regex {
+
+    public static void main(String[] args) {
+        String s = "100 µAh 10 mAh";
+        Pattern p = Pattern.compile("\\d+ \\wAh");
+        Matcher m = p.matcher(s);
+        System.out.println(m.results().count();
+    }
+}
+----
+
+=== Answer
+
+The answer is `1`. The regex only found one match (`10 mAh`). Why?
+
+=== Explanation
+
+The metacharacter `\w` matches a single word character defined by the expression `[a-zA-Z_0-9]`. It works great with ASCII characters like `m` but not with Unicode letters like `µ`.
+
+In addition to assigning a unique code point to every single character in use by any language, Unicode also provides a link:https://unicode.org/ucd/[database] defining a list of properties for every character. One of these property is link:https://unicode.org/reports/tr44/#GC_Values_Table[`General_Category`] (`Lu` for uppercase letter, `Nd` for decimal number, etc.). Programming languages import this database in their code to implement common functions like `isUpper()`, `toLowerCase()`, `isLetter()`, and also to extend the behavior of their regular-expression engine.
+
+link:https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/util/regex/Pattern.html[Java supports other classes] like `\p{Lu}` to match an uppercase letter or just `\p{L}` to match any Unicode letter:
+
+[source,java]
+----
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Regex {
+
+    public static void main(String[] args) {
+        String s = "100 µAh 10 mAh";
+        Pattern p = Pattern.compile("\\d+ \\p{L}Ah"); // <1>
+        Matcher m = p.matcher(s);
+        System.out.println(m.results().count(); // Output: 2
+    }
+}
+----
+<1> We replaced the ASCII-only class `\w` by the Unicode-compatible class `\p{L}`.
+
+
+[NOTE.experiment]
+.To Go Further
+====
+*This article introduced some pitfalls when working with Unicode*. There is so much more to cover.
+
+If I succeeded in arousing your curiosity, I recommend you to read link:{% post_url inspect/2021-06-19-unicode-for-curious-developers %}[Unicode for Curious Developers Loving Code 😉]. It will take you less than one hour (that's a lot for a blog post, I know) but compared to the time we often spend debugging an issue, one hour is a small price to pay to understand what you are doing. *Learning always pays off*.
+====
+
+
+== Puzzler 5: Bonus
+
+What is the output of this program?
+
+[source,python]
+----
+# Python 3
+ℌ = "Me"
+H = "Funny"
+print(ℌ == H)
+----
+
+=== Answer
+
+The anwser is `True`. That's right. You read correctly, again. Based on what we covered in this article, you may be able to found the explanation.
+
+=== Explanation
+
+link:https://www.python.org/dev/peps/pep-3131/[Python accepts non-ASCII characters for identifiers] like variable names but normalizes them using the NFKC algorithm (one of the four normalization algorithms defined by the Unicode Standard). For example:
+
+[source,python]
+----
+import unicodedata
+print(unicodedata.normalize('NFKC', "ℌ")) # "H"
+----
+
+Both Unicode characters `ℌ` and `H` normalize to the same character. This means both identifiers represent the same variable, which also means that when are updating one of them, we are updating the same unique variable. Why normalize identifiers?
+
+This may sound weird but normalizating identifiers is a great idea. Unicode contains a lot of characters and many characters are represented visually using very similar glyphs. Compare with this more subtle example (this example can be more or less relevant depending on the fonts available on your system):
+
+[source,python]
+----
+𝛀 = "U+1D6C0"
+Ω = "U+03A9"
+print(𝛀, Ω)
+# Output "U+03A9 U+03A9"
+----
+
+Note that Python does not accept any Unicode character in identifiers:
+
+[source,python]
+----
+# Python 3
+ツ = "Letter in Unicode Character Database" # OK
+🙂 = "Symbol in Unicode Character Database" # KO
+----
+
+Only characters belonging to specific categories such as `Lu` (uppercase letters) or `Ll` (lowercase letters) are accepted. Emojis could therefore not be used in Python variable names, but some languages like Haskell aren't that restrictive.

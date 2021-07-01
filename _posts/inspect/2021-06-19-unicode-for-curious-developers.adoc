@@ -1,6 +1,6 @@
 ---
 layout: post-inspect
-title: Unicode for Curious Developers Loving Emojis and Code 😉
+title: Unicode for Curious Developers Loving Code 😉
 subtitle: The "Minimum" Every Developer Must Know About Unicode
 author: Julien Sobczak
 date: '2021-06-19'
@@ -13,7 +13,7 @@ excerpt_only: true
 
 :page-liquid:
 :tabsize: 4
-:imagesdir: {{ '/posts_resources/2021-06-19-unicode-for-developers/' | relative_url }}
+:imagesdir: {{ '/posts_resources/2021-06-19-unicode-for-curious-developers/' | relative_url }}
 
 
 [quote, Unicode Consortium co-founder and president Mark Davis]
@@ -81,9 +81,9 @@ As often, if you want to have a good overview of a topic, you have to understand
 * xref:sect-future[The Future]
 
 
-include::./2021-06-19-unicode-for-developers/the-story.adoc[]
-include::./2021-06-19-unicode-for-developers/the-standard.adoc[]
-include::./2021-06-19-unicode-for-developers/the-implementation.adoc[]
+include::./2021-06-19-unicode-for-curious-developers/the-story.adoc[]
+include::./2021-06-19-unicode-for-curious-developers/the-standard.adoc[]
+include::./2021-06-19-unicode-for-curious-developers/the-implementation.adoc[]
 
 
 '''
