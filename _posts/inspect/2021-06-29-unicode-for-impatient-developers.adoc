@@ -23,7 +23,7 @@ Modern programs must handle Unicode—Python has excellent support for Unicode, 
 ____
 
 [.lead]
-Unicode is omnipresent. Your operating system, your programming language, and your everyday applications all support Unicode so that you can use your own language in a multilingual environment like the internet. All this is possible because developers before you learned about Unicode. What about you?
+Unicode is omnipresent. Your operating system, your programming language, and your everyday applications all support Unicode so that you can use your own language in a multilingual environment like the internet. All this is possible because developers before you learned about Unicode. What about you? Let's test your comprehension using a few puzzlers.
 
 
 
@@ -93,7 +93,7 @@ func main() {
 
 === Answer
 
-The answer is `3/4` (not `1/1`. That's right. You read correctly. You can try this example in different languages and get different results (Python 3 outputs `1/1`, Java outputs `2/2`). Why?
+The answer is `3/4` (not `1/1`). That's right. You read correctly. You can try this example in different languages and get different results (Python 3 outputs `1/1`, Java outputs `2/2`). Why?
 
 === Explanation
 
@@ -299,9 +299,9 @@ import unicodedata
 print(unicodedata.normalize('NFKC', "ℌ")) # "H"
 ----
 
-Both Unicode characters `ℌ` and `H` normalize to the same character. This means both identifiers represent the same variable, which also means that when are updating one of them, we are updating the same unique variable. Why normalize identifiers?
+Both Unicode characters `ℌ` and `H` normalize to the same character. This means both identifiers represent the same variable, which also means that when we are updating one of them, we are updating the same, unique variable. But why normalize identifiers?
 
-This may sound weird but normalizating identifiers is a great idea. Unicode contains a lot of characters and many characters are represented visually using very similar glyphs. Compare with this more subtle example (this example can be more or less relevant depending on the fonts available on your system):
+This may sound weird but normalizating identifiers is a great idea. Unicode contains a lot of characters and some different characters are represented visually using very similar glyphs. Compare with this more subtle example (this example can be more or less relevant depending on the fonts available on your system):
 
 [source,python]
 ----
