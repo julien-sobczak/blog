@@ -121,7 +121,7 @@ col.decks.current()['mid'] = modelBasic['id']
 note = col.newNote()
 note.fields[0] = "Bonjour" # The Front input field in the UI
 note.fields[1] = "Hello"   # The Back input field in the UI
-col.addNote(note)
+col.add_note(note, deck['id'])
 
 # 4. Save changes <6>
 col.save()
@@ -195,7 +195,7 @@ for current_note in notes: # <2>
   note = col.newNote()
   note.fields[0] = current_note["Front"]
   note.fields[1] = current_note["Back"]
-  col.addNote(note)
+  col.add_note(note, deck['id'])
 
 # 4. Save changes
 col.save()
