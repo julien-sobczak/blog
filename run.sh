@@ -1,3 +1,3 @@
 #/bin/bash
 
-bundle exec jekyll serve --drafts  --unpublished --future
+bundle exec jekyll serve --drafts  --unpublished --future --trace

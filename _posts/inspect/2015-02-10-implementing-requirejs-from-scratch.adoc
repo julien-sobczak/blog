@@ -27,13 +27,13 @@ Whilst native solutions to these problems will be arriving in ES Harmony, the go
 ____
 
 [.lead]
-The benefits of a modular design are obvious. Sadly, before the version ECMAScript 6, baptisée Harmony, JavaScript provided no support to define modules. This was before AMD.
+The benefits of a modular design are obvious. Sadly, before the version ECMAScript 6, JavaScript provided no support to define modules. This was before AMD.
 
 [.lead]
-AMD (Asynchronous Module Definition) defines a format to define modules in JavaScript. Several script loaders already implement this standard. The most famous is link:http://requirejs.org/[RequireJS].
+AMD (Asynchronous Module Definition) defines a format to define modules in JavaScript. Several script loaders already implement this standard. The most popular is link:http://requirejs.org/[RequireJS].
 
 [.lead]
-Using RequireJS, we will write scoped modules, without polluting the global namespace, with the additional benefit to be able to declare explicit the module dependencies. From an implementation viewpoint, RequireJS is an extension of the link:http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html[pattern Module], widely present in JavaScript.
+Using RequireJS, we will write scoped modules, without polluting the global namespace, with the additional benefit to declare explicitly module dependencies. From an implementation viewpoint, RequireJS is an extension of the link:http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html[pattern Module], widely implemented in JavaScript.
 
 
 [CAUTION.license]
@@ -42,7 +42,7 @@ link:http://requirejs.org/[RequireJS] is published under the new link:http://en.
 
 == Getting Started with Modules
 
-AMD defines two key methods:
+AMD defines two main methods:
 
 [.compact]
 * `define` to define a new module.
@@ -60,7 +60,7 @@ define(
 );
 ----
 
-The first parameter is used to name the module. Often, modules will be anonymous (a best practice to ease their reorganization). Then come the list of dependencies to load, that will be passed to the last parameter, the function responsible to really instantiate the module.
+The first parameter is used to name the module. Often, modules will be anonymous (a best practice to ease their reorganization). Then comes the list of dependencies to load, that will be passed as the last parameter, the function responsible to really instantiate the module.
 
 Here is an example:
 
@@ -132,7 +132,7 @@ On loading, RequireJS inspects the special attribute `data-main` to find the fir
 require(["helper/util"], function(util) {
     // This function is called when scripts/helper/util.js is loaded.
     // If util.js calls define(), then this function is not fired until
-    // util's dependencies have loaded, and the util argument will hold
+    // util's dependencies have loaded, and the util parameter will hold
     // the module value for "helper/util".
 
     var titles = document.getElementsByTagName('h1');
@@ -142,7 +142,7 @@ require(["helper/util"], function(util) {
 });
 ----
 
-This file contains in reality a simple call to the function `require` to request the loading of another module (`helper/util`) defining the function `toFunnyCase`. The remaining lines simply updates the title of the HTML page using this mysterious `toFunnyCase` function.
+This file contains a simple call to the function `require` to request the loading of another module (`helper/util`) defining the function `toFunnyCase`. The remaining lines simply update the title of the HTML page using this mysterious `toFunnyCase` function.
 
 So, let's inspect this file `scripts/helper/util.js`:
 
@@ -179,7 +179,7 @@ Our goal is now to remove the dependency on require.js, and to provide a custom 
 
 === RequireJS, Under the hood
 
-Before jumping headlong into the code, let's take a look at the HTTP requests sent by RequireJS on our example.
+Before jumping headfirst into the code, let's take a look at the HTTP requests sent by RequireJS on our example.
 
 image::demo-requests.png[]
 
@@ -192,7 +192,7 @@ image::demo-requests.png[]
 
 == Let's Go
 
-Let's starting by modifying our example file:
+We start by modifying the example file:
 
 [source,html]
 ----
@@ -210,8 +210,8 @@ Let's starting by modifying our example file:
         <h1>My Sample Project</h1>
 </html>
 ----
-<1> We import jQuery, not indispensable, but convenient to reuse some utility functions.
-<2> We replace the library RequireJS to use a new file `require.lite.js` that we will be the subject of this article.
+<1> We import jQuery, not indispensable but convenient to reuse some utility functions.
+<2> We replace the library RequireJS with a new file `require.lite.js` that we will be the subject of this article.
 
 
 Here is the skeleton of the file `require.lite.js`:
@@ -266,11 +266,11 @@ The code starts by inspecting the attribute `data-main`:
 })();
 ----
 
-We split the attribute value to extract the dirname (`baseUrl`) from the basename (`mainScript`). This directory will be used as the base directory when loading other scripts. The code ends by calling the method `require`. Time has comes to get to the heart of RequireJS.
+We split the attribute value to extract the dirname (`baseUrl`) from the basename (`mainScript`). This directory will be used as the base directory when loading other scripts. The code ends by calling the method `require`. Time has come to get to the heart of RequireJS.
 
 
 
-=== Le Module
+=== Module
 
 RequireJS relies heavily on the object `Module` whose constructor is defined like this:
 
@@ -292,15 +292,15 @@ function Module(id) {
         this.id = '_@r' + (requireCounter += 1);
     }
 
-    this.events = {};     // event => [listeners] <4>
+    this.events = {}; // event => [listeners] <4>
 
     this.url = baseUrl + this.id + '.js';
 };
 ----
 <1> `depExports` will contain the arguments that will be passed to the instantiation callback of this module. After the loading of a dependency, we save the value in this array.
-<2> The instantiation callback must execute only when all its dependencies have been loaded. Using this counter, we know the number of dependencies still not completely loaded..
-<3> It is important to assign an id even for simple files containing a simple call to `require`. If this file is referenced several times, only the first loading will be executed.
-<4> Implementation of the pattern Observer. Other modules can register to watch the progression. In practice, we are going to use it only to know when a module has been defined. (RequireJS generates a lot more events internally that are not useful for our basic example). What follows are two utility methods used to support this use case.
+<2> The instantiation callback must execute only when all its dependencies have been loaded. Using this counter, we know the number of dependencies that are still not completely loaded.
+<3> It is important to assign an id even for simple files containing a simple call to `require`. If this file is referenced several times, it will be loaded only once.
+<4> We implement the pattern Observer. Other modules can register to watch the progression. In practice, we are going to use it only to know when a module has been defined. (RequireJS generates a lot more events internally that are not useful for our basic example). What follows are two utility methods used to support this use case.
 
 [source,javascript]
 ----
@@ -328,7 +328,7 @@ Module.prototype = {
 };
 ----
 
-The object `Module` exists but nothing happens. It is only when the method `init` is called that the magic happens, and precisely during the execution of the method  `enable`.
+The object `Module` exists but nothing happens. It's only when the method `init` is called that the magic happens, and precisely during the execution of the method  `enable`.
 
 [source,javascript]
 ----
@@ -392,10 +392,10 @@ Module.prototype = {
 
 }
 ----
-<1> As for the method `init`, we memorize that the module has been activated. This will avoid the module to be initialized twice.
+<1> As for the method `init`, we memorize that the module has been activated. It prevents the module from being initialized twice.
 <2> We load dependencies transitively. We can enable the module before all its dependencies have been enabled first. We iterate over them, and if the dependency is new  (this is the motivation behind the variable `registry`), we instantiate its `Module`, before trying its activation (recursive method).
 <3> The property `depCount` is incremented to indicate that we are waiting for the loading of this module.
-<4> We register to decrement this variable when the module have been defined.
+<4> We register to decrement this variable when the module has been defined.
 <5> There are two calls to the method `check`: at the end of our own activation, and for each dependency definition. Here is the code of this method `check`:
 
 [source,javascript]
@@ -450,7 +450,7 @@ This method `check` tries to finalize the module (i.e., execute the callback). W
 [TIP]
 .How to load a JavaScript file dynamically?
 ====
-Several solutions exist but the most widespread is to append a new tag `<script>` in the DOM (under `<head>` for example). This is the technique used by RequireJS:
+Several solutions exist, but the most widespread is to append a new tag `<script>` in the DOM (under `<head>` for example). It's the technique used by RequireJS:
 
 [source,javascript]
 ----
@@ -475,7 +475,7 @@ function load(id, url) {
 ====
 
 
-It's time to implement the two key methods defined by AMD. Using the object `Module`.
+We should now implement the two main methods defined by AMD. Using the object `Module`.
 
 === require
 
@@ -489,12 +489,12 @@ require = function (deps, factory) {
 }
 ----
 
-We just have to create to create a new module that is initialized immediately. Its depedencies will be initialized transitively.
+We just have to create a new module that is initialized immediately. Its dependencies will be initialized transitively.
 
 
 === define
 
-The method `define` is not as simple to implement, but is neither too complicated.
+The method `define` is not obvious to implement, but neither too complicated.
 
 Let's take the example file `main.js`.
 
@@ -505,7 +505,7 @@ require(["helper/util"], function(util) {
 });
 ----
 
-When this script is executed, we just have seen that the method `require` triggers the loading of all dependencies (using the method `enable`). The script `util.js` is then executed:
+When this script is executed, we have seen that the method `require` triggers the loading of all dependencies (using the method `enable`). The script `util.js` is then executed:
 
 [source,javascript]
 ----
@@ -514,9 +514,9 @@ define({
 });
 ----
 
-We arrive in the method `define`, but we ignore the name of the module. So how can we finish its activation? Which is the name to use to register the result?
+We arrive in the method `define`, but we ignore the name of the module. So how can we finish its activation? What is the name to use to register the result?
 
-The solution implemented by RequireJS is to memorize the arguments of every execution of the method `define` (in a queue, as several modules can be loaded simultenously):
+The solution implemented by RequireJS is to memorize the arguments of every execution of the method `define` (in a queue, as several modules can be loaded simultaneously):
 
 [source,javascript]
 ----
@@ -544,12 +544,12 @@ define = function (id, deps, factory) {
 <2> Not an array, we know that the module has no dependency. We shift the arguments again.
 <3> Variables contains now the right value.
 
-We modify the method loading a script to declare a new callback. This function will be executed just after the method `define`, the perfect moment to reread previously save information and to end the module instantiation.
+We modify the method loading a script to declare a new callback. This function will be executed just after the method `define`, the perfect moment to reread previously saved information and to end the module instantiation.
 
 [source,javascript]
 ----
 /**
- * Does the request to load a module for the browser case.
+ * Do the request to load a module for the browser case.
  * Make this a separate function to allow other environments
  * to override it.
  *
@@ -612,20 +612,20 @@ function completeLoad(id) {
 [NOTE.congratulations]
 .Congratulations!
 ====
-Congratulations, *our tour of RequireJS is now complete*. Less than 300 lines have been required to make our example works again*. The complete source code is available link:https://github.com/julien-sobczak/requirejs-from-scratch[here].
+Congratulations, *our minimal rewrite of RequireJS is now complete*. *Less than 300 lines have been required to make our example works again*. The complete source code is available link:https://github.com/julien-sobczak/requirejs-from-scratch[here].
 ====
 
 [NOTE.remember]
 .To Remember
 ====
 * We can load a JavaScript file dynamically using a new tag `script`, using `head.appendChild()`.
-* RequireJS is a good example of a concept called *“Programming into a language”* compared to *“Programming in a language”* (link:https://www.goodreads.com/book/show/4845.Code_Complete[Code Complete], Steve McConnell) : _“Programmers who program “in” a language limit their thoughts to constructs that the language directly supports. … Programmers who program “into” a language first decide what thoughts they want to express, and then determine how to express those thoughts using the tools provided by their specific language.”_
+* RequireJS is a good example of a concept called *“Programming into a language”* compared to *“Programming in a language”* (link:https://www.goodreads.com/book/show/4845.Code_Complete[Code Complete], Steve McConnell): _“Programmers who program “in” a language limit their thoughts to constructs that the language directly supports. … Programmers who program “into” a language first decide what thoughts they want to express, and then determine how to express those thoughts using the tools provided by their specific language.”_
 ====
 
 [NOTE.experiment]
 .Try for yourself!
 ====
-* All libraries are not defined as AMD module. Many continue to update the global namespace in JavaScript but all it not lost. RequireJS supports link:http://requirejs.org/docs/api.html#config-shim[*shim*] to configure explicitly the dependencies of these librairies.
+* All libraries are not defined as AMD modules. Many continue to update the global namespace in JavaScript but all is not lost. RequireJS supports link:http://requirejs.org/docs/api.html#config-shim[*shim*] to configure explicitly the dependencies of these librairies.
 * The modules RequireJS do not pollute the global namespace so that we can link:http://requirejs.org/docs/api.html#multiversion[load several versions of the same library]. _Hint_: RequireJS supports several contexts.
 * RequireJS offers also an link:http://requirejs.org/docs/optimization.html[optimizer], the aim of which is to group several modules, and minify them together, etc., to reduce the number of Ajax requests. How does it work?
 * RequireJS supports the syntax defined by CommonJS using link:http://requirejs.org/docs/commonjs.html[a simplified wrapper] to get this result:
@@ -640,5 +640,5 @@ define(function(require, exports, module) {
 }));
 ----
 +
-How does dependency injection work without the array of dependencies in argument? _Hint_: link:https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Function/toString[`Function.prototype.toString()`].
+How does dependency injection work without the array of dependencies in arguments? _Hint_: link:https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Function/toString[`Function.prototype.toString()`].
 ====

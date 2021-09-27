@@ -26,7 +26,7 @@ ____
 [-prefix-free is] fantastic, top-notch work! Thank you for creating and sharing it.
 ____
 
-Thanks to -prefix-free, you no longer have to write CSS properties for every browser extensions. You only write CSS standard properties and your code is still supported by browsers. This is not surprising that most code playgrounds now support this incontournable library. Let's take for example the following pen created initially by link:http://codepen.io/amos/[amos].
+Thanks to -prefix-free, you no longer have to write CSS properties for every browser extension. You only need to write CSS standard properties, and your code is still supported by all browsers. It is not surprising that most code playgrounds now provide this essential library. Let's take for example the following pen created initially by link:http://codepen.io/amos/[amos].
 
 ++++
 <p class="codepen" data-height="265" data-theme-id="light" data-default-tab="css,result" data-user="julien-sobczak" data-slug-hash="cblAm" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="cblAm">
@@ -37,10 +37,10 @@ Thanks to -prefix-free, you no longer have to write CSS properties for every bro
 <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
 ++++
 
-No prefix `-moz` or `-webkit`. The code is even more simple using link:http://sass-lang.com/[Sass]. Under the hodd, -prefix-free adds the prefixed properties dynamically and only if necessary depending your browser. How does this magic work? This is what are going to discover.
+No prefix `-moz` or `-webkit`. Under the hood, -prefix-free adds the prefixed properties dynamically and only if necessary depending on your browser. How does this magic work? We will discover it in this article.
 
 [CAUTION.license]
-link:http://leaverou.github.io/prefixfree/[-prefix-free] is brings to us by Lea Verou and is available on link:https://github.com/LeaVerou/prefixfree[Github]. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the last version at the moment of the publication of this article.
+link:http://leaverou.github.io/prefixfree/[-prefix-free] is brought to us by Lea Verou and is available on link:https://github.com/LeaVerou/prefixfree[Github]. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the last version at the moment of the publication of this article.
 
 == A First Example
 
@@ -52,6 +52,8 @@ h1 {
   border-radius: 10px;
 }
 ----
+
+And:
 
 [source,html]
 ----
@@ -106,13 +108,13 @@ If we inspect the source code inside our browser, on observe small differences:
 
 == Let's Go!
 
--prefix-free adds two global variables (`StyleFix` and `PrefixFree`), reflecting how the library is organized around two distinct parts:
+-prefix-free declares two global variables (`StyleFix` and `PrefixFree`), reflecting how the library is organized around two distinct parts:
 
 * StyleFix is a framework to apply corrections on a CSS stylesheet.
-* PrefixFree relies on it to configure a custom corrector that replce unsupported CSS properties using the prefixed properties instead.
+* PrefixFree relies on it to configure a custom corrector that replace unsupported CSS properties using the prefixed properties instead.
 
 [CAUTION.license]
-We are using the property `border-radius` for illustration purposes in this article. This propriety is available (with the `-moz` prefix) since the link:http://caniuse.com/#search=border-radius[version 2 of Firefox]. The following examples have been tested using Firefox 3.6.
+We are using the property `border-radius` for illustration purposes in this article. This property is available (with the `-moz` prefix) since the link:http://caniuse.com/#search=border-radius[version 2 of Firefox]. The following examples have been tested using Firefox 3.6.
 
 
 == StyleFix
@@ -160,7 +162,7 @@ fix : function(css, raw, element) {
 
 Nothing too complicated until now.
 
-Now let's take a look at what happens when the page loads. After the DOM is parsed by the browser, StyleFix looks for all tags `<link>`, `<style>` et the ones using the attribute `style`. For our implementation, we are going to consider only the tags `<style>` but the logic is unchanged for other types of tags.
+Now let's take a look at what happens when the page is loading. After the DOM is parsed by the browser, StyleFix looks for all tags `<link>`, `<style>` and the ones declaring the attribute `style`. For our implementation, we are going to consider only the tags `<style>` but the logic is unchanged for other types of tags.
 
 [source,javascript]
 ----
@@ -216,11 +218,10 @@ We have finished with the object `StyleFix`. Here is the final implementation:
   };
 
   document.addEventListener('DOMContentLoaded', StyleFix.process, false);
-
 })();
 ----
 
-Before moving on the next section, here is an example of how to use it to convert all stylesheets using a single line:
+Before moving on next section, here is an example of how to use it to convert all stylesheets using a single line:
 
 [source,javascript]
 ----
@@ -232,7 +233,7 @@ StyleFix.register(function(css, raw, element) {
 
 == PrefixFree
 
-If we omit many implementation concerns, we can start with a first operation version:
+If we omit many implementation concerns, we can start with a first operational, minimal version:
 
 [source,javascript]
 ----
@@ -252,9 +253,9 @@ StyleFix.register(function(css, raw, element) {
 <2> We consider only the property `border-radius`.
 <3> We search for every property to replace.
 
-The code reuses logically the object `StyleFix` to register a custom fixer. This fixer replaces unsupported CSS properties by their equivalent. The regular expression allows to make a global replacement. In JavaScript, the method link:https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/String/replace[replace] only replaces the first occurrence (a flag can be defined in third arguments but is currently not supported by the V8 engine).
+The code reuses the object `StyleFix` to register a custom fixer. This fixer replaces unsupported CSS properties with their equivalent. The regular expression allows making a global replacement. In JavaScript, the method link:https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/String/replace[replace] only replaces the first occurrence (a flag can be defined as the third argument but is currently not supported by the V8 engine).
 
-If we want to run our code on other examples, we still have to solve two remaining issues:
+If we want to run our code on new code, we still have to solve two remaining issues:
 
 [.compact]
 * How to *detect the browser prefix* to use?
@@ -262,7 +263,7 @@ If we want to run our code on other examples, we still have to solve two remaini
 
 Let's start with the first question.
 
-Several solutions are possible. We may use link:http://modernizr.com/[Modernizr] but -prefix-free use instead an ever more simple solution. The code creates a new HTML element in the DOM and inspect the attribute `style` represented in JavaScript by the object link:https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration[`CSSStyleDeclaration`]. This object lists the values of all CSS properties supported by the browser. So, we just have to memorize the list of all properties starting with `-` to determine the prefix and answer the second question by the same token.
+Several solutions are possible. We may use link:http://modernizr.com/[Modernizr] but -prefix-free use an even simpler solution. The code creates a new HTML element in the DOM and inspects the attribute `style` represented in JavaScript by the object link:https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration[`CSSStyleDeclaration`]. This object lists the values of all CSS properties supported by the browser. So, we just have to memorize the list of all properties starting with `-` to determine the prefix and answer the second question by the same token.
 
 [source,javascript]
 ----
@@ -282,7 +283,7 @@ for (var property in dummy) {
 
 self.prefix = '-' + prefix + '-';
 ----
-<1> This line is necessary to find the name of the property as present in CSS. Indeed, in JavaScript, the CSS properties as defined as properties in the object link:https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration[`CSSStyleDeclaration`], and thus must conform the rules of the JavaScript language (`-`` is not allowed in a identifier).
+<1> This line is necessary to find the name of the property as present in CSS. Indeed, in JavaScript, the CSS properties as defined as properties in the object link:https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration[`CSSStyleDeclaration`], and thus must conform to the rules of the JavaScript language (`-` is not allowed in an identifier).
 
 We defined two utility functions to convert from one notation to the other:
 
@@ -301,12 +302,12 @@ function deCamelCase(str) {
 }
 ----
 
-If we go back to the previous example, we ended with an array of all CSS properties with prefix. We still have one case to manage: browsers evolve and standard CS properties become supported over time (ex : Firefox >= 4 supports both `-moz-border-radius` and `border-radius` properties). When the standard property is supported, we better had to use it and stop replacing it.
+In the previous example, we used an array of all CSS properties with a prefix. We still have one case to manage: browsers evolve, and standard CSS properties become supported over time (ex: Firefox >= 4 supports both `-moz-border-radius` and `border-radius` properties). When the standard property is supported, we better had to use it and stop replacing it.
 
 [source,javascript]
 ----
 // (suite)
-// var properties = [/* toutes les propriétés avec préfixe supportées */]
+// var properties = [/* all properties with a supported prefix */]
 
 self.properties = [];
 
@@ -324,8 +325,6 @@ for (var i = 0; i < properties.length; i++) {
  }
 }
 ----
-
-'''
 
 Our rewrite of PrefixFree is now complete:
 
@@ -403,7 +402,7 @@ Our rewrite of PrefixFree is now complete:
 [NOTE.congratulations]
 .Congratulations!
 ====
-This ends the coverage of -prefix-free. *Less than 100 lines of code have been necessary to recreate a basic implementation*. The complete source code is available link:https://github.com/julien-sobczak/prefixfree-from-scratch[here].
+We have finished the coverage of -prefix-free. *Less than 100 lines of code have been necessary to recreate a basic implementation*. The complete source code is available link:https://github.com/julien-sobczak/prefixfree-from-scratch[here].
 ====
 
 [NOTE.experiment]
@@ -417,7 +416,7 @@ This ends the coverage of -prefix-free. *Less than 100 lines of code have been n
 [NOTE.remember]
 .To Remember
 ====
-* StyleFix/PrefixFree is a great example of the approach *civide-and-conquer*.
-* `querySelectorAll` returns an object `NodeList`, which is different from `Array`.
-* The object `CSSStyleDeclaration` can be use to list all CSS properties supported by a browser.
+* StyleFix/PrefixFree is a great example of the approach *divide-and-conquer*.
+* `querySelectorAll` returns an object of type `NodeList`, which is different from `Array`.
+* The object `CSSStyleDeclaration` can be used to list all CSS properties supported by a browser.
 ====

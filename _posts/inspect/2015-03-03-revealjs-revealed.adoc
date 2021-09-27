@@ -22,10 +22,7 @@ You are reading a translation of an link:https://julien-sobczak.github.io/blog-f
 
 
 [.lead]
-No more boring slides with Reveal.js. If you have never used seen this tool in live before, take a few minutes to watch the link:http://lab.hakim.se/reveal-js/#/[official demo].
-
-[.lead]
-How does this library based on HTML5 and CSS3 technologies challenges the existence of PowerPoint? This is what we will find out by rewriting from scratch a minimal version.
+No more boring slides with link:http://lab.hakim.se/reveal-js/#/[Reveal.js]. How does this library based on HTML5 and CSS3 technologies challenge the existence of PowerPoint? We will find out by rewriting from scratch a minimal version.
 
 
 [CAUTION.license]
@@ -85,8 +82,7 @@ link:https://github.com/hakimel/reveal.js/[Reveal.js] is published under an link
                     <h2>Finished!</h2>
                     <p>
                         <small>
-                            Read the post:
-                            <a href="http://www.imlovinit.com">I'm lovin' I.T.</a>
+                            <a href="https://www.juliensobczak.com">Read the post</a>
                         </small>
                     </p>
                 </section>
@@ -114,12 +110,12 @@ Here is the rendered result of our presentation:
 </iframe>
 ++++
 
-Reveal.js is far more powerful than what this simple presentation suggests. The lists of link:https://github.com/hakimel/reveal.js[features supported by Reveal] is huge : a ton of animations, overview, fragments, mode speaker, PDF export, ... We are not going to implement all of these features but instead focus on the navigation between slides (horizontal et vertical), the links, the keyboard shortcuts, and also a few animations that make reveal.js so attractive.
+Reveal.js is far more powerful than what this simple presentation suggests. The lists of link:https://github.com/hakimel/reveal.js[features supported by Reveal] is huge: a ton of animations, overview, fragments, mode speaker, PDF export, ... We are not going to implement all of these features but instead focus on the navigation between slides (horizontal et vertical), the links, the keyboard shortcuts, and also a few animations that make reveal.js so attractive.
 
 
 == Slide by slide
 
-The initialization of Reveal starts with the method `Reveal.initialize()`. Here is the skeleton of your implementation defined in a file `reveal.lite.js`:
+The initialization of Reveal starts with the method `Reveal.initialize()`. Here is the skeleton of our implementation defined in a file `reveal.lite.js`:
 
 [source,javascript]
 ----
@@ -174,7 +170,7 @@ var Reveal;
 <2> We define two variables `indexh` and `indexv` to represent our current position inside the presentation, like a slide number.
 <3> We end by requesting the display of the first slide (i.e., the first horizontal and vertical slide). For the moment, everything remains to be implemented in this method.
 
-Before going further, we need to define a basic CSS stylesheet, otherwise the browser will simply display all slides at once.
+Before going further, we need to define a basic CSS stylesheet; otherwise, the browser will display all slides at once.
 
 [source,css]
 ----
@@ -201,11 +197,11 @@ html, body {
   width: 100%; }
 ----
 
-THe page now looks like this:
+The page now looks like this:
 
 image::layout.png[width=90%]
 
-The parent tag with the CSS class `.reveal` (called wrapper in the code) is positioned to use all available space on screen. This allows slides inside this wrapper to occupy the screen. Note that the relative position will be useful to position slides using absolute values when defining CSS animations.
+The parent tag with the CSS class `.reveal` (called `wrapper` in the code) is positioned to use all available space on the screen. This allows slides inside this wrapper to occupy the screen. Note that the relative position will be useful to position slides using absolute values when defining CSS animations.
 
 All slides are thus superimposed on top of each other. The JavaScript code will use a few CSS classes (`past`, `present`, `future`) to change the slides on screen. For example, to display the current slide:
 
@@ -298,7 +294,7 @@ function updateSlides( selector, index ) {
 
 This is the first method with a lot of implementation details. The code logic is relatively simple. The first parameter is a CSS selector. In practice, this parameter is mainly used to indicate if we are sliding horizontally or vertically. The second parameter is the index on the chosen axis. The code traverses each slide on this axis to configure the right CSS classes. Note the presence of a class `stack` assigned on slides of type parent (i.e., the slides having vertical slides inside).
 
-The value returned by this method updateSlides is the new index used to adjust the previous variables `indexh` and `indexv` in the method `slide`.
+The value returned by this method `updateSlides` is the new index used to adjust the previous variables `indexh` and `indexv` in the method `slide`.
 
 [TIP]
 .Zoom on `element.classList`
@@ -309,11 +305,11 @@ Supported by modern browsers, link:https://developer.mozilla.org/fr/docs/Web/API
 
 == Automatic Resizing
 
-You have probably noticed on the Reveal.js demo, the size of the presentation (i.e., the slides) adjusts automatically when you resize your browser window. With our current implementation, the slides occupy the full screen but their content does not scale in consequence:
+You have probably noticed on the Reveal.js demo, the size of the presentation (i.e., the slides) automatically adjusts when you resize your browser window. With our current implementation, the slides occupy the full screen, but their content does not scale in consequence:
 
 image::slides-no-layout.png[]
 
-How can the content of the slides be adapted to the screen size? How to reduce/enlarge the font size, images and videos shown? The solution is elegant, using CSS animations like the link:https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function#scale%28%29[function `scale()`]. The calculations are grouped inside the method `layout`:
+How can the content of the slides be adapted to the screen size? How to reduce/enlarge the font size, images, and videos shown? The solution is elegant, using CSS animations like the link:https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function#scale%28%29[function `scale()`]. The calculations are grouped inside the method `layout`:
 
 [source,javascript]
 ----
@@ -347,7 +343,7 @@ function layout() {
 
 }
 ----
-<1> We compare the default size for a slide (960x700) with the effective screen size. We thus obtain the ratio to apply to scale the slide to match the full screen.
+<1> We compare the default size for a slide (960x700) with the effective screen size. We obtain the ratio to apply to scale the slide to match the full screen.
 
 Let's modify the method `slide` to use this new method:
 
@@ -363,7 +359,7 @@ function slide( h, v ) {
 }
 ----
 
-The result is immediately more satisfactory. The slides resizes to match the window size, except if you are trying to resize the browser window. This is easy to fix by reusing the method `layout` and listening for this event:
+The result is immediately more satisfactory. The slides resize to match the window size, except if you are trying to resize the browser window. This is easy to fix by reusing the method `layout` and listening for this event:
 
 [source,javascript,linenums,highlight='8']
 ----
@@ -463,7 +459,7 @@ function navigateDown()  { slide( indexh, indexv + 1 ); } // <1>
 ----
 <1> We use the two variables `indexh` and `indexv` to determine our current position, before calling the method `slide` to move in the right direction.
 
-The navigation is now operational but the code does not prevent the user to move beyond the last slide. Using CSS selectors, we will determine the maximum number of slides and compare with our current position to determine if the move is possible:
+The navigation is now operational but the code does not block the user from moving beyond the last slide. Using CSS selectors, we will determine the maximum number of slides and compare with our current position to determine if the move is possible:
 
 [source,javascript,linenums,highlight='24,32,40,48']
 ----
@@ -524,9 +520,9 @@ function navigateDown() {
 
 == Animations
 
-Reveal.js would not be the same without animations. Under the hood, these animations uses logically animations supported by CSS 3. Using the already defined CSS classes, only a few lines of CSS is necessary to animation our slides.
+Reveal.js would not be the same without animations. Under the hood, those animations use CSS animations. Using the already defined CSS classes, only a few lines of CSS is necessary to animate the slides.
 
-Let's start by the most simple effect: `fade`.
+Let's start with the most simple effect: `fade`.
 
 
 === The fade effect
@@ -552,7 +548,7 @@ The `fade` effect consists in defining a transition for the property `opacity`:
   transition: opacity 0.5s; }
 ----
 
-Every time the user is changing the current slide, the previous one disappears in half a second while the new slide appears simulatenously. Easy? Let's try to implement the `slide` effect.
+Every time the user changes the current slide, the previous one disappears in half a second while the new slide appears simultaneously. Easy? Let's try to implement the `slide` effect.
 
 
 === The slide effect
@@ -624,14 +620,14 @@ The CSS declarations is slightly more advanced but only a few lines are required
 .Zoom on function `cubier-bezier`
 ====
 The CSS property `transition` supports what is called a link:https://developer.mozilla.org/fr/docs/Web/CSS/timing-function[timing function] (or easing function). Several functions are predefined (`linear`, `ease-in`, …). Using the function `cubic-bezier`, we can define new custom functions using, as its name suggests, a link:http://fr.wikipedia.org/wiki/Courbe_de_B%C3%A9zier[Bezier curve], well-known to users of Adobe Illustrator. Bezier curves are not adapted in every context but they are very flexible and easy to use.
-+
+
 The website link:http://lea.verou.me/2011/09/a-better-tool-for-cubic-bezier-easing/[cubic-bezier.com] allows you to link:http://cubic-bezier.com/#.26,.86,.44,.98[create visually your curve] and generates the corresponding CSS code. This site is the work of Lea Verou, to whom we also owe the projects link:{% post_url inspect/2014-11-06-prefix-free-from-scratch %}[-prefix-free] and link:{% post_url inspect/2014-11-25-prism-from-scratch %}[prism].
 ====
 
 
 == Links
 
-Before ending this article, let's look at a less essential feature but just as interesting to study: the links between slides.
+Before closing this article, let's look at the links between slides.
 
 The solution relies on the URL fragment (the optional hash value following the character `#` in an URL) to identify the slide to display. For example `#/1/2` represents the second vertical slide below the first horizontal slide. When clicking on a link, the code modifies the hash like this:
 
@@ -744,22 +740,22 @@ The UMD pattern makes possible to interoperate with existing loaders. As often i
 }));
 ----
 <1> Functions are the only possible scope in JavaScript. This is why we use an immediate function to not pollute the global namespace uselessly.
-<2> We test for a method `define` having a property `amd` to determine if RequireJS is available. Reveal.js declares itself as an anonymous module without any  dependancy.
+<2> We test for a method `define` having a property `amd` to determine if RequireJS is available. Reveal.js declares itself as an anonymous module without any dependency.
 <3> Like for AMD, we test for an object `exports`. Reveals declares itself like any other Node module.
 <4> As before, our module is defined as a global variable, or more precisely a property of the object `window`.
 
 [NOTE.remember]
 .To Remember
 ====
-* *Only a few hundred of lines of code are enough to make PowerPoint a remembering of the past*. (PowerPoint totals link:http://blogs.msdn.com/b/macmojo/archive/2006/11/03/it-s-all-in-the-numbers.aspx[millions of lines de code]!.)
-* *CSS animations makes accessible 3D effects*.
-* The URL hash is the favorite solution to preserve the navigation in a SPA.
+* *Only a few hundred of lines of code are enough to make PowerPoint a remembering of the past*. (PowerPoint totals link:http://blogs.msdn.com/b/macmojo/archive/2006/11/03/it-s-all-in-the-numbers.aspx[millions of lines de code].)
+* *CSS animations make accessible 3D effects*.
+* The URL hash is the favorite solution to preserve the navigation in a Single-Page Application (SPA).
 ====
 
 [NOTE.experiment]
 .Try for yourself!
 ====
-Reveal.js is a very complete solution. Just look at the speaker mode to convince you. We omit a lot of features in this article. Why not adventure in the original source code to discover how these advanced features are implemented. For example:
+Reveal.js is a complete solution. Just look at the speaker mode to convince you. We have omit a lot of features in this article. Why not adventure in the original source code to discover how these advanced features are implemented. For example:
 
 * Reveal.js supports the navigation between slides using also *buttons* and *gesture movements*. As the code is modular, adding these controls is very easy. Note: The link:https://github.com/julien-sobczak/reveal-from-scratch[complete code source of this article] supports the mouse.
 * The integrality of every slide content is displayed immediately with our implementation. Using *fragments*, Reveal.js supports the display of a slide content step by step. How does it work?
