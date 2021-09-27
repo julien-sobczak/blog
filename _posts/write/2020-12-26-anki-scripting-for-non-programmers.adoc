@@ -80,11 +80,11 @@ But first, we need to create a safe environment. Writing code means writing bugs
 
 Great. The directory `~/AnkiTest/` is now a valid Anki directory.
 
-The next step is to install the Python package `anki`:
+The next step is to install the Python package `aqt` (which installs automatically the core package `anki`):
 
 [source,shell]
 ----
-$ pip3 install anki
+$ pip3 install aqt
 ----
 
 [NOTE]
@@ -217,9 +217,11 @@ That's all for the programming stuff. The next section applies the same logic an
 
 === Hiding the Anki Python Library behind a CLI
 
-The Anki library code is published as a Python package, a way for developers to share and reuse code. When we run the command `pip3 install anki` in the previous section, we use the de factor standard tool in Python to install a package locally. This means we can now create a Python program that reuses the Anki code as we did in the previous section.
+The Anki library code is published as a Python package, a way for developers to share and reuse code. When we run the command `pip3 install` in the previous section, we use the de facto standard tool in Python to install a package locally. This means we can now create a Python program reusing the Anki code as we did in the previous section.
 
 To avoid writing the same code every time, I published another package that I named link:https://pypi.org/project/anki-cli-unofficial/[`anki-cli-unofficial`]. A package can use other packages, which is called dependencies in programming jargon and is probably the biggest challenge for any developers. My package depends logically on the package `anki` and instead of storing the content of the flashcards directly in the code, the script asks for an input file. Let's try it!
+
+NOTE: link:https://ankiweb.net/shared/info/2055492159[AnkiConnect] is another project you may find interesting. AnkiConnect is an community add-on that exposes the internal Python API through a simple HTTP API. The motivation is similar by allowing users to script their flashcard creation. This approach is probably less fragile compared to what I will explain in this section, even if using the Python API directly can be more powerful in some cases.
 
 To install the pip package:
 
