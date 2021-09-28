@@ -21,7 +21,7 @@ BufferedReader br = new BufferedReader(new InputStreamReader(
 #!/usr/bin/python env
 # -*- coding: utf-16 -*-
 ----
-This magic comment must be the first or second line. As the interpreter ignores the encoding when reading the file, all characters until the encoding must only be ASCII characters. This technique was already used by browsers to determine the encoding of a web page. Initially, web servers were expected to return the HTTP header `Content-Type` (ex: `text/plain; charset="UTF-8"`) so that the browser knows the encoding before reading the HTML file but in practice, a web server can serve different files written by different persons in different languages, and thus would also need to know the encoding... The common solution was instead to include the charset directly in the document as the first meta under the `<head>` section:
+This magic comment must be the first or second line. As the interpreter ignores the encoding when reading the file, all characters until the encoding must only be ASCII characters. This technique was already used by browsers to determine the encoding of a web page. Initially, web servers were expected to return the HTTP header `Content-Type` (ex: `text/plain; charset="UTF-8"`) so that the browser knows the encoding before reading the HTML file, but in practice, a web server can serve different files written by different persons in different languages, and thus would also need to know the encoding... The common solution was instead to include the charset directly in the document as the first meta under the `<head>` section:
 +
 [source,html]
 ----
@@ -30,7 +30,7 @@ This magic comment must be the first or second line. As the interpreter ignores 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 ...
 ----
-* *Force a specific encoding.* (ex: Go). Go source code can only be written in UTF-8 files. Period.
+* *Force a specific encoding.* (ex: Go). Go source code can only be written in UTF-8 files.
 +
 [source,shell]
 ----
@@ -51,10 +51,10 @@ go: reading hello_UTF-16.go: unexpected NUL in input
 [NOTE]
 .The Byte Order Mark (BOM)
 ====
-In practice, if a program only works with Unicode encodings (which is the goal of Unicode after all), it can also check the _byte order mark_ (BOM), a magic number representing the Unicode character, `U+FEFF BYTE ORDER MARK`. Depending on the starting byte sequence (`0xEF,0xBB,0xBF` for UTF-8, `0xFE 0xFF` for UTF-16 in big endian, `0xFF 0xFE` for UTF-16 in little endian, link:https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding[etc.]), the parser can detect the encoding (and the endianness). But the BOM is optional and is often missing in UTF-8 text because the BOM character is not a valid ASCII character and that would break the ASCII backward-compatiblity supported by UTF-8.
+In practice, if a program only works with Unicode encodings (which is the goal of Unicode, after all), it can also check the _byte order mark_ (BOM), a magic number representing the Unicode character, `U+FEFF BYTE ORDER MARK`. Depending on the starting byte sequence (`0xEF,0xBB,0xBF` for UTF-8, `0xFE 0xFF` for UTF-16 in big endian, `0xFF 0xFE` for UTF-16 in little endian, link:https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding[etc.]), the parser can detect the encoding (and the endianness). But the BOM is optional and is often missing in UTF-8 text because the BOM character is not a valid ASCII character, and that would break the ASCII backward compatibility supported by UTF-8.
 ====
 
-Once the encoding is known, the next step is to decode the text. We have already covered the Unicode encoding algorithms in the second part. The decoding algorithms are very similar and the code is ommited. What is more interesting is the question of how to represent Unicode text in memory. The most basic string representation for a programming language is to store a sequence of Unicode code points:
+Once the encoding is known, the next step is to decode the text. We have already covered the Unicode encoding algorithms in the second part. The decoding algorithms are very similar and the code is omitted. What is more interesting is the question of how to represent Unicode text in memory. The most basic string representation for a programming language is to store a sequence of Unicode code points:
 
 [source,python]
 ----
@@ -76,9 +76,9 @@ print(len(s)) # 4
 print(s[0] == ord("h")) # True
 ----
 
-In theory, this representation makes sense. A Unicode string is a sequence of code points. Encoding and decoding should only be performed when reading text or sending text to another program.
+In theory, this representation makes sense. A Unicode string is a sequence of code points. Encoding and decoding should only be performed when reading or sending a text to another program.
 
-In practice, most Unicode characters lands in the first plane (BMP) requiring only two bytes, and a lot of strings are only composed of ASCII characters requiring only one byte. This explains why most programming languages chose to represent strings differently. Unicode support is great but comes with a performance cost that implementations must limit.
+In practice, most Unicode characters land in the first plane (BMP), requiring only two bytes, and a lot of strings are composed of ASCII characters, requiring only one byte. It explains why most programming languages choose to represent strings differently. Unicode support is great but comes with a performance cost that implementations must limit.
 
 For example, create a file `hello_UTF-8.py`:
 
@@ -141,7 +141,7 @@ We better understand why UTF-8 is preferred for writing code. The same motivatio
 
 ==== Example: Java
 
-Before Java 9, link:https://github.com/openjdk/jdk/blob/jdk8-b120/jdk/src/share/classes/java/lang/String.java[`String`] were simply represented internally as an array of char:
+Before Java 9, link:https://github.com/openjdk/jdk/blob/jdk8-b120/jdk/src/share/classes/java/lang/String.java[`String`] were represented internally as an array of char:
 
 [source,java]
 .java/lang/String.java
@@ -169,9 +169,9 @@ public final class String
     ...
 }
 ----
-<1> The Javadoc specifies that the `char` data type is based on the original 16-bits Unicode specification. Only characters in the BMP can be stored in a `char` and characters in other planes must used surrogate codes. In short, the `String` data type is a Unicode text encoded in UTF-16.
+<1> The Javadoc specifies that the `char` data type is based on the original 16-bits Unicode specification. Only characters in the BMP can be stored in a `char` and characters in other planes must use surrogate codes. In short, the `String` data type is a Unicode text encoded in UTF-16.
 <2> The class `StringCoding` uses the charset to determine the decoding algorithm to convert the bytes into UTF-16.
-<3> The method `charAt` simply retrieves a single character from its index.
+<3> The method `charAt` retrieves a single character from its index.
 
 Since, Java adopted link:https://openjdk.java.net/jeps/254[compacts strings]. A string is now represented in UTF-16 only if it contains at least one non-ASCII character. Otherwise, Java fallbacks to a basic implementation storing each character in a single byte.
 
@@ -221,11 +221,11 @@ public final class String
 }
 ----
 <1> The Java `byte` type has a minimum value of -128 and a maximum value of 127 (inclusive). Depending on the content of the string, the bytes will be ASCII codes or UTF-16 bytes.
-<2> The field `coder` is used by most methods in `String` to detect if the compact string optimization is used. This optimization is implemented by the new class `StringLatin1`. The former `String` implementation have been moved to `StringUTF16`.
+<2> The field `coder` is used by most methods in `String` to detect if the compact string optimization is used. This optimization is implemented by the new class `StringLatin1`. The former `String` implementation had been moved to `StringUTF16`.
 <3> The class `StringCoding` now returns the value as bytes and the coder determined by searching for a non-ASCII character.
-<4> The method `charAt` now delegates to concrete String implementations. `StringLatin1` continues to return the character at the specified index. `StringUTF16` needs to read two elements in `value` to read the two bytes representing an UTF-16 character.
+<4> The method `charAt` now delegates to concrete String implementations. `StringLatin1` continues to return the character at the specified index. `StringUTF16` needs to read two elements in `value` to read the two bytes representing a UTF-16 character.
 
-The motivation for compact strings is to reduce the memory footprint when working with ASCII characters only. This can be confirmed easily using a minimalist benchmark:
+The motivation for compact strings is to reduce the memory footprint when working with ASCII characters only. It can be confirmed easily using a minimalist benchmark:
 
 [source,java]
 ----
@@ -289,7 +289,7 @@ $ java BenchmarkString
 (UTF-16) Memory usage: 185MB
 ----
 
-If we look more closely to the UTF-16 case, we notice that the internal representation is not without consequence. Consider the following program:
+If we look more closely at the UTF-16 case, we notice that the internal representation is not without consequence. Consider the following program:
 
 [source,java]
 ----
@@ -301,9 +301,9 @@ public class RepresentationUTF16 {
 }
 ----
 
-Why does rotating the hand change the result? As discussed in the second part, UTF-16 is a variable length character encoding. This means characters in the BMP are encoded using two bytes whereas complementary characters are encoded using a surrogate pair (i.e., the equivalent of two codepoints). The two emojis looks similarly but are not stored in the same Unicode plane. ✋ `RAISED HAND` is assigned the codepoint U+270B (Plane 0) and 🤚 `RAISED BACK OF HAND` is assigned the codepoint U+1F91A (Plane 1).
+Why does rotating the hand change the result? As discussed in the second part, UTF-16 is a variable-length character encoding. It means characters in the BMP are encoded using two bytes, whereas complementary characters are encoded using a surrogate pair (i.e., the equivalent of two codepoints). The two emojis look alike but are not stored in the same Unicode plane. ✋ `RAISED HAND` is assigned the codepoint U+270B (Plane 0) and 🤚 `RAISED BACK OF HAND` is assigned the codepoint U+1F91A (Plane 1).
 
-Using UTF-16 for the internal representation saves bytes compared to using UTF-32 but the abstraction is leaky as the developer is not working with a sequence of Unicode code points:
+Using UTF-16 for the internal representation saves bytes compared to using UTF-32, but the abstraction is leaky as the developer is not working with a sequence of Unicode code points:
 
 [source,java]
 ----
@@ -328,7 +328,7 @@ String s2 = new String("\uD83E\uDD1A\u0048\u0065\u0079".getBytes("UTF-16"), "UTF
 "🤚Hey".equals(s2) // true
 ----
 
-We will continue the discussion of `String` in the next section when we will consider their manipulation.
+We will continue the discussion of `String` in the next section when presenting their manipulation.
 
 
 ==== Example: Go
@@ -339,7 +339,7 @@ For example:
 
 [source,go]
 ----
-s := "Hey 🤚!" // String literal stored in an UTF-8 file
+s := "Hey 🤚!" // String literal stored in a UTF-8 file
 
 fmt.Printf("len=%d\n", len(s))
 // Print characters
@@ -358,7 +358,7 @@ for i := 0; i < len(s); i++ {
 // 72 101 121 32 240 159 164 154 33
 ----
 
-Iterating over strings using this syntax does not work so well. We get bytes, not characters. We observe that these bytes corresponds to the UTF-8 encoding and we also notice that the `len` function returns the number of bytes in this encoding. This representation is not practical if we are interested by the Unicode code points.
+Iterating over strings using this syntax does not work so well. We get bytes, not characters. We observe that these bytes correspond to the UTF-8 encoding, and we also notice that the `len` function returns the number of bytes in this encoding. This representation is not practical if we are interested by the Unicode code points.
 
 To solve this, Go introduces the data type `rune` (a synonym of code point that is defined as a `int32`). If we convert the string to a slice of `rune`, we get a different result:
 
@@ -410,7 +410,7 @@ Like Java, we can note that the Go internal string representation is not transpa
 
 ==== Example: Python
 
-Python supports, since the version 3.3, link:https://www.python.org/dev/peps/pep-0393/[multiple internal representations], depending on the character with the largest Unicode code point (1, 2, or 4 bytes). This saves space in most cases, but give access to the full "UTF-32" if needed.
+Python supports, since the version 3.3, link:https://www.python.org/dev/peps/pep-0393/[multiple internal representations], depending on the character with the largest Unicode code point (1, 2, or 4 bytes). The implementation saves space in most cases and gives access to the whole "UTF-32" if needed.
 
 [source,python]
 ----
@@ -427,4 +427,4 @@ for c in "Hey 🤚!":
     # ! 0x21
 ----
 
-The idea behind the Python implementation is similar to the Java implementation and we will omit the code consequently. However, we observe that the internal implementation is transparent for the developer. Strings are sequences of Unicode code points and the length is not affected by the encoding used internally.
+The idea behind the Python implementation is similar to the Java implementation, and we will omit the code consequently. However, we observe that the internal implementation is transparent for the Python developer. Strings are sequences of Unicode code points where the length is not affected by the encoding used internally.

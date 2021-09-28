@@ -105,11 +105,11 @@ ZapfDingbats.ttf
 ヒラギノ角ゴシック W9.ttc
 ----
 
-Fonts comes in different formats, like the OpenType format (`.otf`, `.otc`, `.ttf`, `.ttc`). A font is basically a collection of tables of glyphs. Here is a preview of the font `NotoSansArmenian.ttf`:
+Fonts comes in different formats, like the OpenType format (`.otf`, `.otc`, `.ttf`, `.ttc`). A font is a collection of tables of glyphs. Here is a preview of the font `NotoSansArmenian.ttf`:
 
-image::NotoSansArmenian.png[title="Examples of glypths present in the font _Noto Sans Armenian_ using FontGoggles."]
+image::NotoSansArmenian.png[title="Examples of glyphs present in the font _Noto Sans Armenian_ using FontGoggles."]
 
-Most fonts (if not all) do not contains glyphs for every Unicode characters.footnote:[Rob Pike and Ken Thompson discuss the benefits of using many little fonts compared to one big font during link:https://archive.org/details/hello-world-plan9[the implementation of the Plan 9 operating system]. It breaks the huge Unicode codespace into manageable components promoting sharing. For example, you can have only one font with the set of Japanese characters but dozens of fonts for Latin characters.] For example, trying to display "Hello" using the same font found no glyphs and shows empty squares ☐:
+Most fonts (if not all) do not contain glyphs for every Unicode character.footnote:[Rob Pike and Ken Thompson discuss the benefits of using many little fonts compared to one big font during link:https://archive.org/details/hello-world-plan9[the implementation of the Plan 9 operating system]. It breaks the huge Unicode codespace into manageable components promoting sharing. For example, you can have only one font with the set of Japanese characters but dozens of fonts for Latin characters.] For example, trying to display "Hello" using the same font found no glyphs and shows empty squares ☐:
 
 image::NotoSansArmenian-hello.png[title="The same font found no glyphs to display ASCII characters."]
 
@@ -119,7 +119,7 @@ To illustrate this point, I created a basic HTML page printing a sample of chara
 
 image::UnicodeScripts.png[title="HTML page using characters from all Unicode scripts rendered in Chrome."]
 
-Using Chrome DevTools, we can easily find out which font were used to render characters on screen:
+Using Chrome DevTools, we can easily find out which fonts were used to render characters on screen:
 
 image::UnicodeScripts-DevTools.png[title="Demo HTML page displayed in Chrome using characters from all Unicode scripts."]
 
@@ -145,9 +145,9 @@ image::UnicodeScripts-Greek-Oi.png[title="The Chrome rendering engine favors the
 
 *The challenge to render Unicode text is thus to convert a sequence of Unicode characters into a sequence of glyphs, using a list of available fonts*. This process is called _text shaping_.
 
-The logic is not simple. There is not always a 1-1 mapping between characters and glyphs. Unicode contains for example, combining characters, emojis characters, and some emojis like flags are made by combining 2 abstract characters (ex: the US flag 🇺🇸 is represented by the two characters `REGIONAL INDICATOR SYMBOL LETTER U` 🇺 + `REGIONAL INDICATOR SYMBOL LETTER S` 🇸). Implementing these rules is the job of the shaping engine.
+The logic is not simple. There is not always a 1-1 mapping between characters and glyphs. Unicode contains, for example, combining characters, emojis characters, and some emojis like flags are made by combining two abstract characters (ex: the US flag 🇺🇸 is represented by the two characters `REGIONAL INDICATOR SYMBOL LETTER U` + `REGIONAL INDICATOR SYMBOL LETTER S`). Implementing these rules is the job of the shaping engine.
 
-Not all programs have to implement this logic from scratch. The library link:https://www.freetype.org/[FreeType] is used by major systems (GNU/Linux, iOS, Android, Firefox, Ghostscript, etc.). This represents billion of devices!
+Not all programs have to implement this logic from scratch. The library link:https://www.freetype.org/[FreeType] is used by major systems (GNU/Linux, iOS, Android, Firefox, Ghostscript, etc.). This represents billions of devices!
 
 Under the hood, this library depends on the shaping engine link:https://github.com/harfbuzz/harfbuzz[HarfBuzz], which does a lot of the hard work. Both programs are written in C and are low-level code. Here is a simple program using FreeType to render a sequence of Unicode characters (the original code appears in this link:https://gist.github.com/jokertarot/7583938[StackOverflow thread]):
 
@@ -188,7 +188,7 @@ The emoji is correctly rendered:
 
 image::freetype-pistol-Noto.png[]
 
-This pistol has not always beeing a toy. If I rerun the same command using link:https://github.com/googlefonts/noto-emoji/blob/v2017-09-13-design-refresh/fonts/NotoColorEmoji.ttf[a previous version of the font]:
+This pistol has not always being a toy. If I rerun the same command using link:https://github.com/googlefonts/noto-emoji/blob/v2017-09-13-design-refresh/fonts/NotoColorEmoji.ttf[a previous version of the font]:
 
 [source,shell]
 ----
@@ -202,7 +202,7 @@ The pistol is now a weapon:
 
 image::freetype-pistol-Noto-v2017.png[]
 
-The explanation dates back to 2016, when link:https://money.cnn.com/2016/08/01/technology/apple-pistol-emoji/index.html[Apple announced that in iOS 10, the pistol emoji (U+1F52B 🔫 ) would be changed from a real revolver to a water pistol]. At the same time, Microsoft decided the pistol emoji would be changed from a toy ray-gun to a real revolver to be more in line with industry-standard designs... Finally, in 2018, most platforms such as Google, Microsoft, Samsung, Facebook, and Twitter had transitioned their rendering of the pistol emoji to match Apple's water gun implementation, which means that during two years, the pistol could be understood as a joke or as a threat, depending if the sender was running on Android or iOS. This is not the only example of link:https://en.wikipedia.org/wiki/Emoji#Controversial_emoji[controversial emojis].
+The explanation dates back to 2016, when link:https://money.cnn.com/2016/08/01/technology/apple-pistol-emoji/index.html[Apple announced that in iOS 10, the pistol emoji (U+1F52B 🔫 ) would be changed from a real revolver to a water pistol]. At the same time, Microsoft decided the pistol emoji would be changed from a toy ray-gun to a real revolver to be more in line with industry-standard designs... Finally, in 2018, most platforms such as Google, Microsoft, Samsung, Facebook, and Twitter had transitioned their rendering of the pistol emoji to match Apple's water gun implementation, which means that during two years, the pistol could be understood as a joke or as a threat, depending on if the sender was running on Android or iOS. This is not the only example of link:https://en.wikipedia.org/wiki/Emoji#Controversial_emoji[controversial emojis].
 
 Let's now try a font that does not support emojis:
 
@@ -240,11 +240,11 @@ If you are curious about this text rendering process, you can inspect the link:h
 
 ==== Example: Slack Emojis
 
-Slack and emojis are inseparable. Emojis makes long messages less boring and are indispensable to communicate about your mood, so that others can interpret your messages correctly. Slack even support custom emojis. How does Slack support so many different emojis? It's simple. They are not Unicode emojis.
+Slack and emojis are inseparable. Emojis make long messages less boring and are indispensable to communicate your mood so that others can interpret your messages correctly. Slack even support custom emojis. How does Slack support so many different emojis? It's simple. They are not Unicode emojis.
 
-Indeed, Unicode is an evolving standard but Slack cannot wait for Unicode to approve your custom emoji during the next quarter meeting. Slack cannot neither use the private-use range of characters as it would mean regenerating new font files with your emojis and making sure your recipient receives the new font too. So, Slack is using images, even for standard Unicode characters when using the Slack web client (ex: the image image:./slack-pistol-emoji.png[link="https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f52b@2x.png", height=18px] represents the `PISTOL EMOJI` 🔫 U+1F52B).
+Indeed, Unicode is an evolving standard. Slack cannot wait for Unicode to approve your custom emoji during the next meeting. Slack cannot either use the private-use range of characters as it would mean regenerating new font files with your emojis and making sure your recipient receives the new font too. So, Slack is using images, even for standard Unicode characters when using the Slack web client (ex: the image image:./slack-pistol-emoji.png[link="https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f52b@2x.png", height=18px] represents the `PISTOL EMOJI` 🔫 U+1F52B).
 
-*Using images instead of Unicode characters is not problematic when the same application is used on both sides*. When you are sending a message on Slack Desktop, you know that your recipient will check it using one of the clients supported by Slack. Therefore, it is easy for Slack to make sure that the images for the emojis are available everywhere. The problem occurs when you try to copy/paste some text from Slack to a different application. In this case, what Slack is doing is replacing these images by textual representation like `:slightly_smiling_face:`:
+*Using images instead of Unicode characters is not problematic when the same application is used on both sides*. When you are sending a message on Slack Desktop, you know that your recipient will check it using one of the clients supported by Slack. Therefore, it is easy for Slack to make sure that the images for the emojis are available everywhere. The problem occurs when you try to copy/paste some text from Slack to a different application. In this case, what Slack is doing is replacing these images with textual representation like `:slightly_smiling_face:`:
 
 image::slack-message.png[width=300]
 
@@ -258,7 +258,7 @@ What’s up? :slightly_smiling_face:
 
 ==== Example: Gmail
 
-Gmail is using the same approach as Slack. As a web application, Gmail cannot be totally sure of the fonts available on every device and therefore, Gmail relies on images too so that the recipient is sure to see the email like the sender viewed it.
+Gmail is using the same approach as Slack. As a web application, Gmail cannot be sure of the fonts available on every device, and therefore, Gmail relies on images too so that the recipient can see the email as the sender viewed it.
 
 image::gmail-message.png[]
 
@@ -298,7 +298,7 @@ The HTLM source:
 
 ==== Example: YAT
 
-YAT allows you to generate a unique chain of emoji characters to be used as your universal identifier on the Internet. Interopability is thus important. Your YAT name will be used on many other sites and YAT is restricted by the emojis defined by Unicode.
+YAT allows you to generate a unique chain of emoji characters to be used as your universal identifier on the Internet. Interoperability is thus important. Your YAT name will be used on many other sites, and YAT is restricted by the emojis defined by Unicode.
 
 After creating your YAT account, YAT offers you a unique YAT URL to redirect to your profile using your emoji chain in the path:
 
@@ -312,11 +312,11 @@ When pressing the Enter key, the URL becomes:
 
 https://y.at/%F0%9F%93%96%F0%9F%92%BB%E2%9C%8D%EF%B8%8F%E2%9D%A4%EF%B8%8F
 
-The fact is an URI must be composed from a limited set of ASCII characters consisting of digits, letters, and a few graphic symbols—some unreserved (`-`, `.`, `_`, `~`), some reserved (`:`, `/`, `?`, `#`, ...) as used as delimiters. Emojis are not directly supported. For these characters, the link:https://datatracker.ietf.org/doc/html/rfc3986[URI RFC] defines a percent-encoding mechanism.
+The fact is a URI must be composed of a limited set of ASCII characters consisting of digits, letters, and a few graphic symbols—some unreserved (`-`, `.`, `_`, `~`), some reserved (`:`, `/`, `?`, `#`, ...) as used as delimiters. Emojis are not directly supported. For these characters, the link:https://datatracker.ietf.org/doc/html/rfc3986[URI RFC] defines a percent-encoding mechanism.
 
 A percent-encoded octet is encoded as a character triplet, consisting of the percent character `%` followed by the two hexadecimal digits representing that octet's numeric value. For example, `%20` is the percent-encoding for the binary octet `00100000`. And `%F0%9F%93%96` is the encoding for the binary `11110000 10011111 10010011 10010110`, which is the UTF-8 representation (`F0 9F 95 AE`) for the book emoji U+1F56E.
 
-If you navigate on the YAT website, you will also see a ton of beautiful emojis displayed in large definition. These emojis are not Unicode emojis, but hand-crafted illustrations in PNG format that you can also link:https://emojis.y.at/our-emojis#download[browse online].
+If you navigate on the YAT website, you will also see a ton of beautiful emojis displayed in large definition. These emojis are not Unicode emojis but hand-crafted illustrations in PNG format that you can also link:https://emojis.y.at/our-emojis#download[browse online].
 
 image::YAT-Exploding_head.png[title="Shocked Face With Exploding Head Emoji U+1F92F rendered using the YAT artwork", width=350]
 image::Unicode-Exploding_head.png[title="Shocked Face With Exploding Head Emoji U+1F92F rendered using the HTML character", width=300]
@@ -325,4 +325,4 @@ The Unicode character does not look good when displayed as a large text. The rea
 
 image::Unicode-Exploding_head-SVG.png[title="Shocked Face With Exploding Head Emoji U+1F92F rendered using an OpenType-SVG font", width=300]]
 
-The output is still not ideal (colors are missing) but we observe that the browser enlarges the glyph like any vector illustration.
+The output is still not ideal (colors are missing), but we observe that the browser enlarges the glyph like any vector illustration.

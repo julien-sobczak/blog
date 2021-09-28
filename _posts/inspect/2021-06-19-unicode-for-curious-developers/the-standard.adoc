@@ -2,38 +2,38 @@
 [[sect-standard]]
 == The Standard
 
-Unicode can be used informally to refer to the _Unicode Standard_, the encoding standard for characters, and the _Unicode Consortium_, the organization that created the Unicode Standard. We have already talked about the consortium in the previous part. We will now have a look at the Unicode Standard and the next part will focus on its implementation in modern systems.
+Unicode can be used informally to refer to the _Unicode Standard_, the encoding standard for characters, and the _Unicode Consortium_, the organization that created the Unicode Standard. We have already talked about the consortium in the last part. We will now look at the Unicode Standard, and the next part will focus on its implementation in modern systems.
 
 
 [[sect-standard-standard]]
 === The Unicode Standard
 
-The Unicode Standard is the reference document and is link:http://www.unicode.org/versions/latest/[freely accessible online] (the link:https://www.amazon.com/Unicode-Standard-Version-5-0-5th/dp/0321480910/[last edition published as a book] dates back to 2006 and recent editions are available as Print-on-Demand (POD) for purchase on link:https://www.lulu.com/en/us/shop/unicode-consortium/the-unicode-standard-version-130-volume-1/paperback/product-qkgep6.html[lulu.com]). The link:https://www.unicode.org/versions/Unicode13.0.0/UnicodeStandard-13.0.pdf[current PDF version] contains more than 1000 pages, but only the first 300 pages really define Unicode and are a must-read if you want to go deeper on the subject. The remaining pages examine all supported scripts one by one.
+The Unicode Standard is the reference document and is link:http://www.unicode.org/versions/latest/[freely accessible online] (the link:https://www.amazon.com/Unicode-Standard-Version-5-0-5th/dp/0321480910/[last edition published as a book] dates back to 2006, and recent editions are available as Print-on-Demand (POD) for purchase on link:https://www.lulu.com/en/us/shop/unicode-consortium/the-unicode-standard-version-130-volume-1/paperback/product-qkgep6.html[lulu.com]). The link:https://www.unicode.org/versions/Unicode13.0.0/UnicodeStandard-13.0.pdf[current PDF version] contains more than 1000 pages, but only the first 300 pages define Unicode and are a must-read if you want to go deeper on the subject. The remaining pages examine all supported scripts one by one.
 
 The main contribution of the Unicode Standard is the _Unicode Character Table_. *Unicode specifies a numeric value (code point) and a name for every defined
 character*. In this respect, it is similar to other character encoding standards from ASCII
-onward. But the Unicode Standard is far more than a simple encoding of characters. *Unicode also associates a rich set of semantics with each encoded character*—properties like case, directionality that are required for interoperability and correct behavior in implementations. These semantics are cataloged in the _Unicode Character Database_, a collection of data files that we will discuss at length in the last part.
+onward. But the Unicode Standard is far more than a simple encoding of characters. *Unicode also associates a rich set of semantics with each encoded character*—properties like case and directionality required for interoperability and correct behavior in implementations. These semantics are cataloged in the _Unicode Character Database_, a collection of data files discussed at length in the last part.
 
 *The Unicode Character Table has an overall capacity for more than 1 million characters*, which is more than sufficient for all the world's languages, but also for currency symbols, punctuation marks, mathematical symbols, technical symbols, geometric shapes, dingbats, and emojis. The Unicode Standard does not encode personal characters like logos but reserves 6,400 code points for private use in the Basic Multilingual Plane (BMP), the first 65,536 code points, and more than 100,000 private code points overall.
 
-*A _character_ is an abstract entity*, such as “latin capital letter a” or “bengali digit five”, defined by a unique code point, such as U+0041 or U+09EB. These code points are integers represented in base 16 ranging from 0 to 10FFFF (called the _codespace_). The representation of a character on screen, called a _glyph_, depends on the software implementation, based on the fonts available on your device. The Unicode Standard does not specify the precise shape, size, or orientation of on-screen characters. *Unicode characters are code points, not glyphs*. Unicode declares that U+0041 is A, U+03B1 is α, etc. Simple?
+*A _character_ is an abstract entity*, such as “latin capital letter a” or “bengali digit five,” defined by a unique code point, such as U+0041 or U+09EB. These code points are integers represented in base 16, ranging from 0 to 10FFFF (called the _codespace_). The representation of a character on screen, called a _glyph_, depends on the software implementation, based on the fonts available on your device. The Unicode Standard does not specify the precise shape, size, or orientation of on-screen characters. *Unicode characters are code points, not glyphs*. Unicode declares that U+0041 is A, U+03B1 is α, etc. Simple?
 
 BUT.
 
-* Unicode includes _compatibility characters_, which are characters that would not be included if they were not present in other standards.footnote:[Unicode includes link:https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=IWS-Chapter04b[more than 10,000 characters that compromise the design principles behind the Standard], like unification or dynamic composition.] The idea is to make it easy to have a one-to-one mapping between the Unicode Standard and other standards. For example, U+2163 “IV” is the roman numeral four even if we could have used two existing characters to represent it.
+* Unicode includes _compatibility characters_, which would not be included if they were not present in other standards.footnote:[Unicode includes link:https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=IWS-Chapter04b[more than 10,000 characters that compromise the design principles behind the Standard], like unification or dynamic composition.] The idea is to make it easy to have a one-to-one mapping between the Unicode Standard and other standards. For example, U+2163 “IV” is the roman numeral four even if we could have used two existing characters to represent it.
 * Unicode includes _combining characters_, which are characters to be positioned relative to the previous base characters. Accents are implemented using combining characters, so U+0065 e + U+0302  ̂ → ê, and symbols can be composed using the same mechanism, so:
 +
 image::unicode-standard-figure-2-17.png[title="Combining Enclosing Marks for Symbols (From Unicode Standard, Figure 2.17)", width=300]
 +
-Unicode does not restrict the number of combining characters that may follow a base character but implementations are not obliged to support all of them.
+Unicode does not restrict the number of combining characters that may follow a base character, but implementations are not obliged to support all of them.
 +
 image::unicode-standard-figure-2-21.png[title="Stacking Sequences (From Unicode Standard, Figure 2.21)", width=500]
 * Unicode recognizes _equivalent sequences_, which are two sequences using different Unicode codes to represent the same character.
 +
 image::unicode-standard-figure-2-23.png[title="Equivalent Sequences (From Unicode Standard, Figure 2.23)", width=400]
-* Unicode includes _special characters_. For example, UTF-16 and UTF-32 are sensible to the endianness of the hardware and often includes a Byte Order Mark (BOM), which is composed of two code points—U+FEFF `zero width no-break space` and U+FFFE (a special character). Implementations can detect which byte ordering is used in a file based on the order of these two code points. Another common example is the U+FFFD `replacement character` � used to represent “unknown” characters.
+* Unicode includes _special characters_. For example, UTF-16 and UTF-32 are sensible to the endianness of the hardware and often include a Byte Order Mark (BOM), which is composed of two code points—U+FEFF `zero width no-break space` and U+FFFE (a special character). Implementations can detect which byte ordering is used in a file based on the order of these two code points. Another common example is the U+FFFD `replacement character` � used to represent “unknown” characters.
 
-We will talk more about these particularities when we will cover the implementation.
+We will talk more about these particularities when covering the implementation.
 
 
 
@@ -41,22 +41,22 @@ We will talk more about these particularities when we will cover the implementat
 === The Unicode Character Table
 
 
-The link:https://unicode.org/charts/[Unicode Character Table] has room for more than one million characters. That's a lot! Their position in this table means nothing.  (There are small differences like the number of bytes to represent them in the various encodings but from a logical perspective, all characters behave similarly.) In theory, the code point of a character just have to be unique, but in practice, its assignment follows some "conventions." Marie Kondo would probably appreciate the effort to organize cleanly the characters.
+The link:https://unicode.org/charts/[Unicode Character Table] has room for more than one million characters. That's a lot! Their position in this table means nothing.  (There are small differences like the number of bytes to represent them in the various encodings but from a logical perspective, all characters behave similarly.) In theory, the code point of a character only needs to be unique, but in practice, its assignment follows some "conventions." Marie Kondo would probably appreciate the effort to organize the characters.
 
 *The codespace is divided up into 17 _planes_ of characters*—each plane consisting of 64K code points. Not all planes are currently in use.
 
-* Plane 0: the _Basic Multilingual Plane_ (BMP) is the main descendant of the first version of Unicode (with the 16-bits limitation) and the majority of frequent characters can be found here.
-* Plane 1: the _Supplementary Multilingual Plane_ (SMP) is the extension of the BPM for scripts or symbols with very infrequent usage. Emojis are mostly present in Plane 1 but as always, exceptions exist 😉.
+* Plane 0: the _Basic Multilingual Plane_ (BMP) is the main descendant of the first version of Unicode (with the 16-bits limitation), and the majority of frequent characters can be found here.
+* Plane 1: the _Supplementary Multilingual Plane_ (SMP) is the extension of the BPM for scripts or symbols with very infrequent usage. Most emojis are present in Plane 1, but as always, exceptions exist 😉.
 * Plane 2: the _Supplementary Ideographic Plane_ (SIP) is similar to Plane 1 but for rare  CJK characters. (CJK is a collective term for the Chinese, Japanese, and Korean languages.)
 * Planes 3..13 are ... empty.
 * Plane 14: the _Supplementary Special-purpose Plane_ (SSP) is the spillover allocation area for format control characters that do not fit into the small allocation areas for format control characters in the BMP.
-* Planes 15..16: the _Private Use Planes_. These code points can be freely used for any purpose, but their use requires that sender and receiver agree on their interpretation.
+* Planes 15..16: the _Private Use Planes_. These code points can be freely used for any purpose, but their use requires that the sender and receiver agree on their interpretation.
 
 *Planes are further divided into subparts called _blocks_*. Character blocks generally contain characters from a single _script_, and in many cases, a script is fully represented in its block.
 
 image::unicode-allocation.png[title="Unicode allocation", width=750]
 
-These blocks and scripts are also used to organise the link:https://unicode.org/charts/[Unicode Code Charts] in the documentation so that you can quickly jump to the given script of your language. If you want the full listing instead, you can download link:https://www.unicode.org/Public/UCD/latest/charts/CodeCharts.pdf[the complete code charts in PDF] (2684 pages and 110 MB! 😅).
+These blocks and scripts are also used to organize the link:https://unicode.org/charts/[Unicode Code Charts] in the documentation so that you can quickly jump to the given script of your language. If you want the full listing instead, you can download link:https://www.unicode.org/Public/UCD/latest/charts/CodeCharts.pdf[the complete code charts in PDF] (2684 pages and 110 MB! 😅).
 
 image::unicode-code-charts.png[title="Unicode Character Code Charts", link=https://www.unicode.org/charts/#scripts]
 
@@ -65,10 +65,10 @@ image::unicode-code-charts.png[title="Unicode Character Code Charts", link=https
 [[sect-standard-character-database]]
 === The Unicode Character Database
 
-The link:https://www.unicode.org/reports/tr44[Unicode Character Database] (UCD) is a set of documentation and data files link:https://www.unicode.org/Public/UCD/latest/ucd/[accessible online]. These files contain more than 100 character properties including:
+The link:https://www.unicode.org/reports/tr44[Unicode Character Database] (UCD) is a set of documentation and data files link:https://www.unicode.org/Public/UCD/latest/ucd/[accessible online]. These files contain more than 100 character properties, including:
 
 * A name +
-  → Useful to refer to a character using a unique identifier instead of an hexadecimal value like using the name `tab` instead of U+0009.
+  → Useful to refer to a character using a unique identifier instead of a hexadecimal value, like using the name `tab` instead of U+0009.
 * The general category (basic partition into letters, numbers, symbols, punctuation, and so on). +
   → Useful to determine the primary use (letter, digit, punctuation, symbol) when implementing functions like `isDigit()`.
 * Some general characteristics (whitespace, dash, ideographic, alphabetic, noncharacter, deprecated, and so on) +
@@ -85,7 +85,7 @@ You can visualize these properties from many websites like link:https://unicode-
 
 image::unicode-table-character-A.png[]
 
-These websites are based on the files available in the UCD. We will present the main ones in this article. These files follow a few conventions: each line of data consists of fields separated by semicolons, the first field represents a code point or range expressed as hexadecimal numbers. The remaining fields are properties associated with that code point. A code point may be omitted in a data file if the default value for the property in question applies.
+These websites are based on the files available in the UCD. We will present the main ones in this article. These files follow a few conventions: each line consists of fields separated by semicolons, the first field represents a code point or range expressed as hexadecimal numbers. The remaining fields are properties associated with that code point. A code point may be omitted in a data file if the default value for the property in question applies.
 
 `UnicodeData.txt` is the main file:
 
@@ -144,16 +144,16 @@ image::unicode-standard-figure-2-11.png[title="Unicode Encoding Forms (From Unic
 [NOTE]
 .The Principle of Nonoverlapping
 ====
-Unidoce encodings differ from many prior encodings that also use varied-length bytes but where overlap was permitted. For example:
+Unicode encodings differ from many prior encodings that also use varied-length bytes but where overlap was permitted. For example:
 
 image::unicode-standard-figure-2-9.png[title="Overlap in Legacy Mixed-Width Encodings (From Unicode Standard, Figure 2.9)", width=500]
 
 To determine the character, these encodings depend on the first byte. If someone
-searches for the character “D”, for example, he might find it in the trail byte of the two-byte sequence Д. The program must look backward through text to find the correct matches, but the boundaries are not always easy to interpret with overlapping:
+searches for the character “D,” for example, he might find it in the trail byte of the two-byte sequence Д. The program must look backward through text to find the correct matches, but the boundaries are not always easy to interpret with overlapping:
 
 image::unicode-standard-figure-2-10.png[title="Boundaries and Interpretation (From Unicode Standard, Figure 2.10)", width=500]
 
-Therefore, each of the Unicode encoding forms is designed with the principle of nonoverlap in mind to make implementations more simple and more efficient.
+Therefore, each of the Unicode encoding forms is designed with the principle of nonoverlapping in mind to make implementations more simple and more efficient.
 ====
 
 
@@ -162,7 +162,7 @@ Therefore, each of the Unicode encoding forms is designed with the principle of 
 
 UTF-32 is the simplest Unicode encoding form. UTF-32 is a fixed-width character encoding form. *Each Unicode code point is represented directly by a single 32-bit code unit*. Because of this, UTF-32 has a one-to-one relationship between encoded character and code unit;
 
-Note that 32 bits have space for more than 4 millions of codes but UTF-32 restricts the representation of code points in the standard ranges 0..10FFFF (we need to cover UTF-16 first to explain this restriction).
+Note that 32 bits have space for more than four million codes, but UTF-32 restricts the representation of code points in the standard ranges 0..10FFFF (we need to cover UTF-16 first to explain this restriction).
 
 [source,go]
 ----
@@ -192,7 +192,7 @@ Decoding follows the inverse logic:
 . Extract the value to get the code point.
 . Repeat.
 
-*Preferred Usage*: UTF-32 may be preferred where memory or disk storage space are not limited, and when the simplicity of access to single code units is desired. For example, the first version of Python 3 represented strings as sequences of Unicode code points but Python 3.3 changed the implementation to optimize the memory usage.
+*Preferred Usage*: UTF-32 may be preferred where memory or disk storage space is not limited and when the simplicity of access to single code units is desired. For example, the first version of Python 3 represented strings as sequences of Unicode code points, but Python 3.3 changed the implementation to optimize the memory usage.
 
 
 [[sect-standard-encodings-utf16]]
@@ -200,18 +200,18 @@ Decoding follows the inverse logic:
 
 *UTF-16 is the historical descendant of the earliest form of Unicode where only 16-bits were used for code points*. The characters in the range U+0000..U+FFFF (the first 65,536 characters) are often called the Basic Multilingual Plane (BMP, or Plane 0), and are encoded as a single 16-bit code unit using the code point value like in UTF-32.
 
-The remaining characters are called _surrogates_ and are encoded as pairs of 16-bit code units whose values are completely disjunct from the code units used for the single code unit representations, thus maintaining non-overlap for all code point representations in UTF-16.
+The remaining characters are called _surrogates_ and are encoded as pairs of 16-bit code units whose values are disjunct from the code units used for the single code unit representations, thus maintaining non-overlap for all code point representations in UTF-16.
 
 [NOTE]
 .Understanding the maximum number of code points in Unicode
 ====
-Not breaking already encoded texts in UCS-2 (simply called Unicode at that time) was clearly the biggest challenge to extend the initial number of Unicode characters (2^16^ = 65536 characters).
+Not breaking already encoded texts in UCS-2 (known as Unicode at that time) was the biggest challenge to extend the initial number of Unicode characters (2^16^ = 65536 characters).
 
-The solution (now called UTF-16) is to rely on two unused ranges 0xD800..0xDBFF and 0xDC00–0xDFFF (each one representing 1024 code points). If we concatenate these two ranges, it means we are able to represent 1024 * 1024 = 1,048,576 new characters, in addition to the 63488 original code points (2^16^ - 2048, the number of unique code points that fits 2 bytes minus the ranges previously unused).
+The solution (now called UTF-16) is to rely on two unused ranges 0xD800..0xDBFF and 0xDC00–0xDFFF (each one representing 1024 code points). If we concatenate these two ranges, it means we can represent 1024 * 1024 = 1,048,576 new characters, in addition to the 63488 original code points (2^16^ - 2048, the number of unique code points that fits 2 bytes minus the ranges previously unused).
 
 image::unicode-codespace-size-limit.png[title="Unicode surrogate codes", width=600]
 
-So, in UTF-16, the representation for all initial characters does not change. But when we need to encode one of the new characters, we will not use their code points—they just cannot fit in a 16-byte word—but use instead what is called a surrogate pair, which is a pair of pointers to retrieve the code point. If we consider the binary representation of the two previously unused ranges:
+So, in UTF-16, the representation for all initial characters does not change. But when we need to encode one of the new characters, we will not use their code points--they just cannot fit in a 16-byte word--but use instead what is called a surrogate pair, which is a pair of pointers to retrieve the original code point. If we consider the binary representation of the two previously unused ranges:
 
 [source]
 ----
@@ -219,11 +219,11 @@ So, in UTF-16, the representation for all initial characters does not change. Bu
 0xDFFF = 0b1101111111111111 (110111 =  low surrogate prefix)
 ----
 
-Every new code point is represented in UTF-16 by two 16-bytes words—the high surrogate followed by the low surrogate—each one uses one of the two ranges. Note that six bits are reserved for the prefix of the ranges. Therefore, if a byte starts with `110110`, we know we have a high surrogate that is followed by a low surrogate starting with `110111`, and inversely. This means we have 20 representative bits to represent the new characters (2^20^ = 1,048,576).
+Every new code point is represented in UTF-16 by two 16-bytes words—the high surrogate followed by the low surrogate—each one uses one of the two ranges. Note that six bits are reserved for the prefix of the ranges. Therefore, if a byte starts with `110110`, we know we have a high surrogate that is followed by a low surrogate starting with `110111`, and inversely. It means we have 20 representative bits to represent the new characters (2^20^ = 1,048,576).
 
 image::surrogate-pair-decoding.png[title="Decoding surrogate pairs in UTF-16", width=600]
 
-Even if other encodings like UTF-32 and UTF-8 can represent more code points, the total number of valid Unicode code points is still constrained by UTF-16 for backward compatibility reasons. The exact number is link:https://www.johndcook.com/blog/2019/09/02/number-of-possible-unicode-characters[1,111,998 possible Unicode characters], a little less than our estimation due to 2 reserved characters at the end of each plane..
+Even if other encodings like UTF-32 and UTF-8 can represent more code points, the total number of valid Unicode code points is still constrained by UTF-16 for backward compatibility reasons. The exact number is link:https://www.johndcook.com/blog/2019/09/02/number-of-possible-unicode-characters[1,111,998 possible Unicode characters], a little less than our estimation due to 2 reserved characters at the end of each plane.
 ====
 
 
@@ -287,7 +287,7 @@ Decoding simply needs to test for surrogates:
 [[sect-standard-encodings-utf8]]
 ==== UTF-8
 
-UTF-8 is a variable-width like UTF-16, but offering compatibility with ASCII. That means Unicode code points U+0000..U+007F are converted to a single byte 0x00..0x7F in UTF-8 and are thus indistinguishable from ASCII itself. An ASCII document is thus a valid UTF-8 document (the reverse is rarely true).
+UTF-8 is a variable-width like UTF-16, but offering compatibility with ASCII. That means Unicode code points U+0000..U+007F are converted to a single byte 0x00..0x7F in UTF-8 and are thus indistinguishable from ASCII itself. An ASCII document is a valid UTF-8 document (the reverse is rarely true).
 
 |===
 | First code point | Last code point | Byte 1 | Byte 2 | Byte 3 | Byte 4
@@ -386,4 +386,4 @@ Decoding is easy to implement.
 
 *Preferred Usage*: UTF-8 is particularly compact when the text contains mainly ASCII characters, which is often the case for a large percent of the population, but UTF-8 is significantly larger for Asian writing systems compared to UTF-16 as these characters require three bytes in UTF-8.
 
-In practice, UTF-8 has become the default Unicode encoding of the Web even if all three encodings are totally valid.
+In practice, UTF-8 has become the default Unicode encoding of the Web even if all three encodings are perfectly valid.

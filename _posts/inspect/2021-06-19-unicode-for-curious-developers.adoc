@@ -7,7 +7,7 @@ date: '2021-06-19'
 category: inspect
 subject: Unicode
 excerpt: >
-  Unicode is what allows me to say hello in over 100 languages—እው ሰላም ነው (Amharic), 你好 (Chinese), γεια (Greek), שלום (Hebrew), नमस्ते (Hindi), こんにちは (Japanese), سلام (Persian), cześć (Polish), Привет (Russian), and Unicode is what allows you to understand the difference between "You are funny 🤣" and "You are funny 👎." The web would clearly not be the same without Unicode. But Unicode is not magic and developers have to understand it to create applications running in a multilingual world.
+  Unicode is what allows me to say hello in over 100 languages—እው ሰላም ነው (Amharic), 你好 (Chinese), γεια (Greek), שלום (Hebrew), नमस्ते (Hindi), こんにちは (Japanese), سلام (Persian), cześć (Polish), Привет (Russian), and Unicode is what allows you to understand the difference between "You are funny 🤣" and "You are funny 👎." The web would not be the same without Unicode. But Unicode is not magic, and developers have to understand it to create applications running in a multilingual world.
 excerpt_only: true
 ---
 
@@ -26,7 +26,7 @@ image::emojis-everywhere.png[width=700]
 
 
 [.lead]
-Unicode is what allows me to say hello in over 100 languages—እው ሰላም ነው (Amharic), 你好 (Chinese), γεια (Greek), שלום (Hebrew), नमस्ते (Hindi), こんにちは (Japanese), سلام (Persian), cześć (Polish), Привет (Russian), and Unicode is what allows you to understand the difference between "You are funny 🤣" and "You are funny 👎." The web would clearly not be the same without Unicode. But Unicode is not magic and developers have to understand it to create applications running in a multilingual world.
+Unicode is what allows me to say hello in over 100 languages—እው ሰላም ነው (Amharic), 你好 (Chinese), γεια (Greek), שלום (Hebrew), नमस्ते (Hindi), こんにちは (Japanese), سلام (Persian), cześć (Polish), Привет (Russian), and Unicode is what allows you to understand the difference between "You are funny 🤣" and "You are funny 👎." The web would not be the same without Unicode. But Unicode is not magic, and developers have to understand it to create applications running in a multilingual world.
 
 
 [NOTE]
@@ -50,9 +50,9 @@ Unicode is what allows me to say hello in over 100 languages—እው ሰላም 
 [NOTE]
 .Why Learning About Unicode?
 ====
-During my career, I came across the famous link:https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/[Joel Spoky's blog post] about Unicode and character encodings several times. The truth is I still didn't understand what was really Unicode.
+During my career, I came across the famous link:https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/[Joel Spoky's blog post] about Unicode and character encodings several times. The truth is, I still didn't understand what was really Unicode.
 
-As often, if you want to have a good overview of a topic, you have to understand the details. Details create the Big Picture. The reverse is not true. Therefore, I read the Unicode Standard, I read a ton of articles, and I inspected the code of some programming languages and libraries to understand how Unicode works. The result is this article. I hope it will help you better understand the challenges of Unicode, and why developers need to learn more about it.
+As often, if you want to have a good overview of a topic, you have to understand the details. Details create the Big Picture. The reverse is not true. Therefore, I read the Unicode Standard, browsed many articles, and inspected the code of some programming languages and libraries to understand how Unicode works. The result is this article. I hope it will help you better understand the challenges of Unicode, and why developers need to learn more about it.
 ====
 
 
@@ -91,15 +91,15 @@ include::./2021-06-19-unicode-for-curious-developers/the-implementation.adoc[]
 [[sect-future]]
 == The Future
 
-Unicode provides a unique code for every character, in every program, on every platform. Unicode exists to preserve the world’s heritage. But with link:http://www.unicode.org/education/consortwork.html[approximately 6,000 languages spoken in the world today], there are still many characters, writing systems to encode, and also many new emojis to make Unicode even more popular.
+Unicode provides a unique code for every character, in every program, on every platform. Unicode exists to preserve the world’s heritage. But with link:http://www.unicode.org/education/consortwork.html[approximately 6,000 languages spoken in the world today], there are still many characters, writing systems to encode, and many new emojis to make Unicode even more popular.
 
-Unicode is widely suppported. Modern operating systems, programming languages, and software applications have support for Unicode, but the devil is in the details. Unicode support does not mean you can ignore Unicode completely. You need to understand what Unicode is, and how your programming language implements it if you want to create truly multilingual applications.
+Unicode is widely supported. Modern operating systems, programming languages, and software applications have support for Unicode, but the devil is in the details. Unicode support does not mean you can ignore Unicode completely. You need to understand what Unicode is and how your programming language implements it to create truly multilingual applications.
 
 
 [NOTE.experiment]
 .To Go Further
 ====
-The scope of Unicode is more vast than simply assigning code points to characters. Unicode give programmers a vast amount of data about the handling of text:
+The scope of Unicode is wider than simply assigning code points to characters. Unicode gives programmers a vast amount of data about the handling of text:
 
 * link:https://www.unicode.org/reports/tr14/[How to divide words and break lines],
 * link:http://unicode.org/reports/tr10/[How to sort text],

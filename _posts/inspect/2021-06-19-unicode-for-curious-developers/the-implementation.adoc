@@ -2,9 +2,9 @@
 [[sect-implementation]]
 == The Implementation
 
-Now that we understand the history of Unicode and what is the scope of the Unicode Standard, we may have a look at the implementation. What does it mean to support Unicode? For an operating system? For a programming language? For a desktop application? For a web application?
+Now that we understand the history of Unicode and what is the scope of the Unicode Standard, we may look at the implementation. What does it mean to support Unicode? For an operating system? For a programming language? For a desktop application? For a web application?
 
-We will split this section based on the different steps of a program. A program manipulates data that is often received and sent over networks and eventually displayed to a user. Unicode plays an important role in every step.
+We will split this section based on the different steps of a program. A program manipulates data that is often received and sent over networks and eventually displayed to a user. Unicode plays an essential role in every step.
 
 image::implementation.png[width=600]
 

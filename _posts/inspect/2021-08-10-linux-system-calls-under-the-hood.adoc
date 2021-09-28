@@ -7,7 +7,7 @@ date: '2021-08-10'
 category: inspect
 subject: Linux System Calls
 excerpt: >
-  TODO.
+  Operating systems run different programs at the same time. As these programs are often written by different developers, the operating system guarantees the correct use of resources. One program cannot use all the memory or read data written by another program. Whenever your program wants to execute a privileged action like printing a text on screen, it requests that the kernel perform the action on its behalf. How does it work? This post will show the underlying code executed when you call a Linux system call.
 excerpt_only: true
 ---
 
@@ -22,12 +22,11 @@ There are lots of Linux users who don't care how the kernel works, but only want
 ____
 
 
+[.lead]
+Operating systems run different programs at the same time. As these programs are often written by different developers, the operating system guarantees the correct use of resources. One program cannot use all the memory or read data written by another program.
 
 [.lead]
-Operating systems run different programs at the same time. As these programs are often written by different developers, an operating system guarantees the correct use of resources so that one program cannot use all the memory or read data written by another program.
-
-[.lead]
-Every time your program want to execute a privileged action like printing a text on screen, it requests that the kernel perform the action on its behalf. How it works? In this post, we will show the underlying code that is executed when you are calling a Linux system call.
+Whenever your program wants to execute a privileged action like printing a text on screen, it requests that the kernel perform the action on its behalf. How does it work? This post will show the underlying code executed when you call a Linux system call.
 
 [NOTE]
 .What You Will Learn
@@ -45,7 +44,7 @@ The article presents code from different OSS projects: link:https://github.com/t
 
 == Overview
 
-All programs running on Linux use system calls. System calls are the interface between your application and the Linux kernel. If you need a service provided by the Kernel, you need a system call. You use them every time you read a file on disk (`open`, `read`, `close`), allocate a new block of memory (`sbrk`, `mmap`), communicate with another processes (`kill`, `listen`), start a new process (`fork`, `wait`), or simply when your program stops (`exit`).
+All programs running on Linux use system calls. System calls are the interface between your application and the Linux kernel. If you need a service provided by the Kernel, you need a system call. You use them every time you read a file on disk (`open`, `read`, `close`), allocate a new block of memory (`sbrk`, `mmap`), communicate with another process (`kill`, `listen`), start a new process (`fork`, `wait`), or simply when your program stops (`exit`).
 
 The command `man 2 syscalls` lists all system calls:
 
@@ -84,9 +83,9 @@ System calls are unavoidable, but in practice, we rarely interact directly with 
 [NOTE]
 .Library Function vs System Call
 ====
-A library function is simply one of the multitude of functions that constitutes the standard C library.
+A library function is simply one of the functions that constitute the standard C library.
 
-Many library functions don’t make any use of system calls (e.g., string-manipulation functions like `strcmp()`). On the other hand, some library functions are layered on top of system calls. For example, the `fopen()` library function uses the `open` system call to actually open a file. Often, library functions are designed to provide a more user-friendly interface than the underlying system call. For example, the `printf()` library function provides output formatting and data buffering, whereas the `write` system call just outputs a block of bytes. Sometimes, library functions and system calls have the same name. For example, `man 2 exit` prints the manual for the `exit` system call and `man 3 exit` prints the manual for the `exit()` library function.
+Many library functions don’t use system calls (e.g., string-manipulation functions like `strcmp()`). On the other hand, some library functions are layered on top of system calls. For example, the `fopen()` library function uses the `open` system call to actually open a file. Often, library functions are designed to provide a more user-friendly interface than the underlying system call. For example, the `printf()` library function provides output formatting and data buffering, whereas the `write` system call just outputs a block of bytes. Sometimes, library functions and system calls have the same name. For example, `man 2 exit` prints the manual for the `exit` system call and `man 3 exit` prints the manual for the `exit()` library function.
 
 System calls are implemented by your kernel and are an integral part of Linux. On the contrary, different implementations of the standard C library exist. The most commonly installed is the GNU C library (link:http://www.gnu.org/software/libc/[glibc]), and is the one we will cover in this article.
 
@@ -112,7 +111,7 @@ int main(void)
 ----
 <1> The `getpid()` library function is defined in `unistd.h` and returns the PID of the current process using the `getpid` system call.
 
-Retrieving the PID of the current process is one of the most basic system call. It simply returns the value stored in memory inside a data structure maintained by the kernel. It takes no arguments. It always succeeds. But calling `getpid()` is not like calling any other function.
+Retrieving the PID of the current process is one of the most basic system calls. It simply returns the value stored in memory inside a data structure maintained by the kernel. It takes no arguments. It always succeeds. But calling `getpid()` is not like calling any other function.
 
 Here is a minimal benchmark illustrating this difference:
 
@@ -154,7 +153,7 @@ int main(void)
 	return 0;
 }
 ----
-<1> We defined a basic function returning an integer literal. Retrieving the PID of a process doesn't interact with a hardware device and simply returning this integer is relatively close to reading this value from a data structure kept in memory.
+<1> We defined a basic function returning an integer literal. Retrieving the PID of a process doesn't interact with a hardware device. Simply returning this integer is relatively close to reading this value from a data structure kept in memory.
 <2> We call the two functions 1,000,000 times and measure how long it takes.
 
 Here are the results on my laptop using Ubuntu 20.04 in a virtual server:
@@ -167,13 +166,13 @@ Done getdummyid in 0.022424 seconds
 Done getpid     in 4.141334 seconds
 ----
 
-Calling a system call is, on this example, 200 times slower than calling a simple function. Indeed, a system call is not a simple function call. When you are calling the function `getpid()`, you are using a wrapper implemented by glibc that is hiding the actual logic to execute a system call. Under the hood, this wrapper function does a lot of work:
+Calling a system call is, on this example, 200 times slower than calling a simple function. Indeed, a system call is not a simple function call. When you call the function `getpid()`, you use a wrapper implemented by glibc hiding the actual logic to execute a system call. Under the hood, this wrapper function does a lot of work:
 
 * *Step 1*: The library function copies its arguments into registers. It also copies a number identifying the system call into a specific register. The library function then forces the processor to switch from user mode to kernel mode.
 * *Step 2*: The kernel executes the system call:
 ** The kernel saves the state of the CPU (the register values).
 ** The kernel checks the validity of the system call number.
-** The kernel invokes the right system call routine based on this number. This routine check the validity of arguments and executes the logic of the system call.
+** The kernel invokes the right system call routine based on this number. This routine checks the validity of arguments and executes the logic of the system call.
 ** The kernel restores the state of the CPU and places the return value and the possible error in specific registers.
 * *Step 3*: The library function checks for an error and set the global variable `errno`. The library returns to the caller.
 
@@ -214,9 +213,9 @@ These two instructions are enough to request the kernel to returns the PID of th
 ====
 Linux system calls are accessible using an _application binary interface_ (ABI). An ABI defines how a routine is accessed in machine code (hardware-dependent) whereas an API defines a similar access in source code (hardware-independent).
 
-If Linux system calls where implemented using a standard C API, every program would have to call them as C functions. An ABI removes this restriction by asking the compiler or interpreter of your favorite language to generate the machine code (i.e., initializing the registers). ABI is for hardware what API is for software.
+If Linux system calls were implemented using a standard C API, every program would have to call them like C functions. An ABI removes this restriction by asking the compiler or interpreter of your favorite language to generate the machine code (i.e., initializing the registers). ABI is for hardware what API is for software.
 
-The link:https://wiki.osdev.org/System_V_ABI[System V Application Binary Interface] is the reference specification used by major Unix-like operating systems such as Linux. If we want to understand the previous code sample, we need to have a look in particular at the link:https://refspecs.linuxfoundation.org/elf/x86_64-abi-0.99.pdf[System V Application Binary Interface for AMD64]. This document is 100-page long but only the section about the calling conventions are interesting us:
+The link:https://wiki.osdev.org/System_V_ABI[System V Application Binary Interface] is the reference specification used by major Unix-like operating systems such as Linux. If we want to understand the previous code sample, we need to have a look in particular at the link:https://refspecs.linuxfoundation.org/elf/x86_64-abi-0.99.pdf[System V Application Binary Interface for AMD64]. This document is 100-page long, but only the section about the calling conventions are interesting:
 
 ____
 . User-level applications use as integer registers for passing the sequence `%rdi`, `%rsi`, `%rdx`, `%rcx`, `%r8` and `%r9`. The kernel interface uses `%rdi`, `%rsi`, `%rdx`, `%r10`, `%r8` and `%r9`.
@@ -227,14 +226,14 @@ ____
 . Only values of class INTEGER or class MEMORY are passed to the kernel.
 ____
 
-On our example, we don't have arguments to pass but we still need to specify which system call we want to execute. Under the hood, a Linux system call is just a number. For `amd64`, the number 39 represents the `getpid` system call and must be specified in the register `rax` before calling the CPU instruction `syscall`.
+In our example, we don't have arguments to pass, but we still need to specify which system call we want to execute. Under the hood, a Linux system call is just a number. For `amd64`, the number 39 represents the `getpid` system call and must be specified in the register `rax` before calling the CPU instruction `syscall`.
 ====
 
 
 
 ==== The Code
 
-Glibc implements the `getpid()` library function but also many other similar functions to make accessible system calls in a friendly-manner to C programs. Calling the `getpid` system call is not so different from calling any other system calls. The number of arguments varies and some calls do not return errors but except that, the logic is similar. Basically, glibc must put values in registers and call an instruction to delegate to the kernel. Therefore, to avoid code duplication, glibc adopts a declarative approach to implement these library functions.
+Glibc implements the `getpid()` library function and many other similar functions to make accessible system calls in a friendly manner to C programs. Calling the `getpid` system call is not so different from calling any other system call. The number of arguments varies, and some calls do not return errors, but the logic is similar. Basically, glibc must put values in registers and call an instruction to delegate to the kernel. Therefore, to avoid code duplication, glibc adopts a declarative approach to implement these library functions.
 
 For example, if you look inside the code source, you will only find the declaration of the function `getpid()`:
 
@@ -244,9 +243,9 @@ For example, if you look inside the code source, you will only find the declarat
 extern __pid_t __getpid (void);
 ----
 
-You will not find the implementation directly, at least not in a obvious manner.
+You will not find the implementation directly, at least not in an obvious manner.
 
-System calls are defined in various `syscalls.list` files reflecting the differences between machine architectures. These files are then merged in a precise order and the format looks like this:
+System calls are defined in various `syscalls.list` files reflecting the differences between machine architectures. These files are then merged in a precise order. The format looks like this:
 
 [source]
 .
@@ -353,7 +352,7 @@ Here is an example of command when all of the pieces are put together:
  $HOME/glibc/build/posix/getpid.os
 ----
 
-The command compiles a C snippet from `stdin` using a lot of directories containing header files, in particular files named `sysdep.h`. These files declare macros representing the real assembly code for all supported architectures. For example:
+The command compiles a C snippet from `stdin` using many directories containing header files, in particular, files named `sysdep.h`. These files declare macros representing the real assembly code for all supported architectures. For example:
 
 [source,c]
 .sysdeps/unix/sysv/linux/x86_64/sysdep.h
@@ -424,9 +423,9 @@ __getpid():
    b:	c3                   	retq
 ----
 
-To sum up, when we are calling the `getpid()` library function , the alias `__getpid()` is really called. This function is implemented in assembly language and executes the same instructions we presented before.
+To sum up, when we are calling the `getpid()` library function, the alias `__getpid()` is really called. This function is implemented in assembly language and executes the same instructions we presented before.
 
-In practice, not all system calls can be generated like this. A prior version of the `getpid()` library function used a cache to limit system calls since the PID of a process never changes. This cache was removed by link:https://repo.or.cz/glibc.git/commit/c579f48edba88380635ab98cb612030e3ed8691e[this commit] but if we move back in Git history, we can have a look at link:https://sourceware.org/glibc/wiki/SyscallWrappers[a different technique] used by glibc to implement library functions.
+In practice, not all system calls can be generated like this. A prior version of the `getpid()` library function used a cache to limit system calls since the PID of a process never changes. This cache was removed by link:https://repo.or.cz/glibc.git/commit/c579f48edba88380635ab98cb612030e3ed8691e[this commit], but if we move back in Git history, we can have a look at link:https://sourceware.org/glibc/wiki/SyscallWrappers[a different technique] used by glibc to implement library functions.
 
 [source,c]
 ./sysdeps/unix/sysv/linux/getpid.c
@@ -472,7 +471,7 @@ weak_alias (__getpid, getpid)
 libc_hidden_def (getpid)
 ----
 <1> The function `__getpid()` is implemented as a C function.
-<2> The code checks for the `pid` in the thread-local memory area to determine if the function has already being called.
+<2> The code checks for the `pid` in the thread-local memory area to determine if the function has already been called.
 <3> If the cache is empty, the code delegates to `really_getpid()` that checks the cache again before calling the macro `INTERNAL_SYSCALL` we have just covered before.
 
 Of course, When a file like `getpid.c` is present, the script `make-syscalls.sh` does not override it:
@@ -484,7 +483,7 @@ Of course, When a file like `getpid.c` is present, the script `make-syscalls.sh`
 ----
 <1> No rule is generated.
 
-The code will simply be compiled with the rest of the glibc source code, reusing the same macros as the current implementation, which means the code always end up with the `syscall` instruction to give control to the kernel.
+The code will simply be compiled with the rest of the glibc source code, reusing the same macros as the current implementation, which means the code always ends up with the `syscall` instruction to give control to the kernel.
 
 
 
@@ -499,12 +498,12 @@ The code will simply be compiled with the rest of the glibc source code, reusing
 
 The user process has just requested a service from the kernel. It filled the registers and called a special instruction to jump to a different location. Enter the kernel.
 
-For this second step, the objective is therefore for the kernel to register a procedure at this location. This procedure reads the system call number and looks at the table of system calls to find the address of the kernel function to call. Then after this function returns, it does a few checks and then returns back to the user process.
+For this second step, the objective is for the kernel to register a procedure at this location. This procedure reads the system call number and looks at the table of system calls to find the address of the kernel function to call. Then after this function returns, it does a few checks and then returns to the user process.
 
 
 ==== The Code
 
-First, we will have a look at the implementation of the `getpid()` system call.
+First, we will look at the implementation of the `getpid()` system call.
 
 
 ===== Implementing a System Call
@@ -530,7 +529,7 @@ SYSCALL_DEFINE0(getpid)
 	return task_tgid_vnr(current); // <1>
 }
 ----
-<1> The code uses the `current` pointer representing the current task, which is the process issuing the syscall. The PID is then extracted from this struct. We will not cover it further.
+<1> The code uses the `current` pointer representing the current task, which is issuing the syscall. The PID is then extracted from this struct. We will not cover it further.
 
 This entry point also needs a corresponding function prototype in the reference file `include/linux/syscalls.h`. This prototype is marked as `asmlinkage` to match the way that system calls are invoked:
 
@@ -578,7 +577,7 @@ Now, we must look at the glue between the `syscall` CPU instruction and the syst
 
 ===== Initializing the System Call Entry
 
-On `amd64`, the instruction `syscall` put the address present in the register `IA32_LSTAR` into the register `RIP`, aka the instruction pointer. After this step, the handler at that location will be executed in a CPU privileged mode. This means that the kernel needs to put the system call entry address into the `IA32_LSTAR` register during its initialization.
+On `amd64`, the instruction `syscall` put the address present in the register `IA32_LSTAR` into the register `RIP`, the instruction pointer. After this step, the handler at that location will be executed in a CPU privileged mode. It means that the kernel needs to put the system call entry address into the `IA32_LSTAR` register during its initialization.
 
 
 [NOTE]
@@ -586,7 +585,7 @@ On `amd64`, the instruction `syscall` put the address present in the register `I
 ====
 Many online code examples use the `int 0x80` instruction instead of `syscall`. This instruction was the only option on `i386` architecture (`x86`) and is still available on `amd64` architecture (`x86-64`) since this latter is a superset of the former for backward-compatibility reasons (i.e., code compiled to `x86` is portable to `x86-64`).
 
-For example, the `getpid` system call can be executed in both ways on `amd64`:
+For example, the `getpid` system call can be executed in two different ways on `amd64`:
 
 [source,asm]
 ----
@@ -604,7 +603,7 @@ Similar instructions exist for other architectures too. The motivation is always
 For an implementation viewpoint:
 
 * `int 0x80` relies on software interrupts. The idea is to use the same method to enter the kernel as hardware interrupts do (ex: when pressing a key on your keyboard).
-* `syscall` (and `sysenter`) relies on specific CPU instructions designed for the specific use case of system calls, and thus comes with optimizations.
+* `syscall` (and `sysenter`) relies on specific CPU instructions designed for the specific use case of system calls and thus comes with optimizations.
 
 `syscall` is more performant because it does less operations (`syscall` does not generate a software interrupt) and based on link:https://x86.lol/generic/2019/07/04/kernel-entry.html[some benchmarks], using `syscall` is a magnitude faster (~5 times faster), which is fast compared to `int 0x80` but still slow compared to calling a local function.
 ====
@@ -643,8 +642,8 @@ asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
   #include <asm/syscalls_64.h> // <2>
 };
 ----
-<1> All elements points initially to the `sys_ni_syscall` function, which is a fallback function simply returning `-ENOSYS` (`Function not implemented`).
-<2> The headerfile `asm/syscalls_64.h` is generated dynamically from the list of system calls on your system and overrides the default handler for all defined system calls.
+<1> All elements point initially to the `sys_ni_syscall` function, which is a fallback function simply returning `-ENOSYS` (`Function not implemented`).
+<2> The header file `asm/syscalls_64.h` is generated dynamically from the list of system calls on your system and overrides the default handler for all defined system calls.
 
 This `asm/syscalls_64.h` file is generated by the script `arch/x86/entry/syscalls/syscalltbl.sh` and the result looks like:
 
@@ -658,7 +657,7 @@ __SYSCALL_COMMON(39, sys_getpid, sys_getpid)
 ...
 ----
 
-If we evaluate the macros, our system call table initialization looks like:
+If we evaluate the macros, our system call table initialization looks like this:
 
 [source,c]
 ----
@@ -672,7 +671,7 @@ asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
 };
 ----
 
-At this point, we have already configured the system call entry and the system call table is ready for this handler to determine the system call to execute. Let's do it.
+At this point, we have already configured the system call entry, and the system call table is ready for this handler to determine the system call to execute. Let's do it.
 
 
 
@@ -752,7 +751,7 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
 <2> Clamp the index within `[0..NR_syscalls]`.
 <3> Execute the function present in the system call table with the specified number.
 
-After a system call handler returns, the system call entry restores registers, flags and push the return address of the user process before exiting with the `sysretq` instruction. Then, the user program continues exactly where it left off, and we are done with our long journey in Linux system calls.
+After a system call handler returns, the system call entry restores registers, flags and pushes the return address of the user process before exiting with the `sysretq` instruction. Then, the user program continues where it left off. Our long journey in Linux system calls is finished.
 
 image::system-call-steps.png[title="Steps when executing a system call", width=650px]
 
@@ -763,7 +762,7 @@ image::system-call-steps.png[title="Steps when executing a system call", width=6
 [NOTE]
 .Try It Out!
 ====
-The code was tested on Ubuntu 20.04. If like me, you are running on a different operating system, you can recreate the same environment using a local virtual machine. I use link:https://www.vagrantup.com/[Vagrant] on my machine:
+The code was tested on Ubuntu 20.04. You can recreate the same environment using a local virtual machine if you are running on a different operating system. I use link:https://www.vagrantup.com/[Vagrant] on my machine:
 
 [source,shell]
 ----
@@ -785,7 +784,7 @@ Release:	20.04
 Codename:	focal
 ----
 
-When using a virtual machine, calling a system call is no different from what we have presented. As the processors are virtual too, the hypervisor is responsible to convert machine code generated for them to the host architecture. link:https://stackoverflow.com/questions/14415050/how-are-system-calls-handled-in-a-virtual-machine/25485159[Several techniques exist] to handle this. A naive approach is for the hypervisor to trap system calls and delegates to the guest OS using different system calls specific to this OS and its architecture.
+When using a virtual machine, calling a system call is no different from what we have presented. As the processors are virtual, the hypervisor is responsible for converting machine code generated to the host architecture. link:https://stackoverflow.com/questions/14415050/how-are-system-calls-handled-in-a-virtual-machine/25485159[Several techniques exist] to handle this. A naive approach is for the hypervisor to trap system calls and delegate to the guest OS using different system calls specific to this OS and its architecture.
 
 What follows is a basic program written in Assembly for `amd64` architecture and executing the system calls `getpid` and `exit`. (The second is required if you don't want your program to crash abruptly at the end.)
 
@@ -812,7 +811,7 @@ _start:
 ----
 
 
-What we have is still a text file with assembly language instructions. This is not a format that a computer can run. Assembly language is text (source code) that must be converted into bytes (machine code). Therefore, we need to run a few commands first:
+What we have is still a text file with assembly language instructions. It is not a format that a computer can run. Assembly language is text (source code) that must be converted into bytes (machine code). Therefore, we need to run a few commands first:
 
 * `nasm`: The assembler "assembles" the instructions to machine code bytes to create an object file.
 * `ld`: The linker turns this object file into an executable file that the operating system can run. (As we have only one object file, the linker does almost nothing but is a mandatory step.)
@@ -828,7 +827,7 @@ $ ld -o getpid getpid.o
 $ ./getpid
 ----
 
-The program outputs nothing. We haven't write code for that. We can solve this problem using a debugguer to inspect registers but first, let's dump some information about our object file:
+The program outputs nothing. We haven't write code for that. We can solve this problem using a debugger to inspect registers but first, let's dump some information about our object file:
 
 [source]
 ----
@@ -865,7 +864,7 @@ Local exec file:
 	Entry point: 0x401000 // <1>
 	0x0000000000401000 - 0x0000000000401010 is .text
 ----
-<1> We retrieve the intial address `0x401000` as reported previously by the command `objdump`.
+<1> We retrieve the initial address `0x401000` as reported previously by the command `objdump`.
 
 Let's add a breakpoint to stop after the system call execution:
 
@@ -897,7 +896,7 @@ root        4064  0.1  2.2  36168 22884 pts/0    S+   \_ gdb getpid
 root        4066  0.0  0.0    156    16 pts/0    t        \_ /home/vagrant/getpid
 ----
 
-This confirms that the PID of our program is `4066`. We successfully executed our first system call using assembly code!
+The output confirms that the PID of our program is `4066`. We successfully executed our first system call using assembly code!
 ====
 
 
@@ -909,7 +908,7 @@ This confirms that the PID of our program is `4066`. We successfully executed ou
 
 === Go
 
-We will use the Go programming language and explain using code how the language make system calls accessible to Go developers. We will still use the `getpid` system call as example.
+We will use the Go programming language and explain using code how the language makes system calls accessible to Go developers. We will still use the `getpid` system call for the example.
 
 The function `Getpid` is implemented by the package `os`:
 
@@ -979,7 +978,7 @@ func rawSyscallNoError(trap, a1, a2, a3 uintptr) (r1, r2 uintptr)
 
 In Go, a function declaration may omit the body. Such a declaration provides the signature for a function implemented outside Go, such as an assembly routine.
 
-The code belongs in the link:https://godoc.org/golang.org/x/sys/unix[`sys/unix` package]. This package regroups the assembly code to execute system calls. Porting Go to a new architecture/OS combination or supporting a new syscall imply changes in this package like updating the hand-written assembly files at `asm_${GOOS}_${GOARCH}.s`, which are parsed by the Go tooling to build the final code.
+The code belongs in the link:https://godoc.org/golang.org/x/sys/unix[`sys/unix` package]. This package regroups the assembly code to execute system calls. Porting Go to a new architecture/OS combination or supporting a new syscall implies changes in this package like updating the hand-written assembly files at `asm_${GOOS}_${GOARCH}.s`, which are parsed by the Go tooling to build the final code.
 
 Here is the native implementation for Linux of the function `rawSyscallNoError`:
 
@@ -1000,7 +999,7 @@ TEXT ·RawSyscallNoError(SB),NOSPLIT,$0-48
 	RET
 ----
 
-NOTE: The logic should look familiar if you remember the calling conventions detailled in the System V ABI specification.
+NOTE: The logic should look familiar if you remember the calling conventions in the System V ABI specification.
 
 Concerning the `getpid` system call, the const `SYS_GETPID` is defined like this:
 
@@ -1051,7 +1050,7 @@ Since Java 9, the process API can be used to get the current process ID.
 ----
 long pid = ProcessHandle.current().pid(); // <1>
 ----
-<1> We grab a handle to the current process, and then query the PID.
+<1> We grab a handle to the current process and then query the PID.
 
 This method is implemented in the type link:https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/share/classes/java/lang/ProcessHandleImpl.java[`ProcessHandlerImpl`] like this:
 
@@ -1139,9 +1138,9 @@ As Java native methods are implemented in C, the code can reuse existing functio
 
 == `mov rax, 60`
 
-As we have seen through this article, a system call is definitively not a simple function call. A lot of code is executed to delegate the responsability to the kernel so that it can ensure we are privileged to execute it.
+As we have seen through this article, a system call is definitively not a simple function call. A lot of code is executed to delegate the responsibility to the kernel to ensure we are privileged to run it.
 
-System calls are important for developers. They define the capabilities of your system. For example, the link:https://man7.org/linux/man-pages/man7/epoll.7.html[`epoll` system call] helped link:https://www.nginx.com/[Nginx] to solve the link:https://en.wikipedia.org/wiki/C10k_problem[C10k problem] by offering a event-driven I/O model, the link:https://man7.org/linux/man-pages/man2/inotify_init.2.html[`inotify_*` system calls] allows link:https://github.com/facebook/create-react-app/blob/v4.0.0/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error[`react-scripts`] to automatically rerun your tests when you are making a code change, the link:https://man7.org/linux/man-pages/man2/sendfile.2.html[`sendfile` system call] supports the link:https://en.wikipedia.org/wiki/Zero-copy[Zero-Copy] optimization used by link:https://kafka.apache.org/08/documentation.html[Kafka], which is one of the main reasons explaining its performance, the link:https://man7.org/linux/man-pages/man2/ptrace.2.html[`ptrace` system call] is link:https://unix.stackexchange.com/questions/6933/how-does-a-debugger-work-in-linux/375257[used by debugguers] like gdb to inspect your program using breakpoints, and so on. The question is thus, what are you going to build using these system calls? 😉
+System calls are essential for developers. They define the capabilities of your system. For example, the link:https://man7.org/linux/man-pages/man7/epoll.7.html[`epoll` system call] helped link:https://www.nginx.com/[Nginx] to solve the link:https://en.wikipedia.org/wiki/C10k_problem[C10k problem] by offering a event-driven I/O model, the link:https://man7.org/linux/man-pages/man2/inotify_init.2.html[`inotify_*` system calls] allows link:https://github.com/facebook/create-react-app/blob/v4.0.0/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error[`react-scripts`] to automatically rerun your tests when you are making a code change, the link:https://man7.org/linux/man-pages/man2/sendfile.2.html[`sendfile` system call] supports the link:https://en.wikipedia.org/wiki/Zero-copy[Zero-Copy] optimization used by link:https://kafka.apache.org/08/documentation.html[Kafka], which is one of the main reasons explaining its performance, the link:https://man7.org/linux/man-pages/man2/ptrace.2.html[`ptrace` system call] is link:https://unix.stackexchange.com/questions/6933/how-does-a-debugger-work-in-linux/375257[used by debugguers] like gdb to inspect your program using breakpoints, and so on. The question is, therefore, what are you going to build using these system calls? 😉
 
 
 [NOTE.remember]
@@ -1149,6 +1148,6 @@ System calls are important for developers. They define the capabilities of your 
 ====
 * *System calls are doors to the kernel*. They act like a security guard that must check your identity before executing your action. This could not be as fast as staying in the same room and executing the action yourself.
 * *System calls are dependent on your architecture*. The ABI defines which registers and which instructions must be used on your architecture.
-* *System calls are accessible in the standard library of your programming language*. But as modern languages are often implemented in their own language, they cannot interact directly with registers and must implement workarounds like rewritting the logic in assembly and relying on the compiler to merge it with the rest of the compiled code.
-* *System calls are often implemented in a generic way*. Glibc lists most system calls in metadata files and uses a build tool to actually generate the source files. Similar toolings exist in Go and inside the Linux kernel.
+* *System calls are accessible in the standard library of your programming language*. But as modern languages are often implemented in their own language, they cannot interact directly with registers and must implement workarounds like rewriting the logic in Assembly and relying on the compiler to merge it with the rest of the compiled code.
+* *System calls are often implemented in a generic way*. Glibc lists most system calls in metadata files and uses a build tool to generate the source files. Similar toolings exist in Go and inside the Linux kernel.
 ====

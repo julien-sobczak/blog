@@ -26,23 +26,23 @@ Let's begin by visualizing the main obstacles of clean code.
 
 image::clean-code-obsession-illustrated.png[A peak representing clean code, surrounded by two cliffs. On the left, the peak of fragility with legacy code on the bottom. On the right, the peak of rigidity with useless code on the bottom. A character is falling on the right side showing the consequence of clean code obsession.]
 
-Any program gets more and more complex over time. The larger the program, and the more people that work on it, the more difficult it is to manage complexity. Clean code is a solution to reduce this complexity and to add more and more features to the program. But link:{% post_url write/2021-03-24-common-sense-doesnt-make-sense %}[what means clean code is not obvious] in practice and many things can go wrong along the way…
+Any program gets more and more complex over time. The larger the program, and the more people that work on it, the more difficult it is to manage complexity. Clean code is a solution to reduce this complexity and add more and more features to the program. But link:{% post_url write/2021-03-24-common-sense-doesnt-make-sense %}[what means clean code is not obvious] in practice. Many things can go wrong along the way...
 
 
 === The Cliff of Fragility
 
-The cliff of fragility is the land of too many yes. Yes to new features on top of weak foundations. Yes to tight deadlines. Yes to features that will be barely used. Yes to pull requests failing to document the code with automated tests. Etc.
+The cliff of fragility is the land of too many "yes." "Yes" to new features on top of weak foundations. "Yes" to tight deadlines. "Yes" to features that users will not use. "Yes" to pull requests failing to document the code with automated tests. Etc.
 
-*You know that you have entered the world of fragility when developers are moving from the code and new developers work hard to avoid changing it.* You can no longer integrate new features. This is not clean code. This is legacy code.
+*You know that you have entered the world of fragility when developers are moving from the code, and new developers work hard to avoid changing it.* You can no longer integrate new features. It's not clean code. It's legacy code.
 
 Legacy code is so scary that developers may be tempted to run as far as possible in the opposite direction, but that situation is not much better...
 
 
 === The Cliff of Rigidity
 
-The cliff of rigidity is the land of too many no. No to new features so that you can migrate your code to the latest popular framework. No to intuitive interfaces so that you can keep the number of lines in the front code low. No to business rules so that you can keep your code simple. No to merge requests missing a single unit test even when there are already too many. Etc.
+The cliff of rigidity is the land of too many "no." "No" to new features so that you can migrate your code to the latest popular framework. "No" to intuitive interfaces so that you can keep the number of lines in the front code low. "No" to business rules so that you can keep your code simple. "No" to merge requests missing a single unit test even when there are already too many. Etc.
 
-*You know that you have entered the world of rigidity when developers are talking more about clean code than about the meaning of these lines of code.* Developers start to develop an obsession for clean code. You can no longer integrate new features, not because the code is not "clean", but because you spend your time elsewhere. This is not clean code. This is useless code.
+*You know that you have entered the world of rigidity when developers are talking more about clean code than about the meaning of these lines of code.* Developers start to develop an obsession with clean code. You can no longer integrate new features, not because the code is not "clean," but because you spend your time elsewhere. It's not clean code. It's useless code.
 
 The challenge is thus to navigate between these two extremes. Since clean coders love code, here is a definition of clean code:
 
@@ -71,71 +71,71 @@ function isCleanCode() {
 }
 ----
 
-In this article, I will focus on the clean code obsession, depicted on the right side of the illustration. Legacy code is a lot easier to detect and I cannot imagine a sane developer developing an obsession for legacy code.
+In this article, I will focus on the clean code obsession depicted on the right side of the illustration. Legacy code is much easier to detect, and I cannot imagine a sane developer developing an obsession for legacy code.
 
 
 
 == The Symptoms of Clean Code Obsession
 
-So, when clean code stops being clean code? In this section, I will present the seven deadly sins of clean code, using common situations to help you identify when you are crossing the line.
+So, when clean code stops being clean code? This section presents the seven deadly sins of clean code, using everyday situations to help you identify when you are crossing the line.
 
 
 === Symptom 1: When you use principles as rules
 
-_Example (DRY)_: You know code duplication is wrong and thus track down every single occurrence to refactor it. You are wrong. link:https://overreacted.io/goodbye-clean-code/[Not all code duplications are bad]. If two functions are similar but are expected to evolve differently, this is not a code duplication. Similarly, since tests don't have tests, a little code redundancy can make your tests a lot more readable and more obviously correct (which can be useful 😀). link:https://testing.googleblog.com/2019/12/testing-on-toilet-tests-too-dry-make.html[This DAMP principle (Descriptive and Meaningful Phrases) originated at Google] and is not incompatible with the DRY principle, except if you consider the DRY principle as a rule.
+_Example (DRY)_: You know code duplication is wrong and thus track down every single occurrence to refactor it. **You're wrong**. link:https://overreacted.io/goodbye-clean-code/[Not all code duplications are bad]. If two functions are similar but are expected to evolve differently, this is not a code duplication. Similarly, since tests don't have tests, a little code redundancy can make your tests more readable and more obviously correct (which can be helpful 😀). link:https://testing.googleblog.com/2019/12/testing-on-toilet-tests-too-dry-make.html[This DAMP principle (Descriptive and Meaningful Phrases) originated at Google] and is not incompatible with the DRY principle, except if you consider the DRY principle as a rule.
 
-_Example (YAGNI)_: You know that implementing features before you actually need them is wrong and thus refuse to even talk about them. You are wrong. Future requirements are like the future, unpredictable, but some of them are a lot more likely. Using YAGNI as a rule, and ignoring even what you already know, will cause huge refactoring later and will result in a poor design.
+_Example (YAGNI)_: You know that implementing features before you actually need them is wrong and thus refuse to even talk about them. **You're wrong**. Future requirements are like the future, unpredictable, but some of them are a lot more likely. Using YAGNI as a rule, and ignoring even what you already know, will cause huge refactoring later and result in a poor design.
 
 *Principles are not rules*. You must use your judgment to determine when a principle applies and when it doesn't.
 
 
 === Symptom 2: When you set arbitrary rules
 
-_Example_: You know unit tests are important and thus impose 90 percent of code coverage for every class. You are wrong. Not all classes are easily testable and some of them are better covered using other types of tests. If you try stubbornly to reach your target, chances are your code will be hard to change, maybe even harder than in the absence of tests. (Especially if you have another arbitrary rule like a unit test must test a single function.)
+_Example_: You know unit tests are essential and thus impose 90 percent of code coverage for every class. **You're wrong**. Not all classes are easily testable and some of them are better covered using other types of tests. If you try stubbornly to reach your target, chances are your code will be hard to change, maybe even harder than in the absence of tests. (Especially if you have another arbitrary rule like a unit test must test a single function.)
 
 *No rules rules*.footnote:[I must quote my inspiration for this one on the eponymous book co-written by Reed Hastings, CEO of Netflix.] Especially rules using arbitrary values—no more than _500_ lines per file, only _one_ web component per file, no _more than 10_ for the cyclomatic complexity of a function, _no_ comments in code, use mocks for _all_ dependencies, ... These "rules", often enforced by static code analysers, are just hints, opportunities to engage a discussion on the code. When used as rules, they must never be followed blindly or set in stone.
 
 [NOTE]
 .We Love Rules.
 ====
-The truth is rules are comfortable as we don't have to think. Testing _every function_ is easier in practice than testing _the smallest piece of testable software for which an observable result exists_ but things don't work like that. You have to think hard to make you code easy to maintain. *Rules don't make us think. Rules don't create clean code.*
+The truth is rules are comfortable as we don't have to think. Testing _every function_ is easier in practice than testing _the smallest piece of testable software for which an observable result exists_, but things don't work like that. You have to think hard to make your code easy to maintain. *Rules don't make us think. Rules don't create clean code.*
 ====
 
 === Symptom 3: When you ignore functional requirements
 
-_Example_: You are proud of your web application which is optimized for desktop, but your users are using their smartphone more and more. Supporting mobile devices is not easy. It means implementing responsive interfaces, supporting new devices, and also versioning the API as you may no longer control the clients to force an upgrade. It means more lines of code. Your clean code is in danger. You are wrong.
+_Example_: You are proud of your web application optimized for desktop, but your users are using their smartphones more and more. Supporting mobile devices isn't easy. It means implementing responsive interfaces, supporting new devices, and versioning the API as you may no longer control the clients to force an upgrade. It means more lines of code. Your clean code is in danger. **You're wrong**.
 
-*Clean code is code that meets functional requirements.* Of course, ignoring some functional constraints can make your code more clean, but if your users stop using your application as a consequence, it's just useless code.
+*Clean code is code that meets functional requirements.* Of course, ignoring some functional constraints can make your code cleaner, but if your users stop using your application as a consequence, it's just useless code.
 
 
 === Symptom 4: When you value simplicity
 
-_Example_: You know simplicity is important to keep your code clean, and thus are reluctant to add code that will make it more complicated. You are wrong. link:{% post_url write/2020-02-23-simplicity-is-not-simple %}[Simplicity is not simple]. The Google search engine is simple to use. One single text field to search for anything: a website, a location, an image, but also the latest trends, your next flight, the real-time stock info, or even the result of a calculation. Clearly, link:https://static.googleusercontent.com/media/research.google.com/en//archive/googlecluster-ieee.pdf[the code behind this form is not simple] but being simple to use is what makes this complicated code so valuable.
+_Example_: You know simplicity is important to keep your code clean, and thus are reluctant to add code that will make it more complicated. **You're wrong**. link:{% post_url write/2020-02-23-simplicity-is-not-simple %}[Simplicity is not simple]. For example, the Google search engine uses a single text field to search for anything--a website, a location, an image, but also the latest trends, your next flight, the real-time stock info, or even the result of a calculation. link:https://static.googleusercontent.com/media/research.google.com/en//archive/googlecluster-ieee.pdf[The code behind this form is not simple] but being simple to use makes this complicated code so valuable.
 
-*Clean code is not simple code but simpler code*. Clean code reduces code complexity, but does not removing it completely. There is always a user for your code. It can be a human or another program, and you must care about link:https://overreacted.io/what-are-the-react-team-principles/[simplicity from their viewpoints, not yours]. Returning user-friendly error messages is not simple. Responding under a few hundred milliseconds is not simple. Offering intuitive interfaces is not simple. But it is not because the code is complicated that it cannot be clean too. You can for example encapsulate the complexity in a module that you will not have to touch before a long time.
+*Clean code is not simple code but simpler code*. Clean code reduces code complexity but does not remove it completely. There is always a user for your code. It can be a human or another program, and you must care about link:https://overreacted.io/what-are-the-react-team-principles/[simplicity from their viewpoints, not yours]. Returning user-friendly error messages is not simple. Responding under a few hundred milliseconds is not simple. Offering intuitive interfaces is not simple. But it is not because the code is complicated that it cannot be clean too. You can, for example, encapsulate the complexity in a module that you will not have to touch for a long time.
 
 
 === Symptom 6: When you expect too much from frameworks
 
-_Exemple_: You have developed your web application following React best practices until the release of React 16.8, which introduced hooks, a new way to write your components using simple functions instead of classes. You cannot wait to rewrite your code to use hooks  and want to interrupt the current sprint to make your code clean again. You are wrong.
+_Example_: You have developed your web application following React best practices until the release of React 16.8, which introduced hooks, a new way to write your components using simple functions instead of classes. You cannot wait to rewrite your code to use hooks and interrupt the current sprint to make your code clean again. **You're wrong**.
 
-*Frameworks don't make clean code*. Frameworks are often the implementations of a few patterns to reduce boilerplate code from your codebase. Frameworks limit the number of lines of code you need to write, which is great to keep your code more maintainable, but is unrelated to clean code. You can write clean code without any framework at all.
+*Frameworks don't make clean code*. Frameworks are often the implementations of a few patterns to reduce boilerplate code from your codebase. Frameworks limit the number of lines of code you need to write, which is great to keep your code more maintainable but is unrelated to clean code. You can write clean code without any framework at all.
 
-In fact, link:https://css-tricks.com/how-the-web-is-really-built/[most of the web is still running on old, stable technologies]. More than 80% of websites are still using jQuery in 2020 when only 4% of all websites are coded in React. Most of the sites we use everyday are not written with the latest technologies but they provide the most value, and as they exist for a long time, their codebase can surely be considered clean.
+In fact, link:https://css-tricks.com/how-the-web-is-really-built/[most of the web is still running on old, stable technologies]. More than 80% of websites are still using jQuery in 2020 when only 4% of all websites are coded in React. Most of the sites we use every day aren't written with the latest technologies either. But they provide the most value, and as they exist for a long time, their codebase should probably be considered clean.
 
 
 === Symptom 5: When you use binary thinking
 
-_Example_: You are starting a new job and you are reading the codebase of the project for the first time. You quickly notice something that looks unnecessarily complicated and think this must be refactored. Worse, link:https://overreacted.io/goodbye-clean-code/[you are starting the refactoring even without talking about the developers that wrote it]. You are wrong.
+_Example_: You are starting a new job and are reading the codebase for the first time. You quickly notice something that looks unnecessarily complicated and think it must be refactored. Worse, link:https://overreacted.io/goodbye-clean-code/[you are starting the refactoring even without talking about the developers that wrote it]. **You're wrong**.
 
-*Code is not clean or dirty*. A pattern is not correct or wrong. A framework is not great or obsolete. Your code is maybe running on binary machines, your thinking does not have to follow the same rules. All-or-nothing thinking is what is pushing you to the dangerous extremes depicted by the previous illustration. There may be good reasons to explain how the code looks like and you need to understand them before making your judgment. You need to stop viewing code in black and white because your application runs in a world that is made of shades of grey.
+*Code is not clean or dirty*. A pattern is not correct or wrong. A framework is not great or obsolete. Your code is maybe running on binary machines, your thinking doesn't have to follow the same rules. All-or-nothing thinking is what is pushing you to the dangerous extremes depicted by the previous illustration. There may be good reasons to explain how the code looks like, and you need to understand them before making your judgment. You need to stop viewing code in black and white because your application runs in a world made of shades of grey.
 
 
 === Symptom 7: When clean code is a goal
 
-_Example_: You are reviewing a Pull Request and focus most of your attention on the naming, the number of lines of code, the code coverage, the formatting rules. You are wrong. What about the usability of your code? Can the API be more simple even if that means a more complicated code? Is the UI user-friendly? In short, do you have better ideas to make the feature even greater?
+_Example_: You are reviewing a Pull Request and focus most of your attention on the naming, the number of lines of code, the code coverage, the formatting rules. **You're wrong**. What about the usability of your code? Can the API be more simple even if that means a more complicated code? Is the UI user-friendly? In short, do you have better ideas to make the feature even greater?
 
-*Clean code is not a goal, only part of the solution*. Your code must be clean, but also correct, secure, reliable, obvious, efficient, consistent, performant, and so much more. If your code is running in a plane at 30,000 feet, you must care more about writing robust code than clean code, even if both are somewhat related. The end goal is always to ship features.
+*Clean code is not a goal, only part of the solution*. Your code must be clean but also correct, secure, reliable, obvious, efficient, consistent, performant, and so much more. If your code runs in a plane at 30,000 feet, you must care more about writing robust code than clean code, even if both are somewhat related. The end goal is always to ship features.
 
 
 
@@ -144,21 +144,21 @@ _Example_: You are reviewing a Pull Request and focus most of your attention on 
 
 === Learn more about clean code
 
-If you are obsessed with clean code, you have probably not explored the subject enough. You may have read the book _Clean Code_, which is excellent, but is only a good introduction. You need to read a lot more. Books such as _A Philosophy of Software Design_ and _Domain-Driven Design_ will teach you that clean code is not just code that looks beautiful. Learning is essential to think clearly about clean code. *The more you will learn about clean code, the more you will understand how hard it is to define clean code*. There are constraints to satisfy and compromises to make everywhere. For example, patterns have pros and cons, and are best applied in some contexts but are still useful in others. *Your definition of clean code must be objective.*
+If you are obsessed with clean code, you have probably not explored the subject enough. You may have read the book _Clean Code_, which is excellent but is only a good introduction. You need to read a lot more. Books such as _A Philosophy of Software Design_ and _Domain-Driven Design_ will teach you that clean code is not just code that looks beautiful. Learning is essential to think clearly about clean code. *The more you will learn about clean code, the more you will understand how hard it is to define clean code*. There are constraints to satisfy and compromises to make everywhere. For example, patterns have pros and cons, and are best applied in some contexts but are still useful in others. *Your definition of clean code must be objective.*
 
 
 === Read more code
 
-If you are obsessed with clean code, you have probably not read enough code. In the same way that you cannot know if a book is great if it's the only one you have read, *you need to read a lot of code to know if your code is clean*. OSS is a great source of inspiration. link:https://github.blog/2018-11-08-100m-repos/[There are more than 100 millions repositories on GitHub], written by more than 30 millions of developers having contributed more than a billion times in them. That's a lot of code to read. If you read the source of popular OSS projects closely, you will discover that some principles are violated, some functions are poorly documented, some features are not correctly tested, some FIXMEs are still present, and also that some code looks too complicated, at first. And yet, the code is widely used in production, and was probably written by developers better than you and me. *Your definition of clean code must match reality.*
+If you are obsessed with clean code, you have probably not read enough code. In the same way that you cannot know if a book is great if it's the only one you have read, *you need to read a lot of code to determine if your code is clean*. OSS is a wonderful source of inspiration. link:https://github.blog/2018-11-08-100m-repos/[There are more than 100 millions repositories on GitHub], written by more than 30 millions of developers having contributed more than a billion times in them. That's a lot of code to read. If you read the source of popular OSS projects closely, you will discover that some principles are violated, some functions are poorly documented, some features are not correctly tested, some FIXMEs are still present, and also that some code looks too complicated, at first. And yet, the code is widely used in production and was probably written by developers better than you and me. *Your definition of clean code must match reality.*
 
 
 === Think more globally
 
-If you are obsessed with clean code, you have probably forgotten why you are writing the code in the first place. You need to understand how your code contributes in making the life of your users easier. We don't write code to have clean code. An acceptable code will always be better than a "perfect" code waiting in a pull request for weeks or months because you are polishing every detail. link:https://www.joelonsoftware.com/2009/09/23/the-duct-tape-programmer/[Shipping is a feature]. Of course, you must ship code that you can be proud of but that does not mean everything has to be perfect. Use your energy to create the best product and not just the best code. *Your definition of clean code must include its purpose.*
+If you are obsessed with clean code, you have probably forgotten why you are writing the code in the first place. You need to understand how your code makes the life of your users easier. We don't write code to have clean code. An acceptable code will always be better than a "perfect" code waiting in a pull request for weeks or months because you are polishing every detail. link:https://www.joelonsoftware.com/2009/09/23/the-duct-tape-programmer/[Shipping is a feature]. Of course, you must ship code that you can be proud of, but that does not mean everything has to be perfect. Use your energy to create the best product and not just the best code. *Your definition of clean code must include its purpose.*
 
 
 == One Last Word
 
-*Good developers know clean code is important. Great developers know there is something more than just clean code*. Too much of anything is never any good. If you are obsessed about clean code, you need to learn more about it to think less about it. Code is not written to be stored in repositories but to be run on servers and used by users. Clean code must make the software development process more enjoyable. Clean code must make the shipping of new features more frequent. If it isn't, no matter what you think of your code, it's probably not a great example of clean code.
+*Good developers know clean code is important. Great developers know there is something more than just clean code*. Too much of anything is never any good. If you are obsessed about clean code, you need to learn more about it to think less about it. Code isn't written to be stored in repositories but run on servers and used by users. Clean code must make the software development process more enjoyable. Clean code must make the shipping of new features more frequent. If it isn't, no matter what you think of your code, it's probably not a great example of clean code.
 
 

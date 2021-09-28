@@ -8,7 +8,7 @@ Programming languages offers many functions operating on strings. We will cover 
 [[sect-implementation-processing-length]]
 ==== `length()`
 
-Determining the length of a string can be challenging with Unicode. A possible implementation is simply to return the number of code points in the string but the result can be surprising:
+Determining the length of a string can be challenging with Unicode. A possible implementation is simply to return the number of code points in the string, but the result can be surprising:
 
 [source,python]
 ----
@@ -17,7 +17,7 @@ print(len("à"))
 # Output: 2
 ----
 
-Why? The result is not as surprising as it may seem. We have mentionned that the Unicode Standard defines combining characters, like when defining accentuated letters. To understand the example, you need to remember that your editor (or browser) is rendering the text using glyphs, and thus have to manage these combining characters. The same example can be rewritten using the following syntax:
+Why? The result is not as surprising as it may seem. We have mentioned that the Unicode Standard defines combining characters, like when defining accentuated letters. To understand the example, you need to remember that your editor (or browser) is rendering the text using glyphs, and thus have to manage these combining characters. The same example can be rewritten using the following syntax:
 
 [source,python]
 ----
@@ -26,7 +26,7 @@ print(len("\N{LATIN SMALL LETTER A}\N{COMBINING GRAVE ACCENT}"))
 # Or "\u0061\u0300"
 ----
 
-Like most examples in this section, you can easily reproduce the same behavior in other languages like Java or Go. The fact is our Unicode text is really composed of two Unicode characters. The result may be considered correct or wrong depending on what you are looking for.
+Like most examples in this section, you can reproduce the same behavior in other languages like Java or Go. The fact is our Unicode text is really composed of two Unicode characters. The result may be considered correct or wrong depending on what you are looking for.
 
 
 [[sect-implementation-processing-equals]]
@@ -47,7 +47,7 @@ func main() {
 }
 ----
 
-Why? Convertibility is one of the core design principle behind Unicode. Converting between Unicode and any other encoding must be as easy as possible, which means if a character exists in an encoding, it must also exists in Unicode to have a simple one-to-one mapping between the two encodings. So, even if Unicode favors combining characters to represent accentuated letters, prior encodings often includes a single character for these letters such as `à`. The same example can be rewritten using the following syntax:
+Why? Convertibility is one of the core design principles behind Unicode. Converting between Unicode and any other encoding must be as easy as possible, which means if a character exists in an encoding, it must also exist in Unicode to have a simple one-to-one mapping between the two encodings. So, even if Unicode favors combining characters to represent accentuated letters, prior encodings often include a single character for letters such as `à`. The same example can be rewritten using the following syntax:
 
 [source,go]
 ----
@@ -62,7 +62,7 @@ func main() {
 }
 ----
 
-According to the Unicode standard, these two strings are canonically equivalent and should be treated as equal even if their sequence of bytes are different.
+According to the Unicode standard, these two strings are canonically equivalent and should be treated as equal even if their sequences of bytes are different.
 
 To solve this problem, Unicode defines different normalization algorithms to convert equivalent strings to the same normal form. These algorithms are implemented by programming languages but are rarely applied systematically (normalization isn't free). Java, Python, and link:https://blog.golang.org/normalization[Go] all provide such functions.
 
@@ -85,7 +85,7 @@ func main() {
 
 ----
 
-In practice, normalization is not always required  but it is important to understand why it exists, and to apply it when it makes sense, like when receiving a Unicode text from an external program.
+In practice, normalization is not always required, and it is crucial to understand why it exists and when to apply it, like when receiving a Unicode text from an external program.
 
 Normalization also occurs when you are not expecting it. Consider the following program in Python:
 
@@ -98,7 +98,7 @@ print(ℌ == H)
 # Output: True
 ----
 
-Why? link:https://www.python.org/dev/peps/pep-3131/[Python accepts non-ASCII characters in identifiers] but all identifiers are passed to a function to normalize their name first. On this example, the character `ℌ` has the same normal form as the character `H`:
+Why? link:https://www.python.org/dev/peps/pep-3131/[Python accepts non-ASCII characters in identifiers] but all identifiers are passed to a function to normalize their name first. In this example, the character `ℌ` has the same normal form as the character `H`:
 
 [source,python]
 ----
@@ -112,7 +112,7 @@ print(unicodedata.normalize('NFKC', "ℌ"))
 [[sect-implementation-processing-case]]
 ==== Example: `upper()`
 
-A function like `upper()` in Python is often used to make case-insensitive comparisons. But not all scripts have case, and there aren't just two cases (ex: titlecase is used for book titles).
+A function like `upper()` in Python is often used to make case-insensitive comparisons. But not all scripts use cases, and there aren't just two cases (ex: titlecase is used for book titles).
 
 _Case folding_ is defined by the Unicode Standard as a solution for caseless comparison of text to overcome these limitations, but Unicode also provides support to implement these classic functions using the _Unicode Character Database_—the set of data files containing character properties. In particular, we are looking for the property `Simple_Lowercase_Mapping` defined in the file `UnicodeData.txt`.
 
@@ -423,7 +423,7 @@ class CharacterData00 extends CharacterData {
 }
 ----
 
-Like Python, we observe various optimizations but the overall idea is similar—we generate static code from the Unicode data files. In Java, accessing the properties of a character is more obvious thanks to `switch` statements using code points, whereas in Python, we have to manipulates bytes to determine the index of the code point first.
+Like Python, we observe various optimizations but the overall idea is similar--we generate static code from the Unicode data files. In Java, accessing the properties of a character is more obvious thanks to `switch` statements using code points, whereas in Python, we have to manipulate bytes to determine the index of the code point first.
 
 
 ===== Example: Go
@@ -515,7 +515,7 @@ var _CaseRanges = []CaseRange{
 }
 ----
 <1> For Unicode characters in the range `A`—`Z`, add 32 to the code point to get the uppercase character.
-<2> For Unicode characters in the range `a`—`z`, substract 32 to the code point to get the lowercase or titlecase character.
+<2> For Unicode characters in the range `a`—`z`, subtract 32 to the code point to get the lowercase or titlecase character.
 
 This variable is then used by the function `to`, which is called by higher-level functions such as `ToUpper`, `ToLower`:
 
@@ -561,7 +561,7 @@ func to(_case int, r rune, caseRange []CaseRange) (mappedRune rune, foundMapping
 }
 ----
 <1> The function is called with a constant `UpperCase` or `LowerCase` as the first argument and a single character to convert.
-<2> Go uses binary search to locale the Unicode range in O(log N).
+<2> Go uses binary search to locate the Unicode range in O(log N).
 <3> Once the range is found, simply add the delta to the code point.
 
 
@@ -626,13 +626,13 @@ public class StringTest {
 }
 ----
 
-In Java, the metacharacter `\w` also matches `[a-zA-Z_0-9]` (which is faster than checking the Unicode Character Database). Other character classes exists like `\p{L}`. (`L` matches a single code point in the category "letter", but other values are possible: `N` for any kind of numeric character in any script, etc.) This syntax is also supported by Go.
+In Java, the metacharacter `\w` also matches `[a-zA-Z_0-9]` (which is faster than checking the Unicode Character Database). Other character classes exist like `\p{L}`. (`L` matches a single code point in the category "letter", but other values are possible: `N` for any kind of numeric character in any script, etc.) This syntax is also supported by Go.
 
 
 [NOTE]
 .Emojis in identifiers?
 ====
-Most languages requires source files to be encoded in Unicode but that does not mean these languages accept any Unicode character in variable names. link:https://rosettacode.org/wiki/Unicode_variable_names[Rules differs among languages] but most languages like Java, link:https://www.python.org/dev/peps/pep-3131/[Python], and link:https://golang.org/ref/spec#Identifiers[Go] accept only characters considered as letters or digits in the Unicode table (ex: ツ, Δ, π).
+Most languages require source files to be encoded in Unicode, but that does not mean these languages accept any Unicode character in variable names. link:https://rosettacode.org/wiki/Unicode_variable_names[Rules differs among languages] but most languages like Java, link:https://www.python.org/dev/peps/pep-3131/[Python], and link:https://golang.org/ref/spec#Identifiers[Go] accept only characters considered as letters or digits in the Unicode table (ex: ツ, Δ, π).
 
 Some languages do not have these restrictions. You can write link:https://twitter.com/t3xtm0de/status/600711130324008961[hieroglyphs in Hashell]:
 
