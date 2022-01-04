@@ -83,3 +83,21 @@ Here are common emojis to use in posts:
 The plugin link:https://github.com/jekyll/jekyll-feed[`jekyll-feed`] imposes the image to be present in the blogpost to be included in the feed. This is problematic as I want to use a standard image for each category.
 
 I use this link:https://markonproduct.com/coding-an-atom-feed-optimized-for-feedly[other solution] as a workaround to really control the `/feed.xml` file content.
+
+
+== Create a create Opening
+
+[quote,Brian Clark, copyblogger]
+____
+A great headline mixed with a weak opening is like inviting someone into your house, only to slam the door in their face as they approach.
+____
+
+Source: https://copyblogger.com/5-simple-ways-to-open-your-blog-post-with-a-bang/
+
+. Ask a question. Use a rhetorical device to foster curiosity and gets the reader thinking = active engagement
+. Share an anecdote or a quote = Make people laugh or establish the main point of your post.
+. Invoke the mind’s eye. Engage the imagination with words like “imagine,” “do you remember when,” etc.
+. Use a metaphor. Use the most powerful device to telling a story in a single sentence = allows the reader to tell a story to himself.
+. Cite a persuasive statistic. Use truly interesting factoid that the reader just can’t ignore
+
+
