@@ -1,0 +1,697 @@
+---
+layout: post-inspect
+title: Anki SRS Algorithm
+subtitle: Spaced Repetition Explained with Code
+author: Julien Sobczak
+date: '2022-05-30'
+category: inspect
+subject: Anki
+excerpt: >
+  TODO.
+excerpt_only: true
+---
+
+:page-liquid:
+:tabsize: 4
+:imagesdir: {{ '/posts_resources/2022-05-30-anki-srs/' | relative_url }}
+
+
+[quote, Hermann Ebbinghaus, German Psychologist having introduced the Forgetting Curve]
+____
+Humans more easily remember or learn items when they are studied a few times over a long period of time (spaced presentation), rather than studied repeatedly in a short period of time.
+____
+
+
+[.lead]
+TODO.
+
+[NOTE]
+.What You Will Learn
+====
+* What is the history of SRS algorithms.
+* How Anki SRS algorithm is implemented.
+* How Anki SRS algorithm differs from other known implementations.
+* How Anki SRS algorithm can be improved.
+====
+
+[CAUTION.license]
+The Anki source code is published under link:https://www.gnu.org/licenses/agpl-3.0.en.html[AGPL v3]. The code presented in this article have been slightly adapted for learning and readability purposes.
+
+
+== SRS Primer
+
+"The role of the scheduler is basically to decide what the user should review now."
+
+=== The Leitner System (1970s)
+
+link:https://en.wikipedia.org/wiki/Leitner_system[The Leiter System]
+
+Here is the logic implemented in pseudo-language
+
+[source]
+----
+1. Split the knowledge into smallest possible items.
+2. Use a box with 5 partitions of increasing sizes
+   (1cm, 2cm, 4cm, 8cm, 14cm).
+3. Place new items in partition 1.
+4. When a partition gets full, review every card in the partition:
+    1. If the answer is correct, move the item to the next partition
+       (or replace the item in the last partition if already there)
+    2. Else, move the item back to the first partition
+       (or replace the item in the first partition if already there)
+5. Continue to add new items
+----
+
+Here is the same logic illustrated:
+
+**TOOO** include the illustration Leitner Modern System
+
+// In the original Leitner system, new cards are added to the first partition. A partition get reviewed only when full. If a card is correctly remembered, the card is move to the next partition, otherwise the card is placed back in the first partition.
+
+// image::Leitner_system_original.svg[title="Original Leitner System  — Credit Zirguezi — Wikipedia", width=500px]
+
+Here is a small Python program implementing the logic behind the original Leitner system:
+
+[source,python]
+----
+from queue import Queue
+import random
+
+CARDS_PER_CM = 5
+
+BOX = [
+    Queue(1  * CARDS_PER_CM),
+    Queue(2  * CARDS_PER_CM),
+    Queue(5  * CARDS_PER_CM),
+    Queue(8  * CARDS_PER_CM),
+    Queue(14 * CARDS_PER_CM),
+]
+
+def add(card, i):
+    BOX[i].put(card)
+    if BOX[i].full():
+        study()
+
+def review(card):
+    return random.choice([True, True, True, False])
+
+def study():
+    for index, partition in enumerate(BOX):
+        if partition.full():
+            # Time to review the cards
+            print(f"Time to study partition {index + 1}!")
+
+            cards_to_review = []
+            while not partition.empty():
+                cards_to_review.append(partition.get())
+
+            for card in cards_to_review:
+                answer = review(card)
+                new_index = None
+                if answer and index + 1 < len(BOX):
+                    # Promote
+                    new_index = index + 1
+                elif not answer and index - 1 > 0:
+                    # Demote
+                    new_index = 0 # MN: The Leitner original System moves to the first partition
+                else:
+                    # Replace in the same partition
+                    new_index = index
+                add(card, new_index)
+
+if __name__ == "__main__":
+
+    # Populate the box
+    for i in range(140):
+        add("New Card", 0)
+
+    # Study
+    study()
+----
+
+An alternative method using three boxes where incorrect answers are only moved back by the previous box:
+
+// image::Leitner_system_modern.svg[title="Alternative Leitner System  — Credit Zirguezi — Wikipedia", width=500px]
+
+**TOOO** include the illustration Leitner Modern System
+
+The following animation depicts the review process using this new process with only 3 boxes:
+
+image::Leitner_system_animation.gif[title="Animation of three sessions — Credit Zirguezi — Wikipedia", width=500px]
+
+Here is the pseudo-code:
+
+[source]
+----
+1. Split the knowledge into smallest possible items.
+2. Use 3 boxes of similar sizes. Place new items in box A.
+3. Review each box
+     Box A: Review every day
+     Box B: Review twice a week (Tursday, Friday)
+     Box C: Review every week (Sunday)
+4. Move reviewed items
+   1. If the answer is correct, move the card to the next box
+      (or replace the item in the last box if already there)
+   2. Else, move the card to the previous box
+      (or replace the item in the first box if already there)
+5. Repeat tomorrow
+----
+
+
+Here is a small program implementing this new logic:
+
+[source,python]
+----
+from queue import Queue
+import random
+from datetime import datetime, timedelta
+
+A = 0
+B = 1
+C = 2
+SYSTEM = [
+    Queue(), # Box A: every day
+    Queue(), # Box B: every 2-3 days (ex: Tuesday & Friday)
+    Queue(), # Box C: every week (ex: Sunday)
+]
+
+
+def add(card, i):
+    """Add a new card in the Leitner system."""
+    SYSTEM[i].put(card)
+
+def review(card):
+    """Answer a single card."""
+    return random.choice([True, True, True, False])
+
+def study_box(number):
+    """Review all cards in a box."""
+    cards_to_review = []
+    while not SYSTEM[number].empty():
+        cards_to_review.append(SYSTEM[number].get())
+
+    for card in cards_to_review:
+        answer = review(card)
+        new_number = None
+        if answer and number < C:
+            # Promote
+            new_number = number + 1
+        elif not answer and number > A:
+            # Demote
+            new_number = number - 1
+        else:
+            # Replace in the same box
+            new_number = number
+        add(card, new_number)
+
+def study(day):
+    """Study the box according the week day."""
+    weekday = day.weekday()
+    if weekday == 0: # Monday
+        study_box(A)
+    elif weekday == 1: # Tuesday
+        study_box(A)
+        study_box(B)
+    elif weekday == 2: # Wednesday
+        study_box(A)
+    elif weekday == 3: # Thursday
+        study_box(A)
+    elif weekday == 4: # Friday
+        study_box(A)
+        study_box(B)
+    elif weekday == 5: # Saturday
+        study_box(A)
+    elif weekday == 6: # Sunday
+        study_box(A)
+        study_box(C)
+
+if __name__ == "__main__":
+
+    # Populate the box
+    for i in range(140):
+        add("New Card", 0)
+
+    # Study (over 10 days)
+    for i in range(10):
+        day = datetime.today() - timedelta(days=10 - i)
+        study(day)
+----
+
+
+=== SM-0 (1985)
+
+Algorithms are precise instructions to carry out. In fact, algorithms don't have to be executed on computers at all.footnote:[You can easily reproduce manually what a computer does, except you will take so much more time.] The first version of the SuperMemo Algorithm was thought to be executed manually. The [SM-0 algorithm](http://super-memory.com/articles/paper.htm) (the paper-and-pencil SuperMemo method) was published in 1985 and relies on [exercice books filled with tables](http://super-memory.com/articles/paper.htm).
+
+Here is the SM-0 algorithm in pseudo-language:
+
+[source]
+----
+1. Split the knowledge into smallest possible items
+2. Associate items into groups containing 20-40 elements.
+   These groups are later called pages.
+3. Repeat whole pages using the following intervals (in days):
+     I(1) = 1
+     I(2) = 7
+     I(3) = 16
+     I(4) = 35
+     for i > 4: I(i) := round(I(i-1) * 2)
+   where I(i) is the interval used after the i-th repetition.
+4. Copy all items forgotten after the 35 day interval into newly created pages
+   (without removing them from previously used pages).
+   Those new pages will be repeated in the same way as pages
+   with items learned for the first time
+----
+
+Here is the same logic illustrated:
+
+**TODO** include illustration of SM-0
+
+The algorithm was designed to be carry out manually, we can still try to capture the logic using code:
+
+[source,python]
+----
+import random
+from datetime import date, timedelta
+from queue import Queue
+
+# The table of repetition intervals determines the number of days between
+# two successive reviews.
+# SM-0 applies the factor 1.7 behind two successive values.
+# The first value is fixed at 4 days.
+TABLE_REPETITION_INTERVALS = [4] # First review after 4 days
+# Use the factor 1.7 to determine next intervals
+# Ex: 4, 7, 12, 20, ...
+for i in range(1, 15): # 15 repetitions ~=
+    prev = TABLE_REPETITION_INTERVALS[i - 1]
+    next = int(prev * 1.7)
+    TABLE_REPETITION_INTERVALS.append(next)
+
+# The book containing the pages to review
+DATABOOK = []
+# The book containing the pages to review day after day
+# NB: We uses a spare dictionary where only dates
+# with one or more pages to review are present
+SCHEDULE_BOOK = {} # <date, [page numbers]>
+
+# Fake the user in answering the question
+def review_question(question, repetitions):
+    """
+    Randomly answer a question.
+    The chance of answer correctly increases with the number of repetitions.
+    """
+    return random.choice([True] * repetitions * 4 + [False])
+
+# A single page in the data book.
+class Page:
+
+    def __init__(self, questions, answers):
+        # "Question field" column
+        self.questions = questions
+        # "Answer field" column
+        self.answers = answers
+        # "Repetition scores" column is determined during the review session
+        # "Repetitions" column
+        self.repetitions = []
+
+    def review(self):
+        remaining_questions = Queue(self.questions)
+
+        # Review until there is no more cards wrongly answered
+        iteration = 1
+        # Memorize the number of wrong answers during the first iteration
+        U = 0
+        while not remaining_questions.empty():
+
+            questions_to_review = []
+            while not remaining_questions.empty():
+                questions_to_review.append(remaining_questions.get())
+
+            for question in questions_to_review:
+                if not review_question(question, iteration):
+                    # Review again
+                    remaining_questions.append(question)
+                    if iteration == 1:
+                        U += 1
+            iteration += 1
+
+        self.repetitions.append({
+            "No": len(self.repetitions) + 1,
+            "Dat": str(date.today()),
+            "U": U,
+        })
+
+
+if __name__ == "__main__":
+    # Add a new page for illustration purposes
+    DATABOOK.append(Page(
+        questions=["Question 1", "Question 2", "Question 3"],
+        answers=["Answer 1", "Answer 2", "Answer 3"],
+    ))
+    page_number = len(DATABOOK) - 1
+
+    # Mark the page to review according the table of repetition intervals
+    now = date.today()
+    for interval in TABLE_REPETITION_INTERVALS:
+        review_date = str(now + timedelta(days=interval))
+        if review_date not in SCHEDULE_BOOK:
+            SCHEDULE_BOOK[review_date] = []
+        print(f"Page {page_number} to review on {review_date}")
+        SCHEDULE_BOOK[review_date] = [page_number]
+
+    # Review sessions during one year
+    for i in range(365):
+        day = str(now + timedelta(days=i))
+        if not day in SCHEDULE_BOOK:
+            # Nothing to review today
+            continue
+        # Review each planned pages
+        for page in SCHEDULE_BOOK[day]:
+            print(f"Reviewing page {page} on {day}")
+            DATABOOK[page].review()
+----
+
+
+
+The SM-0 algorithms can be challenging in practice for different reasons:
+
+* All items in a given page are reviewed at the same time. For hard-to-remember items (items that require more than 3 reviews on a given day to be recalled), SM-0 recommends to duplicate them on a new page in your book. These items will be reviewed more frequently, and some will maybe be duplicated again if still to hard to remember.
+* The intervals are determined using an estimation of the average case (x1.7) but the ideal intervals depend on the complexibility and of your familiarity with the subject. You probably needs shorted intervals for science subjects like Mathematics for example. The intervals are determined using the factor 1.7 (4 days, 4 * 1.7 ~= 7 days, 7 * 1.7 ~= 12 days, 20 days, 1 month, ...). In most cases, intervals should increase 1.5—2.0 times after each repetition. A factor lower than 1.4 or larger than 3 are, almost always, a bad idea.
+* Last but not least, executing the algorithm manually works, but is far from being a smooth learning experience.
+
+Enter the computer.
+
+
+=== SM-2 (1987)
+
+Unlike physical systems where cards are grouped in the same box/partition/page and are reviewed collectively, digital systems will consider each item separately. For example, the SuperMemo algorithm (called SM-2) assigns a specific level of difficulty to each card and determine the appropriate intervals between repetitions using this value.
+
+
+Here is the algorithm SM-2 in pseudo-language adapted from the [original paper](http://super-memory.com/english/ol/sm2.htm):
+
+[source]
+----
+1. Split the knowledge into smallest possible items.
+2. With all items associate an E-Factor equal to 2.5.
+3. Repeat items using the following intervals:
+     I(1) := 1
+     I(2) := 6
+     for n > 2: I(n) := round(I(n-1) * EF)
+   where:
+     * I(n) → inter-repetition interval after the n-th repetition (in days),
+     * EF   → E-Factor of a given item
+4. After each repetition assess the quality of repetition response
+   in 0-5 grade scale:
+     * 5 → perfect response
+     * 4 → correct response after a hesitation
+     * 3 → correct response recalled with serious difficulty
+     * 2 → incorrect response; where the correct one seemed easy to recall
+     * 1 → incorrect response; the correct one remembered
+     * 0 → complete blackout.
+5. After each repetition modify the E-Factor of the recently repeated
+   item according to the formula:
+     EF' := min(EF + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)), 1.3)
+   where:
+     * EF' → new value of the E-Factor,
+     * EF → old value of the E-Factor,
+     * q → quality of the response in the 0-5 grade scale.
+6. If the quality response was lower than 3 then start repetitions for the item from the beginning without changing the E-Factor (i.e. use intervals I(1), I(2) etc. as if the item was memorized anew).
+7. After each repetition session of a given day repeat again all items that scored below four in the quality assessment. Continue the repetitions until all of these items score at least four.
+----
+
+Here is the same logic illustrated using an example:
+
+**TODO** include llustration of SM-2
+
+Now, the same logic but implemented as code:
+
+[source,python]
+----
+TODO
+----
+
+
+== Anki Algorithm
+
+* [Anki V1 Scheduler](https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html): The default and only scheduler until Anki 2.1
+* [Anki V2 Scheduler](https://faqs.ankiweb.net/the-anki-2.1-scheduler.html): The current scheduler used in Anki Desktop and AnkiDroid by default
+* [Anki V3 Scheduler](https://faqs.ankiweb.net/the-2021-scheduler.html): V2-compatible scheduler that benefits from recent Anki architecture changes.
+
+The V3 scheduler will become the default in future versions, but for this blog post, we will analyze the V2.1 scheduler as it is the version I'm famliar with.
+
+You can find the source code for the different versions on GitHub: [v1.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py), [v2.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py), [v3](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3)
+
+We will use the [version 2.10.0](https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py) of Anki Desktop to ignore recent refactorings (rewrite of backend code in Rust, introduction of Protocol Buffer messages, factorization of common code among scheduler versions using inheritance, etc.) and keep the code abordable.
+
+
+**TODO** schema with relation between Collection/Note/Note Type/Card
+See https://docs.ankiweb.net/getting-started.html#key-concepts
+
+**TODO** schema with Anki Algorithm in pseudo-code (with the various queues)
+See https://docs.ankiweb.net/studying.html#learningrelearning-cards
+See https://docs.ankiweb.net/deck-options.html?#learning-steps
+See https://docs.ankiweb.net/deck-options.html#lapses
+
+
+
+
+.Anki Terminology
+====
+**TODO** rephrase https://www.quora.com/In-regards-to-Anki-spaced-repetition-what-are-buried-suspended-cards
+
+* **Buried cards**: Buried cards don’t get shown. However at the start of every day every buried card get’s unburied.
+
+* **Suspended card**: Like burried cards, suspended cards don’t get shown. However they don’t get automatically unsuspended. To unsuspend a card you have to go to the card browser. Suspended cards have a yellow background in the card browser.
+
+* **Sibling cards**: All cards create by the same note are siblings. If you have a Note Type for learning German vocabulary the “Baum->tree” card and the “tree->Baum” card are siblings if they are created by the same note. +
+When you answer a card, all it’s siblings automatically get buried. This means that you won’t see the “Baum->tree”-card and the “tree->Baum” card on the same day.
+
+* **Leeches**: If a card get’s rated wrong at 8 separate days, it get’s tagged as a leech. The numbers of days can be changed in the settings.
+====
+
+
+=== Introduction
+
+From Wikipedia:
+
+"The SM-2 algorithm, created for SuperMemo in the late 1980s, forms the basis of the spaced repetition methods employed in the program. Anki's implementation of the algorithm has been modified to allow priorities on cards and to show flashcards in order of their urgency.footnote:[https://en.wikipedia.org/wiki/Anki_(software)]"
+
+"Anki's current scheduling algorithm is derived from SM-2 (an older version of the SuperMemo algorithm), though the algorithm has been significantly changed from SM-2 and is also far more configurable. One of the most apparent differences is that while SuperMemo provides users a 6-point grading system (0 through 5, inclusive), Anki only provides at most 4 grades (again, hard, good, and easy). Anki also has significantly changed how review intervals grow and shrink (making many of these aspects of the scheduler configurable through deck options), though the core algorithm is still based on SM-2's concept of ease factors as the primary mechanism of evolving card review intervals."
+
+
+From link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html[Anki Website]
+
+
+https://en.wikipedia.org/wiki/SuperMemo#Description_of_SM-2_algorithm
+
+There is a current rewrite of Anki from pure Python to Rust for the backend. In this post, I will use the Python version as present in the last major version of Anki 2.1:
+
+https://github.com/ankitects/anki/blob/2.1.0/anki/sched.py (~1500 lines)
+https://github.com/ankitects/anki/blob/2.1.0/anki/schedv2.py (~1600 lines)
+
+### UI
+
+image::anki-preferences-scheduling.png[]
+
+* ☑ Show next review time above answer buttons (default: yes)
+  => **TODO**
+* ☑ Show remaining card count during review (default: yes)
+  => **TODO**
+* ☑️ Show learning cards with larger steps before reviews (default: no)
+  => **TODO**
+* ☑ Legacy timezone handling (buggy, but required for AnkiDroid <= 2.14) (default: no)
+  => **TODO**
+* ☑ V3 scheduler (beta) (default: no)
+  => **TODO**
+* Select:
+** "Mix new cards and reviews" (default)
+** "Show new cards after reviews"
+** "Show new cards before reviews"
+  => **TODO**
+* Next day starts at `value` hours past midnight (default: `4`)
+  => **TODO**
+* Learn ahead limit `value` mins (default: `20`)
+  => **TODO**
+* Timebox time limit `value` mins (default: `0`)
+  => **TODO**
+
+
+image::anki-deck-options-scheduling.png[]
+
+See `anki/ftl/core/deck-config.ftl`
+
+* Daily Limits
+** New cards/day: `value` (default `20`)
+*** ℹ: The maximum number of new cards to introduce in a day, if new cards are available. Because new material will increase your short-term review workload, this should typically be at least 10x smaller than your review limit.
+*** **TODO**
+** Maximum reviews/day: `value` (default `50`)
+*** ℹ: The maximum number of review cards to show in a day, if cards are ready for review.
+*** **TODO**
+
+* New Cards
+** Learning steps (default `1m 10m`)
+*** ℹ: One or more delays, separated by spaces. The first delay will be used when you press the `Again` button on a new card, and is 1 minute by default. The `Good` button will advance to the next step, which is 10 minutes by default. Once all steps have been passed, the card will become a review card, and will appear on a different day. Delays are typically minutes (eg `1m`) or days (eg `2d`), but hours (eg `1h`) and seconds (eg `30s`) are also supported.
+*** **TODO**
+** Graduating interval (default `1`)
+*** ℹ: The number of days to wait before showing a card again, after the `Good` button is pressed on the final learning step.
+*** **TODO**
+** Easy interval (default `4`)
+*** ℹ: The number of days to wait before showing a card again, after the `Easy` button is used to immediately remove a card from learning.
+*** **TODO**
+** Insertion order: `Sequential`, `Random` (default `???`)
+*** ℹ: Controls the position (due #) new cards are assigned when you add new cards. Cards with a lower due number will be shown first when studying. Changing this option will automatically update the existing position of new cards.
+*** **TODO**
+
+* Lapses
+** Relearning steps (default `10m`)
+*** ℹ: Zero or more delays, separated by spaces. By default, pressing the `Again` button on a review card will show it again 10 minutes later. If no delays are provided, the card will have its interval changed, without entering relearning.
+*** **TODO**
+** Minimum interval (default `1`)
+*** ℹ: The minimum interval given to a review card after answering `Again`.
+*** **TODO**
+** Leech threshold (default `8`)
+*** ℹ: The number of times `Again` needs to be pressed on a review card before it is marked as a leech. Leeches are cards that consume a lot of your time, and when a card is marked as a leech, it's a good idea to rewrite it, delete it, or think of a mnemonic to help you remember it.
+*** **TODO**
+** Leech action: "Suspend Card" (default) or "Tag Only"
+*** ℹ: `Tag Only`: Add a "leech" tag to the note, and display a pop-up. `Suspend Card`: In addition to tagging the note, hide the card until it is manually unsuspended.
+*** **TODO**
+
+* Timer
+** Maximum answer seconds (default `60`)
+*** ℹ: The maximum number of seconds to record for a single review. If an answer exceeds this time (because you stepped away from the screen for example), the time taken will be recorded as the limit you have set.
+*** **TODO**
+** Show answer time: on/off (default off)
+*** ℹ: In the review screen, show a timer that counts the number of seconds you're taking to review each card.
+*** **TODO**
+
+* Burying
+** Bury new siblings until the next day: on/off (default on)
+*** ℹ: Whether other cards of the same note (eg reverse cards, adjacent cloze deletions) will be delayed until the next day.
+*** **TODO**
+** Bury review siblings until the next day: on/off (default on)
+*** ℹ: Whether other cards of the same note (eg reverse cards, adjacent cloze deletions) will be delayed until the next day.
+*** **TODO**
+
+* Audio
+** Don't play audio automatically: on/off (default off)
+*** **TODO**
+** Skip question when replaying answer: on/off (default off)
+*** ℹ: Whether the question audio should be included when the Replay action is used while looking at the answer side of a card.
+*** **TODO**
+
+* Advanced
+** Maximum interval (default `36500`)
+*** ℹ: The maximum number of days a review card will wait. When reviews have reached the limit, `Hard`, `Good` and `Easy` will all give the same delay. The shorter you set this, the greater your workload will be.
+*** **TODO**
+** Starting ease  (default `2.50`)
+*** ℹ: The ease multiplier new cards start with. By default, the `Good` button on a newly-learned card will delay the next review by 2.5x the previous delay.
+*** **TODO**
+** Easy bonus  (default `1.30`)
+*** ℹ: An extra multiplier that is applied to a review card's interval when you rate it `Easy`.
+*** **TODO**
+** Interval modifier (default `1.00`)
+*** ℹ: This multiplier is applied to all reviews, and minor adjustments can be used to make Anki more conservative or aggressive in its scheduling. Please see the manual before changing this option.
+*** **TODO**
+** Hard interval (default `1.20`)
+*** ℹ: The multiplier applied to a review interval when answering `Hard`.
+*** **TODO**
+** New interval  (default `0.00`)
+*** ℹ: The multiplier applied to a review interval when answering `Again`.
+*** **TODO**
+
+
+
+////
+## Useful links
+# * Database Structure: https://github.com/ankidroid/Anki-Android/wiki/Database-Structure
+
+
+## Limitations
+# * Only works with a single deck. Anki tries to read cards that must review for every deck. We ignore this logic as it's not related to the SRS Algorithm
+# * Anki run SQL queries to update or retrieve cards. We will work for a in-memory list of cards instead and use common functions (filter, sort, etc.)
+# * Anki SRS queues are populated by card id. We will store cards directly as they are already in memory.
+# * Only Basic notes are supported. Burying siblings is no possible and not implemented here.
+# * Consider days end at midnight (Anki supports a collection setting "Next day starts at `4` hours past midnight"
+
+
+## FAQ
+##
+## Why new/review queues?
+# Successive failures while cards are in learning do not result in further decreases to the card’s ease. A common complaint with the standard SM-2 algorithm is that repeated failings of a card cause the card to get stuck in "low interval hell". In Anki, the initial acquisition process does not influence a card’s ease.
+# See https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards
+##
+##
+## What about buried?
+# Only new/review cards are buried when a card of the same note is answered (card in learning are not concerned)
+# See https://docs.ankiweb.net/studying.html#siblings-and-burying
+##
+##
+## In which order Anki shows cards?
+## By default, Anki brings up your daily cards in this order:
+## 1. learning cards that are due
+## 2. (optional) new cards if your preferences are set to have them first
+## 3. review cards
+## 4. "day learning" cards, which are cards in the learning queue that crossed from one day to the next without graduating to the review queue.
+## 5. (optional) new cards if your preferences put them last
+## See https://ankiweb.net/shared/info/1807121582
+##
+##
+## Why new cards have no ease?
+## New cards have no ease, so no matter how many times you press 'Again' or 'Hard',
+## the future ease factor of the card won't be affected.
+## The same can be said about relearning cards: pressing 'Again' or 'Hard' won't have
+## any effect over the card's ease.
+##
+##
+## Day Boundaries (sub-day vs day learning queues)
+##
+## Anki treats small steps and steps that cross a day boundary differently. With small steps, the cards are shown as soon as the delay has passed, in preference to other waiting cards like reviews. This is done so that you can answer the card as closely to your requested delay as possible. In contrast, if the interval crosses a day boundary, it is automatically converted to days.
+## See https://docs.ankiweb.net/deck-options.html?#day-boundaries
+
+
+////
+
+
+
+
+
+
+
+
+
+
+
+== A Better Anki SRS Algorithm?
+
+Anki’s algorithm is based on the [SuperMemo 2 algorithm](http://www.supermemo.com/english/ol/sm2.htm), the original computer-based algorithm released in the 1987 in SuperMemo 1.0. The latest version of the SuperMemo algorithm is SM-18, released in 2019, and is the sixth revision of the original algorithm, each one claiming to further optimize the algorithm, obviously.
+
+In my opinion, there is no need to focus too much on optimizing the SRS algorithm. Making reviewing flashcards an habit and sticking to it has, for sure, a greater impact that the marginal gain to not show the cards more or less often.
+
+
+## Other Algorithms
+
+### Anki Scheduler V3
+
+link:https://docs.ankiweb.net/studying.html#fuzz-factor[Fuzz Factor]
+When you select an ease button on a review card, Anki also applies a small amount of random “fuzz” to prevent cards that were introduced at the same time and given the same ratings from sticking together and always coming up for review on the same day. This fuzz will appear on the answer buttons when the v3 scheduler is enabled, so if you are using a previous version and you’re noticing a slight discrepancy between what you select and the intervals your cards actually get, this is probably the cause.
+
+## TODO
+
+* [ ] Watch https://www.youtube.com/watch?v=1XaJjbCSXT0&ab_channel=ConanLiu%2CM.D. & https://www.youtube.com/watch?v=lz60qTP2Gx0&ab_channel=MattvsJapan
+* [ ] Read this paper comparing the Duolingo and Anki algorithms: https://repositori.upf.edu/bitstream/handle/10230/48804/Muley_2021.pdf?sequence=1&isAllowed=y
+* [ ] Read link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition]
+* [ ] Check this rewrite attempt https://gist.github.com/riceissa/1ead1b9881ffbb48793565ce69d7dbdd
+
+== Additional Resources
+
+* link:https://github.com/ankitects/anki[Anki GitHub Repository]
+* link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition] by Piotr Wozniak: An extensive coverage of the subject.
+* link:https://supermemo.guru/wiki/Algorithm_SM-17[SM-17 and the history of the SuperMemo algorithm] + link:https://supermemo.guru/wiki/Algorithm_SM-18[SM-18]
+* link:https://github.com/ankidroid/Anki-Android/wiki/Database-Structure[Anki Database Structure]: The most up-to-date guide to the Anki internal database schema
+
+
+
+[NOTE.remember]
+.To Remember
+====
+* *System calls are doors to the kernel*. They act like a security guard that must check your identity before executing your action. This could not be as fast as staying in the same room and executing the action yourself.
+====
