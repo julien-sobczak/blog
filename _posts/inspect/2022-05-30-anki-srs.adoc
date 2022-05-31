@@ -14,7 +14,7 @@ excerpt_only: true
 :page-liquid:
 :tabsize: 4
 :imagesdir: {{ '/posts_resources/2022-05-30-anki-srs/' | relative_url }}
-
+:icons: font
 
 [quote, Hermann Ebbinghaus, German Psychologist having introduced the Forgetting Curve]
 ____
@@ -426,7 +426,63 @@ Now, the same logic but implemented as code:
 
 [source,python]
 ----
-TODO
+import random
+from datetime import date, timedelta
+from queue import Queue
+
+def grade(question, repetitions):
+    # Increase the chance of success with the increased number of repetitions
+    choices = [0] * 1 * repetitions + [1] * 2 * repetitions + [2] * 3 * repetitions + [3] * 4 * repetitions + [4] * 5 * repetitions + [5] * 6 * repetitions
+    return random.choice(choices)
+
+# Settings
+I1 = 1
+I2 = 6
+MIN_EF = 1.3
+
+class Item:
+
+    def __init__(self, question, answer):
+        self.question = question
+        self.answer = answer
+        self.EF = 2.5
+        self.I = I1
+        self.next_review = date.today() + timedelta(days=self.I)
+        self.repetitions = 0
+
+    def review(self, day, q):
+        self.EF = max(self.EF+(0.1-(5-q)*(0.08+(5-q)*0.02)), MIN_EF)
+        if q < 3:
+            self.I = I1
+        elif self.I == I1:
+            self.I = I2
+        else:
+            self.I = round(self.I * self.EF)
+        self.next_review = day + timedelta(days=self.I)
+        self.repetitions += 1
+        return q < 4
+
+if __name__ == "__main__":
+    # Populate items
+    items = []
+    for i in range(1, 100):
+        items.append(Item(f"Q{i}", f"A{i}"))
+
+    # Review one year
+    # for i in range(365):
+    for i in range(365):
+        day = date.today() + timedelta(days=i)
+
+        items_to_review = Queue()
+        for item in items:
+            if item.next_review == day:
+                items_to_review.put(item)
+
+        while not items_to_review.empty():
+            item = items_to_review.get()
+            q = grade(item.question, item.repetitions + 1)
+            if not item.review(day, q):
+                items_to_review.put(item)
 ----
 
 
@@ -440,10 +496,10 @@ The V3 scheduler will become the default in future versions, but for this blog p
 
 You can find the source code for the different versions on GitHub: [v1.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py), [v2.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py), [v3](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3)
 
-We will use the [version 2.10.0](https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py) of Anki Desktop to ignore recent refactorings (rewrite of backend code in Rust, introduction of Protocol Buffer messages, factorization of common code among scheduler versions using inheritance, etc.) and keep the code abordable.
+We will use the [version 2.10.0](https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py) of Anki Desktop to ignore recent refactorings (rewrite of backend code in Rust, introduction of Protocol Buffer messages, factorization of common code among scheduler versions using inheritance, etc.) and keep the code easy to grasp.
 
 
-**TODO** schema with relation between Collection/Note/Note Type/Card
+**TODO** schema with relation between Collection/Note/Note Type/Card with two background colors (grey = not covered, green = covered)
 See https://docs.ankiweb.net/getting-started.html#key-concepts
 
 **TODO** schema with Anki Algorithm in pseudo-code (with the various queues)
@@ -452,11 +508,1004 @@ See https://docs.ankiweb.net/deck-options.html?#learning-steps
 See https://docs.ankiweb.net/deck-options.html#lapses
 
 
+### Part 1: Settings
+
+Unlike previous systems, Anki is highly configurable. Not all settings affect the SRS algorithm. Here are the default setting values used by Anki that will be used:
+
+[source,python]
+----
+
+# Whether new cards should be mixed with reviews, or shown first or last
+NEW_CARDS_DISTRIBUTE = 0
+NEW_CARDS_LAST = 1
+NEW_CARDS_FIRST = 2
+
+# The initial factor when card get promoted
+STARTING_FACTOR = 2500
+
+# Default collection configuration
+colConf = {
+    'newSpread': NEW_CARDS_DISTRIBUTE,
+    'collapseTime': 1200, # <1>
+}
+
+# Default deck configuration
+deckConf = {
+    'new': { # <2>
+        'delays': [1, 10],
+        'ints': [1, 4],
+        'initialFactor': STARTING_FACTOR,
+        'perDay': 20,
+    },
+    'rev': { # <2>
+        'perDay': 200,
+        'ease4': 1.3,
+        'maxIvl': 36500,
+        'hardFactor': 1.2,
+    },
+    'lapse': { # <3>
+        'delays': [10],
+        'mult': 0,
+        'minInt': 1,
+        'leechFails': 8,
+    },
+}
+----
+<1> If there is no more card to review now but next card in learning is in less than `collapseTime` seconds, show it now. +
+  _Setting_: `Preferences` > `Basic` > `Learn ahead limit` * 60 (default: `20` minutes)
+<2> The settings differs based on the queue where a card belongs. For example, when learning (`new`) cards, the delays is increased by graduating steps whereas the delay is multplied by a given factor for review (`rev`) cards. The meaning of individual setting will become clearer when we will detail the formula.
+<3> When you forget a review card, it is said to have 'lapsed', and the card must be relearnt. The default behaviour for lapsed reviews is to reset the interval (`minInt`) to 1 (i.e. make it due tomorrow), and put it in the learning queue for a refresher (`delays`) in 10 minutes.
+
+
+* `new`
+** `delays`: The list of successive delays between the learning steps of the new cards. The first delay will be used when you press the `Again` button on a new card, and is 1 minute by default. The `Good` button will advance to the next step, which is 10 minutes by default. Once all steps have been passed, the card will become a review card, and will appear on a different day. +
+  _Setting_: `Preferences` > `New Cards` > `Learning steps` (Default: `1m 10m`)
+** `ints`: The list of delays according to the button pressed while leaving the learning mode after pressing "Good" or "Easy." +
+  _Setting_: `Preferences` > `New Cards` > `Graduating interval`/`Easy interval` (Default: `1` and `4`)
+** `initialFactor`: The ease multiplier new cards start with. By default, the `Good` button on a newly-learned card will delay the next review by 2.5x the previous delay. +
+  _Setting_: `Preferences` > `Advanced` > `Starting ease` (Default: `2.50`),
+** `perDay`: The maximum number of new cards to introduce in a day, if new cards are available. +
+  _Setting_: `Preferences` > `Daily Limits` > `New cards/day` (Default: `20`)
+
+* `rev`
+** `perDay`: The maximum number of review cards to show in a day, if cards are ready for review. +
+  _Setting_: `Preferences` > `Daily Limits` > `Maximum reviews/day` (Default: `50`)
+** `ease4`: An extra multiplier that is applied to a review card's interval when you rate it `Easy`. +
+  _Setting_: `Preferences` > `Advanced` > `Easy bonus` (Default: `1.30`)
+** `maxIvl`: The maximum number of days a review card will wait. When reviews have reached the limit, `Hard`, `Good` and `Easy` will all give the same delay. +
+  _Setting_: `Preferences` > `Advanced` > `Maximum interval` (Default: `36500`)
+** `hardFactor`: The multiplier applied to a review interval when answering `Hard`. +
+  _Setting_: `Preferences` > `Advanced` > `Hard interval` (Default: `1.20`)
+
+* `lapse`
+** `delays`: The list of successive delays between the learning steps of lapsed cards. By default, pressing the `Again` button on a review card will show it again 10 minutes later. +
+  _Setting_: `Preferences` > `Lapses` > `Relearning steps` (Default: `10m`)
+** `minInt`: The minimum interval given to a review card after answering `Again`. +
+  _Setting_: `Preferences` > `Lapses` > `Minimum interval` (Default: `1`)
+** `mult`: The multiplier applied to a review interval when answering `Again`. +
+  _Setting_: `Preferences` > `Advanced` > `New interval` (Default: `0`)
+** `leechFails`: The number of times `Again` needs to be pressed on a review card before it is marked as a leech. +
+  _Setting_: `Preferences` > `Lapses` > Leech threshold (Default: `8`)
+
+
+### Part 2: Model
+
+Let's begin with the model. Anki stores cards in a SQLite database. In this tutorial, we will mimic the same model but we will store the cards directly in-memory inside the collection object. We will also ignore decks completely as they mostly allow to review different cards using different settings or at different times but don't really change how Anki works.
+
+
+[source,python]
+----
+class Collection:
+
+    def __init__(self, id=None):
+        d = datetime.datetime.today()
+        d = datetime.datetime(d.year, d.month, d.day)
+        # Timestamp of the creation date in seconds.
+        self.crt = int(time.mktime(d.timetuple()))
+        # In-memory list of cards
+        self.cards = []
+        self.sched = Scheduler(self) # <1>
+
+    def addNote(self, note):
+        self.cards.append(Card(note))
+
+class Note:
+
+    def __init__(self):
+        self.id = intId() # <2>
+        self.tags = []
+
+    def addTag(self, tag):
+        if not tag in self.tags:
+            self.tags.append(tag)
+
+class Card:
+
+    def __init__(self, note, id=None):
+        self.id = intId() # <2>
+        self.note = note
+        # Timestamp of the creation date in second.
+        self.crt = intTime()
+        # 0=new, 1=learning, 2=review, 3=relearning
+        self.type = 0
+        # Queue type:
+        #   -1=suspend => leeches (as manual suspension is not supported)
+        #    0=new     => new (never shown)
+        #    1=lrn     => learning/relearning
+        #    2=rev     => review (as for type)
+        self.queue = 0
+        # The interval. Negative = seconds, positive = days
+        self.ivl = 0
+        # The ease factor in permille.
+        # Ex: 2500 = the interval will be multiplied by 2.5
+        # the next time you press "Good".
+        self.factor = 0
+        # The number of reviews.
+        self.reps = 0
+        # The number of times the card went from a "was answered correctly"
+        # to "was answered incorrectly" state.
+        self.lapses = 0
+        # Of the form a*1000+b, with:
+        #   a => the number of reps left today
+        #   b => the number of reps left till graduation
+        # Ex: '2004' = 2 reps left today and 4 reps till graduation
+        self.left = 0
+        # Due is used differently for different card types:
+        # - new => note id or random int
+        # - lrn => integer timestamp in second
+        # - rev => integer day, relative to the collection's creation time
+        self.due = self.id
+----
+<1> The `Scheduler` implementation will be the main topic of the remaining of this section.
+<2> The identifiers are initialized using a helper function `intId()` which uses the current time and ensures two successive calls return different values. Here is the definition:
+
+[source,python]
+----
+import time
+
+def intId():
+    """Returns a unique integer identifier."""
+    t = intTime(1000)
+    # Make sure the next call to the function returns a different value
+    while intTime(1000) == t:
+        time.sleep(1)
+    return t
+
+def intTime(scale=1):
+    "The time in integer seconds. Pass scale=1000 to get milliseconds."
+    return int(time.time()*scale)
+----
+
+The `Scheduler` is the largest class that we will cover. A scheduler in Anki is an object supporting two methods:
+
+* `getCard()`: Returns the next card to review
+* `answerCard(card, ease)`: Updates the card after an answer (`ease`: `0` for "Again", `1` for "Hard", `2` for "Good", and `3` for "Easy")
+
+[source,python]
+----
+class Scheduler:
+
+    def __init__(self, col):
+        # The collection used to retrieve the cards
+        self.col = col
+        # An upper limit for new and review cards
+        self.queueLimit = 50
+        # # An upper limit for learning cards
+        self.reportLimit = 1000
+        # The number of already reviewed cards today.
+        self.reps = 0
+        # The number of days since the collection creation.
+        self.today = self._daysSinceCreation() # <1>
+        # The timestamp of the end of day
+        self.dayCutoff = self._dayCutoff() # <2>
+        # The timestamp in seconds to determine the learn ahead limit.
+        self._lrnCutoff = 0 # <3>
+        self.reset()
+----
+<1> The attribute `today` represents the number of days since the collection creation. It is used when searching for review cards where the attribute `due` represents the number of days relative to the collection's creation time. The value is initialized like this:
++
+[source,python]
+----
+class Scheduler:
+
+    def _daysSinceCreation(self):
+        startDate = datetime.datetime.fromtimestamp(self.col.crt)
+        return int((time.time() - time.mktime(startDate.timetuple())) // 86400)
+        # Note: 86400s = 1d
+----
+<2> The attribute `dayCutoff` represents the timestamp of the beginning of the next day. Anki allows to customize at which hour a days is ending. Here, we simply use midnight:
++
+[source,python]
+----
+class Scheduler:
+
+    def _dayCutoff(self):
+        date = datetime.datetime.today()
+        date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        if date < datetime.datetime.today():
+            date = date + datetime.timedelta(days=1)
+        stamp = int(time.mktime(date.timetuple()))
+        return stamp
+----
+<3> The attribute `_lrnCutoff` is related to the setting `collapseTime` (also called the learn ahead limit). The method `_updateLrnCutoff` is used to initialize it and update it:
++
+[source,python]
+----
+class Scheduler:
+
+    def _updateLrnCutoff(self, force):
+        nextCutoff = intTime() + self.col.colConf['collapseTime']
+        if nextCutoff - self._lrnCutoff > 60 or force:
+            self._lrnCutoff = nextCutoff
+            return True
+        return False
+----
+
+
+### Part 3: Queues Management
+
+The method `reset()` present in the last line of the `Scheduler`'s constructor initializes the queues managed by Anki:
+
+[source,python]
+----
+class Scheduler:
+
+    def reset(self):
+        self._resetLrn()
+        self._resetRev()
+        self._resetNew()
+
+    # New cards
+    #################################################################
+
+    def _resetNew(self):
+        self._newQueue = [] # <1>
+        self._updateNewCardRatio() # <2>
+
+    def _fillNew(self):
+        if self._newQueue:
+            return True
+        lim = min(self.queueLimit, deckConf["new"]["perDay"])
+        self._newQueue = list(filter(lambda card: card.queue == 0,
+            self.col.cards)) # <3>
+        self._newQueue.sort(key=lambda card: card.due)
+        self._newQueue = self._newQueue[:lim]
+        if self._newQueue:
+            return True
+
+    def _updateNewCardRatio(self):
+        if colConf['newSpread'] == NEW_CARDS_DISTRIBUTE:
+            if self._newQueue:
+                newCount = len(self._newQueue)
+                revCount = len(self._revQueue)
+                self.newCardModulus = (
+                    (newCount + revCount) // newCount)
+                # if there are cards to review, ensure modulo >= 2
+                if revCount:
+                    self.newCardModulus = max(2, self.newCardModulus)
+                return
+        self.newCardModulus = 0 # = Do not distribute new cards
+
+
+    # Learning cards
+    #################################################################
+
+    def _resetLrn(self):
+        self._updateLrnCutoff(force=True)
+        self._lrnQueue = [] # <1>
+
+    def _fillLrn(self):
+        if self._lrnQueue:
+            return True
+        cutoff = intTime() + colConf['collapseTime']
+        self._lrnQueue = list(filter(lambda card: card.queue == 1 and
+            card.due < cutoff, self.col.cards)) # <4>
+        self._lrnQueue.sort(key=lambda card: card.id)
+        self._lrnQueue = self._lrnQueue[:self.reportLimit]
+        return self._lrnQueue
+
+    # Review cards
+    #################################################################
+
+    def _resetRev(self):
+        self._revQueue = [] # <1>
+
+    def _fillRev(self):
+        if self._revQueue:
+            return True
+        lim = min(self.queueLimit, self.col.deckConf["rev"]["perDay"])
+        self._revQueue = list(filter(lambda card: card.queue == 2 and
+            card.due <= self.today, self.col.cards)) # <5>
+        self._revQueue.sort(key=lambda card: card.due)
+        self._revQueue = self._revQueue[:lim]
+
+        if self._revQueue:
+            r = random.Random()
+            r.seed(self.today)
+            r.shuffle(self._revQueue)
+            return True
+
+----
+<1> By default, the queues are empty. Anki defers their filling until a card is retrieved.
+<2> The method `_updateNewCardRatio()` determines the frequency for new cards (only when new cards are spreaded among other cards). For example, if there are 50 review cards and 10 new cards, the ratio will be 5 so that a new card is returned after every 5 review cards. The attribute `reps` present in `Scheduler` keeps the current number of reviewed cards for the current study session and will be useful in complement to this ratio `_newCardModulus` to determine if the next card must be a new card or a revie card.
+<3> Anki searches for all cards in the queue `0` (= new) and sort them by due date before returning the first N cards based on the current daily limit.
+<4> Anki searches for all cards in the queue `1` (= lrn) that are due and sort them by timestamp as the id is initialized from the creation timestamp
+<5> Anki searches for all cards in the queue `2` (= rev) that are due and sort them by the due date before returning the first N shuffled cards based on the current daily limit.
+
+
+The logic to initialize the queues is ready but will be executed in the next step when retrieving a card to study.
+
+### Part 4: Card Retrieving
+
+The main method is the method `getCard`.
+
+[source,python]
+----
+class Scheduler:
+
+    def getCard(self):
+        card = self._getCard()
+        if card:
+            self.reps += 1
+            return card
+----
+
+This method delegates to `_getCard()` and simply increases the counter of studied cards except when the study session is completed.
+
+[source,python]
+----
+class Scheduler:
+
+    def _getCard(self): # <1>
+        "Return the next due card, or None."
+
+        # learning card due?
+        c = self._getLrnCard()
+        if c:
+            return c
+
+        # new first, or time for one?
+        if self._timeForNewCard():
+            c = self._getNewCard()
+            if c:
+                return c
+
+        # card due for review?
+        c = self._getRevCard()
+        if c:
+            return c
+
+        # new cards left?
+        c = self._getNewCard()
+        if c:
+            return c
+
+        # collapse or finish
+        return self._getLrnCard(collapse=True)
+
+
+    # New cards
+    ##########################################################################
+
+    def _getNewCard(self):
+        if self._fillNew(): # <2>
+            return self._newQueue.pop()
+
+    def _timeForNewCard(self):
+        "True if it's time to display a new card when distributing."
+        if not self._newQueue:
+            return False
+        if colConf['newSpread'] == NEW_CARDS_LAST:
+            return False
+        elif colConf['newSpread'] == NEW_CARDS_FIRST:
+            return True
+        elif self.newCardModulus:
+            return self.reps and self.reps % self.newCardModulus == 0
+
+
+    # Learning queues
+    ##########################################################################
+
+    def _getLrnCard(self, collapse=False):
+        if self._fillLrn(): # <2>
+            return self._lrnQueue.pop()
+
+    # Reviews
+    ##########################################################################
+
+    def _getRevCard(self):
+        if self._fillRev(): # <2>
+            return self._revQueue.pop()
+----
+<1> By default, Anki shows cards in a well-defined order:
++
+. (optional) New cards if the setting `newSpread` is configured with `NEW_CARDS_FIRST`.
+. Learning cards that are due
+. (optional) New cards if the setting `newSpread` is configured with `NEW_CARDS_DISTRIBUTE` (the default) if the ratio allow it.
+. Review cards
+. (optional) New cards if the setting `newSpread` is configured with `NEW_CARDS_LAST`.
++ The logic for new cards is implemented in the method `_timeForNewCard()`.
+<2> The methods `_fillXXX()` returns `True` when the queue is not empty, in which case, we simply have to pop an element from the queue.
+
+
+The queues are now initialized when retrieving the first card in each of them. This works great for the current session but when a new day begins, Anki must reinitialize the queues because other cards may have reached their due date.
+
+[source,python,linenums,highlight='4,9-14,16-19,22']
+----
+class Scheduler:
+
+    def reset(self):
+        self._updateCutoff() # <1>
+        self._resetLrn()
+        self._resetRev()
+        self._resetNew()
+
+    def _updateCutoff(self):
+        # days since col created
+        self.today = self._daysSinceCreation()
+        # end of day cutoff
+        self.dayCutoff = self._dayCutoff()
+        return stamp
+
+    def _checkDay(self):
+        # check if the day has rolled over
+        if time.time() > self.dayCutoff:
+            self.reset()
+
+    def getCard(self):
+        self._checkDay() # <2>
+        card = self._getCard()
+        if card:
+            self.reps += 1
+            return card
+
+----
+<1> The method `_updateCutoff()` is called every time the queues are reset (= once a day). When this happens, it means a new day have started and therefore the day limit must be refreshed too.
+<2> The method `_checkDay()` is called every time we retrieve a new card to study. This way, if we have passed the current day, the queue will be reset before returning the card.
+
+
+
+### Part 5: Card Updating
+
+Now that we have a method to empty the list of cards to study, we will turn our attention on the core part of the SRS algorithm. Every time we study a card, the card must be rescheduled to be studied again. Basically, we need to update the attribute `due` of the card but the logic varies according the current state (ex: the current queue, ease factor, and interval).
+
+[source,python]
+----
+class Scheduler:
+
+    def answerCard(self, card, ease):
+        assert 1 <= ease <= 4
+        assert 0 <= card.queue <= 4
+
+        card.reps += 1
+
+        if card.queue == 0:
+            self._answerNewCard(card, ease)
+        elif card.queue in [1, 3]:
+            self._answerLrnCard(card, ease)
+        elif card.queue == 2:
+            self._answerRevCard(card, ease)
+        else:
+            assert 0
+----
+
+We will detail each case separately.
+
+### Part 5.1: Answering New Cards
+
+[source,python]
+----
+class Scheduler:
+
+    def _answerNewCard(self, card, ease):
+        # came from the new queue, move to learning
+        card.queue = 1 # <1>
+        card.type = 1 # <2>
+        # init reps to graduation
+        card.left = self._startingLeft(card) # <3>
+
+    def _startingLeft(self, card):
+        conf = self._lrnConf(card)
+        tot = len(conf['delays'])
+        tod = self._leftToday(conf['delays'], tot)
+        return tot + tod*1000
+
+    def _leftToday(self, delays, left, now=None):
+        "The number of steps that can be completed by the day cutoff."
+        if not now:
+            now = intTime()
+        delays = delays[-left:]
+        ok = 0
+        for i in range(len(delays)):
+            now += delays[i]*60
+            if now > self.dayCutoff:
+                break
+            ok = i
+        return ok+1
+----
+<1> Anki simply updates the attribute `queue` to move a card to a different queue. When the destination queue will be reset (ex: for tomorrow session), the card will be automatically inserted into it.
+<2> The attribute `type` is similar to the attribute `queue` (they share the same values `0`, `1`, `2`, and `3`). In practice, the attributes `queue` and `type` may differs for example after a lapse. When pressing "Again," on a review card, the card will be moved back to the learning back (`queue = 1`) but the type will be unchanged (`type = 3`) to remember the card was previously a review card. This will be useful when graduating the card back to the review queue after relearning.
+<3> The attribute `left` is particular. The numeric format keeps two information: how many times the card will be reviewed today, and how many steps before graduation. The methods `_startingLeft` and `_leftToday` implement this logic. You can safely ignore the details.
+
+
+So, when answering a new card, the card is automatically promoted to the learning queue.
+
+### Part 5.2: Answering Learning Cards
+
+[source,python]
+----
+class Scheduler:
+
+    def _answerLrnCard(self, card, ease):
+        conf = self._lrnConf(card) # <1>
+
+        # immediate graduate?
+        if ease == 4:
+            self._rescheduleAsRev(card, conf, True)
+        # next step?
+        elif ease == 3:
+            # graduation time?
+            if (card.left%1000)-1 <= 0:
+                self._rescheduleAsRev(card, conf, False)
+            else:
+                self._moveToNextStep(card, conf)
+        elif ease == 2:
+            self._repeatStep(card, conf)
+        else:
+            # back to first step
+            self._moveToFirstStep(card, conf)
+
+    def _lrnConf(self, card):
+        if card.type == 2:
+            return self.col.deckConf["lapse"]
+        else:
+            return self.col.deckConf["new"]
+----
+<1> The settings to apply differs according if the card comes from the review or new queue. For example, the steps are different after a lapse than when learning a new card for the first time.
+
+We will detail what happens depending which button was pressed when answering the card.
+
+* After pressing "Again"...
+
+[source,python]
+----
+self._moveToFirstStep(card, conf)
+----
+
+The card is moved back to the first step:
+
+[source,python]
+----
+class Scheduler:
+
+    def _moveToFirstStep(self, card, conf):
+        card.left = self._startingLeft(card) # <1>
+
+        # relearning card?
+        if card.type == 3:
+            self._updateRevIvlOnFail(card, conf) # <2>
+
+        return self._rescheduleLrnCard(card, conf) # <3>
+
+    def _updateRevIvlOnFail(self, card, conf):
+        card.ivl = self._lapseIvl(card, conf)
+
+    def _lapseIvl(self, card, conf):
+        ivl = max(1, conf['minInt'], int(card.ivl*conf['mult']))
+        return ivl
+
+    def _rescheduleLrnCard(self, card, conf, delay=None):
+        # normal delay for the current step?
+        if delay is None:
+            delay = self._delayForGrade(conf, card.left)
+
+        card.due = int(time.time() + delay)
+        card.queue = 1
+        return delay
+
+    def _delayForGrade(self, conf, left): # <4>
+        left = left % 1000
+        delay = conf['delays'][-left]
+        return delay*60
+----
+<1> We restore the attribute `left` as if the card were a new card.
+<2> We process lapses differently. By default, we reset the attribute `ivl` to `1` (next review in one day).
+<3> The card due date is determined by adding the next step to the current date. The card remains in the learning queue (`1`).
+<4> The method `_delayForGrade()` is a helper method to get the next step interval. The method extracts the number of remaining steps from the attribute `left` (Ex: `1002` => 2 remaining steps) and use the setting `delay` to find the matching delay (Ex: `1m 10m 1d` => next study in `10m`).
+
+
+* After pressing "Hard"...
+
+[source,python]
+----
+self._repeatStep(card, conf)
+----
+
+The current card step is repeated. This means the attribute `left` is unchanged. We still have the same number of remaining steps before graduation. The difference is that the card will be rescheduled in a delay slighy longer than the previous one. We average the last and next delays (Ex: `1m 10m 20m` and we are at the step 2 => repeat in `15m`).
+
+[source,python]
+----
+class Scheduler:
+
+    def _repeatStep(self, card, conf):
+        delay = self._delayForRepeatingGrade(conf, card.left)
+        self._rescheduleLrnCard(card, conf, delay=delay) # <1>
+
+    def _delayForRepeatingGrade(self, conf, left):
+        # halfway between last and next
+        delay1 = self._delayForGrade(conf, left)
+        delay2 = self._delayForGrade(conf, left-1)
+        avg = (delay1+max(delay1, delay2))//2
+        return avg
+----
+<1> We reuse the method `_rescheduleLrnCard` introduced just before to update the card's due date.
+
+
+* After pressing "Good"...
+
+[source,python]
+----
+# graduation time?
+if (card.left%1000)-1 <= 0:
+    self._rescheduleAsRev(card, conf, False)
+else:
+    self._moveToNextStep(card, conf)
+----
+
+The decision depends on if there are remaining steps or not:
+
+* If we have finished the last step, the card is graduated to the learning queue:
++
+[source,python]
+----
+class Scheduler:
+
+    def _rescheduleAsRev(self, card, conf, early):
+        lapse = card.type in (2,3)
+
+        if lapse:
+            self._rescheduleGraduatingLapse(card) # <1>
+        else:
+            self._rescheduleNew(card, conf, early) # <2>
+
+    def _rescheduleGraduatingLapse(self, card):
+        card.due = self.today+card.ivl
+        card.type = card.queue = 2
+
+    def _rescheduleNew(self, card, conf, early):
+        card.ivl = self._graduatingIvl(card, conf, early)
+        card.due = self.today+card.ivl
+        card.factor = conf['initialFactor']
+        card.type = card.queue = 2
+
+    def _graduatingIvl(self, card, conf, early):
+        if card.type in (2,3):
+            return card.ivl
+        if not early: # <3>
+            # graduate
+            ideal =  conf['ints'][0]
+        else:
+            # early remove
+            ideal = conf['ints'][1]
+        return ideal
+----
+<1> When a lapse is graduated, we add the the previous interval to the current date to determine the due date.
+<2> When a new card is graduated, we must initialize the two key attributes relative to the SRS algorithm: the ease factor and the interval. These fields will be reused to determine the next due date for review cards.
+<3> When graduating a new card, the initial interval will be different according if we are completed all steps ("Good") or if we have press ("Esay") to immediately graduate the card (1 vs 4 days by default).
+
+* If there are still remaining steps:
++
+[source,python]
+----
+class Scheduler:
+
+    def _moveToNextStep(self, card, conf):
+        # decrement real left count and recalculate left today
+        left = (card.left % 1000) - 1
+        card.left = self._leftToday(conf['delays'], left)*1000 + left # <1>
+
+        self._rescheduleLrnCard(card, conf)
+----
+<1> The attribute `left` is updated to decrement the number of remaining steps and to recalculate the number of studies until the next day.
+
+* After pressing "Easy"...
+
+[source,python]
+----
+self._rescheduleAsRev(card, conf, True)
+----
+
+The card is graduated to the learning queue as when we complete every step. The only exception if the initial interval will be larger as explained in the previous point.
+
+
+### Part 5.3: Answering Review Cards
+
+[source,python]
+----
+class Scheduler:
+
+   def _answerRevCard(self, card, ease):
+        if ease == 1:
+            self._rescheduleLapse(card)
+        else:
+            self._rescheduleRev(card, ease)
+----
+
+* After pressing "Again"...
+
+[source,python]
+----
+class Scheduler:
+
+    def _rescheduleLapse(self, card):
+        conf = self.col.deckConf["lapse"]
+
+        card.lapses += 1 # <1>
+        card.factor = max(1300, card.factor-200) # <2>
+
+        suspended = self._checkLeech(card, conf) # <3>
+
+        if not suspended:
+            card.type = 3
+            delay = self._moveToFirstStep(card, conf) # <4>
+        else:
+            # no relearning steps
+            self._updateRevIvlOnFail(card, conf) # <5>
+            delay = 0
+
+        return delay
+
+    # Leeches
+    ##########################################################################
+
+    def _checkLeech(self, card, conf):
+        if card.lapses >= conf['leechFails']:
+            # add a leech tag
+            f = card.note
+            f.addTag("leech")
+            # Suspend
+            card.queue = -1
+            return True
+----
+<1> The number of lapses for this card is increased. Useful to determine if we reach the limit to consider the card a leech.
+<2> The ease factor is reduced by 0.2 (but no lower than 1.3 as recommended by SM-2).
+<3> If the number of lapses reaches the value of the setting `leechFails`, the card is marked as a leech. A tag is added on the note and the card is moved to the queue `-1` (= suspended). The card will therefore be ignored when filling the different queue as no method `_fillXXX` considers cards in the queue `-1`.
+
+* After pressing "Hard," "Good,", "Easy"...
+
+The card will be rescheduled in an "ideal" number of days. When using Anki, most cards resides in the learning queues and the "Again" button is pressed rarely. The core logic of the Anki SRS algorithm is present in the following methods.
+
+[source,python]
+----
+class Scheduler:
+
+    def _rescheduleRev(self, card, ease):
+        # update interval
+        self._updateRevIvl(card, ease) # <1>
+
+        # then the rest
+        card.factor = max(1300, card.factor+[-150, 0, 150][ease-2]) # <2>
+        card.due = self.today + card.ivl
+
+    def _updateRevIvl(self, card, ease):
+        card.ivl = self._nextRevIvl(card, ease)
+
+    # Interval management
+    ##########################################################################
+
+    def _nextRevIvl(self, card, ease): # <3>
+        "Next review interval for CARD, given EASE."
+        delay = self._daysLate(card)
+        conf = self.col.deckConf["rev"]
+        fct = card.factor / 1000
+        hardFactor = conf.get("hardFactor", 1.2)
+        if hardFactor > 1:
+            hardMin = card.ivl
+        else:
+            hardMin = 0
+        ivl2 = self._constrainedIvl(card.ivl * hardFactor, conf, hardMin)
+        if ease == 2:
+            return ivl2
+
+        ivl3 = self._constrainedIvl((card.ivl + delay // 2) * fct, conf, ivl2)
+        if ease == 3:
+            return ivl3
+
+        ivl4 = self._constrainedIvl(
+            (card.ivl + delay) * fct * conf['ease4'], conf, ivl3)
+        return ivl4
+
+    def _daysLate(self, card):
+        "Number of days later than scheduled."
+        return max(0, self.today - card.due)
+
+    def _constrainedIvl(self, ivl, conf, prev):
+        ivl = max(ivl, prev+1, 1)
+        ivl = min(ivl, conf['maxIvl'])
+        return int(ivl)
+----
+<1> The attribute `ivl` determines the next due date (we add it to the current date to determine the value of the attribute `due`). The
+<2> The ease factor is changed by removing 1.5 for "Hard" cards and by adding 1.5 for "Easy" cards. The ease factor is left unchanged for "Good" cards. Only their intervals will be changed to lengther the period between studies.
+<3> The method `_nextRevIvl()` determine the next interval:
+* "Hard": the current interval is multiplied by the value of hard interval (1.2 by default).
+* "Good": the current interval is multiplied by the current ease (+ a bonus if the card was late).
+* "Easy": the current interval is multiplied by the current ease times the easy bonus (1.3 by default) (+ a bonus if the card was late).
++
+See link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards[Anki documentation] for more information.
+
+We are done 🎉. The complete code is available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_minimal_v3.py[companion GitHub repository]. A more complete annotated version is also available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_annotated.py[same repository] including two additional features described next.
+
+=== Bonus: Day Boundaries
+link:See https://docs.ankiweb.net/deck-options.html?#day-boundaries[Anki treats small steps and steps that cross a day boundary differently]. With small steps, the cards are shown as soon as the delay has passed, in preference to other waiting cards like reviews. This is done so that you can answer the card as closely to your requested delay as possible. In contrast, if the interval crosses a day boundary, it is automatically converted to days.
+
+The code splits the learning queue in the above code into two distinct queues: sub-day learning and day learning.
+
+[source,python]
+----
+# ...
+
+def _resetLrn(self):
+    self._lrnQueue = []
+    self._lrnDayQueue = [] # <1>
+
+# ...
+
+def _rescheduleLrnCard(self, card, conf, delay=None):
+    # normal delay for the current step?
+    if delay is None:
+        delay = self._delayForGrade(conf, card.left)
+
+    card.due = int(time.time() + delay)
+    # due today?
+    if card.due < self.dayCutoff: # <2>
+        card.queue = 1
+    else:
+        # the card is due in one or more days, so we need to use the
+        # day learn queue
+        ahead = ((card.due - self.dayCutoff) // 86400) + 1
+        card.due = self.today + ahead
+        card.queue = 3
+
+# ...
+
+def _getCard(self):
+    # learning card due?
+    c = self._getLrnCard() # <3>
+    if c:
+        return c
+
+    # new first, or time for one?
+    if self._timeForNewCard():
+        c = self._getNewCard()
+        if c:
+            return c
+
+    # card due for review?
+    c = self._getRevCard()
+    if c:
+        return c
+
+    # day learning card due?
+    c = self._getLrnDayCard() # <3>
+    if c:
+        return c
+
+    # new cards left?
+    c = self._getNewCard()
+    if c:
+        return c
+
+    # collapse or finish
+    return self._getLrnCard(collapse=True)
+----
+<1> The previous queue is split into two queues:
+* `_lrnQueue` (`queue == 1`) = sub-day learning queue
+* `_lrnDayQueue` (`queue == 3`) = day learning queue
+
+<2> Learning cards are rescheduled in the sub-day queue `1` when the next review is planned before the end of the day review session. The due date is the number of seconds until the next review. Otherwise, the card is rescheduled in the day learning queue `3` and the delay is the number of days until the next review.
+
+<3> Sub-day learning cards are prioritized first to be sure to review them as close as their delay in seconds. Day learning cards are reviewed last since their delay in days tolerate more flexibility (reviewing them the next day is not as bad as for sub-day learning cards).
+
+
+=== Bonus: Fuzzing
+
+When you select an ease button on a review card, link:https://docs.ankiweb.net/studying.html#fuzz-factor[Anki also applies a small amount of random “fuzz”] to prevent cards that were introduced at the same time and given the same ratings from sticking together and always coming up for review on the same day.
+
+Here is the code:
+
+[source,python]
+----
+def _fuzzedIvl(self, ivl): # <1>
+    min, max = self._fuzzIvlRange(ivl)
+    return random.randint(min, max)
+
+def _fuzzIvlRange(self, ivl):
+    if ivl < 2:
+        return [1, 1]
+    elif ivl == 2:
+        return [2, 3]
+    elif ivl < 7: # <2>
+        fuzz = int(ivl*0.25)
+    elif ivl < 30: # <2>
+        fuzz = max(2, int(ivl*0.15))
+    else: # <2>
+        fuzz = max(4, int(ivl*0.05))
+    # fuzz at least a day
+    fuzz = max(fuzz, 1)
+    return [ivl-fuzz, ivl+fuzz]
+----
+<1> The function `_fuzzedIvl` is only called for interval greater than one day. For sub-day learning cards introduced in the previous point, fuzzing is also applied up to 5 minutes:
++
+[source,python]
+----
+maxExtrax = min(300, int(delay*0.25))
+fuzz = random.randrange(0, maxExtra)
+----
+<2> The fuzzing increases the greater the interval even if the fuzz factor is reduces since the interval becomes larger.
+
+
+
+
+
+
+== A Better Anki SRS Algorithm?
+
+Anki’s algorithm is based on the [SuperMemo 2 algorithm](http://www.supermemo.com/english/ol/sm2.htm), the original computer-based algorithm released in the 1987 in SuperMemo 1.0. The latest version of the SuperMemo algorithm is SM-18, released in 2019, and is the sixth revision of the original algorithm, each one claiming to further optimize the algorithm, obviously.
+
+In this section, we will review more recent algorithms and understand how they different from the SM-2/Anki algorithm that we covered extensively in this article.
+
+
+=== SM-3....
+
+
+
+.Applications
+****
+Recent years have seen many applications appearing in the stores and relying on SRS: link:https://quizlet.com/[Quizlet], link:https://www.memrise.com/[Memrise], link:https://www.duolingo.com/[Duolingo], link:https://www.lingodeer.com/[LingoDeer], link:https://www.brainscape.com/[Brainscape], link:https://lingvist.com/[Lingvist], link:https://chegg.com[Chegg], link:https://www.remnote.com/[RemNote], link:https://mochi.cards/[Mochi], link:https://www.memcode.com/[Memcode]...
+
+* link:https://mochi.cards/docs/#spaced-repetition[__Mochi__'s algorithm] is very simple. The card interval is doubled after correct answer, and cut in half otherwise.
+
+* link:https://memrise.zendesk.com/hc/en-us/articles/360015889057-How-does-the-spaced-repetition-system-work-[__Memrise__'s algorithm] is similar to _Mochi_'s. The card interval increases using the following steps: 4 hours, 12 hours, 24 hours, 6 days, 12 days, 48 days, 96 days, and 6 months. Any wrong answer moved back the card to the first interval.
+
+* link:https://quizlet.com/blog/spaced-repetition-for-all-cognitive-science-meets-big-data-in-a-procrastinating-world[Quizlet's algorithm] has known several iterations. The first implementation simply repeat all the questions you got wrong. The second implementation is similar to Anki where the card interval increases by approximatively 2.2 and wrong answer reset the interval to one day. The next implementation relies on machine learning and use the millions of answers to determine for example the recall probability, which is the chance you answer the wrong answers. This allows for example to reduce the interval for words with irregular spellings when learning a foreign language.
+
+* link:https://blog.duolingo.com/how-we-learn-how-you-learn/[__Duolingo__'s algorithm] is similar to Quizlet. Duolingo has millions of students who generate billions of statistics about language learning every day. Like Quizlet, Duolingo uses machine learning to predict how likely you are to remember any given word at any time. This is represented by the strength meter (still strong, pretty good, time to practice, overdue) below every lesson.
+
+* link:https://www.youtube.com/watch?v=IwaoV-C9az8&ab_channel=RemNote[RemNote's algorithm] is customizable like Anki and most settings will look familiar to Anki users, especially after follow this tutotial.
+
+* link:https://news.ycombinator.com/item?id=23948541[Memcode's algorithm] uses SM-2.
+
+
+**TODO** complete
+****
+
+
+== A Last Word
+
+In my opinion, there is no need to focus too much on optimizing the SRS algorithm. Taking time to design your own effective flashcards is crucial. Making reviewing flashcards an habit and sticking to it has, for sure, a greater impact that the marginal gain to not show the cards more or less often.
+
+
+
+[NOTE.remember]
+.To Remember
+====
+* *SRS is blablabla*. Blablabla in detail.
+====
+
+
+
+
+
+// // // // // // // // // // // // // // // // // // // // // // // // // // //
+
+
+
 
 
 .Anki Terminology
 ====
 **TODO** rephrase https://www.quora.com/In-regards-to-Anki-spaced-repetition-what-are-buried-suspended-cards
+**TODO** not sure if all terms are relevant as buried/suspended/siblings are not covered
 
 * **Buried cards**: Buried cards don’t get shown. However at the start of every day every buried card get’s unburied.
 
@@ -487,6 +1536,51 @@ There is a current rewrite of Anki from pure Python to Rust for the backend. In 
 
 https://github.com/ankitects/anki/blob/2.1.0/anki/sched.py (~1500 lines)
 https://github.com/ankitects/anki/blob/2.1.0/anki/schedv2.py (~1600 lines)
+
+
+
+
+
+
+
+////////////
+Appendixes
+////////////
+
+### SRS Applications
+
+
+[quote, Mochi Documentation]
+____
+link:https://mochi.cards/docs/#spaced-repetition[Mochi's algorithm] is very simple. Each time you remember a card, the time it takes before it's reviewed again doubles. When a card is forgotten that time is cut in half. These settings can be tweaked in the settings, and different decks can have their own settings.
+____
+
+[quote, Mochi Documentation]
+link:https://mochi.cards/faq.html[Which spaced repetition algorithim does Mochi use?]
+Mochi uses a modified SM-2 algorithim. Modified in that 1. the easing factor must be adjusted by the user manually and 2. cards do not reset their repetition interval on an incorrect answer by default."
+____
+
+[quote, Memrise]
+____
+The link:https://memrise.zendesk.com/hc/en-us/articles/360015889057-How-does-the-spaced-repetition-system-work-[Memrise algorithm] predicts when any given word or sentence is likely to fall out of your long-term memory and it's time for you to review it. This is based on a learning technique called the spaced repetition system, which leads to stronger memories.
+
+When reviewing a word or sentence correctly, the item will be moved to a longer interval. The review schedule is as follows:
+
+Next review in: 4 hours > 12 hours > 24 hours > 6 days > 12 days > 48 days > 96 days > 6 months
+
+If you get an item wrong during a review, it will be moved back to the first interval (i.e. to be reviewed in 4 hours).
+____
+
+[quote, Quizlet Documentation]
+____
+Long-Term Learning used a standard spaced repetition algorithm, similar to SuperMemo or Anki. It works something like this:
+
+* Introduce a few new terms each day
+* Study all of the day’s terms until you get them all correct, then study the new terms again the next day
+* Each time a term is answered correctly, increase the delay until it’s studied again by a little * more than double (Study 1 day later, 3 days after that, then 7 days, 16 days, etc.)
+* If a term is answered incorrectly, start over and reset the delay for that term to 1 day.
+____
+
 
 ### UI
 
@@ -659,27 +1753,13 @@ See `anki/ftl/core/deck-config.ftl`
 
 
 
-
-== A Better Anki SRS Algorithm?
-
-Anki’s algorithm is based on the [SuperMemo 2 algorithm](http://www.supermemo.com/english/ol/sm2.htm), the original computer-based algorithm released in the 1987 in SuperMemo 1.0. The latest version of the SuperMemo algorithm is SM-18, released in 2019, and is the sixth revision of the original algorithm, each one claiming to further optimize the algorithm, obviously.
-
-In my opinion, there is no need to focus too much on optimizing the SRS algorithm. Making reviewing flashcards an habit and sticking to it has, for sure, a greater impact that the marginal gain to not show the cards more or less often.
-
-
-## Other Algorithms
-
-### Anki Scheduler V3
-
-link:https://docs.ankiweb.net/studying.html#fuzz-factor[Fuzz Factor]
-When you select an ease button on a review card, Anki also applies a small amount of random “fuzz” to prevent cards that were introduced at the same time and given the same ratings from sticking together and always coming up for review on the same day. This fuzz will appear on the answer buttons when the v3 scheduler is enabled, so if you are using a previous version and you’re noticing a slight discrepancy between what you select and the intervals your cards actually get, this is probably the cause.
-
 ## TODO
 
 * [ ] Watch https://www.youtube.com/watch?v=1XaJjbCSXT0&ab_channel=ConanLiu%2CM.D. & https://www.youtube.com/watch?v=lz60qTP2Gx0&ab_channel=MattvsJapan
 * [ ] Read this paper comparing the Duolingo and Anki algorithms: https://repositori.upf.edu/bitstream/handle/10230/48804/Muley_2021.pdf?sequence=1&isAllowed=y
 * [ ] Read link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition]
 * [ ] Check this rewrite attempt https://gist.github.com/riceissa/1ead1b9881ffbb48793565ce69d7dbdd
+* [ ] Read Why 4 buttons in Anki is bad: https://web.archive.org/web/20200926103540/https://massimmersionapproach.com/table-of-contents/anki/low-key-anki/the-ease-factor-problem/
 
 == Additional Resources
 
@@ -690,8 +1770,3 @@ When you select an ease button on a review card, Anki also applies a small amoun
 
 
 
-[NOTE.remember]
-.To Remember
-====
-* *System calls are doors to the kernel*. They act like a security guard that must check your identity before executing your action. This could not be as fast as staying in the same room and executing the action yourself.
-====
