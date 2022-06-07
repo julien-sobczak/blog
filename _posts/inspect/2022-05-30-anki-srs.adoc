@@ -37,38 +37,27 @@ TODO.
 [CAUTION.license]
 The Anki source code is published under link:https://www.gnu.org/licenses/agpl-3.0.en.html[AGPL v3]. The code presented in this article have been slightly adapted for learning and readability purposes.
 
+[NOTE]
+.Prerequisites
+====
+I consider that you have already used Anki. All code examples uses the Python language, mainly Anki was implemented only in Python until recently, and also because it's a great language for novice programmers. You don't need to have a solid understanding of the language to follow the article. The code uses basic Python syntax.
+====
+
 
 == SRS Primer
 
-"The role of the scheduler is basically to decide what the user should review now."
+The role of any Spaced Repetition System (SRS) algorithm is basically to determine what the user should review now, or say differently, when must happen the next review for every answered item. The goal os any implementation will always to prevent the effect of the forgetting curve:
+
+image::forgetting-curve.png[width=750]
+
+As soon as we learn or review a piece of knowledge, the decay begins. SRS algorithms needs to determine the optimal interval between two reviews to ensure we have not completely forgotten it (memory retention = 0%) while trying to limit as much as possible the number of reviews. In practice, most algorithms uses 10% for the forgetting index (= 90% of items are remembered correctly) so that we don't have too many items to review again while keeping the number of reviews close to optimal. The detail of the different algorithms differ greatly between the various systems. We will review the most popular ones before introducing Anki's solution.
+
 
 === The Leitner System (1970s)
 
-link:https://en.wikipedia.org/wiki/Leitner_system[The Leiter System]
+If link:https://en.wikipedia.org/wiki/Hermann_Ebbinghaus[Hermann Ebbinghaus[] is credited for the initial research behind SRS, the link:https://en.wikipedia.org/wiki/Leitner_system[Leiter System] is often quoted as the first algorithm. This system uses a physical box as outlined by the following illustration:
 
-Here is the logic implemented in pseudo-language
-
-[source]
-----
-1. Split the knowledge into smallest possible items.
-2. Use a box with 5 partitions of increasing sizes
-   (1cm, 2cm, 4cm, 8cm, 14cm).
-3. Place new items in partition 1.
-4. When a partition gets full, review every card in the partition:
-    1. If the answer is correct, move the item to the next partition
-       (or replace the item in the last partition if already there)
-    2. Else, move the item back to the first partition
-       (or replace the item in the first partition if already there)
-5. Continue to add new items
-----
-
-Here is the same logic illustrated:
-
-**TOOO** include the illustration Leitner Modern System
-
-// In the original Leitner system, new cards are added to the first partition. A partition get reviewed only when full. If a card is correctly remembered, the card is move to the next partition, otherwise the card is placed back in the first partition.
-
-// image::Leitner_system_original.svg[title="Original Leitner System  — Credit Zirguezi — Wikipedia", width=500px]
+image::Leitner-original.png[width=550]
 
 Here is a small Python program implementing the logic behind the original Leitner system:
 
@@ -113,7 +102,7 @@ def study():
                     new_index = index + 1
                 elif not answer and index - 1 > 0:
                     # Demote
-                    new_index = 0 # MN: The Leitner original System moves to the first partition
+                    new_index = 0
                 else:
                     # Replace in the same partition
                     new_index = index
@@ -129,36 +118,11 @@ if __name__ == "__main__":
     study()
 ----
 
-An alternative method using three boxes where incorrect answers are only moved back by the previous box:
+An alternative method using three boxes where incorrect answers are only moved back to the previous box is often privileged:
 
-// image::Leitner_system_modern.svg[title="Alternative Leitner System  — Credit Zirguezi — Wikipedia", width=500px]
+image::Leitner-modern.png[width=650]
 
-**TOOO** include the illustration Leitner Modern System
-
-The following animation depicts the review process using this new process with only 3 boxes:
-
-image::Leitner_system_animation.gif[title="Animation of three sessions — Credit Zirguezi — Wikipedia", width=500px]
-
-Here is the pseudo-code:
-
-[source]
-----
-1. Split the knowledge into smallest possible items.
-2. Use 3 boxes of similar sizes. Place new items in box A.
-3. Review each box
-     Box A: Review every day
-     Box B: Review twice a week (Tursday, Friday)
-     Box C: Review every week (Sunday)
-4. Move reviewed items
-   1. If the answer is correct, move the card to the next box
-      (or replace the item in the last box if already there)
-   2. Else, move the card to the previous box
-      (or replace the item in the first box if already there)
-5. Repeat tomorrow
-----
-
-
-Here is a small program implementing this new logic:
+Here is a program implementing this new logic:
 
 [source,python]
 ----
@@ -240,33 +204,11 @@ if __name__ == "__main__":
 
 === SM-0 (1985)
 
-Algorithms are precise instructions to carry out. In fact, algorithms don't have to be executed on computers at all.footnote:[You can easily reproduce manually what a computer does, except you will take so much more time.] The first version of the SuperMemo Algorithm was thought to be executed manually. The [SM-0 algorithm](http://super-memory.com/articles/paper.htm) (the paper-and-pencil SuperMemo method) was published in 1985 and relies on [exercice books filled with tables](http://super-memory.com/articles/paper.htm).
+Algorithms are precise instructions to carry out. As we have seen with the Leitner system, algorithms don't have to be executed on computers at all.footnote:[You can easily reproduce manually what a computer does, except you will take so much more time.] The first version of the SuperMemo Algorithm was thought to be executed manually too. The link:http://super-memory.com/articles/paper.htm[SM-0 algorithm] (aka the paper-and-pencil SuperMemo method) was published in 1985 and relies on link:http://super-memory.com/articles/paper.htm[paper books filled with tables].
 
-Here is the SM-0 algorithm in pseudo-language:
+image::sm-0.png[width=800]
 
-[source]
-----
-1. Split the knowledge into smallest possible items
-2. Associate items into groups containing 20-40 elements.
-   These groups are later called pages.
-3. Repeat whole pages using the following intervals (in days):
-     I(1) = 1
-     I(2) = 7
-     I(3) = 16
-     I(4) = 35
-     for i > 4: I(i) := round(I(i-1) * 2)
-   where I(i) is the interval used after the i-th repetition.
-4. Copy all items forgotten after the 35 day interval into newly created pages
-   (without removing them from previously used pages).
-   Those new pages will be repeated in the same way as pages
-   with items learned for the first time
-----
-
-Here is the same logic illustrated:
-
-**TODO** include illustration of SM-0
-
-The algorithm was designed to be carry out manually, we can still try to capture the logic using code:
+Altough the algorithm was designed to be carry out manually, we can still capture the logic using code:
 
 [source,python]
 ----
@@ -370,57 +312,20 @@ if __name__ == "__main__":
             DATABOOK[page].review()
 ----
 
-
-
 The SM-0 algorithms can be challenging in practice for different reasons:
 
-* All items in a given page are reviewed at the same time. For hard-to-remember items (items that require more than 3 reviews on a given day to be recalled), SM-0 recommends to duplicate them on a new page in your book. These items will be reviewed more frequently, and some will maybe be duplicated again if still to hard to remember.
-* The intervals are determined using an estimation of the average case (x1.7) but the ideal intervals depend on the complexibility and of your familiarity with the subject. You probably needs shorted intervals for science subjects like Mathematics for example. The intervals are determined using the factor 1.7 (4 days, 4 * 1.7 ~= 7 days, 7 * 1.7 ~= 12 days, 20 days, 1 month, ...). In most cases, intervals should increase 1.5—2.0 times after each repetition. A factor lower than 1.4 or larger than 3 are, almost always, a bad idea.
-* Last but not least, executing the algorithm manually works, but is far from being a smooth learning experience.
+* **All items in a given page are reviewed at the same time**. For hard-to-remember items (items that require more than 3 reviews on a given day to be recalled), SM-0 recommends to duplicate them on a new page in your book. These items will be reviewed more frequently, and some will maybe be duplicated again if still to hard to remember.
+* **The intervals are determined using an estimation of the average case** (x1.7) but the ideal intervals depend on the complexibility and of your familiarity with the subject. You probably needs shorted intervals for science subjects like Mathematics for example. The intervals are determined using the factor 1.7 (4 days, 4 * 1.7 ~= 7 days, 7 * 1.7 ~= 12 days, 20 days, 1 month, ...). In most cases, intervals should increase 1.5—2.0 times after each repetition. A factor lower than 1.4 or larger than 3 are, almost always, a bad idea.
+* Last but not least, executing the algorithm manually works, but is far from being a smooth learning experience...
 
 Enter the computer.
 
 
 === SM-2 (1987)
 
-Unlike physical systems where cards are grouped in the same box/partition/page and are reviewed collectively, digital systems will consider each item separately. For example, the SuperMemo algorithm (called SM-2) assigns a specific level of difficulty to each card and determine the appropriate intervals between repetitions using this value.
+Unlike physical systems where cards are grouped in the same box/partition/page and are reviewed collectively, digital systems consider each item separately. For example, the SuperMemo algorithm called link:https://www.supermemo.com/en/archives1990-2015/english/ol/sm2[SM-2] assigns a specific level of difficulty to every card and determines the appropriate intervals between repetitions using this specific value.
 
-
-Here is the algorithm SM-2 in pseudo-language adapted from the [original paper](http://super-memory.com/english/ol/sm2.htm):
-
-[source]
-----
-1. Split the knowledge into smallest possible items.
-2. With all items associate an E-Factor equal to 2.5.
-3. Repeat items using the following intervals:
-     I(1) := 1
-     I(2) := 6
-     for n > 2: I(n) := round(I(n-1) * EF)
-   where:
-     * I(n) → inter-repetition interval after the n-th repetition (in days),
-     * EF   → E-Factor of a given item
-4. After each repetition assess the quality of repetition response
-   in 0-5 grade scale:
-     * 5 → perfect response
-     * 4 → correct response after a hesitation
-     * 3 → correct response recalled with serious difficulty
-     * 2 → incorrect response; where the correct one seemed easy to recall
-     * 1 → incorrect response; the correct one remembered
-     * 0 → complete blackout.
-5. After each repetition modify the E-Factor of the recently repeated
-   item according to the formula:
-     EF' := min(EF + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)), 1.3)
-   where:
-     * EF' → new value of the E-Factor,
-     * EF → old value of the E-Factor,
-     * q → quality of the response in the 0-5 grade scale.
-6. If the quality response was lower than 3 then start repetitions for the item from the beginning without changing the E-Factor (i.e. use intervals I(1), I(2) etc. as if the item was memorized anew).
-7. After each repetition session of a given day repeat again all items that scored below four in the quality assessment. Continue the repetitions until all of these items score at least four.
-----
-
-Here is the same logic illustrated using an example:
-
-**TODO** include llustration of SM-2
+image::sm-2.png[width=800]
 
 Now, the same logic but implemented as code:
 
@@ -432,7 +337,9 @@ from queue import Queue
 
 def grade(question, repetitions):
     # Increase the chance of success with the increased number of repetitions
-    choices = [0] * 1 * repetitions + [1] * 2 * repetitions + [2] * 3 * repetitions + [3] * 4 * repetitions + [4] * 5 * repetitions + [5] * 6 * repetitions
+    choices = [0] * 1 * repetitions + [1] * 2 * repetitions + \
+              [2] * 3 * repetitions + [3] * 4 * repetitions + \
+              [4] * 5 * repetitions + [5] * 6 * repetitions
     return random.choice(choices)
 
 # Settings
@@ -485,27 +392,35 @@ if __name__ == "__main__":
                 items_to_review.put(item)
 ----
 
+The SM-2 algorithm remains popular even today as you will discover in the rest of this article.
+
 
 == Anki Algorithm
 
-* [Anki V1 Scheduler](https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html): The default and only scheduler until Anki 2.1
-* [Anki V2 Scheduler](https://faqs.ankiweb.net/the-anki-2.1-scheduler.html): The current scheduler used in Anki Desktop and AnkiDroid by default
-* [Anki V3 Scheduler](https://faqs.ankiweb.net/the-2021-scheduler.html): V2-compatible scheduler that benefits from recent Anki architecture changes.
+From link:https://en.wikipedia.org/wiki/Anki_(software)[Wikipedia]:
 
-The V3 scheduler will become the default in future versions, but for this blog post, we will analyze the V2.1 scheduler as it is the version I'm famliar with.
-
-You can find the source code for the different versions on GitHub: [v1.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py), [v2.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py), [v3](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3)
-
-We will use the [version 2.10.0](https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py) of Anki Desktop to ignore recent refactorings (rewrite of backend code in Rust, introduction of Protocol Buffer messages, factorization of common code among scheduler versions using inheritance, etc.) and keep the code easy to grasp.
+[quote,Wikipedia]
+____
+"The SM-2 algorithm, created for SuperMemo in the late 1980s, forms the basis of the spaced repetition methods employed in the program. Anki's implementation of the algorithm has been modified to allow priorities on cards and to show flashcards in order of their urgency.
+____
 
 
-**TODO** schema with relation between Collection/Note/Note Type/Card with two background colors (grey = not covered, green = covered)
-See https://docs.ankiweb.net/getting-started.html#key-concepts
+Anki source code includes different version of its SRS algorithm (called a _Scheduler_). All got inspiration from SM-2. The link:https://faqs.ankiweb.net/the-anki-2.1-scheduler.html[V2] is currently in use since 2018 even if the link:https://faqs.ankiweb.net/the-2021-scheduler.html[V3] is the target. In practice, for the purpose of this article, we can ignore the details between these different versions. You can find the source code for the different versions on GitHub if you are interested: [v1.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py), [v2.py](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py), [v3](https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3).
 
-**TODO** schema with Anki Algorithm in pseudo-code (with the various queues)
-See https://docs.ankiweb.net/studying.html#learningrelearning-cards
-See https://docs.ankiweb.net/deck-options.html?#learning-steps
-See https://docs.ankiweb.net/deck-options.html#lapses
+
+In this blog post, we will analyze the V2.1 scheduler as it is the version I'm famliar with. We will use the [version 2.10.0](https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py) of Anki Desktop to ignore recent refactorings (rewrite of backend code in Rust, introduction of Protocol Buffer messages, factorization of common code among scheduler versions using inheritance, etc.). This will help us keep the code easy to grasp.
+
+Here is a recall of link:https://docs.ankiweb.net/getting-started.html#key-concepts[Anki terminology]:
+
+image::anki-terminology.png[width=750]
+
+As outlined by the schema, we will focus on the core abstractions (Collection, Note, Card) that affects how the SRS algorithm really works. In addition, cards in Anki are scheduled differently depending their state:
+
+image::anki-workflow.png[width=700]
+
+Here is an overview of the Anki algorithm:
+
+image::anki-srs.png[width=750]
 
 
 ### Part 1: Settings
@@ -1325,7 +1240,7 @@ class Scheduler:
         return int(ivl)
 ----
 <1> The attribute `ivl` determines the next due date (we add it to the current date to determine the value of the attribute `due`). The
-<2> The ease factor is changed by removing 1.5 for "Hard" cards and by adding 1.5 for "Easy" cards. The ease factor is left unchanged for "Good" cards. Only their intervals will be changed to lengther the period between studies.
+<2> The ease factor is changed by removing 0.15 for "Hard" cards and by adding 0.15 for "Easy" cards. The ease factor is left unchanged for "Good" cards. Only their intervals will be changed to lengther the period between studies.
 <3> The method `_nextRevIvl()` determine the next interval:
 * "Hard": the current interval is multiplied by the value of hard interval (1.2 by default).
 * "Good": the current interval is multiplied by the current ease (+ a bonus if the card was late).
@@ -1333,9 +1248,13 @@ class Scheduler:
 +
 See link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards[Anki documentation] for more information.
 
-We are done 🎉. The complete code is available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_minimal_v3.py[companion GitHub repository]. A more complete annotated version is also available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_annotated.py[same repository] including two additional features described next.
+
+**We are done** 🎉. The complete code is available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_minimal_v3.py[companion GitHub repository]. A more complete annotated version is also available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_annotated.py[same repository] including two additional features described next.
+
+
 
 === Bonus: Day Boundaries
+
 link:See https://docs.ankiweb.net/deck-options.html?#day-boundaries[Anki treats small steps and steps that cross a day boundary differently]. With small steps, the cards are shown as soon as the delay has passed, in preference to other waiting cards like reviews. This is done so that you can answer the card as closely to your requested delay as possible. In contrast, if the interval crosses a day boundary, it is automatically converted to days.
 
 The code splits the learning queue in the above code into two distinct queues: sub-day learning and day learning.
@@ -1447,21 +1366,35 @@ fuzz = random.randrange(0, maxExtra)
 
 
 
-
 == A Better Anki SRS Algorithm?
 
-Anki’s algorithm is based on the [SuperMemo 2 algorithm](http://www.supermemo.com/english/ol/sm2.htm), the original computer-based algorithm released in the 1987 in SuperMemo 1.0. The latest version of the SuperMemo algorithm is SM-18, released in 2019, and is the sixth revision of the original algorithm, each one claiming to further optimize the algorithm, obviously.
+The link:http://www.supermemo.com/english/ol/sm2.htm[SM-2 algorithm], on which Anki is based, was released in 1987 in SuperMemo 1.0. It was revised several times since: +
+link:http://super-memory.com/english/ol/sm4.htm[SM-4] (1989),
+link:http://super-memory.com/english/ol/sm5.htm[SM-5] (1989),
+link:http://super-memory.com/english/ol/sm6.htm[SM-6] (1991),
+link:http://super-memory.com/english/algsm8.htm[SM-8] (1995),
+link:http://super-memory.com/english/algsm11.htm[SM-11] (2002),
+link:http://super-memory.com/english/algsm15.htm[SM-15] (2011),
+link:https://supermemo.guru/wiki/Algorithm_SM-17[SM-17] (2015),
+link:https://supermemo.guru/wiki/Algorithm_SM-18[SM-18] (2019). Each version iterate over deficiencies of the previous one.
+You can find a link:https://supermemo.guru/wiki/History_of_SuperMemo_algorithm[short summary] of the main changes brings by each algorithm version or a (very) link:https://www.supermemo.com/fr/articles/history[long summary] of the history of SuperMemo. The short version is probably too terse to really understand the improvements, and the long version is probably too detailled to understand everything. (It took me more than 5 hours to read it but it was worth the reading!)
 
-In this section, we will review more recent algorithms and understand how they different from the SM-2/Anki algorithm that we covered extensively in this article.
+From a high-level perspective, the main motivation for every version is to determine better optimal intervals (= the ideal period of time between separate review of a single card) so that the forgetting index is close to 10% (= recall of 90% is acceptable).
+
+From a low-level perspective, several approaches was experimented by SuperMemo. The first major version (SM-2) introduced the ease factor to capture the difficulty of an item (the lower the ease factor = the more difficult to learn = the shorter the interval). The ease factor was multiplied by the previous interval to determine the next interval. The successive iterations become more and more elaborate:
+
+* By adding new dimensions, in particular what is called by SuperMemo the link:https://supermemo.guru/wiki/Two_component_model_of_memory[two-component model]: stability and retrievability. Stability tells you how long a piece of knowledge can last in memory. Retrievability tells you how easy it is to recall a piece of knowledge. Both notions may appear similar but they aren't. "If you take two memories right after a review, one with a short optimum interval, and the other with a long optimum interval, the memory status of the two must differ," declares Piotr Wozniak, the original author of SuperMemo, "Both can be recalled perfectly (maximum retrievability) and they also need to differ in how long they can last in memory (different stability)." +
+The two-component model of long-term memory still represents the foundation of SuperMemo since its introduction in SM-4 in 1989 (the implementation was not successful but the idea remains).
+
+image::sm-5-matrix.png[]
+
+**TODO** complete
 
 
-=== SM-3....
-
-
-
+[NOTE]
 .Applications
-****
-Recent years have seen many applications appearing in the stores and relying on SRS: link:https://quizlet.com/[Quizlet], link:https://www.memrise.com/[Memrise], link:https://www.duolingo.com/[Duolingo], link:https://www.lingodeer.com/[LingoDeer], link:https://www.brainscape.com/[Brainscape], link:https://lingvist.com/[Lingvist], link:https://chegg.com[Chegg], link:https://www.remnote.com/[RemNote], link:https://mochi.cards/[Mochi], link:https://www.memcode.com/[Memcode]...
+====
+"Recent" years have seen many applications relying on SRS appearing in popular app stores: link:https://quizlet.com/[Quizlet], link:https://www.memrise.com/[Memrise], link:https://www.duolingo.com/[Duolingo], link:https://www.lingodeer.com/[LingoDeer], link:https://www.brainscape.com/[Brainscape], link:https://lingvist.com/[Lingvist], link:https://chegg.com[Chegg], link:https://www.remnote.com/[RemNote], link:https://mochi.cards/[Mochi], link:https://www.memcode.com/[Memcode], ...
 
 * link:https://mochi.cards/docs/#spaced-repetition[__Mochi__'s algorithm] is very simple. The card interval is doubled after correct answer, and cut in half otherwise.
 
@@ -1471,28 +1404,159 @@ Recent years have seen many applications appearing in the stores and relying on 
 
 * link:https://blog.duolingo.com/how-we-learn-how-you-learn/[__Duolingo__'s algorithm] is similar to Quizlet. Duolingo has millions of students who generate billions of statistics about language learning every day. Like Quizlet, Duolingo uses machine learning to predict how likely you are to remember any given word at any time. This is represented by the strength meter (still strong, pretty good, time to practice, overdue) below every lesson.
 
-* link:https://www.youtube.com/watch?v=IwaoV-C9az8&ab_channel=RemNote[RemNote's algorithm] is customizable like Anki and most settings will look familiar to Anki users, especially after follow this tutotial.
+* link:https://www.youtube.com/watch?v=IwaoV-C9az8&ab_channel=RemNote[RemNote's algorithm] is customizable like Anki and most settings will look familiar to Anki users, especially after following this tutorial.
 
-* link:https://news.ycombinator.com/item?id=23948541[Memcode's algorithm] uses SM-2.
-
-
-**TODO** complete
-****
+* link:https://news.ycombinator.com/item?id=23948541[Memcode's algorithm] also uses SM-2.
+====
 
 
 == A Last Word
 
 In my opinion, there is no need to focus too much on optimizing the SRS algorithm. Taking time to design your own effective flashcards is crucial. Making reviewing flashcards an habit and sticking to it has, for sure, a greater impact that the marginal gain to not show the cards more or less often.
 
+Encoding plays a major role. Writing your own flashcards helps to remember them. Designing great flashcards is tough but a poor encoding process will make the best SRS algorithm useless.
+
+Low motivation or the urge of immediate satifaction will always fail any attempt to learn using flashcards. No algorithm can solve this problem.
 
 
 [NOTE.remember]
 .To Remember
 ====
-* *SRS is blablabla*. Blablabla in detail.
+* *A Spaced Repetition System (SRS) can be implemented without a computer*. The Leitner system remains popular.
+* *SRS* target a retention close to 90% (where 10% of cards are wrongly answered).
+* *SuperMemo* introduced the first *SRS algorithm running on a computer* (SM-2).
+* *SM-2* continues to be used by most applications like Anki.
+* *Anki makes the SM-2 highly configurable* and uses different queues to manage cards differently based if their are new, in learning, or simply in review.
+* *Most algorithms use the item difficulty* (known as the ease factor) to determine optimal intervals. SuperMemo goes well beyond add uses new dimensions.
+* *Recent SRS applications relies on machine learning* to exploit the specificities of the learning materials (ex: English words with irregular syntax) and to use the information collected from their massive dataset of users to tune their algorithm. SuperMemo never chose this approach even if anticipated two decades before.
+* *The perfect SRS algorithm will never exist*. No algorithm can determine if you are passionate about a subjet, or if you review inadvertently the content of a card at work during a discussion with a colleage (in which case an "ideal" algorithm must postpone the next review).
+* *Devoting time to create great flashcards and strengthen the encoding process* and making reviewing flashcards an habit have probably a far bigger impact than any improvemement in the SRS algorithm you use.
 ====
 
 
+
+
+== Addititional Links
+
+* The link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html[Anki Website] explains succinctly the main differences between its algorithm and SM-2.
+* link:https://github.com/ankidroid/Anki-Android/wiki/Database-Structure[Anki Database Structure]: The most up-to-date guide to the Anki internal database schema, which was more-than-useful to write this article.
+* link:https://web.archive.org/web/20200926103540/https://massimmersionapproach.com/table-of-contents/anki/low-key-anki/the-ease-factor-problem/[The Ease Factor Problem
+]: Interesting insight about the impact of changing the ease factor after a lapse.
+* link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition] by Piotr Wozniak: An extensive coverage of the subject.
+* link:https://www.youtube.com/watch?v=1XaJjbCSXT0[A great video] to introduce most of what is covered in the Anki section.
+
+
+
+
+
+////
+
+It differentiates between how stable knowledge is in long term memory storage, and how easy it is to retrieve.
+
+
+
+
+
+[When the program schedules the next repetition in 365 days, and the fact is recalled by chance at an earlier time, SuperMemo has no way of knowing about the accidental recollection and will execute the repetition at the previously planned moment. This is not optimal, but it cannot be remedied by improving the algorithm.]
+
+
+
+
+
+https://www.supermemo.com/fr/articles/history
+
+Shortly after the first SuperMemo program had been implemented, I noticed that E-Factors should not fall below the value of 1.3. Items having E-Factors lower than 1.3 were repeated annoyingly often and always seemed to have inherent flaws in their formulation (usually they did not conform to the minimum information principle). Thus not letting E-Factors fall below 1.3 substantially improved the throughput of the process and provided an indicator of items that should be reformulated.
+
+
+For the purpose of the SM-17 algorithm we have defined the three components of memory as follows:
+
+* Memory Stability (S) is defined as the inter-repetition interval that produces average recall probability of 0.9 at review time
+* Memory Retrievability (R) is defined as the expected probability of recall at any time on the assumption of negatively exponential forgetting of homogenous learning material with the decay constant determined by memory stability (S)
+* Item Difficulty (D) is defined as the maximum possible increase in memory stability (S) at review mapped linearly into 0..1 interval with 0 standing for easiest possible items, and 1 standing for highest difficulty in consideration in SuperMemo (the cut off limit currently stands at stability increase 6x less than the maximum possible)
+
+
+
+
+
+* in the paper-and-pencil version of SuperMemo (1985), C 2 was indeed (almost) a constant. Set at the average of 1.75 (varying from 1.5 to 2.0 for rounding errors and simplicity), it did not consider material difficulty, stability or retrievability of memories, etc.
+* in early versions of SuperMemo for DOS (1987), C 2, named E-Factor, reflected item difficulty for the first time. It was decreased for bad grades and increased for good grades
+* SuperMemo 4 (1989) did not use C 2, but, to compute inter-repetition intervals, it employed optimization matrices for the first time
+* in SuperMemo 5 (1990), C 2, named O-Factor was finally represented as a matrix and it included both the difficulty dimension as well as the stability dimension. Again, entries of the matrix would be subject to the measure-verify-correct cycle that would, starting with the initial value based on prior measurements, produce a convergence towards the value that would satisfy the learning criteria
+* in SuperMemo 6 (1991), C 2, in the form of the O-Factor matrix would be derived from a three-dimensional matrix that would include the retrievability dimension. The important implication of the third dimension was that, for the first time, SuperMemo would make it possible to inspect forgetting curves for different levels of difficulty and memory stability
+* in SuperMemo 8 (1997) through SuperMemo 16, the representation of C 2 would not change much, however, the algorithm used to produce a quick and stable transition from the theoretical to the real set of data would gradually get more and more complex. Most importantly, new SuperMemos make a better use of the retrievability dimension of C 2. Thus, independent of the spacing effect, the student can depart from the initial learning criteria, e.g. to cram before an exam, without introducing noise into the optimization procedure
+* in SuperMemo 17 (2016), C 2 finally took the form based on the original two-component model. It is taken from stability increase matrix (SInc) that has three dimensions that represent the three variables that determine the increase in stability: complexity, stability and retrievability. The SInc matrix is filled up with data during learning using a complex algorithm known as Algorithm SM-17.
+
+SuperMemo 2 was great. Its simple algorithm has survived in various mutations to this day in popular apps such as Anki or Mnemosyne. However, the algorithm was dumb in the sense that there was no way of modifying the function of optimum intervals. The findings of 1985 were set in stone. Memory complexity and stability increase were expressed by the same single number: E-factor. It is a bit like using a single lever in a bike to change gears and the direction of driving.
+
+image::SM-5-Matrix_of_optimum_intervals_in_SuperMemo_5.jpeg[]
+
+Matrix of optimal intervals showed up in SuperMemo 4 in 1989 and survived to this day in SuperMemo 17 with few changes. Matrix of optimum intervals is no longer used in Algorithm SM-17. The values are not set in stone. SuperMemo updates the matrix entries after each answer. The interval function really becomes adaptable.
+
+Algorithm SM-5
+SuperMemo uses a simple principle: "use, verify, and correct". After a repetition, a new interval is computed with the help of the OF matrix. The "relevant entry" to compute the interval depends on the repetition (category) and item difficulty. After the interval elapses, SuperMemo calls for the next repetition. The grade is used to tell SuperMemo how well the interval "performed". If the grade is low, we have reasons to believe that the interval is too long and the OF matrix entry is too high. In such cases, we slightly reduce the OF entry. The relevant entry here is the one that was previously used in computing the interval (i.e. before the interval started). In other words, it is the entry that is (1) used to compute the interval (after n-th repetition) and then (2) used to correct the OF matrix (after the n+1 repetition).
+
+In addition, Matrix smoothing is used to modify the neighboring entries. Indeed, if an optimal factor increases or decreases then we could conclude that the OF factor that corresponds to the higher repetition number should also increase.
+
+1991: Employing forgetting curves:
+
+At that time, I was still bound to 360 kB diskettes. For that reason, SuperMemo still could not keep all repetition histories that would fully replicate the 1985 approach on a massive scale. However, on Jan 6, 1990, I had a simple idea. I could just collect data about the forgetting curves for classes of items of different difficulty and stability. Instead of the full record, I would only update the approximation of how many items in a given class are retained in memory at a given time (i.e. at a given level of retrievability). That idea survives at the core of SuperMemo to this day. Even with the full record of repetition histories today, SuperMemo still instantly knows the expected retrievability of items in a given class.
+
+
+image::supermemo-forgetting-curve.jpeg[]
+
+The forgetting curve is determine for every lapse/repetition combinaison. The optimum interval (7 days on this example) is determined by the intersection with the requested forgetting index (ex: 90% = draw a horiozontal line and check the number of days on the x axis)
+
+
+ What SuperMemo does is a search for intervals at which items of given difficulty are likely to show a given probability of forgetting (e.g. 10%).
+
+
+ There have not been any breakthrough improvement to the algorithm since 1991. Can SuperMemo then be yet better, faster, more effective? Wozniak is pessimistic.
+
+
+
+Here is how I would explain the entire Algorithm SM-17 using the building blocks of history as written for this article:
+
+* the key to long-term retention is to compute optimum spacing (1985)
+* as spacing depends on memory complexity, we need to begin with classifying items into difficulty categories (1987)
+* we find the optimum review time by plotting the forgetting curve, which indicates a moment when retention drops below an acceptable level (1991)
+* to find optimum time in scarce data, we need to use approximations, and it helps to know that forgetting is exponential (1994)
+* as the speed of forgetting depends on memory stability, the whole algorithm must be designed with two component of memory at its core (1988). The lack of consideration for the model may be the chief mistake made by developers of competitive spaced repetition algorithms, e.g. as in the case of neural network approach (1997)
+* the key power of the two components model is to make it possible to compute the increase in memory stability at review (2005)
+* the algorithm must build the model of memory by collecting repetition data. It must be adaptable to the available information (1989)
+* before data is available, it is helpful to start with a universal memory formula (1990)
+* further minor adjustments and improvements can make a world of difference (1995), e.g. post-lapse interval, absolute difficulty, fast multi-dimensional regression, etc.
+
+And so, step by step, Algorithm SM-17 has emerged at the top of the evolutionary tree in spaced repetition.
+
+
+
+SuperMemo abandoned the SM-2 algorithm in 1989, however, it keeps popping up in new applications with a frequency that must be approaching a few new developments each month. I lost count long ago.
+
+Anki introduced a great deal of innovations into their algorithm but refused to advance beyond its basic principles
+
+
+The Leitner box is not a spaced repetition tool. It is a prioritization tool. There is no concept of an interval, let alone optimum interval. The name box comes from the original implementation in the form of physical flashcard boxes with not association to passing time. When the Leitner box is used regularly on a small-sized collection of flashcards, it simulates the behavior of spaced repetition. If intervals are too short, it leads to cramming. If they get too long, it leads to sub-optimum outcomes.
+Newer software mutations of the Leitner box system may attach intervals to priority boxes. But for the modern Leitner system to be considered a true SRS system, we would need a lot more boxes to have longer and longer intervals between reviews.
+
+
+
+https://help.supermemo.org/wiki/Glossary
+
+* **A-Factor** (absolute factor; AF): number associated with every element in a collection. A-Factor determines how much intervals increase in the learning process. The higher the A-Factor, the faster the intervals increase. A-Factors reflect item difficulty. The higher the A-Factor the easier the item. The most difficult items have A-Factors equal to 1.2. A-Factor is defined as the quotient of the second optimum interval and the first optimum interval used in repetitions.
+
+* **D-Factor** decline of O-Factors with successive repetitions can be approximated with a power curve that begins at O-Factor that equals A-Factor. D-Factors are no longer used in SuperMemo Algorithm. When a power regression is used to compute O-Factors on the basis of R-Factors for successive repetitions in a single A-Factor category, the decay constant of the resulting function is called a D-Factor. The larger the D-Factor the faster the decline of O-Factors with each repetition. This means that large D-Factors imply more frequent repetitions. D in D-Factor stands for decay (it is a decay constant of the negative power function).
+
+* **E-Factor** (easiness factor; EF) is the number related to the difficulty of a given element in early versions of SuperMemo (up to and including SuperMemo 7). New inter-repetition intervals were determined by multiplying the old interval by E-Factor.
+
+* **matrix smoothing** is a mathematical procedure that converts a matrix of numbers into a "smoother version" (e.g. by averaging the neighboring entries). For example, if the row of the matrix is 1, 2, 3, 4, 666, 6, 7, 8, smoothing might convert it to 1, 2, 3, 6, 99, 9, 8.
+
+* **O-Factor** (optimum factor; OF) is a number which tells you how much intervals should increase to reach recall of 90%. O-Factors differ for different levels of memory stability and different item difficulty. They are normalized for the forgetting index of 10%. For the first repetition, i.e. there was no prior interval, O-Factor is assumed to be the same as the first interval (as if the prior interval was 1 day). For the first repetition, different O-Factors are computed for a different number of memory lapses. For example: if the O-Factor is 2.5, and the prior interval was 20 days, at repetition time, the new interval should be set to 2.5*20 days, i.e. 50 days.
+
+* **OF matrix** is athe matrix of O-Factors for different levels of difficulty (expressed as A-Factor) and stability (expressed as repetition category). The OF matrix is used by SuperMemo Algorithms SM-5 through SM-15 in computing optimum intervals in spaced repetition. In the newest algorithms, the role of the 2-dimensional OF matrix is played by the 3-dimensional SInc[] matrix (with the added dimension of retrievability).
+
+* **R-Factor** (retention factor; RF) is the number which says at which U-Factor (i.e. the measure of interval increase) the measured forgetting index (i.e. the measure of forgetting) is approximated to be 10%. This number is unique for different item difficulties and for different repetition categories (i.e. the measure of memory stability). R-Factors can be seen as a vertical green line on forgetting curve graphs in SuperMemo.
+
+* **U-Factor** is the number associated with each memorized element. It equals to the ratio of the current interval and the previously used interval. If the element has not been repeated yet, i.e. the previous interval is not defined, U-Factor equals the first interval. The greater the U-Factor the greater the increase of the interval between repetitions. For items, U-Factors are determined by SuperMemo Algorithm. For topics, U-Factors are determined by A-Factors.
 
 
 
@@ -1518,25 +1582,33 @@ When you answer a card, all it’s siblings automatically get buried. This means
 ====
 
 
-=== Introduction
+.Applications
+****
+"Recent" years have seen many applications relying on SRS appearing in popular app stores: link:https://quizlet.com/[Quizlet], link:https://www.memrise.com/[Memrise], link:https://www.duolingo.com/[Duolingo], link:https://www.lingodeer.com/[LingoDeer], link:https://www.brainscape.com/[Brainscape], link:https://lingvist.com/[Lingvist], link:https://chegg.com[Chegg], link:https://www.remnote.com/[RemNote], link:https://mochi.cards/[Mochi], link:https://www.memcode.com/[Memcode], ...
 
-From Wikipedia:
+* link:https://mochi.cards/docs/#spaced-repetition[__Mochi__'s algorithm] is very simple. The card interval is doubled after correct answer, and cut in half otherwise.
 
-"The SM-2 algorithm, created for SuperMemo in the late 1980s, forms the basis of the spaced repetition methods employed in the program. Anki's implementation of the algorithm has been modified to allow priorities on cards and to show flashcards in order of their urgency.footnote:[https://en.wikipedia.org/wiki/Anki_(software)]"
+* link:https://memrise.zendesk.com/hc/en-us/articles/360015889057-How-does-the-spaced-repetition-system-work-[__Memrise__'s algorithm] is similar to _Mochi_'s. The card interval increases using the following steps: 4 hours, 12 hours, 24 hours, 6 days, 12 days, 48 days, 96 days, and 6 months. Any wrong answer moved back the card to the first interval.
 
-"Anki's current scheduling algorithm is derived from SM-2 (an older version of the SuperMemo algorithm), though the algorithm has been significantly changed from SM-2 and is also far more configurable. One of the most apparent differences is that while SuperMemo provides users a 6-point grading system (0 through 5, inclusive), Anki only provides at most 4 grades (again, hard, good, and easy). Anki also has significantly changed how review intervals grow and shrink (making many of these aspects of the scheduler configurable through deck options), though the core algorithm is still based on SM-2's concept of ease factors as the primary mechanism of evolving card review intervals."
+* link:https://quizlet.com/blog/spaced-repetition-for-all-cognitive-science-meets-big-data-in-a-procrastinating-world[Quizlet's algorithm] has known several iterations. The first implementation simply repeat all the questions you got wrong. The second implementation is similar to Anki where the card interval increases by approximatively 2.2 and wrong answer reset the interval to one day. The next implementation relies on machine learning and use the millions of answers to determine for example the recall probability, which is the chance you answer the wrong answers. This allows for example to reduce the interval for words with irregular spellings when learning a foreign language.
+
+* link:https://blog.duolingo.com/how-we-learn-how-you-learn/[__Duolingo__'s algorithm] is similar to Quizlet. Duolingo has millions of students who generate billions of statistics about language learning every day. Like Quizlet, Duolingo uses machine learning to predict how likely you are to remember any given word at any time. This is represented by the strength meter (still strong, pretty good, time to practice, overdue) below every lesson.
+
+* link:https://www.youtube.com/watch?v=IwaoV-C9az8&ab_channel=RemNote[RemNote's algorithm] is customizable like Anki and most settings will look familiar to Anki users, especially after follow this tutorial.
+
+* link:https://news.ycombinator.com/item?id=23948541[Memcode's algorithm] also uses SM-2.
+****
 
 
-From link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html[Anki Website]
+== A Last Word
 
+In my opinion, there is no need to focus too much on optimizing the SRS algorithm. Taking time to design your own effective flashcards is crucial. Making reviewing flashcards an habit and sticking to it has, for sure, a greater impact that the marginal gain to not show the cards more or less often.
 
-https://en.wikipedia.org/wiki/SuperMemo#Description_of_SM-2_algorithm
+Encoding plays a major role. Writing your own flashcards helps to remember them. Designing great flashcards is tough but a poor encoding process will make the best SRS algorithm useless.
 
-There is a current rewrite of Anki from pure Python to Rust for the backend. In this post, I will use the Python version as present in the last major version of Anki 2.1:
+Low motivation or the urge of immediate satifaction will always fail any attempt to learn using flashcards. No algorithm can solve this problem.
 
-https://github.com/ankitects/anki/blob/2.1.0/anki/sched.py (~1500 lines)
-https://github.com/ankitects/anki/blob/2.1.0/anki/schedv2.py (~1600 lines)
-
+////
 
 
 
@@ -1546,6 +1618,8 @@ https://github.com/ankitects/anki/blob/2.1.0/anki/schedv2.py (~1600 lines)
 ////////////
 Appendixes
 ////////////
+
+////
 
 ### SRS Applications
 
@@ -1581,7 +1655,10 @@ Long-Term Learning used a standard spaced repetition algorithm, similar to Super
 * If a term is answered incorrectly, start over and reset the delay for that term to 1 day.
 ____
 
+////
 
+
+////
 ### UI
 
 image::anki-preferences-scheduling.png[]
@@ -1692,11 +1769,15 @@ See `anki/ftl/core/deck-config.ftl`
 *** ℹ: The multiplier applied to a review interval when answering `Again`.
 *** **TODO**
 
+////
+
+
+
+
+
 
 
 ////
-## Useful links
-# * Database Structure: https://github.com/ankidroid/Anki-Android/wiki/Database-Structure
 
 
 ## Limitations
@@ -1743,30 +1824,5 @@ See `anki/ftl/core/deck-config.ftl`
 
 
 ////
-
-
-
-
-
-
-
-
-
-
-## TODO
-
-* [ ] Watch https://www.youtube.com/watch?v=1XaJjbCSXT0&ab_channel=ConanLiu%2CM.D. & https://www.youtube.com/watch?v=lz60qTP2Gx0&ab_channel=MattvsJapan
-* [ ] Read this paper comparing the Duolingo and Anki algorithms: https://repositori.upf.edu/bitstream/handle/10230/48804/Muley_2021.pdf?sequence=1&isAllowed=y
-* [ ] Read link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition]
-* [ ] Check this rewrite attempt https://gist.github.com/riceissa/1ead1b9881ffbb48793565ce69d7dbdd
-* [ ] Read Why 4 buttons in Anki is bad: https://web.archive.org/web/20200926103540/https://massimmersionapproach.com/table-of-contents/anki/low-key-anki/the-ease-factor-problem/
-
-== Additional Resources
-
-* link:https://github.com/ankitects/anki[Anki GitHub Repository]
-* link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition] by Piotr Wozniak: An extensive coverage of the subject.
-* link:https://supermemo.guru/wiki/Algorithm_SM-17[SM-17 and the history of the SuperMemo algorithm] + link:https://supermemo.guru/wiki/Algorithm_SM-18[SM-18]
-* link:https://github.com/ankidroid/Anki-Android/wiki/Database-Structure[Anki Database Structure]: The most up-to-date guide to the Anki internal database schema
-
 
 
