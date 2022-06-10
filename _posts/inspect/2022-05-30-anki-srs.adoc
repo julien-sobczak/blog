@@ -6,9 +6,15 @@ author: Julien Sobczak
 date: '2022-05-30'
 category: inspect
 subject: Anki
+tags:
+  - learning
+unofficialTags:
+  - flashcards
 excerpt: >
-  Forgetting is key to learning. Forgetting is what separate what is useful and what is not. Sometimes, we want to make a piece of knowledge stick in memory despite what our memory thinks. Spaced Repetition is an effective solution to this problem and Anki is the most popular OSS tool to help you. In this post, you will discover how Anki works under the hood to help you review your cards at optimum interval and ensure them stay in your memory for a long time.
+  Forgetting is key to learning. Forgetting is what separates what is useful and what is not. Sometimes, we want to make a piece of knowledge stick in memory despite what our memory thinks. Spaced Repetition is an effective solution to this problem and Anki is the most popular OSS tool to help you. In this post, you will discover how Anki works under the hood to help you review your cards at optimum intervals and ensure they stay in your memory for a long time.
 excerpt_only: true
+recommendations:
+  - 2020-12-26-anki-scripting-for-non-programmers
 ---
 
 :page-liquid:
@@ -23,7 +29,7 @@ ____
 
 
 [.lead]
-Forgetting is key to learning. Forgetting is what separate what is useful and what is not. Sometimes, we want to make a piece of knowledge stick in memory despite what our memory thinks. Spaced Repetition is an effective solution to this problem and Anki is the most popular OSS tool to help you.
+Forgetting is key to learning. Forgetting is what separates what is useful and what is not. Sometimes, we want to make a piece of knowledge stick in memory despite what our memory thinks. Spaced Repetition is an effective solution to this problem and Anki is the most popular OSS tool to help you.
 
 
 [TIP.content]
@@ -36,12 +42,12 @@ Forgetting is key to learning. Forgetting is what separate what is useful and wh
 ====
 
 [CAUTION.license]
-The Anki source code is published under link:https://www.gnu.org/licenses/agpl-3.0.en.html[AGPL v3]. The code presented in this article have been slightly adapted for learning and readability purposes.
+The Anki source code is published under link:https://www.gnu.org/licenses/agpl-3.0.en.html[AGPL v3]. The code presented in this article has been slightly adapted for learning and readability purposes.
 
 [NOTE]
 .Prerequisites
 ====
-I assume that you have used Anki before. All code examples uses the Python language, mainly because Anki was implemented only in Python until recently, and also because it's a great language for novice programmers. You don't need to have a solid understanding of the language to follow the article as the code uses basic Python syntax.
+I assume that you have used Anki before. All code examples use the Python language, mainly because Anki was implemented only in Python until recently, and also because it's a great language for novice programmers. You don't need to have a solid understanding of the language to follow the article as the code uses basic Python syntax.
 ====
 
 
@@ -49,18 +55,18 @@ I assume that you have used Anki before. All code examples uses the Python langu
 
 The role of any Spaced Repetition System (SRS) algorithm is to determine what the user should review now, or say differently when must happen the next review for every remembered item. *The goal of any implementation is to counteract the effect of the forgetting curve*:
 
-image::forgetting-curve.png[width=750]
+image::forgetting-curve.png[width=750, link="/posts_resources/2022-05-30-anki-srs/forgetting-curve.png"]
 
 As soon as we learn or review a piece of knowledge, the decay begins. SRS algorithms need to determine the optimal interval between two reviews to ensure we haven't completely forgotten it (memory retention = 0%) while trying to limit as much as possible the number of reviews. In practice, most algorithms use 10% for the forgetting index (= 90% of items are remembered correctly) so that we don't have too many items to review again while keeping the number of reviews close to optimal.
 
-The details of the different algorithms differ greatly between various systems. We will start by reviewing the most popular ones in history before introducing Anki's solution.
+The details of the different algorithms differ greatly between systems. We will start by reviewing the most popular ones in history before introducing Anki's solution.
 
 
 === The Leitner System (1970-)
 
-If link:https://en.wikipedia.org/wiki/Hermann_Ebbinghaus[Hermann Ebbinghaus[] is credited for the initial research behind SRS, the link:https://en.wikipedia.org/wiki/Leitner_system[Leiter System] is often quoted as the first algorithm. This system uses a physical box as depicted by the following illustration:
+If link:https://en.wikipedia.org/wiki/Hermann_Ebbinghaus[Hermann Ebbinghaus] is credited for the initial research behind SRS, the link:https://en.wikipedia.org/wiki/Leitner_system[Leiter System] is often quoted as the first algorithm. This system uses a physical box as depicted by the following illustration:
 
-image::Leitner-original.png[width=550]
+image::Leitner-original.png[width=500, link="/posts_resources/2022-05-30-anki-srs/Leitner-original.png"]
 
 Here is a small Python program implementing the logic behind the original Leitner system:
 
@@ -125,7 +131,7 @@ The original Leitner system cannot really be considered a spaced repetition syst
 
 An alternative method using three boxes where incorrect answers are only moved back to the previous box is often privileged:
 
-image::Leitner-modern.png[width=650]
+image::Leitner-modern.png[width=700, link="/posts_resources/2022-05-30-anki-srs/Leitner-modern.png"]
 
 Here is a program implementing this new logic:
 
@@ -211,11 +217,11 @@ The modern Leitner system assigns intervals to the different boxes. Variants exi
 
 === SM-0 (1985)
 
-Algorithms are precise instructions to carry out. As we have seen with the Leitner system, algorithms don't have to be executed on computers at all.footnote:[You can easily reproduce manually what a computer does, except you will take so much more time.] The first version of the SuperMemo Algorithm was also thought to be executed manually.
+Algorithms are precise instructions to carry out. As we have seen with the Leitner system, algorithms don't have to be executed on computers at all. We can manually perform what a computer does, except we will need a lot more time. The first version of the SuperMemo Algorithm was also thought to be executed manually.
 
 The link:http://super-memory.com/articles/paper.htm[SM-0 algorithm] (aka the paper-and-pencil SuperMemo method) was published in 1985 and relies on link:http://super-memory.com/articles/paper.htm[paper books filled with tables].
 
-image::sm-0.png[width=800]
+image::sm-0.png[width=800, link="/posts_resources/2022-05-30-anki-srs/sm-0.png"]
 
 Although the algorithm was designed to be executed manually, we can still capture the logic using code:
 
@@ -227,11 +233,9 @@ from queue import Queue
 
 # The table of repetition intervals determines the number of days between
 # two successive reviews.
-# SM-0 applies the factor 1.7 behind two successive values.
-# The first value is fixed at 4 days.
-TABLE_REPETITION_INTERVALS = [4] # First review after 4 days
-# Use the factor 1.7 to determine next intervals
+# SM-0 applies the factor 1.7 between two successive values.
 # Ex: 4, 7, 12, 20, ...
+TABLE_REPETITION_INTERVALS = [4] # First review after 4 days
 for i in range(1, 15): # 15 repetitions max
     prev = TABLE_REPETITION_INTERVALS[i - 1]
     next = int(prev * 1.7)
@@ -260,7 +264,8 @@ class Page:
         self.questions = questions
         # "Answer field" column
         self.answers = answers
-        # "Repetition scores" column is determined during the review session
+        # "Repetition scores" column
+        # => Determined during the review session
         # "Repetitions" column
         self.repetitions = []
 
@@ -320,9 +325,9 @@ if __name__ == "__main__":
             print(f"Reviewing page {page} on {day}")
             DATABOOK[page].review()
 ----
-<1> The grade of the answer does not influence the next interval. Difficult items are reviewed the same day but the next intervals are fixed and determined with a factor 1.7 when creating the page.
+<1> The grade of the answer does not influence the next interval. Difficult items are reviewed again the same day but the next intervals are fixed and determined with a factor 1.7 when creating the page.
 
-The SM-0 algorithms can be challenging in practice for different reasons:
+The SM-0 algorithm can be challenging in practice for different reasons:
 
 * **All items on a given page are reviewed at the same time**. For hard-to-remember items (items that require more than 3 reviews on a given day to be recalled), SM-0 recommends duplicating them on a new page in your book. These items will be reviewed more frequently, and some will maybe be duplicated again if still too hard to remember.
 * **The intervals are determined using an estimation of the average case** (x1.7) but the ideal intervals depend on the complexity and your familiarity with the subject. You probably need shorter intervals for science subjects like Mathematics for example.
@@ -335,7 +340,7 @@ Enter the computer.
 
 Unlike physical systems where cards are grouped in the same box/partition/page and are reviewed collectively, digital systems consider each item separately. For example, the SuperMemo algorithm called link:https://www.supermemo.com/en/archives1990-2015/english/ol/sm2[SM-2] assigns a specific level of difficulty to every card and determines the appropriate intervals between repetitions using this specific value (called the E-Factor).
 
-image::sm-2.png[width=800]
+image::sm-2.png[width=800, link="/posts_resources/2022-05-30-anki-srs/sm-2.png"]
 
 Now, the same logic but implemented as code:
 
@@ -419,24 +424,24 @@ ____
 ____
 
 
-Anki source code includes different versions of its SRS algorithm (called _Scheduler_). All got inspiration from SM-2. The link:https://faqs.ankiweb.net/the-anki-2.1-scheduler.html[V2] is in use since 2018 even if the link:https://faqs.ankiweb.net/the-2021-scheduler.html[V3] is looming. In practice, for this article, we can ignore the details between these versions. Check the source code on GitHub if you are interested in the differences between the link:https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py[v1.py], link:https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py[v2.py], or link:https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3[v3].
+Anki source code includes different versions of its SRS algorithm (called _Scheduler_). All got inspiration from SM-2. The link:https://faqs.ankiweb.net/the-anki-2.1-scheduler.html[V2] is in use since 2018 even if the link:https://faqs.ankiweb.net/the-2021-scheduler.html[V3] is looming. For this article, we can ignore the details between these versions. Check the source code on GitHub if you are interested in the differences between the link:https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py[V1], link:https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py[V2], or link:https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3[V3].
 
 
-In this article, we will analyze the V2.1 scheduler as it is the version I'm familiar with. We will use the link:https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py[version 2.10.0] of Anki Desktop to ignore recent refactorings (the rewrite of backend code in Rust, the introduction of Protocol Buffer messages, the factorization of common code among scheduler versions using inheritance, etc.). This will help us keep the code easy to grasp.
+We will analyze the V2.1 scheduler as it is the version I'm familiar with. We will use the link:https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py[version 2.10.0] of Anki Desktop to ignore recent refactorings (the rewrite of backend code in Rust, the introduction of Protocol Buffer messages, the factorization of common code among scheduler versions using inheritance, etc.). This will help us keep the code easy to grasp.
 
 Here is a recall of link:https://docs.ankiweb.net/getting-started.html#key-concepts[Anki terminology]:
 
-image::anki-terminology.png[width=750]
+image::anki-terminology.png[width=750, link="/posts_resources/2022-05-30-anki-srs/anki-terminology.png"]
 
 As outlined by the schema, we will focus on the core abstractions (Collection, Note, Card) that affects how the SRS algorithm works. In addition, cards in Anki are scheduled differently according to their state:
 
-image::anki-workflow.png[width=700]
+image::anki-workflow.png[width=700, link="/posts_resources/2022-05-30-anki-srs/anki-workflow.png"]
 
 Here is an overview of the Anki algorithm:
 
-image::anki-srs.png[width=750]
+image::anki-srs.png[width=750, link="/posts_resources/2022-05-30-anki-srs/anki-srs.png"]
 
-The use of separate new/review queues tries to remediate a common complaint with the standard SM-2 algorithm is that repeated failings of a card cause the card to get stuck in "low interval hell" (also known as "ease hell"). When a card is in learning, failures don't affect the card’s ease. link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards[In Anki], the initial acquisition process does not influence the ease factor.
+The use of separate new/review queues tries to remediate a common complaint with the standard SM-2 algorithm is that repeated failings of a card cause the card to get stuck in "low interval hell" (also known as "ease hell"). link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards[In Anki], the initial acquisition process does not influence the ease factor.
 
 
 ### Part 1: Settings
@@ -451,7 +456,7 @@ NEW_CARDS_DISTRIBUTE = 0
 NEW_CARDS_LAST = 1
 NEW_CARDS_FIRST = 2
 
-# The initial factor when a card get promoted
+# The initial factor when a card gets promoted
 STARTING_FACTOR = 2500
 
 # Default collection configuration
@@ -483,40 +488,34 @@ deckConf = {
 }
 ----
 <1> If there is no more card to review now but the next card in learning is in less than `collapseTime` seconds, show it now. +
-  _Setting_: `Preferences` > `Basic` > `Learn ahead limit` * 60 (default: `20` minutes)
-<2> The settings differ based on the queue where a card belongs. For example, when learning (`new`) cards, the delay is increased by graduating steps whereas the delay is multiplied by a given factor for review (`rev`) cards. The meaning of individual settings will become clearer when we will detail the logic.
-<3> When you forget a review card, it is said to have 'lapsed', and the card must be relearnt. The default behavior for lapsed reviews is to reset the interval (`minInt`) to 1 (i.e. make it due tomorrow) and put it in the learning queue for a refresher (`delays`) in 10 minutes.
-
-
-* `new`
-** `delays`: The list of successive delays between the learning steps of the new cards. The first delay will be used when you press the `Again` button on a new card and is 1 minute by default. The `Good` button will advance to the next step, which is 10 minutes by default. Once all steps have been passed, the card will become a review card and will appear on a different day. +
-  _Setting_: `Preferences` > `New Cards` > `Learning steps` (Default: `1m 10m`)
-** `ints`: The list of delays according to the button pressed while leaving the learning mode after pressing "Good" or "Easy." +
-  _Setting_: `Preferences` > `New Cards` > `Graduating interval`/`Easy interval` (Default: `1` and `4`)
-** `initialFactor`: The ease multiplier new cards start with. By default, the `Good` button on a newly-learned card will delay the next review by 2.5x the previous delay. +
-  _Setting_: `Preferences` > `Advanced` > `Starting ease` (Default: `2.50`),
-** `perDay`: The maximum number of new cards to introduce in a day, if new cards are available. +
-  _Setting_: `Preferences` > `Daily Limits` > `New cards/day` (Default: `20`)
-
-* `rev`
-** `perDay`: The maximum number of review cards to show in a day, if cards are ready for review. +
-  _Setting_: `Preferences` > `Daily Limits` > `Maximum reviews/day` (Default: `50`)
-** `ease4`: An extra multiplier that is applied to a review card's interval when you rate it `Easy`. +
-  _Setting_: `Preferences` > `Advanced` > `Easy bonus` (Default: `1.30`)
-** `maxIvl`: The maximum number of days a review card will wait. When reviews have reached the limit, `Hard`, `Good` and `Easy` will all give the same delay. +
-  _Setting_: `Preferences` > `Advanced` > `Maximum interval` (Default: `36500`)
-** `hardFactor`: The multiplier applied to a review interval when answering `Hard`. +
-  _Setting_: `Preferences` > `Advanced` > `Hard interval` (Default: `1.20`)
-
-* `lapse`
-** `delays`: The list of successive delays between the learning steps of lapsed cards. By default, pressing the `Again` button on a review card will show it again 10 minutes later. +
-  _Setting_: `Preferences` > `Lapses` > `Relearning steps` (Default: `10m`)
-** `minInt`: The minimum interval given to a review card after answering `Again`. +
-  _Setting_: `Preferences` > `Lapses` > `Minimum interval` (Default: `1`)
-** `mult`: The multiplier applied to a review interval when answering `Again`. +
-  _Setting_: `Preferences` > `Advanced` > `New interval` (Default: `0`)
-** `leechFails`: The number of times `Again` needs to be pressed on a review card before it is marked as a leech. +
-  _Setting_: `Preferences` > `Lapses` > Leech threshold (Default: `8`)
+  * `collapseTime`: Tells Anki how to behave when there is nothing left to study in the current deck but cards in learning. +
+    _Setting_: `Preferences` > `Basic` > `Learn ahead limit` * 60 (default: `20` minutes)
+<2> The settings differ based on the queue where a card belongs. For example, when learning (`new`) cards, the delay is increased by graduating steps whereas the delay is multiplied by a given factor for review (`rev`) cards. The meaning of individual settings will become clearer when we will detail the logic. +
+  * `new.delays`: The list of successive delays between the learning steps of the new cards. The first delay will be used when you press the `Again` button on a new card. The `Good` button will advance to the next step. Once all steps have been passed, the card will become a review card and will appear on a different day. +
+    _Setting_: `Preferences` > `New Cards` > `Learning steps` (Default: `1m 10m`)
+  * `new.ints`: The list of delays according to the button pressed while leaving the learning mode after pressing "Good" or "Easy." +
+    _Setting_: `Preferences` > `New Cards` > `Graduating interval`/`Easy interval` (Default: `1` and `4`)
+  * `new.initialFactor`: The ease multiplier new cards start with. By default, the `Good` button on a newly-learned card will delay the next review by 2.5x the previous delay. +
+    _Setting_: `Preferences` > `Advanced` > `Starting ease` (Default: `2.50`),
+  * `new.perDay`: The maximum number of new cards to introduce in a day, if new cards are available. +
+    _Setting_: `Preferences` > `Daily Limits` > `New cards/day` (Default: `20`)
+  * `rev.perDay`: The maximum number of review cards to show in a day, if cards are ready for review. +
+    _Setting_: `Preferences` > `Daily Limits` > `Maximum reviews/day` (Default: `50`)
+  * `rev.ease4`: An extra multiplier that is applied to a review card's interval when you rate it `Easy`. +
+    _Setting_: `Preferences` > `Advanced` > `Easy bonus` (Default: `1.30`)
+  * `rev.maxIvl`: The maximum number of days a review card will wait. When reviews have reached the limit, `Hard`, `Good` and `Easy` will all give the same delay. +
+    _Setting_: `Preferences` > `Advanced` > `Maximum interval` (Default: `36500`)
+  * `rev.hardFactor`: The multiplier applied to a review interval when answering `Hard`. +
+    _Setting_: `Preferences` > `Advanced` > `Hard interval` (Default: `1.20`)
+<3> When you forget a review card, it is said to have "lapsed", and the card must be relearnt. The default behavior for lapsed reviews is to reset the interval (`minInt`) to 1 (i.e. make it due tomorrow) and put it in the learning queue for a refresher (`delays`) in 10 minutes. +
+  * `lapse.delays`: The list of successive delays between the learning steps of lapsed cards. By default, pressing the `Again` button on a review card will show it again 10 minutes later. +
+    _Setting_: `Preferences` > `Lapses` > `Relearning steps` (Default: `10m`)
+  * `lapse.minInt`: The minimum interval given to a review card after answering `Again`. +
+    _Setting_: `Preferences` > `Lapses` > `Minimum interval` (Default: `1`)
+  * `lapse.mult`: The multiplier applied to a review interval when answering `Again`. +
+    _Setting_: `Preferences` > `Advanced` > `New interval` (Default: `0`)
+  * `lapse.leechFails`: The number of times `Again` needs to be pressed on a review card before it is marked as a leech. +
+    _Setting_: `Preferences` > `Lapses` > Leech threshold (Default: `8`)
 
 
 ### Part 2: Model
@@ -607,7 +606,7 @@ def intTime(scale=1):
     return int(time.time()*scale)
 ----
 
-The `Scheduler` is the largest class that we will cover. A scheduler in Anki is an object supporting two methods:
+The `Scheduler` is the largest class that will be covered. A scheduler in Anki is an object supporting two methods:
 
 * `getCard()`: Returns the next card to review
 * `answerCard(card, ease)`: Updates the card after an answer (`ease`: `0` for "Again", `1` for "Hard", `2` for "Good", and `3` for "Easy")
@@ -621,19 +620,19 @@ class Scheduler:
         self.col = col
         # An upper limit for new and review cards
         self.queueLimit = 50
-        # # An upper limit for learning cards
+        # An upper limit for learning cards
         self.reportLimit = 1000
-        # The number of already reviewed cards today.
+        # The number of already reviewed cards today
         self.reps = 0
-        # The number of days since the collection creation.
+        # The number of days since the collection creation
         self.today = self._daysSinceCreation() # <1>
         # The timestamp of the end of day
         self.dayCutoff = self._dayCutoff() # <2>
-        # The timestamp in seconds to determine the learn ahead limit.
+        # The timestamp in seconds to determine the learn ahead limit
         self._lrnCutoff = 0 # <3>
         self.reset()
 ----
-<1> The attribute `today` represents the number of days since the collection creation. It is used when searching for review cards where the attribute `due` represents the number of days relative to the collection's creation time. The value is initialized like this:
+<1> The attribute `today` represents the number of days since the collection creation. It is used when searching for review cards where the attribute `due` represents the number of days relative to it. The value is initialized like this:
 +
 [source,python]
 ----
@@ -658,7 +657,7 @@ class Scheduler:
         stamp = int(time.mktime(date.timetuple()))
         return stamp
 ----
-<3> The attribute `_lrnCutoff` is related to the setting `collapseTime` (also called the learn ahead limit). The method `_updateLrnCutoff` is used to initialize it and update it:
+<3> The attribute `_lrnCutoff` is related to the setting `collapseTime` (also called the learn ahead limit). The method `_updateLrnCutoff()` is used to initialize it and update it:
 +
 [source,python]
 ----
@@ -850,14 +849,12 @@ class Scheduler:
 ----
 <1> By default, Anki shows cards in a well-defined order:
 +
-. (optional) New cards if the setting `newSpread` is configured with `NEW_CARDS_FIRST`.
+. New cards when `newSpread == NEW_CARDS_FIRST`
 . Learning cards that are due
-. (optional) New cards if the setting `newSpread` is configured with `NEW_CARDS_DISTRIBUTE` (the default) if the ratio allows it.
+. New cards when `newSpread == NEW_CARDS_DISTRIBUTE` (default)
 . Review cards
-. (optional) New cards if the setting `newSpread` is configured with `NEW_CARDS_LAST`.
-+ The logic for new cards is implemented in the method `_timeForNewCard()`.
-<2> The methods `_fillXXX()` returns `True` when the queue is not empty, in which case, we simply have to pop an element from the queue.
-
+. New cards when `newSpread == NEW_CARDS_LAST`
+<2> The methods `_fillXXX()` return `True` when a queue is not empty, in which case, we simply have to pop an element from it.
 
 The queues are now initialized when retrieving the first card in each of them. This works great for the current session but when a new day begins, Anki must reinitialize the queues because other cards may have reached their due date.
 
@@ -892,13 +889,13 @@ class Scheduler:
 
 ----
 <1> The method `_updateCutoff()` is called every time the queues are reset (= once a day). When this happens, it means a new day began and therefore the day limit must be refreshed too.
-<2> The method `_checkDay()` is called every time we retrieve a new card to study. This way, if we have passed the current day, the queue will be reset before returning the card.
+<2> The method `_checkDay()` is called every time we retrieve a new card to study. This way, if we have passed the current day, the queue will be reset before returning the next card.
 
 
 
 ### Part 5: Card Updating
 
-Now that we have a method to empty the list of cards to study, we will turn our attention to the core part of the SRS algorithm. Every time we study a card, the card must be rescheduled to be studied again. In short, we need to update the attribute `due` (= the next review date) of the card but the logic varies according to its current state (ex: the current queue, ease factor, and interval).
+Now that we have a method to empty the list of cards to study, we will turn our attention to the core part of the SRS algorithm. Every time we study a card, the card must be rescheduled. In short, we need to update the attribute `due` (= the next review date) of the card but the logic varies according to its current state (ex: the current queue, ease factor, and interval).
 
 [source,python]
 ----
@@ -955,7 +952,7 @@ class Scheduler:
         return ok+1
 ----
 <1> Anki simply updates the attribute `queue` to move a card to a different queue. When the destination queue will be reset (ex: for tomorrow's session), the card will be automatically inserted into it.
-<2> The attribute `type` is similar to the attribute `queue` (they share the same values `0`, `1`, `2`, and `3`). In practice, the attributes `queue` and `type` may differ for example after a lapse. When pressing "Again," on a review card, the card will be moved back to the learning back (`queue = 1`) but the type will be unchanged (`type = 3`) to remember the card was previously a review card. This will be useful when graduating the card back to the review queue after relearning.
+<2> The attribute `type` is similar to the attribute `queue` (they share the same values `0`, `1`, and `2`). In practice, the attributes `queue` and `type` may differ for example after a lapse. When pressing "Again," on a review card, the card will be moved back to the learning back (`queue = 1`) but the type will be unchanged (`type = 2`) to remember the card was previously a review card. This will be useful when graduating the card back to the review queue after relearning.
 <3> The attribute `left` is particular. The numeric format keeps two pieces of information: how many times the card will be reviewed today, and how many steps before graduation. The methods `_startingLeft` and `_leftToday` implement this logic. You can safely ignore the details.
 
 
@@ -996,7 +993,8 @@ class Scheduler:
 
 We will detail what happens depending on which button was pressed when answering the card.
 
-* After pressing "Again"...
+
+#### After pressing "Again"...
 
 [source,python]
 ----
@@ -1045,7 +1043,7 @@ class Scheduler:
 <4> The method `_delayForGrade()` is a helper method to get the next step interval. The method extracts the number of remaining steps from the attribute `left` (Ex: `1002` => 2 remaining steps) and uses the setting `delay` to find the matching delay (Ex: `1m 10m 1d` => next study in `10m`).
 
 
-* After pressing "Hard"...
+#### After pressing "Hard"...
 
 [source,python]
 ----
@@ -1072,7 +1070,7 @@ class Scheduler:
 <1> We reuse the method `_rescheduleLrnCard()` introduced just before to update the card's due date.
 
 
-* After pressing "Good"...
+#### After pressing "Good"...
 
 [source,python]
 ----
@@ -1085,14 +1083,14 @@ else:
 
 The decision depends on if there are remaining steps or not:
 
-* If we have finished the last step, the card is graduated to the learning queue:
-+
+_Case 1_: If we have finished the last step, the card is graduated to the learning queue:
+
 [source,python]
 ----
 class Scheduler:
 
     def _rescheduleAsRev(self, card, conf, early):
-        lapse = card.type in (2,3)
+        lapse = card.type == 2
 
         if lapse:
             self._rescheduleGraduatingLapse(card) # <1>
@@ -1121,11 +1119,11 @@ class Scheduler:
         return ideal
 ----
 <1> When a lapse is graduated, we add the previous interval to the current date to determine the due date.
-<2> When a new card is graduated, we must initialize the two key attributes relative to the SRS algorithm: the ease factor and the interval. These fields will be reused to determine the next due date for review cards.
+<2> When a new card is graduated, we initialize the two key attributes relative to the SRS algorithm: the ease factor and the interval. These fields will be necessary to determine the next due date for review cards.
 <3> When graduating a new card, the initial interval will be different if we are completed all steps ("Good") or if we have pressed ("Easy") to immediately graduate the card (1 vs 4 days by default).
 
-* If there are remaining steps:
-+
+_Case 2_: If there are remaining steps:
+
 [source,python]
 ----
 class Scheduler:
@@ -1139,14 +1137,14 @@ class Scheduler:
 ----
 <1> The attribute `left` is updated to decrement the number of remaining steps and to recalculate the number of studies until the next day.
 
-* After pressing "Easy"...
+#### After pressing "Easy"...
 
 [source,python]
 ----
 self._rescheduleAsRev(card, conf, True)
 ----
 
-The card is graduated to the review queue like when we complete every step. The only exception is that the initial interval will be larger as explained in the previous point.
+The card is graduated to the review queue similarly to when we complete every step. The only exception is that the initial interval will be larger as explained in the previous point.
 
 
 ### Part 5.3: Answering Review Cards
@@ -1162,7 +1160,7 @@ class Scheduler:
             self._rescheduleRev(card, ease)
 ----
 
-* After pressing "Again"...
+#### After pressing "Again"...
 
 [source,python]
 ----
@@ -1177,7 +1175,7 @@ class Scheduler:
         suspended = self._checkLeech(card, conf) # <3>
 
         if not suspended:
-            card.type = 3
+            card.type = 2
             delay = self._moveToFirstStep(card, conf) # <4>
         else:
             # no relearning steps
@@ -1198,13 +1196,13 @@ class Scheduler:
             card.queue = -1
             return True
 ----
-<1> The number of lapses for this card is increased. Useful to determine if we reach the limit to consider the card a leech.
+<1> The number of lapses for this card is increased.
 <2> The ease factor is reduced by 0.2 (but no lower than 1.3 as recommended by SM-2).
-<3> If the number of lapses reaches the value of the setting `leechFails`, the card is marked as a leech. A tag is added to the note and the card is moved to the queue `-1` (= suspended). The card will therefore be ignored when filling the different queue as no method `_fillXXX` considers cards in the queue `-1`.
+<3> If the number of lapses reaches the value of the setting `leechFails`, the card is marked as a leech. A tag is added to the note and the card is moved to the queue `-1` (= suspended). The card will therefore be ignored when filling the different queue as no method `_fillXXX()` considers cards in the queue `-1`.
 
-* After pressing "Hard," "Good," "Easy"...
+#### After pressing "Hard," "Good," "Easy"...
 
-The card will be rescheduled in an "ideal" number of days. When using Anki, most cards reside in the learning queues, and the "Again" button is pressed rarely. The core logic of the Anki SRS algorithm is present in the following methods.
+The card will be rescheduled in an "ideal" number of days. In practice, most cards reside in the learning queue, and the "Again" button is pressed rarely. This means the core logic of the Anki SRS algorithm is determined by the following methods.
 
 [source,python]
 ----
@@ -1255,25 +1253,23 @@ class Scheduler:
         ivl = min(ivl, conf['maxIvl'])
         return int(ivl)
 ----
-<1> The attribute `ivl` determines the next due date (we add it to the current date to determine the value of the attribute `due`). The
-<2> The ease factor is changed by removing 0.15 for "Hard" cards and by adding 0.15 for "Easy" cards. The ease factor is left unchanged for "Good" cards. Only their intervals will be changed to increase the period between studies.
+<1> The attribute `ivl` determines the next due date (we add it to the current date to determine the value of the attribute `due`).
+<2> The ease factor is changed by removing 0.15 for "Hard" cards or by adding 0.15 for "Easy" cards. The ease factor is left unchanged for "Good" cards. Only their intervals will be changed to increase the period between studies.
 <3> The method `_nextRevIvl()` determine the next interval:
-* "Hard": the current interval is multiplied by the value of hard interval (1.2 by default).
+* "Hard": the current interval is multiplied by the value of the hard interval (1.2 by default).
 * "Good": the current interval is multiplied by the current ease (+ a bonus if the card was late).
 * "Easy": the current interval is multiplied by the current ease times the easy bonus (1.3 by default) (+ a bonus if the card was late).
-+
-See link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards[Anki documentation] for more information.
 
 
-**We are done** 🎉. The complete code is available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_minimal_v3.py[companion GitHub repository]. A more complete annotated version is also available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_annotated.py[same repository] including two additional features described next.
+**We are done** 🎉. The complete code is available in the link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_minimal_v3.py[companion GitHub repository]. A more complete link:https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_annotated.py[annotated version] is also available in the same repository including two additional features described next.
 
 
 
 === Bonus: Day Boundaries
 
-link:See https://docs.ankiweb.net/deck-options.html?#day-boundaries[Anki treats small steps and steps that cross a day boundary differently]. With small steps, the cards are shown as soon as the delay has passed, in preference to other waiting cards like reviews. This is done so that you can answer the card as closely to your requested delay as possible. In contrast, if the interval crosses a day boundary, it is automatically converted to days.
+link:https://docs.ankiweb.net/deck-options.html?#day-boundaries[Anki treats small steps and steps that cross a day boundary differently]. With small steps, the cards are shown as soon as the delay has passed, in preference to other due cards in review. This is done so that you can answer the card as closely to the calculated delay as possible. In contrast, if the interval crosses a day boundary, it is automatically converted to days.
 
-The code splits the learning queue in the above code into two distinct queues: sub-day learning and day learning.
+In the implementation, the code splits the learning queue into two distinct queues: sub-day learning and day learning.
 
 [source,python]
 ----
@@ -1376,22 +1372,25 @@ def _fuzzIvlRange(self, ivl):
 maxExtrax = min(300, int(delay*0.25))
 fuzz = random.randrange(0, maxExtra)
 ----
-<2> The fuzzing increases the greater the interval even if the fuzz factor is reduced since the interval becomes larger.
+<2> The fuzz factor is reduced but the fuzzing increases as intervals become larger.
 
 
 
 == A Better Anki SRS Algorithm?
 
-The link:http://www.supermemo.com/english/ol/sm2.htm[SM-2 algorithm], on which Anki is based, was released in 1987 in SuperMemo 1.0. It was revised several times since: +
-link:http://super-memory.com/english/ol/sm4.htm[SM-4] (1989),
-link:http://super-memory.com/english/ol/sm5.htm[SM-5] (1989),
-link:http://super-memory.com/english/ol/sm6.htm[SM-6] (1991),
-link:http://super-memory.com/english/algsm8.htm[SM-8] (1995),
-link:http://super-memory.com/english/algsm11.htm[SM-11] (2002),
-link:http://super-memory.com/english/algsm15.htm[SM-15] (2011),
-link:https://supermemo.guru/wiki/Algorithm_SM-17[SM-17] (2015),
-link:https://supermemo.guru/wiki/Algorithm_SM-18[SM-18] (2019). Each version iterate over deficiencies of the previous one.
-You can find a link:https://supermemo.guru/wiki/History_of_SuperMemo_algorithm[short summary] of the main changes brings by each algorithm version or a (very) link:https://www.supermemo.com/fr/articles/history[long summary] of the history of SuperMemo. The short version is probably too terse to understand the improvements, and the long version is probably too detailed to understand everything. (It took me more than 5 hours to read it but it was worth the reading!)
+The link:http://www.supermemo.com/english/ol/sm2.htm[SM-2 algorithm], on which Anki is based, was released in 1987 in SuperMemo 1.0. It was revised several times since:
+
+* link:http://super-memory.com/english/ol/sm4.htm[SM-4] (1989)
+* link:http://super-memory.com/english/ol/sm5.htm[SM-5] (1989)
+* link:http://super-memory.com/english/ol/sm6.htm[SM-6] (1991)
+* link:http://super-memory.com/english/algsm8.htm[SM-8] (1995)
+* link:http://super-memory.com/english/algsm11.htm[SM-11] (2002)
+* link:http://super-memory.com/english/algsm15.htm[SM-15] (2011)
+* link:https://supermemo.guru/wiki/Algorithm_SM-17[SM-17] (2015)
+* link:https://supermemo.guru/wiki/Algorithm_SM-18[SM-18] (2019)
+
+Each version iterates over deficiencies of the previous one.
+You can find a link:https://supermemo.guru/wiki/History_of_SuperMemo_algorithm[short summary] of the main changes or a (very) link:https://www.supermemo.com/fr/articles/history[long summary] of the history of SuperMemo. The short version is probably too terse to understand the improvements, and the long version is probably too detailed to understand everything. (It took me more than 5 hours to read it but it was worth the reading!)
 
 [quote, Piotr Wozniak, Original author of SuperMemo]
 ____
@@ -1400,29 +1399,29 @@ ____
 
 From a high-level perspective, the main motivation for every version is to determine better optimal intervals (= the ideal periods between reviews of a single card) so that the forgetting index is close to 10% (= recall of 90% is acceptable).
 
-From a low-level perspective, several approaches were experimented by SuperMemo. The first major version (SM-2) introduced the ease factor to capture the difficulty of an item (the lower the ease factor = the more difficult to learn = the shorter the interval). The ease factor was multiplied by the previous interval to determine the next interval.
+From a low-level perspective, several approaches were experimented by SuperMemo. The first major version (SM-2) introduced the ease factor to capture the difficulty of an item (the lower the ease factor = the more difficult = the shorter the interval). The ease factor was multiplied by the previous interval to determine the next interval.
 
 The successive iterations become more and more elaborate by adding new dimensions, in particular, what is called by SuperMemo the link:https://supermemo.guru/wiki/Two_component_model_of_memory[two-component model]: *stability* and *retrievability* (in complement to *difficulty* represented by the E-Factor). Stability tells you how long a piece of knowledge can last in memory. Retrievability tells you how easy it is to recall a piece of knowledge. These notions may appear similar but they aren't. "If you take two memories right after a review, one with a short optimum interval, and the other with a long optimum interval, the memory status of the two must differ," declares Piotr Wozniak, "Both can be recalled perfectly (maximum retrievability) and they also need to differ in how long they can last in memory (different stability)."
 
-The two-component model of long-term memory still represents the foundation of SuperMemo since its introduction in SM-4 in 1989. This first implementation turned unsuccessful but the main idea behind the matrix of optimal intervals remains.
+What follows is an example of the optimum factors (OF) matrix used in SM-4/SM-5. The matrix ignores the retrievability dimension, which was introduced in SM-6.
 
-image::sm-5-matrix.png[]
+image::sm-5-matrix.png[width=700, link="/posts_resources/2022-05-30-anki-srs/sm-5-matrix.png"]
 
-The SM-4 matrix ignores the retrievability dimension, which was introduced in SM-6. For this article, it is easier to visualize a two-dimensional matrix but the logic is similar with more dimensions. Initially, the matrix was statically defined based on prior measurements in SuperMemo. After each answer, the grade is used to tell SuperMemo how well the interval "performed." If the grade is low, the interval was too long. If the grade is high, ther interval was too short. The entry is the matrix is therefore updated in consequence. Matrix smoothing is used to modify the neighboring entries too (if a value increases, there are chance that a little increase can be beneficial to neighbors too).
+A two-dimensional matrix is easier to represent but the logic is similar with more dimensions. Initially, the matrix was defined based on prior measurements in SuperMemo. After each answer, the grade tells SuperMemo how well the interval "performed." If the grade is low, the interval was too long. If the grade is high, the interval was too short. The entry in the matrix is updated in consequence and matrix smoothing is applied (= if a value increases, a smaller increase can be beneficial to neighbors too).
 
-link:http://super-memory.com/articles/kowal.htm[Piotr Wozniak was pessimistic about a better, faster, and more effective algorithm] as soon as 1994. Several versions of the algorithm appeared after that but no breakthrough improvement was added like SuperMemo did when it abandoned the SM-2 algorithm in 1989, the same algorithm that keeps popping up in new applications.
+The two-component model of long-term memory still represents the foundation of SuperMemo since its introduction in SM-4 in 1989. link:http://super-memory.com/articles/kowal.htm[Piotr Wozniak was pessimistic about a better, faster, and more effective algorithm] as soon as 1994. The versions of the algorithm that appeared after that didn't introduce a breakthrough improvement like SuperMemo did when it abandoned the SM-2 algorithm in 1989, the same algorithm that keeps popping up in new applications.
 
 
 [NOTE]
 ."New" Applications
 ====
-"Recent" years have seen many applications relying on SRS appearing in popular app stores: link:https://quizlet.com/[Quizlet], link:https://www.memrise.com/[Memrise], link:https://www.duolingo.com/[Duolingo], link:https://www.lingodeer.com/[LingoDeer], link:https://www.brainscape.com/[Brainscape], link:https://lingvist.com/[Lingvist], link:https://chegg.com[Chegg], link:https://www.remnote.com/[RemNote], link:https://mochi.cards/[Mochi], link:https://www.memcode.com/[Memcode], ...
+Many applications relying on SRS appeared in popular app stores more or less recently: link:https://quizlet.com/[Quizlet], link:https://www.memrise.com/[Memrise], link:https://www.duolingo.com/[Duolingo], link:https://www.lingodeer.com/[LingoDeer], link:https://www.brainscape.com/[Brainscape], link:https://lingvist.com/[Lingvist], link:https://chegg.com[Chegg], link:https://www.remnote.com/[RemNote], link:https://mochi.cards/[Mochi], link:https://www.memcode.com/[Memcode], ...
 
 * link:https://mochi.cards/docs/#spaced-repetition[__Mochi__'s algorithm] is very simple. The card interval is doubled after each correct answer, and cut in half otherwise.
 
-* link:https://memrise.zendesk.com/hc/en-us/articles/360015889057-How-does-the-spaced-repetition-system-work-[__Memrise__'s algorithm] is similar to _Mochi_'s. The card interval increases using the following steps: 4 hours, 12 hours, 24 hours, 6 days, 12 days, 48 days, 96 days, and 6 months. Any wrong answer moved back the card to the first interval.
+* link:https://memrise.zendesk.com/hc/en-us/articles/360015889057-How-does-the-spaced-repetition-system-work-[__Memrise__'s algorithm] is similar to _Mochi_'s. The card interval increases using the following steps: 4 hours, 12 hours, 24 hours, 6 days, 12 days, 48 days, 96 days, and 6 months. Any wrong answer moves back the card to the first interval.
 
-* link:https://quizlet.com/blog/spaced-repetition-for-all-cognitive-science-meets-big-data-in-a-procrastinating-world[Quizlet's algorithm] has known several iterations. The first implementation simply repeats all the questions you got wrong. The second implementation is similar to Anki where the card interval increases by approximately 2.2 and wrong answers reset the interval to one day. The next implementation relies on machine learning and uses the millions of answers to determine for example the recall probability, which is the chance you answer the wrong answers. This allows for example to reduce the interval for words with irregular spellings when learning a foreign language.
+* link:https://quizlet.com/blog/spaced-repetition-for-all-cognitive-science-meets-big-data-in-a-procrastinating-world[Quizlet's algorithm] has known several iterations. The first implementation simply repeats all the questions you got wrong. The second implementation is similar to Anki where the card interval increases by approximately 2.2 and wrong answers reset the interval to one day. The next implementation relies on machine learning and uses the millions of answers to determine the recall probability, which is the chance you answer correctly. This allows, for example, to reduce the interval for words with irregular spellings when learning a foreign language.
 
 * link:https://blog.duolingo.com/how-we-learn-how-you-learn/[__Duolingo__'s algorithm] is similar to Quizlet. Duolingo has millions of students who generate billions of statistics about language learning every day. Like Quizlet, Duolingo uses machine learning to predict how likely you are to remember any given word at any time. This is represented by the strength meter (still strong, pretty good, time to practice, overdue) below every lesson.
 
@@ -1431,41 +1430,49 @@ link:http://super-memory.com/articles/kowal.htm[Piotr Wozniak was pessimistic ab
 * link:https://news.ycombinator.com/item?id=23948541[Memcode's algorithm] also uses SM-2.
 ====
 
+In my opinion, *Anki is not perfect but there is no need to focus too much on optimizing it*:
 
-== The Last Word
+* **Adding more dimensions**? What if you review inadvertently a card, for example when explaining the idea to a coworker. No algorithm can exploit this and postpone the next review. *No algorithm will ever be perfect*.
+* **Using machine learning**? Applying the lessons from other learners is great for common datasets. For example, if most French users have trouble learning a particular English word, chances are future French users will need shorter intervals too. But what about custom-edited cards about subjects such as science, management, and parenting. What about your interest in any of these subjects. We remember more easily what passionates us. **Machine learning excels when there are patterns but learning is profoundly a personal, unique experience**.
 
-In my opinion, there is no need to focus too much on optimizing the SRS algorithm. Taking time to design effective flashcards is crucial. Making reviewing flashcards a habit and sticking to it has, for sure, a greater impact than any marginal gain obtained by tuning any SRS algorithm.
+Therefore, *I think we should focus more on optimizing our practices rather than the tools*. Here are two key practices:
 
-Encoding plays a major role. link:https://www.juliensobczak.com/write/2018/12/01/10-rules-for-better-flashcards.html[Writing your flashcards] helps to remember them. Designing great flashcards is tough but a poor encoding process will make the best SRS algorithm useless.
+* *Devote time to understand*. Learning is a 3-steps process: encoding, storage, and retrieval. Anki helps to store information for a longer period by reviewing it ("use it or lose it"). But Anki is dependent on how good the encoding happened. You cannot learn something you haven't understood first. Therefore, you must devote (a lot of) time link:https://www.juliensobczak.com/write/2018/12/01/10-rules-for-better-flashcards.html[writing your own flashcards]. *A poor encoding process will make the best SRS algorithm useless.*
 
-Low motivation or the urge for immediate satisfaction will always fail any attempt to learn using flashcards. No algorithm can solve this problem.
+* *Devote time to learn*. Trying Anki is easy. Sticking to it is hard. Many users quickly abandon Anki probably because its benefits can only be visible after several years of making it a habit. And everyone knows changing habits is hard, otherwise _Atomic Habits_ would not be the #1 best-selling book on Amazon last year. *A lack of motivation will make the best SRS algorithm useless.*
+
+One last important thing,
+
+[quote, Piotr Wozniak]
+____
+Learning is one of the most enjoyable things in the world.
+____
 
 
 [NOTE.remember]
 .To Remember
 ====
-* *A Spaced Repetition System (SRS) can be implemented without a computer*. The Leitner system remains popular.
-* *SRS* targets retention close to 90% (where 10% of cards are wrongly answered).
+* *A Spaced Repetition System (SRS) counteracts the effect of the forgetting curve*. Memory decay is inevitable but can be influenced.
+* *SRS systems can be implemented with or without a computer*. The Leitner system remains popular.
+* *SRS systems often target a retention close to 90%* (= 10% of cards are wrongly answered).
 * *SuperMemo* introduced the first *SRS algorithm running on a computer* (SM-2).
-* *SM-2* continues to be used by most applications like Anki.
-* *Anki makes the SM-2 highly configurable* and uses different queues to manage cards differently based if they are new, in learning, or simply in review.
+* *SM-2 continues to be used by most applications* including Anki, despite having been abandoned in SuperMemo three decades ago.
+* *Anki makes the SM-2 highly configurable* and uses different queues to manage cards differently based on if they are new, in learning, or simply in review.
 * *Most algorithms use the item difficulty* (known as the ease factor) to determine optimal intervals. SuperMemo goes well beyond and also uses memory stability and memory retrievability.
 * *Recent SRS applications rely on machine learning* to exploit the specificities of the learning materials (ex: English words with irregular syntax) and to use the information collected from their massive dataset of users to tune their algorithm. SuperMemo never chose this approach.
 * *The perfect SRS algorithm will never exist*. No algorithm can determine if you are passionate about a subject, or if you review by chance the content of a card at work during a discussion with a coworker (in which case an "ideal" algorithm must postpone the next review).
-* *Devoting time to creating great flashcards* and making reviewing flashcards a habit have probably a far bigger impact than any improvement in the SRS algorithm you use.
+* *Creating great flashcards and making reviewing them a habit have probably a far bigger impact* than any improvement in the SRS algorithm you use.
 ====
 
 
 
-
-== Addititional Links
+== Additional Links
 
 * The link:https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html[Anki Website] explains succinctly the main differences between its algorithm and SM-2.
-* link:https://github.com/ankidroid/Anki-Android/wiki/Database-Structure[Anki Database Structure]: The most up-to-date guide to the Anki internal database schema, which was more than useful to write this article.
-* link:https://web.archive.org/web/20200926103540/https://massimmersionapproach.com/table-of-contents/anki/low-key-anki/the-ease-factor-problem/[The Ease Factor Problem
-]: Interesting insight about the impact of changing the ease factor after a lapse.
-* link:https://www.supermemo.com/en/articles/history[The true history of spaced repetition] by Piotr Wozniak: An extensive coverage of the subject.
-* link:https://www.youtube.com/watch?v=1XaJjbCSXT0[A great video] to introduce most of what is covered in the Anki section.
+* link:https://github.com/ankidroid/Anki-Android/wiki/Database-Structure[Anki Database Structure]: The most up-to-date guide to the Anki internal database schema, which was more than useful during the writing of this article.
+* link:https://web.archive.org/web/20200926103540/https://massimmersionapproach.com/table-of-contents/anki/low-key-anki/the-ease-factor-problem/[The Ease Factor Problem]: Interesting insight about the impact of changing the ease factor after a lapse.
+* link:https://www.youtube.com/watch?v=1XaJjbCSXT0[A great video] to introduce most of the notions covered in the Anki section.
+* Last but not least, link:https://www.supermemo.com/en/articles/history[the true history of spaced repetition]: An extensive coverage of the subject by Piotr Wozniak. A reference.
 
 
 
@@ -1490,15 +1497,10 @@ https://help.supermemo.org/wiki/Glossary
 * **U-Factor** is the number associated with each memorized element. It equals to the ratio of the current interval and the previously used interval. If the element has not been repeated yet, i.e. the previous interval is not defined, U-Factor equals the first interval. The greater the U-Factor the greater the increase of the interval between repetitions. For items, U-Factors are determined by SuperMemo Algorithm. For topics, U-Factors are determined by A-Factors.
 
 
-////
-
-
-
 ////////////
 Appendixes
 ////////////
 
-////
 
 ### SRS Applications
 
@@ -1540,7 +1542,7 @@ ____
 image::anki-preferences-scheduling.png[]
 
 * ☑ Show next review time above answer buttons (default: yes)
-* ☑ Show remaining card count during review (default: yes)
+* ☑ Show remaining card count during reviews (default: yes)
 * ☑️ Show learning cards with larger steps before reviews (default: no)
 * ☑ Legacy timezone handling (buggy, but required for AnkiDroid <= 2.14) (default: no)
 * ☑ V3 scheduler (beta) (default: no)
@@ -1613,7 +1615,4 @@ See `anki/ftl/core/deck-config.ftl`
 ** New interval  (default `0.00`)
 *** ℹ: The multiplier applied to a review interval when answering `Again`.
 
-
 ////
-
-
