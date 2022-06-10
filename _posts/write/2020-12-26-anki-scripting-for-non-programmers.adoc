@@ -13,8 +13,9 @@ unofficialTags:
 excerpt: Creating flashcards manually is great to initiate the learning process. The time you spend creating your flashcards contributes in lowering the effect of the forgetting curve. But creating flashcards manually is challenging when you want to learn for example the most common 10,000 French words. Automation can be a good strategy, especially if the process is more repetitive than creative. Although Anki does not support automation, solutions exist, even if you are not a professional programmer.
 excerpt_only: true
 recommendations:
-  - 2018-12-01-10-rules-for-better-flashcards
+  - 2022-05-30-anki-srs
   - 2018-12-30-should-i-create-a-flashcard
+  - 2018-12-01-10-rules-for-better-flashcards
 ---
 
 :page-liquid:
