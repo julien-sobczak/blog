@@ -1,0 +1,255 @@
+---
+layout: post-write
+title: "My Habit Year"
+author: Julien Sobczak
+date: '2023-01-31'
+category: "write"
+subject: Habits
+tags:
+  - productivity
+recommendations:
+  - 2023-01-31-my-lego-habit-tracker
+---
+
+:page-liquid:
+:imagesdir: {{ '/posts_resources/2023-01-31-lego-habit-tracker/' | relative_url }}
+
+
+[quote, James Clear, https://jamesclear.com/three-steps-habit-change]
+____
+Your life today is essentially the sum of your habits.
+____
+
+[.lead]
+"We are what we repeatedly do." Aristotle didn't exactly say that footnote:[The famous quote was written by American Philosopher Will Durant after merging two quotes by Aristotle "As it is not one swallow or a fine day that makes a spring, so it is not one day or a short time that makes a man blessed and happy" and "These virtues are formed in man by his doing the right actions"] but the idea conveyed by this famous quote is precious. What we do every day is a better representation of who we are than what we say. Good and bad habits define us.
+
+[.lead]
+Becoming a better person almost always implies changing our habits, except change is difficult, as attested by the fact that  _Atomic Habits_ by James Clear is still one the most most sold books. (If you haven't read it, I'll take no offense if you stop reading and start this excellent book.)
+
+[.lead]
+One year ago, I decided that 2022 will be the year to rethink my habits. The goal was to commit to a few key habits that will help me become who I am to be. We are now in 2023 and I'm still on the right track. What follows is how I did.
+
+
+== The Plan
+
+There are so many things we would like to do (or instead think that we should do). Eat healthier, practice jogging, listen before talking, start a journal, read more books, etc. You cannot do them all.
+
+The essence of productivity is choosing. Saying yes to things that are important to us -- spending time with family, reading -- but even more important, saying no to things that are interesting -- speaking at a conference, watching the latest popular series.
+
+Choosing our habits wisely is essential.
+
+[quote,James Clear, _Atomic Habits_]
+—-
+One of the best ways to ensure your habits remain satisfying over the long-run is to pick behaviors that align with your personality and skills. Work hard on the things that come easy.
+—-
+
+Many more quotes share the idea of focusing on our strengths, not on our weaknesses. Life is short and there will always be people for which our weaknesses are their strengths. Even hard work cannot change that. Focusing our efforts on what we excel (= what we love) is a better strategy to enjoy the journey and end up with exceptional results.
+
+So, my first step was to *find activities that are boring for most people, but fun for me*. Here is the result:
+
+* Reading
+* Focusing alone
+* In-depth learning
+* Thinking differently
+* Being creative
+* Writing
+* Challenging others (and myself)
+* Running
+
+Here is a visual representation showing how connected these activites are:
+
+image::my-activities.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/my-activities.svg"]
+
+
+I now had a list of activities that I want to do more, and consequently, I also knew which kind of activity I should avoid. The next step was to *identify the habits to do more of what I love*. "The person who builds better habits, gets better results," says James Clear, "It’s not the outcomes. It’s the inputs."
+
+Some habits are obvious. If I want to read more, I need to allocate time every week to read books. But what about finding habits to help me think differently or spend more time focusing alone. The good news is that by reading a lot as I did in the past, it was easy to come up with things to try.
+
+What follows are the main habits on which I decided to commit:
+
+// Read Books
+
+image::habit-read-books.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-read-books.svg"]
+// [encourages] Focusing alone
+// [develops] In-depth learning
+// [is] Reading
+// [contributes] Thinking Differently
+// [nurtures] Being Creative
+// [inspires] Challenging others
+
+Reading books is a lovely activity for introverts ^(Focusing&nbsp;alone)^. I've always read books, mostly fiction and comics when I was a kid, and now mostly nonfiction books. link:{% post_url write/2021-05-19-why-i-write %}[Nothing influences me more than books]. The best books challenge my opinions ^(Think&nbsp;differently)^, provide so many ideas ^(Being&nbsp;creative)^ that I try to share ^(Challenging&nbsp;others)^. Reading is learning by definition ^(In-depth&nbsp;learning)^.
+
+// Take notes (using a Second Brain)
+
+image::habit-take-notes.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-take-notes.svg"]
+// [facilitates] Writing
+// [reflects on] In-depth learning
+// [maximizes benefits] Reading
+// [generate insights] Thinking Differently
+// [create new connections] Being Creative
+
+Notes can be a powerful tool with the right system. The principles behind the famous Slip box of Niklas Luhmann (_Zettelkästen_ in German) are used by link:https://ryanholiday.net/how-and-why-to-keep-a-commonplace-book/[many authors] and have been adapted by Tiago Forte with his popular second brain method. A second brain provides a place to develop knowledge ^(In-depth&nbsp;learning)^ that encourages connections between my notes similarly to our natural ability to connect ideas ^(Thinking&nbsp;Differently)^. Writing therefore becomes easier without having to start from a blank page ^(Writing)^. The insights gained by reviewing notes frequently facilitates creativity ^(Being&nbsp;Creative)^ and maximizes the benefits of readings by remembering more of what I read ^(Reading)^.
+
+// Write blog posts
+
+image::habit-write-blogposts.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-write-blogposts.svg"]
+// [practices] Writing
+// [requires] Focusing alone
+// [supports] In-depth learning
+// [incites] Reading
+// [encourages] Being creative (by providing a medium to express myself)
+// [aspires] Challenging others
+
+Writing, like teaching, is an understanding tool ^(In-depth&nbsp;learning)^. I always discover new books when trying to write ^(Reading)^ and I always end up with a clearer focus on the subject ^(Thinking&nbsp;Differently)^ than before writing my first word. Combining words is one of my favorite creative activities ^(Being&nbsp;creative)^ and a formidable support for introverts to reach others ^(Challenging&nbsp;others)^.
+
+
+// Meditate
+
+image::habit-meditate.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-meditate.svg"]
+// [see clearly] Reading
+// [requires] Focusing alone
+// [expands horizon] Thinking Differently
+// [contributes] Being creative
+
+Meditation brings many benefits. Meditation helps us manage stress, increase self-awareness, reduce negative emotions, develop empathy, and so much more. In particular, meditation makes us more productive by link:https://hbr.org/2012/10/if-youre-too-busy-to-meditate.html[increasing your capacity to resist distracting urges] ^(Focusing&nbsp;alone)^ and by fostering creativity by seeing more clearly ^(Thinking&nbsp;Differently,&nbsp;Being&nbsp;creative)^. Meditation has the potential to enrich almost every aspect of our life.
+
+
+// Study flashcards
+
+image::habit-flashcards.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-flashcards.svg"]
+// [studies] Focusing alone
+// [strengthen] In-depth learning
+// [encourages] Reading
+// [create connections] Think Differently
+
+Flashcards require daily study sessions ^(Focusing&nbsp;alone)^ where we are not just refreshing what we already learned ^(In-depth&nbsp;learning)^. Flashcards provide an opportunity to reconsider what we learned in the past with what we learned recently ^(Thinking&nbsp;differently)^ as cards are constantly mixed up, encouraging far transfer. Like when using a second brain, you are more likely to get new insights ^(Being&nbsp;creative)^ as the number of flashcards on different topics increases in a single deck. Reading is the most obvious solution to create more flashcards ^(Reading)^.
+
+
+// Draw
+
+image::habit-draw.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-draw.svg"]
+// [illustrates] Writing
+// [requires] Focusing alone
+// [inspires] Being creative
+// [could] Challenging others
+
+Kids love drawings for good reasons. Drawing plays a big role in our cognitive development. It can help us learn to write and think creatively ^(Being&nbsp;creative)^. In addition, not only children prefer books with illustrations. Drawings are a powerful tool ("A picture is worth a thousand words") to enrich my writings ^(Writing)^. The ability to express ideas using words and drawings, exploiting both hemispheres of the brain, is a superpower to connect with readers ^(Challenging&nbsp;others)^. Drawing is also a great activity to relax ^(Focusing&nbsp;alone)^.
+
+// Exercise
+
+image::habit-exercise.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habit-exercise.svg"]
+// [frees my mind] Focusing alone
+// [connects with Nature] Thinking Differently
+// [influences] Being creative
+// [is] Running
+
+"The body should be treated rigorously, that it may not be disobedient to the mind,” said Seneca. I didn't know I would love running when I started it at the beginning of the pandemic. Running and meditation share some benefits for sure. In addition, many studies have shown that connecting with Nature brings emotions like calmness, joy, nurtures creativity and facilitates concentration ^(Being&nbsp;creative)^.
+
+If I represent these habits with the things I love, we can observe how my habits are strongly connected and how they mutually reinforce each other.
+
+image::habits-and-activities.svg[link="/posts_resources/2023-01-31-lego-habit-tracker/habits-and-activities.svg"]
+
+
+I now had a plan but as brilliantly said by Dwight D. Eisenhower, "Plans are useless, but planning is essential." It's always the implementation that decides the success. "Ideas are easy. Execution is everything,” says John Doerr.
+
+
+== The Implementation
+
+
+=== Habit Techniques
+
+The book _Atomic Habits_ is still the best resource to have a solid overview of well-documented techniques to build good habits (and break bad habits but that's not the focus of this article). All habits proceed through four stages in the same order: cue, craving, response, and reward. The **cue** triggers a **craving**, which motivates a **response**, which provides a **reward**, which satisfies the **craving** and, ultimately, becomes associated with the **cue**. There are techniques to help for every step:
+
+
+image::habit-loop@2x.png[]
+
+Here are a few examples, all described more extensively in the aforementioned book:
+
+* *The Two Minute Rule* (_Make it easy_): Ensure new habits can be done in a few minutes at first.
+* *Prime the Environment* (_Make it obvious_): Adapt your environment to make future actions easier.
+* *Implementation Intention* (_Make it obvious_): I will [BEHAVIOR] at [TIME] in [LOCATION].
+* *Habit Stacking* (_Make it obvious_): After [CURRENT HABIT], I will [HABIT I NEED].
+* *Temptation Bundling* (_Make it attractive_):  After [HABIT I NEED], I will [HABIT I WANT].
+* *Habit Contract* (_Make it easy_): Find an accountability partner or share your goal publicly.
+* *Automation* (_Make it easy_): Use technologies that encourage future habits.
+* *Use reinforcement* (_Make it satisfying_): Give yourself an immediate reward when you complete your habit.
+* *Habit tracker* (_Make it satisfying_): Keep track of your habit streak.
+* *Never miss twice* (_Make it satisfying_): Get back on track immediately.
+
+Most of the habits I decided to pursue weren't really new habits to form. I started running two years ago. I was already an avid reader. I've never stopped writing on my blog (even if sporadically). I've reviewed my flashcards for a decade now, and I have already tried several times to practice meditation regularly. The biggest challenge was to be consistent while introducing new habits, like starting to draw again (I drawed a lot when I was a kid), and rethinking from scratch my note-taking process.
+
+
+* *Read books*
+** _Habit Contract_: Organize a reading challenge with my coworkers.
+** _Implementation Intention_: Read at night during weekdays.
+** _Habit tracker_: Make visible every single read book.
+* *Take notes* (using a Second Brain)
+** _The Two Minute Rule_: Write new notes in Google Keep using a shortcut on my smartphone.
+** _Implementation Intention_: Process new notes at the end of the week at a specific time (to fill my second brain).
+* *Write blog posts*
+** _Habit tracker_: Make visible the time spent writing.
+** _Automation_: Ease the book review process to focus on the content alone.
+* *Meditate*
+** _Habit Contract_: Ask a coworker trying to build the same habit.
+** _Habit tracker_: Make visible the meditation sessions.
+** _Implementation intention_: Book a specific time slot in my calendar with a daily reminder.
+* *Study flashcards*
+** _Never miss twice_: Be consistent to not let the number of flashcards to review grows over time.
+** _Habit tracker_: Make visible the study sessions.
+** _Habit stacking_: Review flashcards after meditating when already comfortably installed.
+** _Automation_: Rework the flashcard creation process to simply edit Markdown files.
+* *Draw*
+** _Prime the environment_: Make pencils and notebooks accessible on my desk.
+** _Habit tracker_: Make visible the number of artworks created.
+* *Exercise*
+** _Implementation Intention_: Practice every day at lunch time on weekdays.
+** _Habit tracker_: Make visible the time spent exercising (session >= 30 minutes).
+
+
+Most above habits can benefit from a habit tracker. There are two related strategies I haven't discussed so far and that really seduced me when I first learned about them, due to their brilliant simplicity and redoutable efficiency:
+
+* link:https://jamesclear.com/paper-clips[*The Paper Clip Strategy*]: Trent Dyrsmid, a twenty-three-year-old stockbroker in Abbotsford, Canada, began each morning with two jars on his desk. One was filled with 120 paper clips. The other was empty. As soon as he settled in each day, he would make a sales call. Immediately after, he would move one paper clip from the full jar to the empty jar and the process would begin again.
+* link:https://jamesclear.com/stop-procrastinating-seinfeld-strategy[*The Seinfeld Strategy*]: Jerry Seinfield became a better comic by writing better jokes and the way to create better jokes was to write every day. Jerry used a big wall calendar that has a whole year on one page, and put a big red X for each day that he wrote. “After a few days you'll have a chain. Just keep at it and the chain will grow longer every day. You'll like seeing that chain, especially when you get a few weeks under your belt. Your only job is to not break the chain.” Motivation is useful. Just do not break the chain.
+
+These strategies make progress visible. Most good habits require time for results to become apparent and progress is rarely linear. Demotivation and procrastination are always lurking when trying to build a new habit. These two strategies offer a link:https://jamesclear.com/paper-clips[_visual cue_], a trigger that can help motivate us to perform a habit with more consistency.
+
+After much hesitation, I finally decided to invest in a special habit tracker (since it is not even sold as such), the link:https://www.lego.com/en-us/product/world-map-31203[Lego World Map] set.
+
+image::lego-world-map-final.webp[]
+
+The map is composed of 11,130 tiles of 10 colors. The idea is to associate habits with colors and pin a tile after every successful completed habit. For example, there are 3064 white tiles and I plan to complete the map in a decade, which means I have to review my flashcards at least 6 times per week. Similarly, I use the teal color for sport activites (1879 tiles = exercise every 2 days), and so on.
+
+image::lego-tiles-legend@2x.png[]
+
+If you are interested in learning more about the story and the logic behind this map, I devoted a companion link:{% post_url write/2023-01-31-my-lego-habit-tracker %}[blog post] on this topic to share my recommendations.
+
+
+=== The Results
+
+My habit tracker is very useful to measure objectively my progress. Here is a picture taken after my first year:
+
+image::map-1yo.png[]
+
+// Sport: 138
+// Meditation: 105
+// Writing: 110
+// MIlestones: 19
+// Drawing: 10
+// Reading: 37
+// Flashcard: 340
+// = 759 => 14.6 tiles per week (vs 20)
+
+
+My goal was to complete 20 habits every week to be able to complete the whole map in a decade. I came "relatively" close (75%) to this objective. The main reasons for not reaching this first milestone are:
+
+* I decided to postpone the drawing habit to the second year (I prefer to slightly miss the first target than to completely fail the endeavor due to demotivation). I expect to catch up over the next few years.
+* I spend a lot of time reworking my note-taking workflow, comparing solutions to finally conclude that a basic Git repository would be good enough for now (but with many ideas to build on top of it).
+* I experienced my first (minor) injury preventing me from exercising during a month and forcing me to resume progressively.
+* I tackle a few large books that deserve more time and I spent a considerable time reading hundreds of picture books to find great books to read with my son.
+
+
+== Next
+
+If 2022 was my year of habit change, 2023 will be my year to practice skills. I spent a lot of time reading but knowledge without action is useless. I hope to see you next year to share my progress.
+
+
