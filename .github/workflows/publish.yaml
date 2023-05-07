@@ -1,5 +1,11 @@
 name: Publish
 
+# Prevent two successive commits to trigger two concurrent workflows.
+# See https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
