@@ -10,7 +10,7 @@ headline: The programmer's memory (not brain) at work
 note: 13
 stars: 3
 tags: []
-image: "/posts_resources/covers/the-programmers-brain.png"
+image: /posts_resources/covers/the-programmers-brain.png
 metadata:
   authors: "Felienne Hermans"
   isbn: '9781617298677'
