@@ -10,7 +10,7 @@ headline: Learning the growth mindset by example.
 note: 14
 stars: 4
 tags: []
-image: "/posts_resources/covers/limitless.png"
+image: /posts_resources/covers/limitless.png
 metadata:
   authors: "Jim Kwik"
   isbn: '9781401958237'
