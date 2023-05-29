@@ -7,9 +7,9 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Required to support manual execution
   schedule:
-  - cron: "0 9 * * FRI"
+  - cron: "0 9 * * FRI" # Every Friday morning
 
 jobs:
   build-and-deploy:
