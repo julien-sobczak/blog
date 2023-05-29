@@ -7,11 +7,12 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
   schedule:
   - cron: "0 9 * * FRI"
 
 jobs:
-  build_and_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: GitHub Checkout
