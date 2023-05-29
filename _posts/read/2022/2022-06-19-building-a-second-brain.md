@@ -10,7 +10,7 @@ headline: An indispensable resource for curious people.
 note: 14
 stars: 4
 tags: []
-image: "/posts_resources/covers/building-a-second-brain.png"
+image: /posts_resources/covers/building-a-second-brain.png
 metadata:
   authors: "Tiago Forte"
   isbn: '9781982167387'
