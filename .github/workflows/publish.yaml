@@ -7,9 +7,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - master
+  schedule:
+  - cron: "0 9 * * FRI"
 
 jobs:
   build_and_deploy:
