@@ -10,7 +10,7 @@ headline: Lessons learned after 55 years spent living at the intersection of har
 note: 17
 stars: 4
 tags: []
-image: "/posts_resources/covers/understanding-software-dynamics.png"
+image: /posts_resources/covers/understanding-software-dynamics.png
 metadata:
   authors: "Richard L. Sites"
   isbn: '9780137589739'
