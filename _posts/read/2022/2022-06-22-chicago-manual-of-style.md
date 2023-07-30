@@ -10,7 +10,7 @@ headline: Essential for writers. Informative for readers.
 note: 18
 stars: 5
 tags: []
-image: /posts_resources/covers/chicago-manual-of-style.png
+image: "/posts_resources/covers/chicago-manual-of-style.png"
 metadata:
   authors: "University of Chicago Press"
   isbn: '9780226287058'
@@ -23,4 +23,3 @@ _The Chicago Manual of Style_ documents the thousands of rules that make books f
 I read the book sequentially (skimming over some sections in the second half), and I enjoy reading it, but it's mainly a reference book to keep close to your desk when writing. If you have a question about a styling option, you'll find the answer. The book is perfectly organized and makes it easy to navigate inside. Explanations are clear, concise and richly illustrated with examples.
 
 _The Chicago Manual of Style_ isn't a book I will recommend often. But if you like writing, you must at least open it to apprehend its richness. I now better understand all of these rules I learned unconsciously by reading a lot of books. There are many interesting points and historical explanations for the curious reader or aspiring writer.
-    
