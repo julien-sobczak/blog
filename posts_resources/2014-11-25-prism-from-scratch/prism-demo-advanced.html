@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Prism Lite Demo (with lookbehind support)</title>
+
+	<style type="text/css">
+    <!-- prism.css -->
+
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ *
+ * Note: Unmodified copy of the file https://github.com/LeaVerou/prism/blob/gh-pages/themes/prism.css
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: black;
+	text-shadow: 0 1px white;
+	font-family: Consolas, Monaco, 'Andale Mono', monospace;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+@media print {
+	code[class*="language-"],
+	pre[class*="language-"] {
+		text-shadow: none;
+	}
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #f5f2f0;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: slategray;
+}
+
+.token.punctuation {
+	color: #999;
+}
+
+.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #905;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #690;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+	color: #a67f59;
+	background: hsla(0, 0%, 100%, .5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+	color: #07a;
+}
+
+.token.function {
+	color: #DD4A68;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+	color: #e90;
+}
+
+.token.important {
+	font-weight: bold;
+}
+
+.token.entity {
+	cursor: help;
+}
+  </style>
+
+
+</head>
+<body>
+
+
+    <pre><code class="language-java">package com.prismjs;
+
+import java.io.*;
+
+@SuppressWarnings("unchecked")
+public class PrismJS {
+
+    public static Integer test = 0;
+
+    /**
+     * Javadoc style comment
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        // Let's create some variables
+        int numArgs = args.length;
+        Integer a = 0x1;
+        String test = "" + "Hello" + " \"World\"!";
+        double dvalue = 1.23;
+        int optest = 0;
+        optest += 321 - 45 * 1247 / 425 % 123;
+
+        /*
+         * Multiline comment
+         */
+        for (int i = 0; i < numArgs; i++) {
+            // Simple line comment
+            System.out.println("Arg value= " + args[i]);
+        }
+
+        do {
+            System.out.println("Do while ok!");
+        } while (false);
+    }
+}</code></pre>
+
+<script>
+
+var Prism = (function() {
+
+	var self = {
+
+		languages : {},
+
+		highlightAll : function() {
+			var elements = document.querySelectorAll('code[class*="language-"]');
+
+			for (var i = 0, element; element = elements[i++];) {
+				self.highlightElement(element);
+			}
+		},
+
+		highlightElement : function(element) {
+			var language = element.className.match(/\blanguage-(?!\*)(\w+)\b/i)[1];
+			var grammar = self.languages[language];
+
+			// Set language on the parent, for styling
+			var parent = element.parentNode;
+			if (/pre/i.test(parent.nodeName)) {
+				parent.className = parent.className + ' language-' + language;
+			}
+
+			var code = element.textContent;
+
+			element.innerHTML = self.highlight(code, grammar, language);
+		},
+
+		highlight : function(text, grammar, language) {
+			var tokens = self.tokenize(text, grammar);
+			return self.Token.stringify(tokens, language);
+		},
+
+		tokenize : function(text, grammar) {
+			var strarr = [ text ];
+
+			tokenloop: for ( var token in grammar) {
+				if (!grammar.hasOwnProperty(token) || !grammar[token]) {
+					continue;
+				}
+
+				var pattern = grammar[token],
+				    lookbehind = !!pattern.lookbehind,
+				    lookbehindLength = 0;
+
+				pattern = pattern.pattern || pattern;
+
+				for (var i = 0; i < strarr.length; i++) { // Donâ€™t cache length as it changes during the loop
+
+					var str = strarr[i];
+
+					if (str instanceof self.Token) {
+						continue;
+					}
+
+					var match = pattern.exec(str);
+
+					if (match) {
+						if (lookbehind) {
+							lookbehindLength = match[1].length;
+						}
+
+						var from = match.index - 1 + lookbehindLength,
+						    match = match[0].slice(lookbehindLength),
+						    len = match.length,
+						    to = from + len,
+						    before = str.slice(0, from + 1),
+						    after = str.slice(to + 1);
+
+						var args = [ i, 1 ];
+
+						if (before) {
+							args.push(before);
+						}
+
+						var wrapped = new self.Token(token, match);
+
+						args.push(wrapped);
+
+						if (after) {
+							args.push(after);
+						}
+
+						Array.prototype.splice.apply(strarr, args);
+					}
+				}
+			}
+
+			return strarr;
+		},
+
+		Token: function(type, content) {
+			this.type = type;
+			this.content = content;
+
+			self.Token.stringify = function(o, language, parent) {
+				if (typeof o == 'string') {
+					return o;
+				}
+
+				if (Array.isArray(o)) {
+					return o.map(function(element) {
+						return self.Token.stringify(element, language, o);
+					}).join('');
+				}
+
+				var content = self.Token.stringify(o.content, language, parent);
+				var	classes = [ 'token', o.type ];
+
+				return '<span class="' + classes.join(' ') + '">' + content + '</span>';
+			};
+		}
+	};
+
+	return self;
+
+})();
+
+document.addEventListener('DOMContentLoaded', Prism.highlightAll);
+
+
+Prism.languages.java = {
+	// C-like
+	'comment': {
+			pattern: /(^|[^\\])\/\*[\w\W]*?\*\//g,
+			lookbehind: true
+	},
+	'string': /("|')(\\?.)*?\1/g,
+	'class-name': {
+		pattern: /((?:(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/ig,
+		lookbehind: true
+	},
+	'keyword': /\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/g,
+	'boolean': /\b(true|false)\b/g,
+	'function': {
+		pattern: /[a-z0-9_]+\(/ig,
+	},
+	'number': /\b-?(0x[\dA-Fa-f]+|\d*\.?\d+([Ee]-?\d+)?)\b/g,
+	'operator': /[-+]{1,2}|!|<=?|>=?|={1,3}|&{1,2}|\|?\||\?|\*|\/|\~|\^|\%/g,
+	'ignore': /&(lt|gt|amp);/gi,
+	'punctuation': /[{}[\];(),.:]/g,
+
+	// Java Specific
+	'keyword': /\b(abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|private|this|break|double|implements|protected|throw|byte|else|import|public|throws|case|enum|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|const|float|native|super|while)\b/g,
+	'number': /\b0b[01]+\b|\b0x[\da-f]*\.?[\da-fp\-]+\b|\b\d*\.?\d+[e]?[\d]*[df]\b|\W\d*\.?\d+\b/gi,
+	'operator': {
+		pattern: /(^|[^\.])(?:\+=|\+\+?|-=|--?|!=?|<{1,2}=?|>{1,3}=?|==?|&=|&&?|\|=|\|\|?|\?|\*=?|\/=?|%=?|\^=?|:|~)/gm,
+		lookbehind: true
+	}
+};
+</script>
+
+</body>
+</html>
