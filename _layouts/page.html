@@ -2,16 +2,11 @@
 <html lang="en">
 
 <head>
-
     {% include meta.html %}
 
     <title>{{ page.title }}</title>
 
     {% include stylesheets.html %}
-
-    {% if jekyll.environment == 'production' %}
-    {% include analytics.html %}
-    {% endif %}
 </head>
 
 <body id="{% if page.author %}page-post{% else %}page-category{% endif %}">
@@ -58,7 +53,7 @@
             {% endif %}
                 <a href="{{ '/categories/inspect.html' | relative_url }}">I'm inspectin' I.T.</a>
             </li>
-            
+
             <li class="page-scroll">
                 <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
             </li>
