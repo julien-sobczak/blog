@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Spring Integration from Scratch</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2016/04/12/spring-integration-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">April 12, 2016</span>
+
+      
+      <a href="/tags/frameworks" class="label">
+      Frameworks
+      </a>
+      
+
+      
+      <span class="label">
+        Java
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Spring Integration from Scratch</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="title">Note for the novice Spring Integration user</div>
+This post assumes a basic comprehension of the Spring Integration Framework. If you just begin with Spring Integration, you could find the short book <strong>Just Spring Integration</strong> helpful to quickly grasp the core concepts, the different types of channel and their endpoints. Do not hesitate to refer to the official documentation if a term is new to you.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<a href="https://github.com/spring-projects/spring-integration/tree/v4.2.5.RELEASE">Spring Integration</a> is published under the <a href="https://opensource.org/licenses/Apache-2.0">licence Apache, Version 2.0</a>. The code presented in this post was simplified (robustness, performance, validation, etc) and should not be used outside of this context. This post is based on the version 4.2.5.RELEASE of Spring Integration.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="a_basic_example">A basic example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To illustrate the inner working of Spring Integration, we will use the following basic example. This example is inspired from the official <a href="https://pivotal.io/academy">Spring Enterprise Training</a> and highlights common misunderstandings (message immutability, the Proxy Gateway, the different types of channel, the right use of gateway and service activator to keep our code free from dependencies on the Spring Integration API, &#8230;&#8203;)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;beans:beans</span> <span class="attribute-name">xmlns:beans</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/integration</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+        <span class="content">http://www.springframework.org/schema/integration</span>
+        <span class="content">http://www.springframework.org/schema/integration/spring-integration.xsd</span>
+        <span class="content">http://www.springframework.org/schema/beans</span>
+        <span class="content">http://www.springframework.org/schema/beans/spring-beans.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="comment">&lt;!-- App configuration --&gt;</span>
+    <span class="tag">&lt;beans:bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderProcessor</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderProcessor</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="comment">&lt;!-- Spring Integration configuration --&gt;</span>
+
+    <span class="tag">&lt;gateway</span> <span class="attribute-name">default-request-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+             <span class="attribute-name">service-interface</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderService</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;publish-subscribe-channel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;service-activator</span> <span class="attribute-name">input-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderProcessor</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;channel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pollableChannel</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;queue</span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/channel&gt;</span>
+
+    <span class="tag">&lt;bridge</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">bridge</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">input-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">output-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pollableChannel</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+<span class="tag">&lt;/beans:beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>OrderService</code> definition follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">order</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">OrderService</span> {
+
+    Confirmation submitOrder(Order order);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The flow begins with a proxy Gateway. When the method <code>submitOrder</code> is called, a new message containing the order passed in argument is created and sent to the channel <code>newOrders</code>. This channel is defined as a publish-subscribe channel, so that multiple endpoints could consume the message. The first endpoint to consume the message is a Service Activator that implements the business logic. The service activator delegates to an instance of the following class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">order</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.UUID</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">OrderProcessor</span> {
+
+    <span class="directive">public</span> Confirmation processOrder(Order order) {
+        <span class="keyword">return</span> <span class="keyword">new</span> Confirmation(calculateConfirmationNumber(order));
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> calculateConfirmationNumber(Order order) {
+        <span class="keyword">return</span> <span class="predefined-type">UUID</span>.randomUUID().toString();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code creates an object <code>Confirmation</code> after generating a confirmation number. The confirmation is then send to the temporary channel created by the Gateway (as there is no output-channel configured on the service activator).</p>
+</div>
+<div class="paragraph">
+<p>In addition to the service activator, there is another endpoint of type Bridge that listen to new orders. This component is often used to connect a subscribable channel to a pollable channel to let us use the <code>MessagingTemplate</code> in our test. This is exactly what we will use to test our Spring Integration Flow as demonstrated by the following JUnit test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">order</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertNotNull</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.runner.RunWith</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.integration.core.MessagingTemplate</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.messaging.MessageChannel</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.context.ContextConfiguration</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.test.context.junit4.SpringJUnit4ClassRunner</span>;
+
+<span class="annotation">@ContextConfiguration</span>(locations = { <span class="string"><span class="delimiter">&quot;</span><span class="content">classpath*:order-config.xml</span><span class="delimiter">&quot;</span></span> })
+<span class="annotation">@RunWith</span>(SpringJUnit4ClassRunner.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">OrderTest</span> {
+
+    <span class="annotation">@Autowired</span> OrderService orderService;
+    <span class="annotation">@Autowired</span> MessageChannel pollableChannel;
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> testFlow() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        Order order = <span class="keyword">new</span> Order(<span class="string"><span class="delimiter">&quot;</span><span class="content">1484</span><span class="delimiter">&quot;</span></span>);
+
+        Confirmation confirmation = orderService.submitOrder(order);
+        assertNotNull(confirmation);
+
+        MessagingTemplate template = <span class="keyword">new</span> MessagingTemplate();
+        Order actual = template.receiveAndConvert(pollableChannel, Order.class);
+        assertNotNull(actual);
+
+        <span class="predefined-type">System</span>.out.println(
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">Received confirmation </span><span class="delimiter">&quot;</span></span> + confirmation.getConfirmationNumber() +
+            <span class="string"><span class="delimiter">&quot;</span><span class="content"> for order of product </span><span class="delimiter">&quot;</span></span> + actual.getProductCode());
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We inject the Gateway implementation provided by Spring Integration in our test by using the @Autowired implementation. Then, we call the unique method offered by this interface to start the flow and check the confirmation number was correctly assigned on the returning object. We finish by checking the order is available in our <code>pollableChannel</code> to demonstrate the classic use of the Bridge endpoint when using the <code>MessagingTemplate</code> to test our code.</p>
+</div>
+<div class="paragraph">
+<p>When run, the test displays a message similar to the following in the console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Received confirmation e393b760-5d97-42e3-9974-b504907b9e00 for order
+of product 1484</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will not go further with our use of Spring Integration. Instead, we remove completely the dependency from our <code>pom.xml</code>. In this post, we will implement the minimal code to make the test pass again, trying to stay as close as possible to the original implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="comment">&lt;!-- The project is based on this version of Spring Framework Integration:  --&gt;</span>
+<span class="comment">&lt;!-- &lt;dependency&gt; --&gt;</span>
+<span class="comment">&lt;!--     &lt;groupId&gt;org.springframework.integration&lt;/groupId&gt; --&gt;</span>
+<span class="comment">&lt;!--     &lt;artifactId&gt;spring-integration-core&lt;/artifactId&gt; --&gt;</span>
+<span class="comment">&lt;!--     &lt;version&gt;${spring.version}&lt;/version&gt; --&gt;</span>
+<span class="comment">&lt;!-- &lt;/dependency&gt; --&gt;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Only the <code>spring-integration-core</code> artifact was commented. We will continue to use the other Spring Core project (<code>spring-beans</code> and <code>spring-context</code>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core_abstractions">Core Abstractions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a messaging framework, Spring Integration could be described by three core abstractions: <code>Message</code>, <code>MessageChannel</code> and <code>MessageEndpoint</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="message_abstraction">Message Abstraction</h3>
+<div class="paragraph">
+<p>A message, if you use JMS, Kafka, SOAP, and so on, is always identified by a payload representing the data we want to send, and a collection of headers (key-value), used by the messaging infrastructure to route the message among the different destinations. This way, a messaging framework does not have to concern itself with the content of the message (whose size varies unlike headers whose values have simple type).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+As of release 4.0, core Spring Integration interfaces migrated to a new project <code>spring-messaging</code> included in Spring Core. The aim is to reuse these abstractions in other modules using the concept of message too.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the definition of the <code>Message</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="comment">/**
+ * A generic message representation with headers and body.
+ */</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">Message</span>&lt;T&gt; {
+
+    <span class="comment">/**
+     * Return the message payload.
+     */</span>
+    T getPayload();
+
+    <span class="comment">/**
+     * Return message headers for the message.
+     */</span>
+    MessageHeaders getHeaders();
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>MessageHeaders</code> is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.Serializable</span>;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+
+<span class="keyword">import</span> <span class="include">org.springframework.util.AlternativeJdkIdGenerator</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.IdGenerator</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">MessageHeaders</span> <span class="directive">implements</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt;, <span class="predefined-type">Serializable</span> {
+
+    <span class="comment">/**
+     * The key for the Message ID. This is an automatically generated UUID and
+     * should never be explicitly set in the header map.
+     */</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> ID = <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> REPLY_CHANNEL = <span class="string"><span class="delimiter">&quot;</span><span class="content">replyChannel</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> IdGenerator defaultIdGenerator =
+        <span class="keyword">new</span> AlternativeJdkIdGenerator();
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; headers;
+
+    <span class="directive">public</span> MessageHeaders(<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; headers) {
+        <span class="local-variable">this</span>.headers = (headers != <span class="predefined-constant">null</span> ?
+            <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt;(headers) :
+            <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt;());
+        <span class="local-variable">this</span>.headers.put(ID, defaultIdGenerator.generateId());
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">UUID</span> getId() {
+        <span class="keyword">return</span> get(ID, <span class="predefined-type">UUID</span>.class);
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> getReplyChannel() {
+        <span class="keyword">return</span> get(REPLY_CHANNEL);
+    }
+
+    <span class="annotation">@SuppressWarnings</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">unchecked</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> &lt;T&gt; T get(<span class="predefined-type">Object</span> key, <span class="predefined-type">Class</span>&lt;T&gt; type) {
+        <span class="predefined-type">Object</span> value = <span class="local-variable">this</span>.headers.get(key);
+        <span class="keyword">if</span> (value == <span class="predefined-constant">null</span>) {
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+        <span class="keyword">if</span> (!type.isAssignableFrom(value.getClass())) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Incorrect type</span><span class="delimiter">&quot;</span></span>);
+        }
+        <span class="keyword">return</span> (T) value;
+    }
+
+
+    <span class="comment">// Delegating Map implementation</span>
+
+    <span class="directive">public</span> <span class="type">boolean</span> containsKey(<span class="predefined-type">Object</span> key) {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.headers.containsKey(key);
+    }
+
+    <span class="comment">// + Same for containsValue, entrySet, get, isEmpty, keySet, size, values</span>
+
+    <span class="comment">// Unsupported Map operations</span>
+
+    <span class="comment">/**
+     * Since MessageHeaders is immutable, the call to this method
+     * will result in {@link UnsupportedOperationException}.
+     */</span>
+    <span class="directive">public</span> <span class="predefined-type">Object</span> put(<span class="predefined-type">String</span> key, <span class="predefined-type">Object</span> value) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">UnsupportedOperationException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">MessageHeaders is immutable</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="comment">// + Same for putAll, remove, and clear operations</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Several points are worth noting about this definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A message in Spring Integration is immutable (inherently thread-safe), so Spring Integration developers could write lock-free code. If we want to add a new header, we have to duplicate the message first.</p>
+</li>
+<li>
+<p>As each message has a unique ID, the duplication will create a new message with its own ID. Internally, Spring uses the class <code>java.util.Random</code> to generate them.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The two abstractions (<code>Message</code> and <code>MessageHeaders</code>) are core classes inside the Spring Integration source. Most of the time, the messages are already created by a Gateway or an Adapter, but sometimes we need to create a message ourselves (to customize the headers or for testing purpose). In this post, we have to provide an implementation. The main implementation of <code>Message</code> is the class <code>GenericMessage</code> but it is recommended to use the <code>MessageBuilder</code> API to construct the message. Here is an implementation of these classes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging.support</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.Serializable</span>;
+<span class="keyword">import</span> <span class="include">java.util.Map</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.util.Assert</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.ObjectUtils</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessageHeaders</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GenericMessage</span>&lt;T&gt; <span class="directive">implements</span> Message&lt;T&gt;, <span class="predefined-type">Serializable</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> T payload;
+
+    <span class="directive">private</span> <span class="directive">final</span> MessageHeaders headers;
+
+    <span class="directive">public</span> GenericMessage(T payload) {
+        <span class="local-variable">this</span>(payload, <span class="keyword">new</span> MessageHeaders(<span class="predefined-constant">null</span>));
+    }
+
+    <span class="directive">public</span> GenericMessage(T payload, <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; headers) {
+        <span class="local-variable">this</span>(payload, <span class="keyword">new</span> MessageHeaders(headers));
+    }
+
+    <span class="directive">public</span> GenericMessage(T payload, MessageHeaders headers) {
+        Assert.notNull(payload, <span class="string"><span class="delimiter">&quot;</span><span class="content">Payload must not be null</span><span class="delimiter">&quot;</span></span>);
+        Assert.notNull(headers, <span class="string"><span class="delimiter">&quot;</span><span class="content">MessageHeaders must not be null</span><span class="delimiter">&quot;</span></span>);
+        <span class="local-variable">this</span>.payload = payload;
+        <span class="local-variable">this</span>.headers = headers;
+    }
+
+    <span class="directive">public</span> T getPayload() {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.payload;
+    }
+
+    <span class="directive">public</span> MessageHeaders getHeaders() {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.headers;
+    }
+
+    <span class="comment">// + equals, hashcode and equals</span>
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.support</span>;
+
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.util</span>.*;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="directive">public</span> <span class="directive">final</span> <span class="type">class</span> <span class="class">MessageBuilder</span>&lt;T&gt; {
+
+    <span class="directive">private</span> <span class="directive">final</span> T payload;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; headers; <span class="comment">// MessageHeaders is immutable,</span>
+                                               <span class="comment">// we should create a Map</span>
+    <span class="directive">private</span> <span class="directive">final</span> Message&lt;T&gt; originalMessage;
+
+    <span class="comment">/**
+     * Private constructor to be invoked from the static factory methods only.
+     */</span>
+    <span class="directive">private</span> MessageBuilder(T payload, Message&lt;T&gt; originalMessage) {
+        Assert.notNull(payload, <span class="string"><span class="delimiter">&quot;</span><span class="content">payload must not be null</span><span class="delimiter">&quot;</span></span>);
+        <span class="local-variable">this</span>.payload = payload;
+        <span class="local-variable">this</span>.originalMessage = originalMessage;
+        <span class="local-variable">this</span>.headers = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+        <span class="keyword">if</span> (originalMessage != <span class="predefined-constant">null</span>) {
+            <span class="local-variable">this</span>.headers.putAll(originalMessage.getHeaders());
+        }
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; MessageBuilder&lt;T&gt; fromMessage(Message&lt;T&gt; message) {
+        Assert.notNull(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">message must not be null</span><span class="delimiter">&quot;</span></span>);
+        MessageBuilder&lt;T&gt; builder = <span class="keyword">new</span> MessageBuilder&lt;T&gt;(
+                message.getPayload(), message);
+        <span class="keyword">return</span> builder;
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; MessageBuilder&lt;T&gt; withPayload(T payload) {
+        MessageBuilder&lt;T&gt; builder = <span class="keyword">new</span> MessageBuilder&lt;T&gt;(payload, <span class="predefined-constant">null</span>);
+        <span class="keyword">return</span> builder;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Object</span> getHeader(<span class="predefined-type">String</span> headerName) {
+        <span class="keyword">return</span> headers.get(headerName);
+    }
+
+    <span class="directive">public</span> MessageBuilder&lt;T&gt; setHeader(<span class="predefined-type">String</span> name, <span class="predefined-type">Object</span> value) {
+        <span class="keyword">if</span> (!ObjectUtils.nullSafeEquals(value, getHeader(name))) {
+            <span class="keyword">if</span> (value != <span class="predefined-constant">null</span>) {
+                headers.put(name, value);
+            }
+            <span class="keyword">else</span> {
+                headers.remove(name);
+            }
+        }
+        <span class="keyword">return</span> <span class="local-variable">this</span>;
+    }
+
+    <span class="directive">public</span> MessageBuilder&lt;T&gt; copyHeaders(<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ?&gt; headersToCopy) {
+        <span class="keyword">if</span> (headersToCopy != <span class="predefined-constant">null</span>) {
+            <span class="keyword">for</span> (<span class="predefined-type">Map</span>.Entry&lt;<span class="predefined-type">String</span>, ?&gt; entry : headersToCopy.entrySet()) {
+                <span class="keyword">if</span> (!isReadOnly(entry.getKey())) {
+                    setHeader(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        <span class="keyword">return</span> <span class="local-variable">this</span>;
+    }
+
+    <span class="directive">public</span> MessageBuilder&lt;T&gt; setReplyChannel(MessageChannel replyChannel) {
+        <span class="keyword">return</span> setHeader(MessageHeaders.REPLY_CHANNEL, replyChannel);
+    }
+
+    <span class="directive">protected</span> <span class="type">boolean</span> isReadOnly(<span class="predefined-type">String</span> headerName) {
+        <span class="keyword">return</span> MessageHeaders.ID.equals(headerName);
+    }
+
+    <span class="directive">public</span> Message&lt;T&gt; build() {
+        <span class="keyword">return</span> <span class="keyword">new</span> GenericMessage&lt;T&gt;(
+            payload,
+            <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt;(headers));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the <code>MessageBuilder</code> fluent API, it&#8217;s easy to create new message:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Message&lt;<span class="predefined-type">String</span>&gt; hello = MessageBuilder.withPayload(<span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span>).build();
+
+<span class="comment">// Proxy Gateway create a temporary channel to send the response</span>
+Message&lt;<span class="predefined-type">String</span>&gt; proxy = MessageBuilder.withPayload(<span class="string"><span class="delimiter">&quot;</span><span class="content">proxyGateway</span><span class="delimiter">&quot;</span></span>).
+                            setReplyChannel(aTemporaryChannel).
+                            build();
+
+<span class="comment">// Component could add a new header by duplicating a message</span>
+Message&lt;<span class="predefined-type">String</span>&gt; helloWorld = MessageBuilder.fromMessage(hello).
+                                 setHeader(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">World</span><span class="delimiter">&quot;</span></span>).
+                                 build();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that we know how to create a message, let&#8217;s see how to send them between components.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="messagechannel_abstraction"><code>MessageChannel</code> Abstraction</h3>
+<div class="paragraph">
+<p>Components exchange messages through what is called a <code>Channel</code>. A channel is used to send and/or receive messages. Spring Integration defines many types of channel whose characteristics differ: does the receiver runs in the same thread as the sender (synchronous call), does multiples receivers could consumes a message (point-to-point vs publish-subscribe, does the receiver should wait for new message to arrive (passive endpoint) or does it should poll regularly for new message (active endpoint). To keep this post (relatively) short, we will implement the main ones:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Channel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mode</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DirectChannel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Point-to-Point</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Synchronous</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QueueChannel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Point-to-Point</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asynchronous</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PublishSubscribeChannel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Publish-subscribe</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Synchronous</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PublishSubscribeChannel with executor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Publish-subscribe</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asynchronous</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All of these channels implement the <code>MessageChannel</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MessageChannel</span> {
+
+    <span class="comment">/**
+     * Send a {@link Message} to this channel. If the message is sent,
+     * the method returns {@code true}. If the message cannot be sent due to a
+     * non-fatal reason, the method returns {@code false}.
+     * To provide a maximum wait time, use {@link #send(Message, long)}.
+     */</span>
+    <span class="type">boolean</span> send(Message&lt;?&gt; message);
+
+    <span class="comment">/**
+     * Send a message, blocking until either the message is accepted or the
+     * specified timeout period elapses.
+     */</span>
+    <span class="type">boolean</span> send(Message&lt;?&gt; message, <span class="type">long</span> timeout);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What could surprise you is that this interface defines only methods for sending messages. Why? The answer depends on the channel type: <code>PollableChannel</code> or <code>SubscribableChannel</code> (must not be confused with <code>PublishSubscribeChannel</code>). Does the target endpoint should poll to received a message (active endpoint) or does the channel should send the message to the endpoint (passive endpoint). Let&#8217;s draw a diagram to clarify the class hierarchy:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2016-04-12-spring-integration-from-scratch/channels.png" alt="Channel implementations">
+</div>
+</div>
+<div class="paragraph">
+<p>For example, when using a <code>DirectChannel</code>, I should first subscribe to the channel to be notified automatically when a new message comes. When using a <code>QueueChannel</code>, I do not have to subscribe but I should poll regularly (for example, every second) to check if a new message is present. Given the polling interval, there is a latency between the sending and the receiving of a message.</p>
+</div>
+<div class="paragraph">
+<p>Here is the definitions of the interfaces <code>PollableChannel</code> and <code>SubscribableChannel</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">PollableChannel</span> <span class="directive">extends</span> MessageChannel {
+
+    <span class="comment">/**
+     * Receive a message from this channel, blocking indefinitely if necessary.
+     */</span>
+    Message&lt;?&gt; receive();
+
+    <span class="comment">/**
+     * Receive a message from this channel, blocking until
+     * either a message is available
+     * or the specified timeout period elapses.
+     */</span>
+    Message&lt;?&gt; receive(<span class="type">long</span> timeout);
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">SubscribableChannel</span> <span class="directive">extends</span> MessageChannel {
+
+    <span class="type">boolean</span> subscribe(MessageHandler handler);
+
+    <span class="type">boolean</span> unsubscribe(MessageHandler handler);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>MessageHandler</code> is defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MessageHandler</span> {
+
+    <span class="type">void</span> handleMessage(Message&lt;?&gt; message);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>MessageHandler</code> interface will interest us later when we will implement our first endpoints. For now, let&#8217;s focus on the channel implementations, starting with the <code>DirectChannel</code>.</p>
+</div>
+<div class="paragraph">
+<p>A <code>DirectChannel</code> is a Subscribable Point-to-Point channel. It means that a <code>DirectChannel</code> should send the message to one of the registered handlers, in the same thread as the sender. Concretely, a <code>DirectChannel</code> is nothing more and nothing less than a method call:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.channel</span>;
+
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DirectChannel</span> <span class="directive">implements</span> SubscribableChannel {
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;MessageHander&gt; handlers = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
+
+    <span class="directive">public</span> <span class="type">boolean</span> subscribe(MessageHandler handler) {
+        <span class="local-variable">this</span>.handlers.add(handler);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message) {
+        handlers.iterator().next().send(message);
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This implementation illustrates perfectly the main idea behind the <code>DirectChannel</code> but presents some flaws:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>All <code>SubscribableChannel</code> should store a list of subscribers.</p>
+</li>
+<li>
+<p>What if there is no subscriber?</p>
+</li>
+<li>
+<p>What if an handler fails? Should I try the next one to see if it succeeds?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The first problem is easily solved. We create a superclass to contains the list of subscribers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.channel</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.concurrent.CopyOnWriteArrayList</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessageHandler</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.SubscribableChannel</span>;
+
+<span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">AbstractSubscribableChannel</span>
+        <span class="directive">implements</span> SubscribableChannel {
+
+    <span class="directive">protected</span> <span class="directive">final</span> <span class="predefined-type">CopyOnWriteArrayList</span>&lt;MessageHandler&gt; handlers =
+        <span class="keyword">new</span> <span class="predefined-type">CopyOnWriteArrayList</span>&lt;MessageHandler&gt;();
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> subscribe(MessageHandler handler) {
+        handlers.add(handler);
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> unsubscribe(MessageHandler handler) {
+        handlers.remove(handler);
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We replaced favorably the <code>java.util.ArrayList</code> by an instance of <code>java.util.concurrent.CopyOnWriteArrayList</code>. This implementation is thread-safe and best suited for applications in which set sizes generally stay small, read-only operations vastly outnumber mutative operations, and you need to prevent interference among threads during traversal.</p>
+</div>
+<div class="paragraph">
+<p>The two remaining problems are solved by a code lightly more complex because we need to iterate over the handlers and correctly manage exceptions. Here is the final implementation of <code>DirectChannel</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.channel</span>;
+
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DirectChannel</span> <span class="directive">extends</span> AbstractSubscribableChannel {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message) {
+        <span class="keyword">return</span> send(message, -<span class="integer">1</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message, <span class="type">long</span> timeout) {
+        <span class="type">boolean</span> success = <span class="predefined-constant">false</span>;
+        <span class="predefined-type">Iterator</span>&lt;MessageHandler&gt; handlerIterator = handlers.iterator();
+        <span class="predefined-type">List</span>&lt;<span class="exception">RuntimeException</span>&gt; exceptions = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="exception">RuntimeException</span>&gt;();
+        <span class="keyword">while</span> (!success &amp;&amp; handlerIterator.hasNext()) {
+            MessageHandler handler = handlerIterator.next();
+            <span class="keyword">try</span> {
+                handler.handleMessage(message);
+                success = <span class="predefined-constant">true</span>; <span class="comment">// we have a winner.</span>
+            }
+            <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+                <span class="exception">RuntimeException</span> runtimeException =
+                    wrapExceptionIfNecessary(message, e);
+                exceptions.add(runtimeException);
+                <span class="keyword">if</span> (!handlerIterator.hasNext()) {
+                    <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(message,
+                        <span class="string"><span class="delimiter">&quot;</span><span class="content">All attempts to deliver Message failed.</span><span class="delimiter">&quot;</span></span>);
+                }
+            }
+        }
+        <span class="keyword">return</span> success;
+    }
+
+    <span class="directive">private</span> <span class="exception">RuntimeException</span> wrapExceptionIfNecessary(
+            Message&lt;?&gt; message, <span class="exception">Exception</span> e) {
+        <span class="exception">RuntimeException</span> runtimeException = (e <span class="keyword">instanceof</span> <span class="exception">RuntimeException</span>)
+                ? (<span class="exception">RuntimeException</span>) e
+                : <span class="keyword">new</span> MessagingException(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">Dispatcher failed.</span><span class="delimiter">&quot;</span></span>, e);
+        <span class="keyword">return</span> runtimeException;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Spring Integration use a well-designed exception hierarchy, centered around the <code>MessagingException</code>. For this post, we choose to only use the root exception, whose definition follows:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="comment">/**
+ * The base exception for any failures related to messaging.
+ */</span>
+<span class="annotation">@SuppressWarnings</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">serial</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">MessagingException</span> <span class="directive">extends</span> <span class="exception">RuntimeException</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> Message&lt;?&gt; failedMessage;
+
+    <span class="directive">public</span> MessagingException(Message&lt;?&gt; message, <span class="predefined-type">String</span> description) {
+        <span class="local-variable">super</span>(description);
+        <span class="local-variable">this</span>.failedMessage = message;
+    }
+
+    <span class="directive">public</span> MessagingException(Message&lt;?&gt; message, <span class="predefined-type">String</span> description,
+                              <span class="predefined-type">Throwable</span> cause) {
+        <span class="local-variable">super</span>(description, cause);
+        <span class="local-variable">this</span>.failedMessage = message;
+    }
+
+    <span class="directive">public</span> MessagingException(<span class="predefined-type">String</span> description, <span class="predefined-type">Throwable</span> cause) {
+        <span class="local-variable">this</span>(<span class="predefined-constant">null</span>, description, cause);
+    }
+
+    <span class="directive">public</span> Message&lt;?&gt; getFailedMessage() {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.failedMessage;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Like the <code>DirectChannel</code>, the <code>PublishSubscribeChannel</code> is another example of synchronous channel. All message handlers are called successively in the sender thread. Here is an implementation reusing the utility <code>AbstractSubscribableChannel</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.channel</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PublishSubscribeChannel</span> <span class="directive">extends</span> AbstractSubscribableChannel {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message) {
+        <span class="keyword">return</span> send(message, -<span class="integer">1</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message, <span class="type">long</span> timeout) {
+        <span class="keyword">for</span> (MessageHandler handler : handlers) {
+            handler.handleMessage(message);
+        }
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Blocking the sender waiting for all handlers to process the message limits the scalability of our application. With Spring Integration, if the <code>task-executor</code> attribute is used, the actual handling of the message is performed asynchronously. With the standard Java Executor framework, it&#8217;s easy to support this attribute:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.channel</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.concurrent.Executor</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessageHandler</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PublishSubscribeChannel</span> <span class="directive">extends</span> AbstractSubscribableChannel {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">Executor</span> CALLER_RUNS = runnable -&gt; runnable.run();
+
+    <span class="directive">private</span> <span class="predefined-type">Executor</span> executor;
+
+    <span class="directive">public</span> PublishSubscribeChannel() {
+        <span class="local-variable">this</span>(CALLER_RUNS);
+    }
+
+    <span class="directive">public</span> PublishSubscribeChannel(<span class="predefined-type">Executor</span> executor) {
+        <span class="local-variable">this</span>.executor = executor;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message) {
+        <span class="keyword">return</span> send(message, -<span class="integer">1</span>);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> send(Message&lt;?&gt; message, <span class="type">long</span> timeout) {
+        <span class="keyword">for</span> (MessageHandler handler : handlers) {
+            executor.execute(() -&gt; handler.handleMessage(message));
+        }
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If an <code>Executor</code> is passed to the constructor, we use it to execute the handlers. According the concrete implementation (see <code>java.util.concurrent.Executors</code> for the available factory methods), the handers could be executed successively, or simultaneously using for example a pool of threads. If no executor is provided, we should conserve the synchronous behavior. To do that, we create a simple <code>Executor</code> implementation to execute the task in the same thread as the caller. With Java Lambda Expression, this definition is a one-liner:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">Executor</span> CALLER_RUNS = runnable -&gt; runnable.run();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This syntax is exactly the same as this more verbose definition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">CallerRunsExecutor</span> <span class="directive">implements</span> java.util.concurrent.Executor {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> execute(<span class="predefined-type">Runnable</span> runnable) {
+        runnable.run();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One channel remains to define, the <code>QueueChannel</code>. The <code>QueueChannel</code> is by definition a asynchronous channel. Each new message is stored in a queue waiting for a handler to consume it. As for the <code>DirectChannel</code>, multiple handlers could subscribe to the channel but only one should consume the message. So, we need a concurrent implementation of the <code>java.util.Queue</code> interface. We will use a <code>LinkedBlockingQueue</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.channel</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.concurrent.BlockingQueue</span>;
+<span class="keyword">import</span> <span class="include">java.util.concurrent.LinkedBlockingQueue</span>;
+<span class="keyword">import</span> <span class="include">java.util.concurrent.TimeUnit</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.util.Assert</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.PollableChannel</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">QueueChannel</span> <span class="directive">implements</span> PollableChannel {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">BlockingQueue</span>&lt;Message&lt;?&gt;&gt; queue =
+           <span class="keyword">new</span> <span class="predefined-type">LinkedBlockingQueue</span>&lt;Message&lt;?&gt;&gt;();
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> Message&lt;?&gt; receive() {
+        <span class="keyword">return</span> receive(-<span class="integer">1</span>);
+    }
+
+    <span class="comment">/**
+     * Receive the first available message from this channel. If the channel
+     * contains no messages, this method will block until the allotted timeout
+     * elapses. If the specified timeout is 0, the method will return
+     * immediately. If less than zero, it will block indefinitely (see
+     * {@link #receive()}).
+     */</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> Message&lt;?&gt; receive(<span class="type">long</span> timeout) {
+        <span class="keyword">try</span> {
+            <span class="keyword">if</span> (timeout &gt; <span class="integer">0</span>) {
+                <span class="keyword">return</span> <span class="local-variable">this</span>.queue.poll(timeout, <span class="predefined-type">TimeUnit</span>.MILLISECONDS);
+            }
+            <span class="keyword">if</span> (timeout == <span class="integer">0</span>) {
+                <span class="keyword">return</span> <span class="local-variable">this</span>.queue.poll();
+            }
+
+            <span class="keyword">return</span> <span class="local-variable">this</span>.queue.take();
+        }
+        <span class="keyword">catch</span> (<span class="exception">InterruptedException</span> e) {
+            <span class="predefined-type">Thread</span>.currentThread().interrupt();
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+    }
+
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">boolean</span> send(Message&lt;?&gt; message) {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.send(message, -<span class="integer">1</span>);
+    }
+
+    <span class="comment">/**
+     * Send a message on this channel. If the channel is at capacity, this
+     * method will block until either the timeout occurs or the sending thread
+     * is interrupted. If the specified timeout is 0, the method will return
+     * immediately. If less than zero, it will block indefinitely (see
+     * {@link #send(Message)}).
+     */</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">boolean</span> send(Message&lt;?&gt; message, <span class="type">long</span> timeout) {
+        Assert.notNull(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">message must not be null</span><span class="delimiter">&quot;</span></span>);
+        Assert.notNull(message.getPayload(), <span class="string"><span class="delimiter">&quot;</span><span class="content">payload must not be null</span><span class="delimiter">&quot;</span></span>);
+
+        <span class="keyword">try</span> {
+            <span class="keyword">try</span> {
+                <span class="keyword">if</span> (timeout &gt; <span class="integer">0</span>) {
+                    <span class="keyword">return</span> <span class="local-variable">this</span>.queue.offer(message, timeout,
+                              <span class="predefined-type">TimeUnit</span>.MILLISECONDS);
+                }
+                <span class="keyword">if</span> (timeout == <span class="integer">0</span>) {
+                    <span class="keyword">return</span> <span class="local-variable">this</span>.queue.offer(message);
+                }
+                <span class="local-variable">this</span>.queue.put(message);
+                <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+            }
+            <span class="keyword">catch</span> (<span class="exception">InterruptedException</span> e) {
+                <span class="predefined-type">Thread</span>.currentThread().interrupt();
+                <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+            }
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">Failed</span><span class="delimiter">&quot;</span></span>, e);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation relies heavily on the API <code>BlockingQueue</code> to support the different possibilities: the sender accepts to wait indefinitely, or a given amount of time, or not at all. If the timeout exceeds or if a thread is interrupted, our code should respond properly, so we need to catch <code>InterruptedException</code> and returns that the operations could not be performed.</p>
+</div>
+<div class="paragraph">
+<p>This concludes the channel implementations. Before delving into the next abstraction, let&#8217;s recap what we have seen.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// A message is immutable. We should use MessageBuilder to create it:</span>
+Message&lt;<span class="predefined-type">String</span>&gt; message = MessageBuilder.withPayload(<span class="string"><span class="delimiter">&quot;</span><span class="content">Hello World!</span><span class="delimiter">&quot;</span></span>).build();
+
+<span class="comment">// The message consumption differs whether the channel type.</span>
+
+<span class="comment">// Example using a SubscribableChannel:</span>
+SubscribableChannel pubSubChannel = <span class="keyword">new</span> DirectChannel();
+pubSubChannel.subscribe(m -&gt; <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">New message received: </span><span class="delimiter">&quot;</span></span> + m));
+pubSubChannel.send(message);
+
+<span class="comment">// Example using a PollableChannel:</span>
+PollableChannel pollableChannel = <span class="keyword">new</span> QueueChannel();
+pollableChannel.send(message);
+Message&lt;<span class="predefined-type">String</span>&gt; m = (Message&lt;<span class="predefined-type">String</span>&gt;) pollableChannel.receive();
+<span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">New message received: </span><span class="delimiter">&quot;</span></span> + m);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="messageendpoint_abstraction"><code>MessageEndpoint</code> Abstraction</h3>
+<div class="paragraph">
+<p>We just have seen how to send and receive messages from a channel. In practice, we will not use these API directly. Messages comes from different sources (JMS, file, application&#8230;&#8203;) and we do not want our application code tightly coupled with the Spring Integration API (the Spring philosophy). We use endpoints instead. Endpoints are used for many tasks: receive a message from an external resource (JMS broker), send messages to another applications (HTTP call), support complex flow with <strong>Router</strong>, <strong>Filter</strong>, <strong>Bridge</strong> and many other components. In this post, we will confine ourselves to just three endpoints: Service Activator, Proxy Gateway and Bridge. The first two ones are used to protect our code free from any Spring Integration dependency and the last one is mainly used when writing unit tests. Here we go!</p>
+</div>
+<div class="sect3">
+<h4 id="the_class_hierarchy">The class hierarchy</h4>
+<div class="paragraph">
+<p>Unlike <code>Message</code> and <code>MessageChannel</code> interfaces, there isn&#8217;t a <code>MessageEndpoint</code> interface. There is an <code>AbstractEndpoint</code> class but not all endpoints extend this class. Although there is a one-to-one mapping between the EIP patterns and the component names in Spring Integration, each endpoint does not necessarily have a corresponding class. Maybe a class diagram could help us make things clearer.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2016-04-12-spring-integration-from-scratch/consumers.png" alt="Message Consumers">
+</div>
+</div>
+<div class="paragraph">
+<p>Both consumer types delegates internally to an instance of <code>MessageHandler</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2016-04-12-spring-integration-from-scratch/handlers.png" alt="Message Handlers">
+</div>
+</div>
+<div class="paragraph">
+<p>We will now describe each one of these classes.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="message_consumption">Message consumption</h4>
+<div class="paragraph">
+<p>Regardless the channel type (Pollable vs Subscribable), we should execute some code when the Spring ApplicationContext starts. An endpoint associated to a <code>PollableChannel</code> should start a timer to periodically check if a new message is present. An endpoint associated to a <code>SubscribableChannel</code> should register itself as a subscriber to be notified when a new message comes. To avoid duplicating this logic, we will create the abstract superclass <code>AbstractEndpoint</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.endpoint</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.concurrent.locks.Condition</span>;
+<span class="keyword">import</span> <span class="include">java.util.concurrent.locks.ReentrantLock</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.context.SmartLifecycle</span>;
+
+<span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">AbstractEndpoint</span> <span class="directive">implements</span> SmartLifecycle {
+
+    <span class="directive">private</span> <span class="directive">volatile</span> <span class="type">boolean</span> running;
+
+    <span class="directive">protected</span> <span class="directive">final</span> <span class="predefined-type">ReentrantLock</span> lifecycleLock = <span class="keyword">new</span> <span class="predefined-type">ReentrantLock</span>();
+
+    <span class="comment">// SmartLifecycle implementation</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">boolean</span> isAutoStartup() {
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">int</span> getPhase() {
+        <span class="keyword">return</span> <span class="integer">0</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">boolean</span> isRunning() {
+        <span class="local-variable">this</span>.lifecycleLock.lock();
+        <span class="keyword">try</span> {
+            <span class="keyword">return</span> <span class="local-variable">this</span>.running;
+        }
+        <span class="keyword">finally</span> {
+            <span class="local-variable">this</span>.lifecycleLock.unlock();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">void</span> start() {
+        <span class="local-variable">this</span>.lifecycleLock.lock();
+        <span class="keyword">try</span> {
+            <span class="keyword">if</span> (!<span class="local-variable">this</span>.running) {
+                doStart();
+                <span class="local-variable">this</span>.running = <span class="predefined-constant">true</span>;
+            }
+        }
+        <span class="keyword">finally</span> {
+            <span class="local-variable">this</span>.lifecycleLock.unlock();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">void</span> stop() {
+        <span class="local-variable">this</span>.lifecycleLock.lock();
+        <span class="keyword">try</span> {
+            <span class="keyword">if</span> (<span class="local-variable">this</span>.running) {
+                doStop();
+                <span class="local-variable">this</span>.running = <span class="predefined-constant">false</span>;
+            }
+        }
+        <span class="keyword">finally</span> {
+            <span class="local-variable">this</span>.lifecycleLock.unlock();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">void</span> stop(<span class="predefined-type">Runnable</span> callback) {
+        <span class="local-variable">this</span>.lifecycleLock.lock();
+        <span class="keyword">try</span> {
+            <span class="keyword">if</span> (<span class="local-variable">this</span>.running) {
+                doStop(callback);
+                <span class="local-variable">this</span>.running = <span class="predefined-constant">false</span>;
+            }
+        }
+        <span class="keyword">finally</span> {
+            <span class="local-variable">this</span>.lifecycleLock.unlock();
+        }
+    }
+
+    <span class="directive">protected</span> <span class="type">void</span> doStop(<span class="predefined-type">Runnable</span> callback) {
+        doStop();
+        callback.run();
+    }
+
+    <span class="comment">/**
+     * Subclasses must implement this method with the start behavior.
+     */</span>
+    <span class="directive">protected</span> <span class="directive">abstract</span> <span class="type">void</span> doStart();
+
+    <span class="comment">/**
+     * Subclasses must implement this method with the stop behavior.
+     */</span>
+    <span class="directive">protected</span> <span class="directive">abstract</span> <span class="type">void</span> doStop();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This class implements <code>SmartLifecycle</code>. This interface is an extension of the <code>Lifecycle</code> interface for those objects that require to be notified upon ApplicationContext starting/refresh/shutdown. The <code>isAutoStartup()</code> return value indicates whether this object should be started at the time of a context refresh (<code>true</code> for our endpoints). With this hook, we can now implement the two main endpoint types: <code>EventDrivenConsumer</code> and <code>PollingConsumer</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">What about synchronization?</div>
+<div class="paragraph">
+<p>This class demonstrates common multithreading idioms, not really required for our basic implementation, but a good opportunity to take a look at common Spring code.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>volatile</strong> keyword tells the JVM that the variable will be updated by multiple threads and guarantees that reads and writes would be made directly to main memory, instead of registers or local processor cache. Since Java 5, <strong>volatile</strong> reads and writes establish a happens-before relationship, much like acquiring and releasing a mutex (like a <strong>synchronized</strong> block), a guarantee for <strong>double-checked locking</strong> pattern to work in Java (more on this subject later). <strong>volatile</strong> variables are typically used for indicating that an important lifecycle
+event (such as initialization or shutdown) has occurred (as in our example).</p>
+</div>
+<div class="paragraph">
+<p>Check the <a href="https://www.ibm.com/developerworks/library/j-jtp03304/">excellent article</a> of Brian Goetz to know more about the <strong>volatile</strong> keyword.</p>
+</div>
+<div class="paragraph">
+<p><strong>volatile</strong> variables are great for initializing flags but does not prevent multiple threads from executing the <code>start()</code> method simultaneously, we have to resort on locking. In Java, we could declare our method as <code>synchronized</code> to declare an intrinsic lock or use an explicit lock, represented by the <code>java.util.concurrent.Lock</code> interface. <code>ReentrantLock</code> is the most widely used implementation and acts similarly as the <code>synchronized</code> keyword. In the previous code, we could have use <code>synchronized</code> methods instead of explicit locking as the whole method is guarded by the lock. In practice, not all the method should be protected and using an explicit lock is often a good performance optimization.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first one we will implement is the <code>EventDrivenConsumer</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.endpoint</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.util.Assert</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="comment">/**
+ * Message Endpoint that connects any {@link MessageHandler} implementation
+ * to a {@link SubscribableChannel}.
+ */</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EventDrivenConsumer</span> <span class="directive">extends</span> AbstractEndpoint {
+
+    <span class="directive">private</span> <span class="directive">final</span> SubscribableChannel inputChannel;
+
+    <span class="directive">private</span> <span class="directive">final</span> MessageHandler handler;
+
+    <span class="directive">public</span> EventDrivenConsumer(SubscribableChannel inputChannel,
+                               MessageHandler handler) {
+        Assert.notNull(inputChannel, <span class="string"><span class="delimiter">&quot;</span><span class="content">inputChannel must not be null</span><span class="delimiter">&quot;</span></span>);
+        Assert.notNull(handler, <span class="string"><span class="delimiter">&quot;</span><span class="content">handler must not be null</span><span class="delimiter">&quot;</span></span>);
+        <span class="local-variable">this</span>.inputChannel = inputChannel;
+        <span class="local-variable">this</span>.handler = handler;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> doStart() {
+        <span class="local-variable">this</span>.inputChannel.subscribe(<span class="local-variable">this</span>.handler);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> doStop() {
+        <span class="local-variable">this</span>.inputChannel.unsubscribe(<span class="local-variable">this</span>.handler);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The passive endpoint code is really simple. We just have to subscribe to the channel when the ApplicationContext starts. The core logic will be present in the message handler.</p>
+</div>
+<div class="paragraph">
+<p>The code for the <code>PollingConsumer</code> is more complicated:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.endpoint</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.concurrent.ScheduledFuture</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.scheduling.TaskScheduler</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.scheduling.support.PeriodicTrigger</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.Assert</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessageHandler</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessagingException</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.PollableChannel</span>;
+
+<span class="comment">/**
+ * Message Endpoint that connects any {@link MessageHandler} implementation
+ * to a {@link PollableChannel}.
+ */</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PollingConsumer</span> <span class="directive">extends</span> AbstractEndpoint {
+
+    <span class="directive">private</span> <span class="directive">final</span> PollableChannel inputChannel;
+
+    <span class="directive">private</span> <span class="directive">final</span> MessageHandler handler;
+
+    <span class="directive">private</span> <span class="directive">volatile</span> <span class="predefined-type">ScheduledFuture</span>&lt;?&gt; runningTask;
+
+    <span class="directive">public</span> PollingConsumer(PollableChannel inputChannel,
+                           MessageHandler handler) {
+        Assert.notNull(inputChannel, <span class="string"><span class="delimiter">&quot;</span><span class="content">inputChannel must not be null</span><span class="delimiter">&quot;</span></span>);
+        Assert.notNull(handler, <span class="string"><span class="delimiter">&quot;</span><span class="content">handler must not be null</span><span class="delimiter">&quot;</span></span>);
+        <span class="local-variable">this</span>.inputChannel = inputChannel;
+        <span class="local-variable">this</span>.handler = handler;
+    }
+
+    <span class="directive">protected</span> <span class="type">void</span> handleMessage(Message&lt;?&gt; message) {
+        Message&lt;?&gt; theMessage = message;
+        <span class="keyword">try</span> {
+            <span class="local-variable">this</span>.handler.handleMessage(theMessage);
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+            <span class="keyword">if</span> (ex <span class="keyword">instanceof</span> MessagingException) {
+                <span class="keyword">throw</span> (MessagingException) ex;
+            }
+            <span class="predefined-type">String</span> description = <span class="string"><span class="delimiter">&quot;</span><span class="content">Failed to handle </span><span class="delimiter">&quot;</span></span> + theMessage +
+                <span class="string"><span class="delimiter">&quot;</span><span class="content"> to </span><span class="delimiter">&quot;</span></span> + <span class="local-variable">this</span> + <span class="string"><span class="delimiter">&quot;</span><span class="content"> in </span><span class="delimiter">&quot;</span></span> + <span class="local-variable">this</span>.handler;
+            <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(theMessage, description, ex);
+        }
+    }
+
+    <span class="directive">protected</span> Message&lt;?&gt; receiveMessage() {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.inputChannel.receive(<span class="integer">1000</span>);
+    }
+
+
+    <span class="comment">// LifecycleSupport implementation</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> doStart() {
+        Poller poller = <span class="keyword">new</span> Poller();
+        PeriodicTrigger trigger = <span class="keyword">new</span> PeriodicTrigger(<span class="integer">10</span>);
+        TaskScheduler taskScheduler = <span class="keyword">new</span> ThreadPoolTaskScheduler();
+        <span class="local-variable">this</span>.runningTask = taskScheduler.schedule(poller, trigger);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> doStop() {
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.runningTask != <span class="predefined-constant">null</span>) {
+            <span class="local-variable">this</span>.runningTask.cancel(<span class="predefined-constant">true</span>);
+        }
+        <span class="local-variable">this</span>.runningTask = <span class="predefined-constant">null</span>;
+    }
+
+    <span class="directive">private</span> <span class="type">class</span> <span class="class">Poller</span> <span class="directive">implements</span> <span class="predefined-type">Runnable</span> {
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> run() {
+            Message&lt;?&gt; message = <span class="predefined-constant">null</span>;
+            <span class="keyword">try</span> {
+                message = PollingConsumer.this.receiveMessage();
+            }
+            <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+                <span class="keyword">if</span> (<span class="predefined-type">Thread</span>.interrupted()) {
+                    <span class="keyword">return</span>;
+                }
+                <span class="keyword">else</span> {
+                    <span class="keyword">throw</span> (<span class="exception">RuntimeException</span>) e;
+                }
+            }
+            <span class="keyword">if</span> (message != <span class="predefined-constant">null</span>) {
+                PollingConsumer.this.handleMessage(message);
+            }
+        }
+
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code deserves some explanations.</p>
+</div>
+<div class="paragraph">
+<p>The method <code>doStart</code> is called when the ApplicationContext is starting. A task represented by the <code>Poller</code> class is scheduled using the Spring Scheduling API. This task runs every 10 milliseconds:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> doStart() {
+    Poller poller = <span class="keyword">new</span> Poller();
+    PeriodicTrigger trigger = <span class="keyword">new</span> PeriodicTrigger(<span class="integer">10</span>);
+    TaskScheduler taskScheduler = <span class="keyword">new</span> ThreadPoolTaskScheduler();
+    <span class="local-variable">this</span>.runningTask = taskScheduler.schedule(poller, trigger);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Poller</code> class is defined as an inner class and implements the <code>Runnable</code> interface. This class polls regularly the message channel waiting for a new message:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">class</span> <span class="class">Poller</span> <span class="directive">implements</span> <span class="predefined-type">Runnable</span> {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> run() {
+        Message&lt;?&gt; message = <span class="predefined-constant">null</span>;
+        <span class="keyword">try</span> {
+            message = PollingConsumer.this.receiveMessage();
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+            <span class="keyword">if</span> (<span class="predefined-type">Thread</span>.interrupted()) {
+                <span class="keyword">return</span>;
+            }
+            <span class="keyword">else</span> {
+                <span class="keyword">throw</span> (<span class="exception">RuntimeException</span>) e;
+            }
+        }
+        <span class="keyword">if</span> (message != <span class="predefined-constant">null</span>) {
+            PollingConsumer.this.handleMessage(message);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The method to retrieve the message is similar to what we have done in previous examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">protected</span> Message&lt;?&gt; receiveMessage() {
+    <span class="keyword">return</span> (<span class="local-variable">this</span>.receiveTimeout &gt;= <span class="integer">0</span>)
+            ? <span class="local-variable">this</span>.inputChannel.receive(<span class="local-variable">this</span>.receiveTimeout)
+            : <span class="local-variable">this</span>.inputChannel.receive();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The message handling is assured by the method <code>handleMessage</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">protected</span> <span class="type">void</span> handleMessage(Message&lt;?&gt; message) {
+    Message&lt;?&gt; theMessage = message;
+    <span class="keyword">try</span> {
+        <span class="local-variable">this</span>.handler.handleMessage(theMessage);
+    }
+    <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+        <span class="keyword">if</span> (ex <span class="keyword">instanceof</span> MessagingException) {
+            <span class="keyword">throw</span> (MessagingException) ex;
+        }
+        <span class="predefined-type">String</span> description = <span class="string"><span class="delimiter">&quot;</span><span class="content">Failed to handle </span><span class="delimiter">&quot;</span></span> + theMessage +
+            <span class="string"><span class="delimiter">&quot;</span><span class="content"> to </span><span class="delimiter">&quot;</span></span> + <span class="local-variable">this</span> + <span class="string"><span class="delimiter">&quot;</span><span class="content"> in </span><span class="delimiter">&quot;</span></span> + <span class="local-variable">this</span>.handler;
+        <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(theMessage, description, ex);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As for the <code>EventDrivenConsumer</code>, we delegates to an instance of <code>MessageHandler</code>. The only thing we have to do is wrap the exception if it is not an instance of <code>MessagingException</code></p>
+</div>
+<div class="paragraph">
+<p>The last thing to do is stop the scheduled task. We exploit the <code>doStop()</code> defined in the superclass and simply call the method <code>cancel</code> on the instance of <code>ScheduledFuture</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">protected</span> <span class="type">void</span> doStop() {
+    <span class="keyword">if</span> (<span class="local-variable">this</span>.runningTask != <span class="predefined-constant">null</span>) {
+        <span class="local-variable">this</span>.runningTask.cancel(<span class="predefined-constant">true</span>);
+    }
+    <span class="local-variable">this</span>.runningTask = <span class="predefined-constant">null</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, we know how the messages are received from the channel but we still haven&#8217;t see how the message are processed by the different message endpoints. The processing happens in an instance of the interface <code>MessageHandler</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.messaging</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MessageHandler</span> {
+
+    <span class="type">void</span> handleMessage(Message&lt;?&gt; message);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There is little to say about this interface. Let&#8217;s see its implementations!</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="message_production">Message production</h4>
+<div class="paragraph">
+<p>Spring Integration provides an abstract class extended by all message producers to factorize common attributes and common methods. Here is its implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.handler</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.beans.BeansException</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.BeanFactory</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.BeanFactoryAware</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.Assert</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.integration.core.ChannelResolver</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.core.MessagingTemplate</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">AbstractMessageProducingHandler</span>
+        <span class="directive">implements</span> MessageHandler, BeanFactoryAware {
+
+    <span class="directive">protected</span> <span class="directive">final</span> MessagingTemplate messagingTemplate =
+            <span class="keyword">new</span> MessagingTemplate();
+
+    <span class="directive">private</span> <span class="directive">volatile</span> MessageChannel outputChannel;
+
+    <span class="directive">private</span> <span class="directive">volatile</span> ChannelResolver channelResolver;
+
+
+    <span class="directive">public</span> <span class="type">void</span> setOutputChannel(MessageChannel outputChannel) {
+        <span class="local-variable">this</span>.outputChannel = outputChannel;
+    }
+
+    <span class="directive">protected</span> MessageChannel getReplyChannel(Message&lt;?&gt; message) {
+        MessageChannel replyChannel = <span class="local-variable">this</span>.outputChannel;
+        <span class="keyword">if</span> (replyChannel == <span class="predefined-constant">null</span>) {
+            replyChannel = message.getHeaders().getReplyChannel();
+        }
+        <span class="keyword">return</span> replyChannel;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> setBeanFactory(BeanFactory beanFactory) <span class="directive">throws</span> BeansException {
+        <span class="local-variable">this</span>.channelResolver = <span class="keyword">new</span> ChannelResolver(beanFactory);
+        <span class="local-variable">this</span>.messagingTemplate.setChannelResolver(<span class="local-variable">this</span>.channelResolver);
+    }
+
+    <span class="comment">/**
+     * Base implementation that provides basic validation
+     * and error handling capabilities. Asserts that the incoming Message is not
+     * null and that it does not contain a null payload.
+     * Converts checked exceptions into runtime {@link MessagingException}s.
+     */</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">void</span> handleMessage(Message&lt;?&gt; message) {
+        Assert.notNull(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">Message must not be null</span><span class="delimiter">&quot;</span></span>);
+        Assert.notNull(message.getPayload(), <span class="string"><span class="delimiter">&quot;</span><span class="content">Payload must not be null</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">try</span> {
+            <span class="local-variable">this</span>.handleMessageInternal(message);
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+            <span class="keyword">if</span> (e <span class="keyword">instanceof</span> MessagingException) {
+                <span class="keyword">throw</span> (MessagingException) e;
+            }
+            <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">error occurred</span><span class="delimiter">&quot;</span></span>, e);
+        }
+    }
+
+    <span class="directive">protected</span> <span class="directive">abstract</span> <span class="type">void</span> handleMessageInternal(Message&lt;?&gt; message)
+            <span class="directive">throws</span> <span class="exception">Exception</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To see how this class is used by subclasses, let&#8217;s consider the <strong>Bridge</strong> implementation. A <code>Bridge</code> simply forward the input message directly to the output channel without modifying it. The main purpose of this handler is to bridge a <code>PollableChannel</code> to a <code>SubscribableChannel</code> or vice-versa.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.handler</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">BridgeHandler</span> <span class="directive">extends</span> AbstractMessageProducingHandler {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> handleMessageInternal(Message&lt;?&gt; message) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        getReplyChannel(message).send(message);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <strong>Service Activator</strong> implementation is a little more complex because we need to use reflection to delegate a Spring bean method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.handler</span>;
+
+<span class="keyword">import</span> <span class="include">java.lang.reflect.Method</span>;
+<span class="keyword">import</span> <span class="include">java.lang.reflect.Modifier</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.support</span>.*;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ServiceActivatingHandler</span> <span class="directive">extends</span> AbstractMessageProducingHandler {
+
+    <span class="directive">private</span> <span class="predefined-type">Object</span> ref;
+
+    <span class="directive">public</span> <span class="type">void</span> setRef(<span class="predefined-type">Object</span> ref) {
+        <span class="local-variable">this</span>.ref = ref;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> handleMessageInternal(Message&lt;?&gt; message) <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+        <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachMethod : ref.getClass().getDeclaredMethods()) {
+            <span class="keyword">if</span> (eachMethod.getModifiers() == <span class="predefined-type">Modifier</span>.PUBLIC
+                    &amp;&amp; eachMethod.getParameterTypes().length == <span class="integer">1</span>
+                    &amp;&amp; eachMethod.getParameterTypes()[<span class="integer">0</span>]
+                         .isAssignableFrom(message.getPayload().getClass())) {
+                <span class="predefined-type">Object</span> response = eachMethod.invoke(ref, message.getPayload());
+                Message&lt;?&gt; outputMessage = MessageBuilder.
+                    withPayload(response).
+                    copyHeaders(message.getHeaders()).
+                    build();
+                getReplyChannel(message).send(outputMessage);
+                <span class="keyword">return</span>;
+            }
+        }
+
+        <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(message, <span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to find method</span><span class="delimiter">&quot;</span></span>);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compared to the real code, this class ignores many concerns: methods defined by superclasses or methods accepting the <code>Message</code> class are ignored by our implementation.</p>
+</div>
+<div class="paragraph">
+<p>We still have one endpoint to implement: the Proxy Gateway.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the_proxy_gateway_exception">The Proxy Gateway exception</h4>
+<div class="paragraph">
+<p>Spring Integration follows the Enterprise Integration Patterns (EIP) book to the letter, with just a few exceptions, as the Proxy Gateway. In messaging, a Gateway is a two-way component. For example, a JMS inbound gateway consumes a message on a queue, process it and publish another JMS message. The Proxy Gateway is an adaptation of this pattern. The Proxy Gateway is very convenient in practice because it keep our code loosely coupled.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s go back to the example with the <code>OrderService</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">order</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">OrderService</span> {
+
+    Confirmation submitOrder(Order order);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the Proxy Gateway declaration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;gateway</span> <span class="attribute-name">default-request-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">service-interface</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderService</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At startup, Spring Integration will create for us an implementation similar to the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">order</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.integration.channel.QueueChannel</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.core.MessagingTemplate</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.support.MessageBuilder</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessageChannel</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">OrderServiceImpl</span> <span class="directive">implements</span> OrderService {
+
+    <span class="directive">private</span> MessageChannel defaultRequestChannel;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Confirmation submitOrder(Order order) {
+        MessagingTemplate template = <span class="keyword">new</span> MessagingTemplate();
+
+        MessageChannel replyChannel = <span class="keyword">new</span> QueueChannel();
+
+        Message&lt;Order&gt; requestMessage = MessageBuilder.withPayload(order).
+                setReplyChannel(replyChannel).build();
+
+        Message&lt;?&gt; responseMessage = template.
+                sendAndReceive(defaultRequestChannel, requestMessage);
+
+        <span class="keyword">return</span> (Confirmation) responseMessage.getPayload();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the message is called, a new message is created containing the method parameter as the payload. A temporary channel is also defined in the header <code>replyChannel</code>. This channel will be used by the first endpoint in the flow who do not have the <code>output-channel</code> attribute specified. This behavior is implemented in the previously covered <code>AbstractMessageProducingHandler</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// In AbstractMessageProducingHandler</span>
+
+<span class="directive">private</span> <span class="directive">volatile</span> MessageChannel outputChannel;
+
+<span class="directive">public</span> <span class="type">void</span> setOutputChannel(MessageChannel outputChannel) {
+    <span class="local-variable">this</span>.outputChannel = outputChannel;
+}
+
+<span class="directive">protected</span> MessageChannel getReplyChannel(Message&lt;?&gt; message) {
+    MessageChannel replyChannel = <span class="local-variable">this</span>.outputChannel;
+    <span class="keyword">if</span> (replyChannel == <span class="predefined-constant">null</span>) {
+        replyChannel = (MessageChannel) message.getHeaders().getReplyChannel();
+    }
+    <span class="keyword">return</span> replyChannel;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Gateway implementation ends by waiting a message listening to this temporary channel, before extracting the payload and returning it to the caller.</p>
+</div>
+<div class="paragraph">
+<p>The problem with this Gateway implementation is that the code is statically generated and highly coupled with our code (for example, the dependency on <code>Order</code>). A framework like Spring Integration needs a more flexible solution: the combination of a dynamic Proxy and a <code>FactoryBean</code> implementation to instantiate it.</p>
+</div>
+<div class="paragraph">
+<p>When using Spring AOP, a proxy could be created as simply as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.aopalliance.intercept.MethodInterceptor</span>;
+<span class="keyword">import</span> <span class="include">org.aopalliance.intercept.MethodInvocation</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.aop.framework.ProxyFactory</span>;
+
+...
+
+ProxyFactory serviceProxy = <span class="keyword">new</span> ProxyFactory(OrderService.class,
+                                             <span class="keyword">new</span> MethodInterceptor() {
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> invoke(MethodInvocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+        <span class="predefined-type">Method</span> method = invocation.getMethod();
+        Order order = (Order) invocation.getArguments()[<span class="integer">0</span>];
+        <span class="keyword">return</span> <span class="keyword">new</span> Confirmation(<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>); <span class="comment">// or something more useful</span>
+    }
+});
+OrderService impl = (OrderService) serviceProxy.getProxy();
+Confirmation confirmation = impl.submitOrder(<span class="keyword">new</span> Order(<span class="string"><span class="delimiter">&quot;</span><span class="content">1484</span><span class="delimiter">&quot;</span></span>));
+assertEquals(<span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>, confirmation.getConfirmationNumber());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using Spring Core, a <code>FactoryBean</code> is a simple bean, registered in the ApplicationContext like any other bean definition, whose task is to create another bean. A factory is often used when you have complex initialization code that is better expressed in Java (like creating a proxy) as opposed to a potentially verbose amount of XML. Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OrderServiceFactoryBean</span> <span class="directive">implements</span> FactoryBean&lt;OrderService&gt; {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Class</span>&lt;?&gt; getObjectType() {
+        <span class="keyword">return</span> OrderService.class;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> isSingleton() {
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> OrderService getObject() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        OrderService result = <span class="predefined-constant">null</span>; <span class="comment">// create the bean</span>
+        <span class="keyword">return</span> result;
+    }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the ApplicationContext starts, Spring call the different methods to register a new bean of type <code>OrderService</code>. If we combine this class with the proxy creation code, we obtain an implementation of the Gateway endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.config</span>;
+
+<span class="keyword">import</span> <span class="include">java.lang.reflect.Method</span>;
+<span class="keyword">import</span> <span class="include">java.lang.reflect.UndeclaredThrowableException</span>;
+
+<span class="keyword">import</span> <span class="include">org.aopalliance.intercept.MethodInterceptor</span>;
+<span class="keyword">import</span> <span class="include">org.aopalliance.intercept.MethodInvocation</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.aop.framework.ProxyFactory</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.aop.support.AopUtils</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.BeansException</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.BeanFactory</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.BeanFactoryAware</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.FactoryBean</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.ClassUtils</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.integration.core.ChannelResolver</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.core.MessagingTemplate</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.support.MessageBuilder</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.Message</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessageChannel</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.messaging.MessagingException</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">GatewayProxyFactoryBean</span>
+        <span class="directive">implements</span> FactoryBean&lt;<span class="predefined-type">Object</span>&gt;, BeanFactoryAware, MethodInterceptor {
+
+    <span class="directive">private</span> <span class="directive">volatile</span> <span class="predefined-type">Class</span>&lt;?&gt; serviceInterface;
+    <span class="directive">private</span> <span class="directive">volatile</span> MessageChannel defaultRequestChannel;
+
+    <span class="directive">private</span> MessagingTemplate messagingTemplate;
+
+    <span class="directive">public</span> GatewayProxyFactoryBean(<span class="predefined-type">Class</span>&lt;?&gt; serviceInterface) {
+        <span class="local-variable">this</span>.serviceInterface = serviceInterface;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setDefaultRequestChannel(MessageChannel defaultRequestChannel) {
+        <span class="local-variable">this</span>.defaultRequestChannel = defaultRequestChannel;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Class</span>&lt;?&gt; getObjectType() {
+        <span class="keyword">return</span> (<span class="local-variable">this</span>.serviceInterface != <span class="predefined-constant">null</span> ? <span class="local-variable">this</span>.serviceInterface : <span class="predefined-constant">null</span>);
+    }
+
+    <span class="directive">private</span> <span class="directive">volatile</span> <span class="predefined-type">Object</span> serviceProxy;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Object</span> getObject() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="predefined-type">Class</span>&lt;?&gt; proxyInterface = <span class="local-variable">this</span>.serviceInterface;
+        serviceProxy = <span class="keyword">new</span> ProxyFactory(proxyInterface, <span class="local-variable">this</span>).
+            getProxy(ClassUtils.getDefaultClassLoader());
+        <span class="keyword">return</span> serviceProxy;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> isSingleton() {
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> setBeanFactory(BeanFactory beanFactory) <span class="directive">throws</span> BeansException {
+        <span class="local-variable">this</span>.messagingTemplate = <span class="keyword">new</span> MessagingTemplate();
+        messagingTemplate.setChannelResolver(<span class="keyword">new</span> ChannelResolver(beanFactory));
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Object</span> invoke(MethodInvocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+        <span class="predefined-type">Method</span> method = invocation.getMethod();
+        <span class="keyword">if</span> (AopUtils.isToStringMethod(method)) {
+            <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">gateway proxy for interface </span><span class="delimiter">&quot;</span></span> + <span class="local-variable">this</span>.serviceInterface;
+        }
+        <span class="keyword">try</span> {
+            Message&lt;<span class="predefined-type">Object</span>&gt; request = MessageBuilder.
+                withPayload(invocation.getArguments()[<span class="integer">0</span>]).
+                build();
+            Message&lt;?&gt; response = messagingTemplate.sendAndReceive(
+                    defaultRequestChannel, request);
+            <span class="keyword">return</span> response.getPayload();
+        }
+        <span class="keyword">catch</span> (<span class="predefined-type">Throwable</span> e) {
+            <span class="local-variable">this</span>.rethrowExceptionCauseIfPossible(e, invocation.getMethod());
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>; <span class="comment">// preceding call should always throw something</span>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Our implementation of the Proxy Gateway is almost done. There is only one concern remaining to address. What if an exception is thrown during the message processing? The answer depends on the method signature. Are we allowed to rethrow this exception or should we wrap it into a runtime exception? This is exactly what does the method <code>rethrowExceptionCauseIfPossible</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> rethrowExceptionCauseIfPossible(<span class="predefined-type">Throwable</span> originalException,
+                                             <span class="predefined-type">Method</span> method) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+    <span class="predefined-type">Class</span>&lt;?&gt;<span class="type">[]</span> exceptionTypes = method.getExceptionTypes();
+    <span class="predefined-type">Throwable</span> t = originalException;
+    <span class="keyword">while</span> (t != <span class="predefined-constant">null</span>) {
+        <span class="keyword">for</span> (<span class="predefined-type">Class</span>&lt;?&gt; exceptionType : exceptionTypes) {
+            <span class="keyword">if</span> (exceptionType.isAssignableFrom(t.getClass())) {
+                <span class="keyword">throw</span> t;
+            }
+        }
+        <span class="keyword">if</span> (t <span class="keyword">instanceof</span> <span class="exception">RuntimeException</span>
+                &amp;&amp; !(t <span class="keyword">instanceof</span> MessagingException)
+                &amp;&amp; !(t <span class="keyword">instanceof</span> <span class="exception">UndeclaredThrowableException</span>)
+                &amp;&amp; !(t <span class="keyword">instanceof</span> <span class="exception">IllegalStateException</span>)) {
+            <span class="keyword">throw</span> t;
+        }
+        t = t.getCause();
+    }
+    <span class="keyword">throw</span> originalException;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We now have three perfectly operational endpoints. Finally, we could implement our initial use case using our version directly in XML like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;beans</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+        <span class="content">http://www.springframework.org/schema/beans</span>
+        <span class="content">http://www.springframework.org/schema/beans/spring-beans.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="comment">&lt;!-- App configuration --&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderProcessor</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderProcessor</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+
+    <span class="comment">&lt;!-- &lt;gateway id=&quot;orderService&quot;                         --&gt;</span>
+    <span class="comment">&lt;!--          default-request-channel=&quot;newOrders&quot;       --&gt;</span>
+    <span class="comment">&lt;!--          service-interface=&quot;order.OrderService&quot; /&gt; --&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderService</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.config.GatewayProxyFactoryBean</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;constructor-arg</span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderService</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">defaultRequestChannel</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/bean&gt;</span>
+
+
+    <span class="comment">&lt;!-- &lt;publish-subscribe-channel id=&quot;newOrders&quot; /&gt; --&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.channel.PublishSubscribeChannel</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+
+    <span class="comment">&lt;!-- &lt;service-activator id=&quot;serviceActivator&quot;     --&gt;</span>
+    <span class="comment">&lt;!--                    input-channel=&quot;newOrders&quot; --&gt;</span>
+    <span class="comment">&lt;!--                    ref=&quot;orderProcessor&quot; /&gt;   --&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">serviceActivatorHandler</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.handler.ServiceActivatingHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ref</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderProcessor</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/property&gt;</span>
+    <span class="tag">&lt;/bean&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">serviceActivator</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.endpoint.EventDrivenConsumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;constructor-arg</span> <span class="attribute-name">index</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;constructor-arg</span> <span class="attribute-name">index</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">serviceActivatorHandler</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/bean&gt;</span>
+
+
+    <span class="comment">&lt;!-- &lt;channel id=&quot;pollableChannel&quot;&gt; --&gt;</span>
+    <span class="comment">&lt;!--     &lt;queue/&gt;                   --&gt;</span>
+    <span class="comment">&lt;!-- &lt;/channel&gt;                     --&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pollableChannel</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.channel.QueueChannel</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+
+    <span class="comment">&lt;!-- &lt;bridge id=&quot;bridge&quot;                         --&gt;</span>
+    <span class="comment">&lt;!--         input-channel=&quot;newOrders&quot;           --&gt;</span>
+    <span class="comment">&lt;!--         output-channel=&quot;pollableChannel&quot; /&gt; --&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">bridgeHandler</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.handler.BridgeHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">outputChannel</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pollableChannel</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/bean&gt;</span>
+    <span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">bridge</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">m.s.i.endpoint.EventDrivenConsumer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;constructor-arg</span> <span class="attribute-name">index</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;constructor-arg</span> <span class="attribute-name">index</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">bridgeHandler</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/bean&gt;</span>
+
+<span class="tag">&lt;/beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Clearly, this code lacks expressiveness and we understand why Spring Integration adds syntactic sugar through the Spring Integration namespace. Let&#8217;s try to do the same thing!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_little_bit_of_xml_sugar">A little bit of XML sugar</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Almost every Spring module comes with its own namespace to facilitate the configuration of common beans. Spring Integration is no exception (Spring Integration defines more than 30 namespaces, one for each supported technology!).</p>
+</div>
+<div class="paragraph">
+<p>The implementation of a <a href="http://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/xml-custom.html">custom namespace</a> is well documented in the official Spring Core documentation.</p>
+</div>
+<div class="paragraph">
+<p>Creating new XML configuration extensions can be done by following these (relatively) simple steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authoring an XML schema to describe your custom element(s).</p>
+</li>
+<li>
+<p>Coding a custom <code>NamespaceHandler</code> implementation (this is an easy step, don’t worry).</p>
+</li>
+<li>
+<p>Coding one or more <code>BeanDefinitionParser</code> implementations (this is where the real work is done).</p>
+</li>
+<li>
+<p>Registering the above artifacts with Spring (this too is an easy step).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>What follows is a description of each of these steps.</p>
+</div>
+<div class="sect2">
+<h3 id="authoring_the_schema">Authoring the schema</h3>
+<div class="paragraph">
+<p>We start with authoring an XML Schema to describe the extension. What follows is the schema we’ll use to configure our simple use case.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;xsd:schema</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://my.springframework.org/schema/integration</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns:xsd</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">targetNamespace</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://my.springframework.org/schema/integration</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">elementFormDefault</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">qualified</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">attributeFormDefault</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">unqualified</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">channel</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:complexType&gt;</span>
+            <span class="tag">&lt;xsd:complexContent&gt;</span>
+                <span class="tag">&lt;xsd:extension</span> <span class="attribute-name">base</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">channelType</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;xsd:sequence&gt;</span>
+                        <span class="tag">&lt;xsd:choice</span> <span class="attribute-name">minOccurs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">maxOccurs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                            <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">queue</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">queueType</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+                        <span class="tag">&lt;/xsd:choice&gt;</span>
+                    <span class="tag">&lt;/xsd:sequence&gt;</span>
+                <span class="tag">&lt;/xsd:extension&gt;</span>
+            <span class="tag">&lt;/xsd:complexContent&gt;</span>
+        <span class="tag">&lt;/xsd:complexType&gt;</span>
+    <span class="tag">&lt;/xsd:element&gt;</span>
+
+    <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">bridge</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:complexType&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attributeGroup</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">inputOutputChannelGroup</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;/xsd:complexType&gt;</span>
+    <span class="tag">&lt;/xsd:element&gt;</span>
+
+    <span class="tag">&lt;xsd:complexType</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">queueType</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">capacity</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/xsd:complexType&gt;</span>
+
+    <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">publish-subscribe-channel</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:complexType&gt;</span>
+            <span class="tag">&lt;xsd:complexContent&gt;</span>
+                <span class="tag">&lt;xsd:extension</span> <span class="attribute-name">base</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">channelType</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                    <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">task-executor</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+                <span class="tag">&lt;/xsd:extension&gt;</span>
+            <span class="tag">&lt;/xsd:complexContent&gt;</span>
+        <span class="tag">&lt;/xsd:complexType&gt;</span>
+    <span class="tag">&lt;/xsd:element&gt;</span>
+
+    <span class="tag">&lt;xsd:complexType</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">channelType</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">use</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">required</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/xsd:complexType&gt;</span>
+
+    <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">gateway</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:complexType&gt;</span>
+            <span class="tag">&lt;xsd:sequence</span> <span class="attribute-name">minOccurs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">maxOccurs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">method</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">minOccurs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span>
+                             <span class="attribute-name">maxOccurs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">unbounded</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;/xsd:sequence&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">use</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">optional</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">service-interface</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span>
+                <span class="attribute-name">use</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">optional</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">default-request-channel</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">default-reply-channel</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;/xsd:complexType&gt;</span>
+    <span class="tag">&lt;/xsd:element&gt;</span>
+
+    <span class="tag">&lt;xsd:element</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">service-activator</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:complexType&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ref</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">method</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+            <span class="tag">&lt;xsd:attributeGroup</span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">inputOutputChannelGroup</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;/xsd:complexType&gt;</span>
+    <span class="tag">&lt;/xsd:element&gt;</span>
+
+    <span class="tag">&lt;xsd:attributeGroup</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">inputOutputChannelGroup</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">output-channel</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;xsd:attribute</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">input-channel</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">xsd:string</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/xsd:attributeGroup&gt;</span>
+<span class="tag">&lt;/xsd:schema&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="coding_a_namespacehandler">Coding a NamespaceHandler</h3>
+<div class="paragraph">
+<p>In addition to the schema, we need a <code>NamespaceHandler</code> that will parse all elements of this specific namespace Spring encounters while parsing configuration files. We just have to define a class implementing the <code>NamespaceHandler</code> interface and associate a <code>BeanDefinitionParser</code> for each element in our namespace:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.config.xml</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.xml.NamespaceHandlerSupport</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">IntegrationNamespaceHandler</span> <span class="directive">extends</span> NamespaceHandlerSupport {
+
+    <span class="directive">public</span> <span class="type">void</span> init() {
+        registerBeanDefinitionParser(<span class="string"><span class="delimiter">&quot;</span><span class="content">gateway</span><span class="delimiter">&quot;</span></span>,
+            <span class="keyword">new</span> GatewayParser());
+        registerBeanDefinitionParser(<span class="string"><span class="delimiter">&quot;</span><span class="content">channel</span><span class="delimiter">&quot;</span></span>,
+            <span class="keyword">new</span> PointToPointChannelParser());
+        registerBeanDefinitionParser(<span class="string"><span class="delimiter">&quot;</span><span class="content">publish-subscribe-channel</span><span class="delimiter">&quot;</span></span>,
+            <span class="keyword">new</span> PublishSubscribeChannelParser());
+        registerBeanDefinitionParser(<span class="string"><span class="delimiter">&quot;</span><span class="content">bridge</span><span class="delimiter">&quot;</span></span>,
+            <span class="keyword">new</span> BridgeParser());
+        registerBeanDefinitionParser(<span class="string"><span class="delimiter">&quot;</span><span class="content">service-activator</span><span class="delimiter">&quot;</span></span>,
+            <span class="keyword">new</span> ServiceActivatorParser());
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The observant reader will notice that there isn’t actually a whole lot of parsing logic in this class.
+Indeed, most of this work happens in the <code>NamespaceHandlerSupport</code> class. This Spring Core provided class does most of the work and delegates to a <code>BeanDefinitionParser</code> when it needs to parse an element in the new namespace.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="beandefinitionparser">BeanDefinitionParser</h3>
+<div class="paragraph">
+<p>The <code>BeanDefinitionParser</code> is responsible for parsing one distinct top-level XML element defined in the schema. Inside the parser, we’ll have access to the XML element (and thus its subelements too) so that we can parse our custom XML content, as can be seen in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.config.xml</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.support.AbstractBeanDefinition</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.support.BeanDefinitionBuilder</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.xml.AbstractBeanDefinitionParser</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.xml.ParserContext</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.xml.DomUtils</span>;
+<span class="keyword">import</span> <span class="include">org.w3c.dom.Element</span>;
+
+<span class="keyword">import</span> <span class="include">my.springframework.integration.channel.DirectChannel</span>;
+<span class="keyword">import</span> <span class="include">my.springframework.integration.channel.QueueChannel</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PointToPointChannelParser</span> <span class="directive">extends</span> AbstractBeanDefinitionParser {
+
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> AbstractBeanDefinition parseInternal(
+            <span class="predefined-type">Element</span> element, ParserContext parserContext) {
+        BeanDefinitionBuilder builder = <span class="predefined-constant">null</span>;
+
+        <span class="comment">// configure a queue-based channel if any queue sub-element is defined</span>
+        <span class="keyword">if</span> ((DomUtils.getChildElementByTagName(element, <span class="string"><span class="delimiter">&quot;</span><span class="content">queue</span><span class="delimiter">&quot;</span></span>)) != <span class="predefined-constant">null</span>) {
+            builder = BeanDefinitionBuilder.genericBeanDefinition(
+                          QueueChannel.class);
+        } <span class="keyword">else</span> {
+            builder = BeanDefinitionBuilder.genericBeanDefinition(
+                          DirectChannel.class);
+        }
+
+        AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
+        beanDefinition.setSource(parserContext.extractSource(element));
+        <span class="keyword">return</span> beanDefinition;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example handle the element &lt;channel&gt;. In this simple case, this is all that we need to do. We check if the <code>queue</code> subelement is present to determine if we need to create a <code>DirectChannel</code> or a <code>QueueChannel</code>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s inspect the <code>&lt;service-activator&gt;</code> element:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">...
+import <span class="directive">static</span> m.s.i.config.xml.IntegrationNamespaceUtils.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ServiceActivatorParser</span> <span class="directive">extends</span> AbstractBeanDefinitionParser {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> AbstractBeanDefinition parseInternal(<span class="predefined-type">Element</span> element,
+            ParserContext parserContext) {
+        BeanDefinitionBuilder handlerBuilder = BeanDefinitionBuilder.
+            genericBeanDefinition(ServiceActivatingHandler.class);
+        setReferenceIfAttributeDefined(
+            handlerBuilder, element, <span class="string"><span class="delimiter">&quot;</span><span class="content">ref</span><span class="delimiter">&quot;</span></span>);
+        setReferenceIfAttributeDefined(
+            handlerBuilder, element, <span class="string"><span class="delimiter">&quot;</span><span class="content">output-channel</span><span class="delimiter">&quot;</span></span>);
+        AbstractBeanDefinition handlerBeanDefinition =
+            handlerBuilder.getBeanDefinition();
+        <span class="predefined-type">String</span> handlerBeanName = BeanDefinitionReaderUtils.generateBeanName(
+            handlerBeanDefinition, parserContext.getRegistry());
+        parserContext.registerBeanComponent(
+            <span class="keyword">new</span> BeanComponentDefinition(
+                handlerBeanDefinition, handlerBeanName));
+
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.
+            genericBeanDefinition(ConsumerEndpointFactoryBean.class);
+        builder.addPropertyReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">handler</span><span class="delimiter">&quot;</span></span>, handlerBeanName);
+        <span class="predefined-type">String</span> inputChannelName = element.getAttribute(<span class="string"><span class="delimiter">&quot;</span><span class="content">input-channel</span><span class="delimiter">&quot;</span></span>);
+        builder.addPropertyValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">inputChannelName</span><span class="delimiter">&quot;</span></span>, inputChannelName);
+        AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
+        <span class="predefined-type">String</span> beanName = <span class="local-variable">this</span>.resolveId(
+            element, beanDefinition, parserContext);
+        parserContext.registerBeanComponent(
+            <span class="keyword">new</span> BeanComponentDefinition(beanDefinition, beanName));
+
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code seems more complex but it is only because we need to register two beans: the service-activator handler (delegates to a bean) and a consumer (read new messages from the input channel). We have to use the <code>org.springframework.beans.factory.support.BeanDefinitionReaderUtils</code> class to generate a bean name to link the two beans together. The remaining code is classic <code>BeanDefinitionParser</code> code.</p>
+</div>
+<div class="paragraph">
+<p>What is interesting is how the consumer is instantiated. How to determine if we need to create an Event-Driven Consumer (to read from a PublishSubscribeChannel for example) or a Polling Consumer (to read from a QueueChannel for example). We can&#8217;t. We need to report that decision for later when the application context will really start. So, we create an instance of <code>FactoryBean</code> (like the previous <code>GatewayProxyFactoryBean</code>). Here is its implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ConsumerEndpointFactoryBean</span>
+        <span class="directive">implements</span> FactoryBean&lt;AbstractEndpoint&gt;,
+                   BeanFactoryAware,
+                   InitializingBean {
+
+    <span class="directive">private</span> <span class="directive">volatile</span> MessageHandler handler;
+
+    <span class="directive">private</span> <span class="directive">volatile</span> <span class="predefined-type">String</span> inputChannelName;
+
+    <span class="directive">private</span> <span class="directive">volatile</span> AbstractEndpoint endpoint;
+
+    <span class="directive">private</span> <span class="directive">volatile</span> ChannelResolver channelResolver;
+
+
+    <span class="directive">public</span> <span class="type">void</span> setHandler(MessageHandler handler) {
+        Assert.notNull(handler, <span class="string"><span class="delimiter">&quot;</span><span class="content">handler must not be null</span><span class="delimiter">&quot;</span></span>);
+        <span class="local-variable">this</span>.handler = handler;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setInputChannelName(<span class="predefined-type">String</span> inputChannelName) {
+        <span class="local-variable">this</span>.inputChannelName = inputChannelName;
+    }
+
+    <span class="comment">/*
+     * BeanFactoryAware implementation
+     */</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> setBeanFactory(BeanFactory beanFactory) {
+        <span class="local-variable">this</span>.channelResolver = <span class="keyword">new</span> ChannelResolver(beanFactory);
+    }
+
+    <span class="comment">/*
+     * InitializingBean implementation
+     */</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> afterPropertiesSet() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        MessageChannel channel =
+            channelResolver.resolveDestination(<span class="local-variable">this</span>.inputChannelName);
+
+        <span class="keyword">if</span> (channel <span class="keyword">instanceof</span> SubscribableChannel) {
+            <span class="local-variable">this</span>.endpoint = <span class="keyword">new</span> EventDrivenConsumer(
+                (SubscribableChannel) channel, <span class="local-variable">this</span>.handler);
+        }
+        <span class="keyword">else</span> <span class="keyword">if</span> (channel <span class="keyword">instanceof</span> PollableChannel) {
+            PollingConsumer pollingConsumer = <span class="keyword">new</span> PollingConsumer(
+                (PollableChannel) channel, <span class="local-variable">this</span>.handler);
+            <span class="local-variable">this</span>.endpoint = pollingConsumer;
+        }
+    }
+
+    <span class="comment">/*
+     * FactoryBean implementation
+     */</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> isSingleton() {
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> AbstractEndpoint getObject() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.endpoint;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Class</span>&lt;?&gt; getObjectType() {
+        <span class="keyword">return</span> AbstractEndpoint.class;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We use an instance of <code>ChannelResolver</code> to retrieve the <code>MessageChannel</code> instance corresponding to the name specified in the XML file. This utility class simply delegates to a <code>BeanFactory</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">my.springframework.integration.core</span>;
+
+...
+
+public <span class="type">class</span> <span class="class">ChannelResolver</span> {
+
+    <span class="directive">private</span> BeanFactory beanFactory;
+
+    <span class="directive">public</span> ChannelResolver(BeanFactory beanFactory) {
+        <span class="local-variable">this</span>.beanFactory = beanFactory;
+    }
+
+    <span class="directive">public</span> MessageChannel resolveDestination(<span class="predefined-type">String</span> destinationName)
+            <span class="directive">throws</span> MessagingException {
+        <span class="keyword">try</span> {
+            <span class="keyword">return</span> <span class="local-variable">this</span>.beanFactory.getBean(destinationName,
+                                            MessageChannel.class);
+        }
+        <span class="keyword">catch</span> (BeansException ex) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> MessagingException(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Failed to find channel '</span><span class="delimiter">&quot;</span></span> + destinationName + <span class="string"><span class="delimiter">&quot;</span><span class="content">'</span><span class="delimiter">&quot;</span></span>, ex);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, we test the type of the channel to instantiate the right consumer, passing the handler as a constructor argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">if</span> (channel <span class="keyword">instanceof</span> SubscribableChannel) {
+    <span class="local-variable">this</span>.endpoint = <span class="keyword">new</span> EventDrivenConsumer(
+        (SubscribableChannel) channel, <span class="local-variable">this</span>.handler);
+}
+<span class="keyword">else</span> <span class="keyword">if</span> (channel <span class="keyword">instanceof</span> PollableChannel) {
+    PollingConsumer pollingConsumer = <span class="keyword">new</span> PollingConsumer(
+        (PollableChannel) channel, <span class="local-variable">this</span>.handler);
+    <span class="local-variable">this</span>.endpoint = pollingConsumer;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code presents a serious flaw. If we run our program now, the handler will never receive any message. Did you have an idea?</p>
+</div>
+<div class="paragraph">
+<p>If we go back in this post, the superclass of <code>PollingConsumer</code> and <code>EventDrivenConsumer</code>, <code>AbstractEndpoint</code>, implements the <code>SmartLifecycle</code> interface to auto-start the consumers. This only works on bean instantiated by Spring. In the previous code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">new</span> EventDrivenConsumer(channel, <span class="local-variable">this</span>.handler);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As we instantiate the consumer ourselves, we have the responsibility to call the lifecycle methods. This is simple to implement by implementing the same interface, and delegating to the inner endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ConsumerEndpointFactoryBean</span> <span class="directive">implements</span> SmartLifecycle, ... {
+
+    <span class="comment">/*
+     * SmartLifecycle implementation (delegates to the created endpoint)
+     */</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> isAutoStartup() {
+        <span class="keyword">return</span> (<span class="local-variable">this</span>.endpoint == <span class="predefined-constant">null</span>) || <span class="local-variable">this</span>.endpoint.isAutoStartup();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">int</span> getPhase() {
+        <span class="keyword">return</span> (<span class="local-variable">this</span>.endpoint != <span class="predefined-constant">null</span>) ? <span class="local-variable">this</span>.endpoint.getPhase() : <span class="integer">0</span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> isRunning() {
+        <span class="keyword">return</span> (<span class="local-variable">this</span>.endpoint != <span class="predefined-constant">null</span>) &amp;&amp; <span class="local-variable">this</span>.endpoint.isRunning();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> start() {
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.endpoint != <span class="predefined-constant">null</span>) {
+            <span class="local-variable">this</span>.endpoint.start();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> stop() {
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.endpoint != <span class="predefined-constant">null</span>) {
+            <span class="local-variable">this</span>.endpoint.stop();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> stop(<span class="predefined-type">Runnable</span> callback) {
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.endpoint != <span class="predefined-constant">null</span>) {
+            <span class="local-variable">this</span>.endpoint.stop(callback);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will not describe the remaining channels and endpoints. The code is very similar to the code presented here. (You could check the full source code <a href="https://github.com/julien-sobczak/spring-integration-from-scratch">here</a>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="registering_the_handler_and_the_schema">Registering the handler and the schema</h3>
+<div class="paragraph">
+<p>The coding part is finished! All that remains to be done is to make the Spring XML parsing infrastructure aware of our custom namespace. For our example, we need to write the following two files:</p>
+</div>
+<div class="sect3">
+<h4 id="meta_infspring_handlers">'META-INF/spring.handlers'</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">http\://my.springframework.org/schema/integration=\
+  my.springframework.integration.config.xml.IntegrationNamespaceHandler</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first part (the key) of the key-value pair is the URI associated with your custom namespace extension, and needs to match exactly the value of the 'targetNamespace' attribute as specified in your custom XSD schema.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="meta_infspring_schemas">'META-INF/spring.schemas'</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">http\://my.springframework.org/schema/i...n/my-spring-integration-1.0.xsd=\
+  my/springframework/integration/config/xml/my-spring-integration-1.0.xsd
+http\://my.springframework.org/schema/i...n/my-spring-integration.xsd=\
+  my/springframework/integration/config/xml/my-spring-integration-1.0.xsd</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file is needed to prevent Spring from connection to the Internet to retrieve the schema file. If you specify the mapping in this properties file, Spring will search for the schema on the classpath (in this case <code>my-spring-integration-1.0.xsd</code> in the <code>my.springframework.integration.config.xml</code> package).</p>
+</div>
+<div class="paragraph">
+<p><strong>Why should I not specify the version of the XSD ?</strong></p>
+</div>
+<div class="paragraph">
+<p>Spring recommends to never specify the schema version when using a namespace. Ex:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">xsi:schemaLocation=&quot;
+http://my.springframework.org/schema/integration
+http://my.springframework.org/schema/integration/my-spring-integration.xsd&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But not: (even if it works)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">xsi:schemaLocation=&quot;
+http://my.springframework.org/schema/integration
+http://my.springframework.org/schema/integration/my-spring-integration-1.0.xsd&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The previous file reveals how this is implemented. The <code>spring.schemas</code> file contains a definition for the two versions. In practice, <a href="https://github.com/spring-projects/spring-framework/blob/v4.2.5.RELEASE/spring-beans/src/main/resources/META-INF/spring.schemas">this file</a> contains all previously versions too!</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">http\://www.springframework.org/schema/beans/spring-beans-2.0.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-2.0.xsd
+http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-2.5.xsd
+http\://www.springframework.org/schema/beans/spring-beans-3.0.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-3.0.xsd
+http\://www.springframework.org/schema/beans/spring-beans-3.1.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-3.1.xsd
+http\://www.springframework.org/schema/beans/spring-beans-3.2.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-3.2.xsd
+http\://www.springframework.org/schema/beans/spring-beans-4.0.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-4.0.xsd
+http\://www.springframework.org/schema/beans/spring-beans-4.1.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-4.1.xsd
+http\://www.springframework.org/schema/beans/spring-beans-4.2.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-4.2.xsd
+http\://www.springframework.org/schema/beans/spring-beans-4.3.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-4.3.xsd
+http\://www.springframework.org/schema/beans/spring-beans.xsd=\
+  org/springframework/beans/factory/xml/spring-beans-4.3.xsd</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This explains why the following code continue to work even when we upgrade the version of the Spring Framework:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">xsi:schemaLocation=&quot;
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using_a_custom_extension">Using a custom extension</h3>
+<div class="paragraph">
+<p>Our namespace could be used in the same way as we used the official namespace at the start of this post, except we should update the namespace URI:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;beans:beans</span> <span class="attribute-name">xmlns:beans</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://my.springframework.org/schema/integration</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+    <span class="content">http://my.springframework.org/schema/integration</span>
+    <span class="content">http://my.springframework.org/schema/integration/my-spring-integration.xsd</span>
+    <span class="content">http://www.springframework.org/schema/beans</span>
+    <span class="content">http://www.springframework.org/schema/beans/spring-beans.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="comment">&lt;!-- App configuration --&gt;</span>
+    <span class="tag">&lt;beans:bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderProcessor</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderProcessor</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="comment">&lt;!-- Spring Integration configuration --&gt;</span>
+
+    <span class="tag">&lt;gateway</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderService</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">default-request-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+             <span class="attribute-name">service-interface</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">order.OrderService</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;publish-subscribe-channel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;service-activator</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">serviceActivator</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">input-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+                       <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">orderProcessor</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+    <span class="tag">&lt;channel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pollableChannel</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;queue</span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/channel&gt;</span>
+
+    <span class="tag">&lt;bridge</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">bridge</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">input-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">newOrders</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">output-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pollableChannel</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+<span class="tag">&lt;/beans:beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We re-run the test. Green. Done.</p>
+</div>
+<div class="admonitionblock note congratulations">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Congratulations!</div>
+<div class="paragraph">
+<p><strong>The implementation of our own Spring Integration framework is finished.</strong> We now have a basic but working solution implementing core components of the framework. The full code source of this post is available on <a href="https://github.com/julien-sobczak/spring-integration-from-scratch">GitHub</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>volatile</code> variables are useful for initializing variables. <code>ReentrantLock</code> provides explicit locking mechanism similar to the <code>synchronized</code> keyword but are more fine-grained.</p>
+</li>
+<li>
+<p>Java <code>Executor</code> framework should be privileged instead of using directly the <code>Thread</code> API.</p>
+</li>
+<li>
+<p>Creating a new XML namespace with Spring is easy. The parsing code is completely hidden behind well designed interfaces. Moreover, adding syntactic sugar increases the chance of adoption of a framework.</p>
+</li>
+<li>
+<p>A <code>FactoryBean</code> instance could be used when creating an object in XML is too complicated.</p>
+</li>
+<li>
+<p>The <code>SmartLifecycle</code> interface could be used to auto start-up your bean.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Try for yourself!</div>
+<div class="paragraph">
+<p>There is so much to cover about Spring Integration. Why not try to analyze other features of the framework. Here is some ideas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Channel Interceptors</strong>
+Try implement your own <strong>Wire-Tap</strong> pattern.</p>
+</li>
+<li>
+<p><strong>Unicast vs Multicast</strong>
+Our current <code>SubscribableChannel</code> implementations send messages to endpoints. This differs lightly from the official implementations where these channels use two abstraction: <code>UnicastingDispatcher</code> for point-to-point and <code>BroadcastingDispatcher</code> for publish-subscribe. Why not inspect how these classes works internally (load-balancing and fail-over support).</p>
+</li>
+<li>
+<p><strong>Jms Inbound Adapter vs Jms Inbound Gateway</strong>
+One of the least understood point when beginning with Spring Integration but an important one to grasp. Inspect the code and see how the <code>JmsTemplate</code> is used to create one-way (Adapter) and two-ways (Gateway) communications.</p>
+</li>
+<li>
+<p><strong>Java DSL</strong>
+The <a href="https://github.com/spring-projects/spring-integration-java-dsl/wiki/spring-integration-java-dsl-reference">Spring Integration JavaConfig and DSL extension</a> provides a set of convenient Builders and a fluent API to configure Spring Integration message flows from Spring <code>@Configuration</code> classes. Try to reuse our code to offer a similar API instead of the verbose XML configuration.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

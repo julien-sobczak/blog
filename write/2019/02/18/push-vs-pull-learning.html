@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Push vs Pull Learning</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2019/02/18/push-vs-pull-learning.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">February 18, 2019</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Push vs Pull Learning</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Anyone who stops learning is old, whether at twenty or eighty. Anyone who keeps learning stays young.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Henry Ford
+</div>
+</div>
+<div class="paragraph lead">
+<p>What do you do when you need to learn something new? Do you wait for someone to teach you? Or do you seek for knowledge actively? In this post, I will discuss why there are clear advantages to the second approach (and also, why the first approach is still prevalent).</p>
+</div>
+<div class="sect1">
+<h2 id="push_vs_pull_learning">Push vs Pull Learning</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are many different ways to learn. You can read a book, attend a training session, subscribe to a MOOC, practice through a pet project, participate in local meetups, ask coworkers for support, follow tutorials on blogs, watch videos online. There isn&#8217;t a clear winner when it comes to learning. Some supports are more effective depending on the subject. For example, a MOOC is clearly superior to learn graphic tools like Photoshop, and thus many authors completely migrated to MOOCs. Watching the instructor doing the actions is clearly preferable to reading bulleted lists in books. I learnt Photoshop this way many years ago, and I&#8217;m now delighted by courses on LinkedIn Learning. Each support presents advantages and drawbacks, and you will get much better results by varying learning resources than simply learning using books or training courses exclusively. Complementary is key to learning.</p>
+</div>
+<div class="paragraph">
+<p><em>There is, however, an important distinction to make between these different supports. <strong>How much I control what I learn? Who is pulling the strings?</em></strong></p>
+</div>
+<div class="paragraph">
+<p>When I buy a book, I personally decide what I want to learn at the most appropriate moment for me. When I attend a local meetup, even if I&#8217;ve selected it from many other meetups, there is a strong likelihood that the subject doesn&#8217;t perfectly match what I&#8217;m trying to learn, or that I&#8217;ll have to wait a few weeks before the day of the meetup. I depend on the initiative of someone else to learn. You may say the same for books as you can&#8217;t read a book if the author has not taken the initiative to write it in the first place. That&#8217;s true, but choosing a book over thousands of references is not the same as choosing a meetup over a few dozens.</p>
+</div>
+<div class="paragraph">
+<p>The two approaches are named <em>Push Learning</em> versus <em>Pull Learning</em>.</p>
+</div>
+<div class="paragraph">
+<p><strong>In <em>Push</em> mode, you passively wait for the information to reach you</strong>. You hope that a local meetup on a particular subject will occur, you wait for your company to send you to the next conference, or you ask to assist a training session.</p>
+</div>
+<div class="paragraph">
+<p><strong>In <em>Pull</em> mode, you actively search for the information where it exists</strong>. You follow a MOOC to introduce yourself to the subject, you read an advanced book to go further, you follow influencers on Twitter to watch their publications.</p>
+</div>
+<div class="paragraph">
+<p>For most of us, <em>Push Learning</em> is the traditional mode we have all experienced in school, and this mode continues to be the most prominent. Nobody like being told what to do, but concerning learning, things seem to be different. Until when?</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_benefits_of_pull_learning">The benefits of Pull Learning</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>There is nothing profoundly wrong with <em>Push Learning</em></strong>. There will always exist subjects you will learn by coincidence. You may discover a new framework because you hear a colleague talking about it. You may learn a new tool because your company decides to commit to this new tool. You may discover a new programming language because someone living near to you decide to share its interest during a meetup. Of course, you could have learnt about these subjects by yourself. The reality is you can&#8217;t run in every direction. At best, when learning something new, you may ask you "Why didn&#8217;t I learn about this before? How could I have learned about it before?" What is really crucial, however, is to use <em>Pull Learning</em> concerning your subjects of predilection.</p>
+</div>
+<div class="paragraph">
+<p><strong><em>Pull Learning</em> is getting more and more attractive at the same time it is becoming more and more profitable</strong>. On one hand, new technologies contribute in making <em>Pull Learning</em> widely accessible, and terribly enjoyable. Try a MOOC on Coursera for example, and compare with the lectures you had at school. On the other hand, in today’s fast paced world, you cannot just follow trends passively, and wait for your company to train you. You need to be ready for the next wave, without waiting for it to push you in, at the risk of being overwhelmed. In short, you need to adopt <em>Pull Learning</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>Pull learning</em> favors learning</strong>. You take the decision to learn. Nobody is forcing you, so you could not resist, you will learn faster, and you will retain the information longer.</p>
+</li>
+<li>
+<p><strong><em>Push Learning</em> is often about what others want you to learn</strong>, whereas <em>Pull Learning</em> is more about your own preferences. "You need to learn this" vs "I want to learn this." Listen to yourself.</p>
+</li>
+<li>
+<p><strong><em>Pull Learning</em> is on-demand, just-in-time learning</strong>. You have full control on your knowledge and tailor it at your convenience. You can follow any path you want.</p>
+</li>
+<li>
+<p><strong><em>Pull Learning</em> is the only way to reach expertise</strong>. There are no training courses to become an expert (otherwise, there would be a ton of experts out there). Expertise results from long study sessions, working alone, trying to push your limits a little farther, slowly but surely.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The good news is <em>Pull Learning</em> is within everyone&#8217;s reach! Remember everything you learned by yourself when you were just a baby. The human brain is a learning machine. Even if we lose half of our neurons during our early years, why not press the resume button and start learning again?</p>
+</div>
+<div class="paragraph">
+<p>Migrating from <em>Push</em> to <em>Pull</em> learning is like migrating from TV channels to Netflix. Don&#8217;t watch what TV channels have programmed for you. Watch what you want, when you decide, and wherever you are. If adopting Netflix was easy, why would it be different concerning learning?</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="to_conclude">To conclude</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Push learning</em> involves learning something that someone else has decided for you. <em>Pull learning</em> involves learning something you have decided right now. Say like this, it’s hard to justify the prevalence of <em>Push Learning</em>. Too often, we stop being actor of our own learning experience, although <em>Pull Learning</em> represents a far better strategy to face the challenges of the 21st century.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>. We still need to be curious and to welcome every opportunity to learn something new, but we need even more to be proactive and seek by ourselves what we really want to learn.</p>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">In practice</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If most of your learning occurs through <em>Push Learning</em>, <strong>experiment with <em>Pull Learning</em></strong>. Read a book, subscribe to a MOOC, add interesting blogs in your news reader.</p>
+</li>
+<li>
+<p>If you are reading only books people recommended you, go to your bookstore and <strong>look for your next reading</strong>. I read a lot of books. Not all was great, but I learned from every one of them. Try what interests you at the moment.</p>
+</li>
+<li>
+<p>Don’t stop attending local meetups or conferences, but <strong>watch recorded conferences</strong> online to complement your learning.</p>
+</li>
+<li>
+<p>For companies, <strong>stop relying exclusively on training courses</strong> and start encouraging pull learning. Include credits for employees to subscribe on platforms like Safari Books Online, Linkedin Learning. Encourage the diversity of ideas through the diversity of learning.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. <a href="http://www.juliensobczak.com/read/2017/01/25/peak.html" class="bare">http://www.juliensobczak.com/read/2017/01/25/peak.html</a>
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. <a href="https://www.amazon.com/Lessons-21st-Century-Yuval-Harari/dp/0525512179" class="bare">https://www.amazon.com/Lessons-21st-Century-Yuval-Harari/dp/0525512179</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2019/01/16/job-title-competency.html">Why a Job Title Will Never Make You Competent?</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Career
+            </span>
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

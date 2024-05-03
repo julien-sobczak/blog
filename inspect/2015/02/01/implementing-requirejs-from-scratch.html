@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Implementing RequireJS from Scratch</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2015/02/01/implementing-requirejs-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">February 01, 2015</span>
+
+      
+      <a href="/tags/web" class="label">
+      Web
+      </a>
+      
+
+      
+      <span class="label">
+        Javascript
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Implementing RequireJS from Scratch</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are reading a translation of an <a href="https://julien-sobczak.github.io/blog-fr/inspect/2015/02/10/implementing-requirejs-from-scratch.html">old blog post</a> published on my previous blog in French.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Whilst native solutions to these problems will be arriving in ES Harmony, the good news is that writing modular JavaScript has never been easier and you can start doing it today.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Addy Osmani, creator de Yeoman
+</div>
+</div>
+<div class="paragraph lead">
+<p>The benefits of a modular design are obvious. Sadly, before the version ECMAScript 6, JavaScript provided no support to define modules. This was before AMD.</p>
+</div>
+<div class="paragraph lead">
+<p>AMD (Asynchronous Module Definition) defines a format to define modules in JavaScript. Several script loaders already implement this standard. The most popular is <a href="http://requirejs.org/">RequireJS</a>.</p>
+</div>
+<div class="paragraph lead">
+<p>Using RequireJS, we will write scoped modules, without polluting the global namespace, with the additional benefit to declare explicitly module dependencies. From an implementation viewpoint, RequireJS is an extension of the <a href="http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html">pattern Module</a>, widely implemented in JavaScript.</p>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<a href="http://requirejs.org/">RequireJS</a> is published under the new <a href="http://en.wikisource.org/wiki/BSD_License">BSD license</a> and <a href="http://opensource.org/licenses/MIT">MIT</a>. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the latest version of RequireJS (2.1.16) at the moment of publication.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="getting_started_with_modules">Getting Started with Modules</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AMD defines two main methods:</p>
+</div>
+<div class="ulist compact">
+<ul>
+<li>
+<p><code>define</code> to define a new module.</p>
+</li>
+<li>
+<p><code>require</code> to define and load dependencies.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s start by the method <code>define</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">define(
+    module_id <span class="comment">/* optional */</span>,
+    [dependencies] <span class="comment">/* optional */</span>,
+    definition <span class="keyword">function</span> <span class="comment">/* function instantiating the module/object */</span>
+);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first parameter is used to name the module. Often, modules will be anonymous (a best practice to ease their reorganization). Then comes the list of dependencies to load, that will be passed as the last parameter, the function responsible to really instantiate the module.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">define(
+    <span class="comment">// =&gt; anonymous module</span>
+    [<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">bar</span><span class="delimiter">'</span></span>],
+    <span class="keyword">function</span> ( foo, bar ) {
+        <span class="comment">// Return the value defining the module.</span>
+        <span class="comment">// This is the value that will be returned when another module</span>
+        <span class="comment">// depends on it.</span>
+        <span class="keyword">return</span> {
+            <span class="function">sayHello</span>: <span class="keyword">function</span>() {
+                console.log(<span class="string"><span class="delimiter">'</span><span class="content">Hello World’);
+            }
+        };
+    }
+);</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>require</code> is most often used to define the entry point (the first file loaded by RequireJS) or inside the definition of a module as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">define(<span class="keyword">function</span>() {
+    <span class="comment">// Example inspired of http://addyosmani.com/writing-modular-js/</span>
+    <span class="keyword">var</span> isReady = <span class="predefined-constant">false</span>, foobar;
+
+    <span class="comment">// require is inlined</span>
+    require([<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">bar</span><span class="delimiter">'</span></span>], <span class="keyword">function</span> (foo, bar) {
+        isReady = <span class="predefined-constant">true</span>;
+        foobar = foo() + bar();
+    });
+
+    <span class="keyword">return</span> {
+        <span class="key">isReady</span>: isReady,
+        <span class="key">foobar</span>: foobar
+    };
+});</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+We will not go further in the presentation of RequireJS/AMD. <strong>Read the <a href="http://requirejs.org/docs/api.html">official API documentation</a> for more details.</strong>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_first_example">A First Example</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;title&gt;</span>My Sample Project<span class="tag">&lt;/title&gt;</span>
+        <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;script</span> <span class="attribute-name">data-main</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">scripts/main</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">require.js</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/script&gt;</span>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;h1&gt;</span>My Sample Project<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On loading, RequireJS inspects the special attribute <code>data-main</code> to find the first application module to load. This is the file <code>main.js</code> present under the directory <code>scripts/</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">require([<span class="string"><span class="delimiter">&quot;</span><span class="content">helper/util</span><span class="delimiter">&quot;</span></span>], <span class="keyword">function</span>(util) {
+    <span class="comment">// This function is called when scripts/helper/util.js is loaded.</span>
+    <span class="comment">// If util.js calls define(), then this function is not fired until</span>
+    <span class="comment">// util's dependencies have loaded, and the util parameter will hold</span>
+    <span class="comment">// the module value for &quot;helper/util&quot;.</span>
+
+    <span class="keyword">var</span> titles = document.getElementsByTagName(<span class="string"><span class="delimiter">'</span><span class="content">h1</span><span class="delimiter">'</span></span>);
+    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>; i &lt; titles.length; i++) {
+        titles[i].textContent = util.toFunnyCase(titles[i].textContent);
+    }
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file contains a simple call to the function <code>require</code> to request the loading of another module (<code>helper/util</code>) defining the function <code>toFunnyCase</code>. The remaining lines simply update the title of the HTML page using this mysterious <code>toFunnyCase</code> function.</p>
+</div>
+<div class="paragraph">
+<p>So, let&#8217;s inspect this file <code>scripts/helper/util.js</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">define({
+
+    <span class="comment">/**
+     * Capitalize one letter every two letters. (Ex: &quot;Julien&quot; =&gt; &quot;JuLiEn&quot;)
+     *
+     * @param {string} str The string to format
+     */</span>
+    <span class="function">toFunnyCase</span>: <span class="keyword">function</span>(str) {
+        <span class="keyword">var</span> result = <span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span>;
+        <span class="keyword">var</span> uppercase = <span class="predefined-constant">true</span>;
+
+        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>; i &lt; str.length; i++) {
+            result += uppercase ? str[i].toUpperCase() : str[i].toLowerCase();
+            uppercase = !uppercase;
+        }
+
+        <span class="keyword">return</span> result;
+    }
+
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The module is anonymous, without any dependencies, defining a unique function producing the following result when our page is loaded in our browser:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2015-02-10-implementing-requirejs-from-scratch/demo-output.png" alt="demo output">
+</div>
+</div>
+<div class="paragraph">
+<p>Our goal is now to remove the dependency on require.js, and to provide a custom implementation that we will write step by step.</p>
+</div>
+<div class="sect2">
+<h3 id="requirejs_under_the_hood">RequireJS, Under the hood</h3>
+<div class="paragraph">
+<p>Before jumping headfirst into the code, let&#8217;s take a look at the HTTP requests sent by RequireJS on our example.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2015-02-10-implementing-requirejs-from-scratch/demo-requests.png" alt="demo requests">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>require.js</code> inspects the attribute <code>data-main</code> to determine the first file to load, in our case, <code>main.js</code>. A first Ajax request is emitted.</p>
+</li>
+<li>
+<p><code>main.js</code> calls the function <code>require</code>. One dependency is declared. The method <code>require</code> triggers a second Ajax request to download <code>util.js</code>.</p>
+</li>
+<li>
+<p><code>util.js</code> does not have dependencies. The instantiation callback of this module is executed. RequireJS memorizes the result for the next step.</p>
+</li>
+<li>
+<p>We are back in the file <code>main.js</code>. All dependencies have been loaded. The instantiation callback of this module is finally executed, receiving the previous module result in argument.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lets_go">Let&#8217;s Go</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We start by modifying the example file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+    <span class="tag">&lt;head&gt;</span>
+        <span class="tag">&lt;title&gt;</span>My Sample Project<span class="tag">&lt;/title&gt;</span>
+
+        <span class="tag">&lt;meta</span> <span class="attribute-name">charset</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">utf-8</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+        <span class="tag">&lt;script</span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">scripts/jquery-2.1.3.js</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/script&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="tag">&lt;script</span> <span class="attribute-name">data-main</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">scripts/main</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">src</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">scripts/require.lite.js</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/script&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tag">&lt;/head&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;h1&gt;</span>My Sample Project<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We import jQuery, not indispensable but convenient to reuse some utility functions.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We replace the library RequireJS with a new file <code>require.lite.js</code> that we will be the subject of this article.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the skeleton of the file <code>require.lite.js</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">var</span> require, define;
+
+(<span class="keyword">function</span> () {
+
+    <span class="comment">/**
+     * Main entry point.
+     *
+     * The first argument is an array of dependency string names to fetch.
+     * An optional function callback can be specified to execute
+     * when all of those dependencies are available.
+     */</span>
+    <span class="function">require</span> = <span class="keyword">function</span> (deps, factory) {
+        <span class="comment">// TODO</span>
+    };
+
+    <span class="comment">/**
+     * The function that handles definitions of modules.
+     */</span>
+    <span class="function">define</span> = <span class="keyword">function</span> (id, deps, factory) {
+        <span class="comment">// TODO</span>
+    };
+
+}());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code starts by inspecting the attribute <code>data-main</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">(<span class="keyword">function</span> () {
+    <span class="keyword">var</span> baseUrl;
+
+    <span class="comment">// ...</span>
+
+    <span class="predefined">$</span>(<span class="string"><span class="delimiter">'</span><span class="content">script[data-main]</span><span class="delimiter">'</span></span>).each(<span class="keyword">function</span> () {
+
+        <span class="keyword">var</span> dataMain = <span class="local-variable">this</span>.getAttribute(<span class="string"><span class="delimiter">'</span><span class="content">data-main</span><span class="delimiter">'</span></span>);
+        <span class="keyword">var</span> src = dataMain.split(<span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>);
+        <span class="keyword">var</span> mainScript = src.pop();
+
+        baseUrl = src.join(<span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>)  + <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>;
+
+        require([mainScript]);
+    });
+
+})();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We split the attribute value to extract the dirname (<code>baseUrl</code>) from the basename (<code>mainScript</code>). This directory will be used as the base directory when loading other scripts. The code ends by calling the method <code>require</code>. Time has come to get to the heart of RequireJS.</p>
+</div>
+<div class="sect2">
+<h3 id="module">Module</h3>
+<div class="paragraph">
+<p>RequireJS relies heavily on the object <code>Module</code> whose constructor is defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">var</span> requireCounter = <span class="integer">0</span>;
+
+<span class="keyword">function</span> <span class="function">Module</span>(id) {
+    <span class="local-variable">this</span>.id = id;
+
+    <span class="local-variable">this</span>.depIds = [];     <span class="comment">// Module dependencies</span>
+    <span class="local-variable">this</span>.depExports = []; <span class="comment">// Dependencies values </span><i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="local-variable">this</span>.depCount = <span class="integer">0</span>;    <span class="comment">// Counter representing the number of dependencies</span>
+                          <span class="comment">// still pending </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="comment">// No id =&gt; it's a call to the function require =&gt; we generate a new id</span>
+    <span class="keyword">if</span> (!<span class="local-variable">this</span>.id) { <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="local-variable">this</span>.id = <span class="string"><span class="delimiter">'</span><span class="content">_@r</span><span class="delimiter">'</span></span> + (requireCounter += <span class="integer">1</span>);
+    }
+
+    <span class="local-variable">this</span>.events = {}; <span class="comment">// event =&gt; [listeners] </span><i class="conum" data-value="4"></i><b>(4)</b>
+
+    <span class="local-variable">this</span>.url = baseUrl + <span class="local-variable">this</span>.id + <span class="string"><span class="delimiter">'</span><span class="content">.js</span><span class="delimiter">'</span></span>;
+};</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>depExports</code> will contain the arguments that will be passed to the instantiation callback of this module. After the loading of a dependency, we save the value in this array.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The instantiation callback must execute only when all its dependencies have been loaded. Using this counter, we know the number of dependencies that are still not completely loaded.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>It is important to assign an id even for simple files containing a simple call to <code>require</code>. If this file is referenced several times, it will be loaded only once.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>We implement the pattern Observer. Other modules can register to watch the progression. In practice, we are going to use it only to know when a module has been defined. (RequireJS generates a lot more events internally that are not useful for our basic example). What follows are two utility methods used to support this use case.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">Module.prototype = {
+
+    <span class="comment">/*
+     * Register a new listener.
+     */</span>
+    <span class="function">on</span>: <span class="keyword">function</span> (name, callback) {
+        <span class="keyword">var</span> callbacks = <span class="local-variable">this</span>.events[name];
+        <span class="keyword">if</span> (!callbacks) {
+            callbacks = <span class="local-variable">this</span>.events[name] = [];
+        }
+        callbacks.push(callback);
+    },
+
+    <span class="comment">/*
+     * Notify all listeners.
+     */</span>
+    <span class="function">emit</span>: <span class="keyword">function</span> (name, evt) {
+        (<span class="local-variable">this</span>.events[name] || []).forEach(<span class="keyword">function</span> (callback) {
+            callback(evt);
+        });
+    }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The object <code>Module</code> exists but nothing happens. It&#8217;s only when the method <code>init</code> is called that the magic happens, and precisely during the execution of the method  <code>enable</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">Module.prototype = {
+
+    <span class="comment">/*
+     * Init a new module.
+     *
+     * @param depIds Dependencies of the module
+     * @param factory Instantiation callback
+     * @param enabled Immediate activation enabled
+     *                (used by require),
+     */</span>
+    <span class="function">init</span>: <span class="keyword">function</span> (depIds, factory, enabled) {
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.inited) {
+            <span class="keyword">return</span>;
+        }
+
+        <span class="local-variable">this</span>.enabled = <span class="local-variable">this</span>.enabled || enabled;
+        <span class="local-variable">this</span>.factory = factory;
+        <span class="local-variable">this</span>.depIds = depIds || [];
+
+        <span class="comment">// Flag indicating that the module is currently initializing</span>
+        <span class="local-variable">this</span>.inited = <span class="predefined-constant">true</span>;
+
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.enabled) {
+            <span class="local-variable">this</span>.enable();
+        }
+    },
+
+    <span class="function">enable</span>: <span class="keyword">function</span> () {
+        <span class="local-variable">this</span>.enabled = <span class="predefined-constant">true</span>; <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="comment">// Enable every dependency successively</span>
+        <span class="keyword">var</span> module = <span class="local-variable">this</span>;
+        <span class="local-variable">this</span>.depIds.forEach(<span class="keyword">function</span> (id, i) { <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="keyword">var</span> mod;
+
+            <span class="keyword">if</span> (!registry[id]) {
+                mod = <span class="keyword">new</span> Module(id);
+                registry[id] = mod;
+
+                module.depCount += <span class="integer">1</span>; <i class="conum" data-value="3"></i><b>(3)</b>
+
+                mod.on(<span class="string"><span class="delimiter">'</span><span class="content">defined</span><span class="delimiter">'</span></span>, <span class="keyword">function</span> (depExports) { <i class="conum" data-value="4"></i><b>(4)</b>
+                    module.depCount -= <span class="integer">1</span>;
+                    module.depExports[i] = depExports;
+                    module.check();
+                });
+            }
+
+            mod = registry[id];
+
+            <span class="keyword">if</span> (!mod.enabled) {
+                mod.enable();
+            }
+        });
+
+        <span class="local-variable">this</span>.check(); <i class="conum" data-value="5"></i><b>(5)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>As for the method <code>init</code>, we memorize that the module has been activated. It prevents the module from being initialized twice.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We load dependencies transitively. We can enable the module before all its dependencies have been enabled first. We iterate over them, and if the dependency is new  (this is the motivation behind the variable <code>registry</code>), we instantiate its <code>Module</code>, before trying its activation (recursive method).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The property <code>depCount</code> is incremented to indicate that we are waiting for the loading of this module.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>We register to decrement this variable when the module has been defined.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>There are two calls to the method <code>check</code>: at the end of our own activation, and for each dependency definition. Here is the code of this method <code>check</code>:</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">Module.prototype = {
+
+    <span class="comment">/*
+     * Checks if the module is ready to define itself, and if so,
+     * define it.
+     */</span>
+    <span class="function">check</span>: <span class="keyword">function</span> () {
+        <span class="keyword">if</span> (!<span class="local-variable">this</span>.enabled) {
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (!<span class="local-variable">this</span>.inited) {
+            <span class="local-variable">this</span>.load();
+        } <span class="keyword">else</span> {
+            <span class="local-variable">this</span>.define();
+        }
+    },
+
+    <span class="function">define</span>: <span class="keyword">function</span>() {
+        <span class="keyword">var</span> id = <span class="local-variable">this</span>.id,
+        depExports = <span class="local-variable">this</span>.depExports,
+        exports = <span class="local-variable">this</span>.exports,
+        factory = <span class="local-variable">this</span>.factory;
+
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.depCount &lt; <span class="integer">1</span> &amp;&amp; !<span class="local-variable">this</span>.defined) {
+            <span class="keyword">if</span> (<span class="keyword">typeof</span> factory === <span class="string"><span class="delimiter">&quot;</span><span class="content">function</span><span class="delimiter">&quot;</span></span>) {
+                factory.apply(exports, depExports);
+            } <span class="keyword">else</span> {
+                <span class="comment">// Just a literal value</span>
+                exports = factory;
+            }
+
+            <span class="local-variable">this</span>.exports = exports;
+
+            <span class="local-variable">this</span>.defined = <span class="predefined-constant">true</span>;
+            <span class="local-variable">this</span>.emit(<span class="string"><span class="delimiter">'</span><span class="content">defined</span><span class="delimiter">'</span></span>, <span class="local-variable">this</span>.exports);
+        }
+    }
+
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method <code>check</code> tries to finalize the module (i.e., execute the callback). We start by checking if the module has already been initialized, in which case we just have to request its loading (= Ajax request). Otherwise, we try the method <code>define</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>define</code> checks that all dependencies have been loaded correctly (using the property <code>depCount</code>). If every condition is satisfied, <code>depExports</code> is passed to the instantiation callback. Done! We publish a new event to propagate the news to other modules, which as we have mentioned before, listen attentively for this event, to try to call the method <code>check</code> themselves to finalize their own definition.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">How to load a JavaScript file dynamically?</div>
+<div class="paragraph">
+<p>Several solutions exist, but the most widespread is to append a new tag <code>&lt;script&gt;</code> in the DOM (under <code>&lt;head&gt;</code> for example). It&#8217;s the technique used by RequireJS:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="comment">/**
+ * @param {String} id the name of the module.
+ * @param {Object} url the URL to the module.
+ */</span>
+<span class="keyword">function</span> <span class="function">load</span>(id, url) {
+    <span class="keyword">var</span> head = document.getElementsByTagName(<span class="string"><span class="delimiter">'</span><span class="content">head</span><span class="delimiter">'</span></span>)[<span class="integer">0</span>];
+
+    <span class="keyword">var</span> node = document.createElement(<span class="string"><span class="delimiter">'</span><span class="content">script</span><span class="delimiter">'</span></span>);
+    node.type = <span class="string"><span class="delimiter">'</span><span class="content">text/javascript</span><span class="delimiter">'</span></span>;
+    node.charset = <span class="string"><span class="delimiter">'</span><span class="content">utf-8</span><span class="delimiter">'</span></span>;
+    node.async = <span class="predefined-constant">true</span>;
+    node.src = url;
+
+    head.appendChild(node);
+
+    <span class="keyword">return</span> node;
+};</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We should now implement the two main methods defined by AMD. Using the object <code>Module</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="require">require</h3>
+<div class="paragraph">
+<p>The definition of the method <code>require</code> is trivial:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="function">require</span> = <span class="keyword">function</span> (deps, factory) {
+    <span class="keyword">var</span> module = <span class="keyword">new</span> Module();
+    module.init(deps, factory, <span class="predefined-constant">true</span>);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We just have to create a new module that is initialized immediately. Its dependencies will be initialized transitively.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="define">define</h3>
+<div class="paragraph">
+<p>The method <code>define</code> is not obvious to implement, but neither too complicated.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take the example file <code>main.js</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">require([<span class="string"><span class="delimiter">&quot;</span><span class="content">helper/util</span><span class="delimiter">&quot;</span></span>], <span class="keyword">function</span>(util) {
+   <span class="comment">// ...</span>
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When this script is executed, we have seen that the method <code>require</code> triggers the loading of all dependencies (using the method <code>enable</code>). The script <code>util.js</code> is then executed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">define({
+    <span class="comment">// ...</span>
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We arrive in the method <code>define</code>, but we ignore the name of the module. So how can we finish its activation? What is the name to use to register the result?</p>
+</div>
+<div class="paragraph">
+<p>The solution implemented by RequireJS is to memorize the arguments of every execution of the method <code>define</code> (in a queue, as several modules can be loaded simultaneously):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">var</span> defQueue = [];
+
+<span class="function">define</span> = <span class="keyword">function</span> (id, deps, factory) {
+    <span class="comment">// Allow for anonymous modules</span>
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> id !== <span class="string"><span class="delimiter">'</span><span class="content">string</span><span class="delimiter">'</span></span>) { <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="comment">// Adjust args appropriately</span>
+        factory = deps;
+        deps = id;
+        id = <span class="predefined-constant">null</span>;
+    }
+
+    <span class="comment">// This module may not have dependencies</span>
+    <span class="keyword">if</span> (!Array.isArray(deps)) { <i class="conum" data-value="2"></i><b>(2)</b>
+        factory = deps;
+        deps = <span class="predefined-constant">null</span>;
+    }
+
+    defQueue.push([id, deps, factory]); <i class="conum" data-value="3"></i><b>(3)</b>
+};</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Not a string in first argument, we know this is an anonymous module, we shift the arguments in consequence.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Not an array, we know that the module has no dependency. We shift the arguments again.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Variables contains now the right value.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We modify the method loading a script to declare a new callback. This function will be executed just after the method <code>define</code>, the perfect moment to reread previously saved information and to end the module instantiation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="comment">/**
+ * Do the request to load a module for the browser case.
+ * Make this a separate function to allow other environments
+ * to override it.
+ *
+ * @param {String} id the name of the module.
+ * @param {Object} url the URL to the module.
+ */</span>
+<span class="keyword">function</span> <span class="function">load</span>(id, url) {
+    <span class="keyword">var</span> head = document.getElementsByTagName(<span class="string"><span class="delimiter">'</span><span class="content">head</span><span class="delimiter">'</span></span>)[<span class="integer">0</span>];
+
+    <span class="keyword">var</span> node = document.createElement(<span class="string"><span class="delimiter">'</span><span class="content">script</span><span class="delimiter">'</span></span>);
+    node.type = <span class="string"><span class="delimiter">'</span><span class="content">text/javascript</span><span class="delimiter">'</span></span>;
+    node.charset = <span class="string"><span class="delimiter">'</span><span class="content">utf-8</span><span class="delimiter">'</span></span>;
+    node.async = <span class="predefined-constant">true</span>;
+    node.addEventListener(<span class="string"><span class="delimiter">'</span><span class="content">load</span><span class="delimiter">'</span></span>, <span class="keyword">function</span>() { <i class="conum" data-value="1"></i><b>(1)</b>
+        completeLoad(id);
+    }, <span class="predefined-constant">false</span>);
+    node.src = url;
+
+    head.appendChild(node);
+
+    <span class="keyword">return</span> node;
+};
+
+<span class="comment">/**
+ * Complete a load event.
+ * @param {String} id the id of the module to potentially complete.
+ */</span>
+<span class="keyword">function</span> <span class="function">completeLoad</span>(id) {
+    <span class="comment">/*
+     * We iterate over all saved modules (define).
+     * If we find a module without id or with the given id,
+     * we proceed to the module initialization.
+     */</span>
+
+    <span class="keyword">var</span> found, args, module;
+
+    <span class="keyword">while</span> (!found &amp;&amp; defQueue.length) { <i class="conum" data-value="2"></i><b>(2)</b>
+        args = defQueue.shift();
+        <span class="keyword">if</span> (args[<span class="integer">0</span>] === <span class="predefined-constant">null</span>) {
+            args[<span class="integer">0</span>] = id;
+            found = <span class="predefined-constant">true</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (args[<span class="integer">0</span>] === id) {
+            <span class="comment">// Found matching define call for this script!</span>
+            found = <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">if</span> (found) {
+            module = registry[args[<span class="integer">0</span>]]; <i class="conum" data-value="3"></i><b>(3)</b>
+            module.init(args[<span class="integer">1</span>], args[<span class="integer">2</span>]);
+        }
+    }
+};</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We trigger the callback on the event <code>load</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We traverse saved values until finding our module.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We complete the module initialization.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note congratulations">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Congratulations!</div>
+<div class="paragraph">
+<p>Congratulations, <strong>our minimal rewrite of RequireJS is now complete</strong>. <strong>Less than 300 lines have been required to make our example works again</strong>. The complete source code is available <a href="https://github.com/julien-sobczak/requirejs-from-scratch">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To Remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We can load a JavaScript file dynamically using a new tag <code>script</code>, using <code>head.appendChild()</code>.</p>
+</li>
+<li>
+<p>RequireJS is a good example of a concept called <strong>“Programming into a language”</strong> compared to <strong>“Programming in a language”</strong> (<a href="https://www.goodreads.com/book/show/4845.Code_Complete">Code Complete</a>, Steve McConnell): <em>“Programmers who program “in” a language limit their thoughts to constructs that the language directly supports. … Programmers who program “into” a language first decide what thoughts they want to express, and then determine how to express those thoughts using the tools provided by their specific language.”</em></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Try for yourself!</div>
+<div class="ulist">
+<ul>
+<li>
+<p>All libraries are not defined as AMD modules. Many continue to update the global namespace in JavaScript but all is not lost. RequireJS supports <a href="http://requirejs.org/docs/api.html#config-shim"><strong>shim</strong></a> to configure explicitly the dependencies of these librairies.</p>
+</li>
+<li>
+<p>The modules RequireJS do not pollute the global namespace so that we can <a href="http://requirejs.org/docs/api.html#multiversion">load several versions of the same library</a>. <em>Hint</em>: RequireJS supports several contexts.</p>
+</li>
+<li>
+<p>RequireJS offers also an <a href="http://requirejs.org/docs/optimization.html">optimizer</a>, the aim of which is to group several modules, and minify them together, etc., to reduce the number of Ajax requests. How does it work?</p>
+</li>
+<li>
+<p>RequireJS supports the syntax defined by CommonJS using <a href="http://requirejs.org/docs/commonjs.html">a simplified wrapper</a> to get this result:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">define(<span class="keyword">function</span>(require, exports, module) {
+    <span class="keyword">var</span> a = require(<span class="string"><span class="delimiter">'</span><span class="content">a</span><span class="delimiter">'</span></span>),
+        b = require(<span class="string"><span class="delimiter">'</span><span class="content">b</span><span class="delimiter">'</span></span>);
+
+    <span class="keyword">return</span> <span class="keyword">function</span> () {};
+}));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How does dependency injection work without the array of dependencies in arguments? <em>Hint</em>: <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Function/toString"><code>Function.prototype.toString()</code></a>.</p>
+</div>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

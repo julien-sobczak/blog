@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Complexity Is Not (So) Complex</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2020/06/02/complexity-is-not-complex.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">June 02, 2020</span>
+
+      
+      <a href="/tags/management" class="label">
+      Management
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Complexity Is Not (So) Complex</h2>
+      
+      <h3>Why Complexity Doesn't Have to Be a Problem</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This post is a follow-up of <a href="/write/2020/02/23/simplicity-is-not-simple.html">a previous post</a> on simplicity where I discussed why not everything has to be simple. In this new post, I use the opposite argument to explain why everything doesn’t have to be complex.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>I think the next century will be the century of complexity.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Stephen Hawking
+</div>
+</div>
+<div class="paragraph lead">
+<p>Complexity is a scary word. Who wants to create complex systems? Who wants to interact with complex systems? But complexity is not as bad as it seems. The laws of Nature are complex and this doesn’t prevent us from living happily. We are complex and we can face it if we understand the rules of the game.</p>
+</div>
+<div class="sect1">
+<h2 id="a_system_primer">A System Primer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In <a href="/write/2020/02/23/simplicity-is-not-simple.html">my previous post</a>, I detailed the main differences between a complicated problem and a complex problem. In short, if you can divide a system to inspect each part in isolation, you have a complicated problem. If interactions play a bigger role in understanding the system, you have a complex system where the whole is greater than the sum of its parts.</p>
+</div>
+<div class="paragraph">
+<p>Understanding the differences between <em>complicated</em> and <em>complex</em> systems is important because you will not use the same techniques to address them. This post will focus on complex systems. I will use organizations as an example to illustrate the main concepts.</p>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_not_just_a_more_complicated_problem">A Complex System Is Not Just A More Complicated Problem</h3>
+<div class="paragraph">
+<p>There are two main ways of seeing and approaching problems, one we have learned (and use a lot) and one we have ever known (but don’t use enough).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Reductionism"><strong>Reductionism</strong></a> gains understanding of the whole by dividing the system into simpler to understand parts.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Holism_in_science"><strong>Holism</strong></a> gains understanding of the whole by understanding the simpler parts in context and in relation to one another and to the whole.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, an organization is a group of persons, offices, computers, arranged into several divisions, departments, teams, where everyone is working towards a shared goal, assuming different roles. This view is an example of reductionism.</p>
+</div>
+<div class="paragraph">
+<p>Reductionism excels at complicated problems&#8212;&#8203;for example, understanding a program by understanding its main components is a good approach. But reductionism is a poor approach to complex systems. Two organizations can have a similar structure and be perceived as completely different. Google has teams organized in divisions spreaded into multiple offices like many companies. But what better defines Google is its culture and its vision, which determines how Google’s employees collaborate. Interactions define an organization. <strong>Interactions define complex systems</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, an holistic view is required when working with complex systems. In fact, <strong>we have always experienced holism</strong>. When walking in a forest, we don’t see trees as simply trunks, with branches and leaves. We know trees are part of a larger whole that is hard to define and that we call <em>Nature</em>. Reductionism is what prevents you from seeing the forest from the trees. Reductionism is what we used the most at work, because that’s what we learned at school. We need to integrate holism. <strong>The more ways of seeing, the better</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_part_of_a_larger_system">A Complex System Is Part of A Larger System</h3>
+<div class="paragraph">
+<p><strong>We live in a system of complex systems</strong>. Our cells, our immune system, our brain are examples of complex systems. Our organizations, our cities, our nations, our economy, and ultimately the entire universe are complex systems too. When you look up at a flock of birds, or when you look down at a swarm of ants, you are observing complex systems.</p>
+</div>
+<div class="paragraph">
+<p>Each one of these complex systems is an <strong>open system</strong>. It means it doesn’t operate inside a well-defined boundary, but influences and is influenced by its environment. A company participates in a competitive market, a team is never totally autonomous, and your problems at home and at work affect each other, despite the common advice to keep a good work-life separation.</p>
+</div>
+<div class="paragraph">
+<p>For the story, I wrote these lines the day an ant colony decided to explore my house to collect breadcrumbs on the dining table. There are better ways to start the day. This one reminded me that complex systems are everywhere, even where we don’t need them. It also reminded me that they are unpredictable. (I was not serene the next day when I got up…)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_adaptive">A Complex System Is Adaptive</h3>
+<div class="paragraph">
+<p>To regain possession of our house (and finally eat my breakfast!), my wife and I had to react, and ants had to adapt. Ants started interacting with each other to find a way to escape. They changed their behavior in response to a change in their environment (like my wife and I do too).</p>
+</div>
+<div class="paragraph">
+<p>Ants, like organizations are examples of <a href="https://en.wikipedia.org/wiki/Complex_adaptive_system"><strong>complex adaptive systems</strong></a> (CAS). <strong>Actors in such a system adapt their behavior to the behavior of the other actors in an infinite loop</strong>. Driving a car relies on this same principle so that everyone can reach their destination. When facing an obstacle, you slow down, the car behind you slows down in turn, and so on, until having caused a traffic jam.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> You may not be moving anymore, but at least, everyone is safe!</p>
+</div>
+<div class="paragraph">
+<p>CAS systems exhibit other important properties we will describe in the following sections.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_an_infinite_loop">A Complex System Is An Infinite Loop</h3>
+<div class="paragraph">
+<p>Complex systems use <strong>feedback</strong> as the main driver for adaptation, in the same way we use the results of our actions to determine our next actions.</p>
+</div>
+<div class="paragraph">
+<p>We use feedback in learning, called corrective feedback, to avoid repeating the same mistake. We use feedback in career advancement, called performance appraisal, to evaluate our progression. We use feedback in feature testing, called user feedback, to measure the pertinence of new features. We even use feedback in machine learning, called reinforcement learning, to make better predictions. <strong>Feedback is important in any complex system</strong> and its study is an integral part of a field named <a href="https://en.wikipedia.org/wiki/Cybernetics"><strong>cybernetics</strong></a>.</p>
+</div>
+<div class="paragraph">
+<p>To give another example, organizations and Agile methodologies have a complicated relationship, to say the least. Some companies expect applying these methods will solve (some of) their problems. But the main goal of these methodologies is only to gather feedback (e.g., after a sprint or a milestone, during retrospectives or daily meetings). Agile will never be a recipe for success, just a way to introduce more feedback in the system so that organizations can learn and adapt. Or not.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_unpredictable">A Complex System Is Unpredictable</h3>
+<div class="paragraph">
+<p>Complex systems are <strong>nonlinear</strong> systems. There exists <strong>no proportionality</strong> and <strong>no simple causality</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>The same action on the same system will invariably produce a different result</strong>, sooner or later. For example, new advertisement campaigns increase the company visibility, which attracts new customers, but too many ads and your customers will be bored and leave. Hiring new salespeople can boost your revenue, but after a certain point, your production system will become the limiting factor, which will delay shippings, makes customers angry, and diminishes your revenue. Therefore, what made you successful in the past will not make you successful tomorrow.</p>
+</div>
+<div class="paragraph">
+<p>Similarly, <strong>the same action on two different systems is likely to produce a different result</strong>. Adopting the same methodology or copying the same practices than a famous company will not generate the same benefits. The vast number of Agile transformations that failed is the perfect example. Therefore, you must understand that what makes others successful will not necessarily make you successful.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_a_game">A Complex System Is a Game</h3>
+<div class="paragraph">
+<p>The branch of mathematics <a href="https://en.wikipedia.org/wiki/Game_theory"><strong>Game Theory</strong></a> modelizes the strategies among rational decision-makers, also called players.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p>Working for an organization is like playing a game. Employees make decisions with positive or negative outcomes, ruled by the culture. Winning the game is realizing the company vision. This game is mostly:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>cooperative</strong> (versus non-cooperative). Ex: <em>You can form coalitions with other employees</em>.</p>
+</li>
+<li>
+<p><strong>asymmetric</strong> (versus symmetric). Ex: <em>Your ideas have probably not the same impact as your CEO&#8217;s ideas</em>.</p>
+</li>
+<li>
+<p><strong>non-zero-sum</strong> (versus zero-sum). Ex: <em>Your team can opt for a solution where nobody is totally satisfied</em>.</p>
+</li>
+<li>
+<p><strong>simultaneous</strong> (versus sequential). Ex: <em>You are “playing” at the same time than other employees</em>.</p>
+</li>
+<li>
+<p><strong>imperfect information</strong> (versus perfect information). Ex: <em>You ignore most of the moves made by other employees</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Therefore, <strong>if your organization is a game, there must be cheaters</strong>. When a team member spread a rumor, or express unwarranted attacks about a coworker, consider this a cheating move. Otherwise, employees will stop working together and start defending against attacks and keeping note of individual scores. This situation is common with companies with poor culture like a presenteeism culture or a dog-eat-dog culture.</p>
+</div>
+<div class="paragraph">
+<p>What game theory also teaches us is that if we want to understand others’ decisions or reactions at work, we must put ourselves in other people’s shoes, and consider things from their point of view. But the theory assumes employees act rationally, which is far from being true in practice. Complex systems are more complex, but not chaotic!</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_complex_system_is_not_chaos">A Complex System Is Not Chaos</h3>
+<div class="paragraph">
+<p>If complexity is scary, chaos is even more dreadful. <strong>Organizations are getting more and more complex</strong>&#8201;&#8212;&#8201;more globalization, more innovation, more diversification, more transformations, and thus more uncertainty.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p>Companies that were stable decades ago now operate in an unsteady state, and small perturbations can completely change the system behavior. When a system becomes extremely sensitive to those small perturbations, chaos is close. A butterfly flapping its wings in China can cause a hurricane in Texas (the Butterfly Effect), or how a small change can result in large differences later. That’s bad. But we have reasons to be optimistic.</p>
+</div>
+<div class="paragraph">
+<p>More than othen, complex systems regulate themselves to produce <a href="https://en.wikipedia.org/wiki/Spontaneous_order"><strong>spontaneous order</strong></a>, rather than the meaningless chaos often feared. Spontaneous order is also called <strong>emergence</strong> or <strong>self-organization</strong>.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>You don&#8217;t need something more to get something more. That&#8217;s what emergence means.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Murray Gell-Mann<br>
+<cite>winner of the Nobel Prize for Physics</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>The evolution of life on Earth or the Internet are examples of systems which evolved through this property, often summarized with the popular phrase "the whole is greater than the sum of its parts." Our intelligence and our consciousness are emergent properties of our billions of neurons. The <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"><strong>Game of Life</strong></a> has attracted much interest because of the surprising ways in which emergent patterns evolve and are observable.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-06-02-complexity-is-not-complex/game-of-life.gif" alt="game of life" width="300">
+</div>
+<div class="title">Figure 1. The middle-weight spaceship</div>
+</div>
+<div class="paragraph">
+<p>Organizations are also a great example of self-organization systems. They are created and controlled by humans, and at the same time, are controllable by no one (the hierarchy chart only depicts the chain of commands but definitely not how communications really happen). During the Covid crisis, numerous companies experienced remote working for the first time, which was unthinkable a few years ago, and yet, chaos didn’t happen. Employees changed their habits and most were even more productive. This illustrates perfectly the adaptive nature of organizations and their resilience.</p>
+</div>
+<div class="paragraph">
+<p>Based on these examples, we observe that emergence produces non-trivial patterns without a blueprint. It’s just magical. Wind-produced sand ripples on the beach create order from apparent disorder. If you think about it, it’s mind-blowing.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, <strong>you must not be afraid of chaos</strong> (except if your company is subject to the volatility of the stock market, which is particularly chaotic during this crisis). In fact, you must learn to live at the <a href="https://en.wikipedia.org/wiki/Edge_of_chaos"><strong>edge of chaos</strong></a>, at the intersection between the predictability of rigidity and the randomness of chaos. This is where true creativity exists. This is where you want to be.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_complex_problem">A Complex Problem</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All companies know that too many people on the same team is not a good idea. <strong>Complex systems are defined by their interactions and the more people you add in a team, the more interactions are necessary for the team to align</strong>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-06-02-complexity-is-not-complex/teams.png" alt="teams" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>Therefore, most companies follow the two pizza rule introduced at Amazon: “if a team couldn’t be fed with two pizzas, it is too big,” which means six persons in a team is a good size. This way, interactions inside the team become manageable as the amount of information that any part of the system has to keep track of is reduced.</p>
+</div>
+<div class="paragraph">
+<p>Most companies, however, overlook the interactions between the teams. <strong>If minimizing the interactions inside a team is important, applying the same logic between teams is even more important</strong>. From my experience, I have often heard, “We need to better communicate between teams” or “We need to exchange more.” As I will explain in this section, sometimes, the best communication is the one that doesn&#8217;t happen. Communicate better. Communicate less.</p>
+</div>
+<div class="paragraph">
+<p>The problem is exacerbated by digital solutions. Messaging tools like Slack claim to bring teams together and make them more productive. Ticketing systems make it easy to fill the backlog of other teams. In practice, those collaborative applications have a dark side that slowly but surely kills your productivity.</p>
+</div>
+<div class="paragraph">
+<p>Indeed, those solutions don&#8217;t change the nature of human interactions. A ticketing system allows you to create a request using a web form. A chat application allows you to ask questions using your keyboard. But in the end, human interactions don’t change. These tools don&#8217;t reduce the complexity, they hide part of it. Imagine the same actions done with only paper forms and face-to-face conversations. Your office would look like an anthill with employees wandering to deposit their forms to the right desk or wait in line to question a colleague. That’s not a good way to work. That’s not a productive way to work. But that’s what we do.</p>
+</div>
+<div class="paragraph">
+<p>To illustrate my point, I will use the example of platform teams. As the number of engineers and products increase, the need to address common concerns globally becomes more and more apparent. Everyone doing what they think is best isn&#8217;t autonomy, it&#8217;s anarchy. If every team has to manage their own container orchestrator, load balancer, DNS server, monitoring solution, you will end up with an impressive list of technologies to maintain. Platform teams are a common solution to eliminate unnecessary diversity that provides no competitive advantage. Here is a diagram depicting a possible organization:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-06-02-complexity-is-not-complex/platform-teams-structure.png" alt="platform teams structure">
+</div>
+<div class="title">Figure 2. The product team asks for platform services using various communication tools.</div>
+</div>
+<div class="paragraph">
+<p>The diagram looks neat on paper (or on your screen). But only in appearance&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p><strong>Architecture diagrams don’t describe the system. It’s a classic example of reductionism</strong>. They picture the structure, but not the interactions. They also ignore the time constraint (How long is the whole process for a product team to deploy?)</p>
+</div>
+<div class="paragraph">
+<p>Here is the same diagram with human interactions explicitly illustrated:<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2020-06-02-complexity-is-not-complex/platform-teams-interactions-solution1.png"><img src="/posts_resources/2020-06-02-complexity-is-not-complex/platform-teams-interactions-solution1.png" alt="platform teams interactions solution1"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The situation is now very different. We observe the complex nature of the system in action. Humans are everywhere, and with them, <strong>many reasons for things to go wrong</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A ticket will not be processed immediately. The ticket is part of a backlog, and must linger and compete with others tasks before being resolved.</p>
+</li>
+<li>
+<p>A Git commit imposes a code review, which means interruptions for the platform team, and an additional delay for the product team.</p>
+</li>
+<li>
+<p>Messaging applications create a black market. Depending on who asks or to whom you ask, you request will be processed more or less quickly.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That’s not all! In addition, <strong>humans are not perfect</strong> (yes, I’m sure about that).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Confusion</strong> or misinterpretation will happen, leading to useless work needed to be redo.</p>
+</li>
+<li>
+<p><strong>Mistakes</strong> will happen, leading to incidents.</p>
+</li>
+<li>
+<p><strong>Conflicts</strong> will arise, leading to poor collaboration in the future.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A better approach is to turn as many problems as possible into software problems so that you can automate them. You will move faster and more predictably. You will increase the overall quality by the same token.</p>
+</div>
+<div class="paragraph">
+<p>Concerning our example, a better strategy is for the platform to be available in a self-service mode. You may think, “That’s stupid. It will cost me so much. I will have to create APIs,“ and so on. First, based on the above identified drawbacks, are you sure the current situation is really less expensive if you include hidden costs? Second, we don’t need to start from scratch.</p>
+</div>
+<div class="paragraph">
+<p>Let’s take for example Kubernetes. Kubernetes comes with an API for product teams to run their code packaged as containers. In addition, Kubernetes is extensible and makes it easy to create <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">new controllers to manage new kinds of resources</a>. (A Kubernetes controller is basically a container that watches changes in Kubernetes resources to start new containers on the behalf of the users.) For example, a product team can create a <a href="https://github.com/coreos/prometheus-operator">new resource of type <code>Prometheus</code></a> (i.e., a basic YAML file containing metadata), and the controller written by the platform team will be notified and will automatically start a new Prometheus container for the product team. This new workflow is illustrated in the updated diagram:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2020-06-02-complexity-is-not-complex/platform-teams-interactions-solution2.png"><img src="/posts_resources/2020-06-02-complexity-is-not-complex/platform-teams-interactions-solution2.png" alt="platform teams interactions solution2"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The end result may not seem much different from our initial solution. It’s the same components that are running. What has really changed are the interactions. We removed the interactions required for product teams to deploy their solutions. The solution is reproducible, easily testable, and more interesting for companies, we increased the velocity of product teams. Products can now be deployed in seconds, compared to days or weeks initially.</p>
+</div>
+<div class="paragraph">
+<p>In the end, we replace human interactions by lines of code. We turn a complex system into a complicated problem. Of course, these lines are written by developers working as a team, and thus the complex system is still present. That’s true. Writing code in a team will always be a complex problem but running code in production doesn&#8217;t have to be complex. It&#8217;s mostly a complicated problem where the end goal is to execute deterministic instructions on a pool of static servers. Adding humans in the deployment process is accidental complexity.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Automation Fosters Collaboration.</div>
+<div class="paragraph">
+<p>Removing the human in the equation doesn’t mean reducing collaboration between teams.  The challenge is to remove the interactions that don’t require true collaboration (a ticket to start a VM is nothing more than a command to execute). This way, employees can spend their time on truly collaborative tasks (analyze the system during retrospectives, find better solutions, identify technical debt, find new growth opportunities, elaborate new architecture proposals, etc.).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This example has shown us that tools that claim productivity gains are probably not the tools that we really need. The best results require a shift of paradigm, a new way of working, not just a different way to do the same work slightly better. We will discuss additional strategies in the next section.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_few_lessons">A few lessons</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="dont_put_human_everywhere">❌ Don&#8217;t put human everywhere</h3>
+<div class="paragraph">
+<p>Companies need humans to do the tasks where humans really excel. We are better than computers in solving problems in which the rules are not obvious, in separating the wheat from the chaff in the flood of available information, and above all, we excel in just being human and understand other humans.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnotedef_5" title="View footnote.">5</a>]</sup> <strong>If a computer can do the same task as you do, it’s mean you are not using your full potential</strong>. It also means you unnecessarily complexify the system in which you operate.</p>
+</div>
+<div class="paragraph">
+<p>By contrast, <strong>automation is a way to keep problems (at most) complicated, but not complex</strong>. As soon as a human is introduced in the workflow, the system stops being complicated&#8212;&#8203;it becomes complex. There will be mistakes (you will delete the wrong server). There will be conflicts (you will misinterpret the intention of a coworker). There will be unexpected situations (you will feel sick when your company needs you the most). The classic response to these situations is usually to introduce new processes. The <a href="https://en.wikipedia.org/wiki/Precautionary_principle">precautionary principle</a> describes this tendency to add new rules to constraint a system even more. Some processes are useful (e.g., the procedure to adopt in case of a security breach). But if we can proceed without processes, nobody would complain.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Turn as many problems into software problems</strong>. Don’t create complex systems where complicated systems are possible.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dont_control_the_system">❌ Don’t control the system</h3>
+<div class="paragraph">
+<p>Complex systems cannot be controlled. It&#8217;s like trying to control the flow of water. Instead, put on your bathsuit and go swimming. Interact with the system. It’s the only way to influence it.</p>
+</div>
+<div class="paragraph">
+<p>We too often rely on models or methodologies to make sense of complex systems. <strong>But the truth is complex systems cannot be (fully) understood</strong>. Looking at its individual elements doesn&#8217;t reflect the interactions that define the system. It has to be studied as a whole, and as complex systems are often open, you need to understand their environment too. This means models are useful only if you accept they are incomplete, and don’t reflect the whole reality. No methodology will solve all of your problems. If you think there is only one option for your problem, you’ve probably not understood it.</p>
+</div>
+<div class="paragraph">
+<p>So, if we cannot control the system, can we change it to produce more of what we want and less of that which is undesirable? The answer is yes, using leverage points&#8212;&#8203;places in the system where a small change could lead to a large shift in behavior. It could be, from the less to the more impactful, changing a number (e.g., increasing the size of a team), a delay (e.g., using continuous delivery to accelerate the feedback loop), the flow of information (e.g., making information accessible where decisions are taken), a rule (e.g., ensuring all code are reviewed by peers), the goal (e.g., elaborating a new company vision), a paradigm (e.g., approaching problems with a software mindset).<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnotedef_6" title="View footnote.">6</a>]</sup> As a note of caution, Jay Forrester, computer scientist from MIT, has observed that although people may find intuitively those leverage points, more often than not they push the change in the wrong direction&#8230;&#8203;</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Platform Teams (revisited)</div>
+<div class="paragraph">
+<p>To illustrate the previous leverage points, we can reuse the example where product teams were initially interacting with platform teams directly.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Increasing the <strong>number</strong> of persons in platform teams will for sure help process the requests faster. But this approach doesn’t scale. It will increase the interactions, which will make the system even more complex, and sooner or later, there will still be too few people for the increasing number of demands.</p>
+</li>
+<li>
+<p>Increasing the <strong>delay</strong> between deployments will for sure help reduce the load on platform teams. But this approach presents major inconvenients. It will reduce your velocity and increase the risk for each new release to affect the stability.</p>
+</li>
+<li>
+<p>Adding a <strong>rule</strong> where product teams must anticipate their needs and batch their requests will for sure help platform teams to be more effective. But this approach is unrealistic. How to determine the usage of a new application? You can’t, and therefore, you will either underprovision, or overprovision.</p>
+</li>
+<li>
+<p>Adopting a new <strong>paradigm</strong> like we did (making services available in a self-service mode) is the solution offering the biggest benefits. It scales easily, increases the velocity of product teams, and fosters innovation in platform teams as the time previously spent processing tickets can be now used on more collaborative tasks.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Address complexity with complexity</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dont_let_your_left_brain_rules_the_world">❌ Don’t let your left brain rules the world</h3>
+<div class="paragraph">
+<p>Complex systems require an holistic view. <strong>Approaching complex problems with a purely analytic reasoning is the domain of reductionism</strong>. It is also the domain of the left side of our brain. This hemisphere excels at filling gaps in information to find coherence where there isn’t (a good definition for reductionism too).</p>
+</div>
+<div class="paragraph">
+<p>We need to put our right hemisphere at work to fully appreciate the complexity of the situation.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>It would be possible to describe everything scientifically, but it would make no sense; it would be without meaning, as if you described a Beethoven symphony as a variation of wave pressure.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Albert Einstein
+</div>
+</div>
+<div class="paragraph">
+<p>The most successful, and creative persons including Albert Einstein, present a well-balanced brain, where both hemispheres are used symmetrically.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnotedef_7" title="View footnote.">7</a>]</sup> Techniques exist to solicit the right side of our brain. Taking a shower or walking alone are good triggers. Meditation is also known to reinforce the connections between both hemispheres.<sup class="footnote">[<a id="_footnoteref_8" class="footnote" href="#_footnotedef_8" title="View footnote.">8</a>]</sup> In all cases, you must <strong>start paying attention when your left hemisphere is taking control of your mind</strong>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Listen to your right brain</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dont_fool_yourself">❌ Don’t fool yourself</h3>
+<div class="paragraph">
+<p>Continuing on the previous point, <strong>we are not equals when it comes to complexity</strong>. The Myers–Briggs Type Indicator is a widespread test to determine what is your personality type.<sup class="footnote">[<a id="_footnoteref_9" class="footnote" href="#_footnotedef_9" title="View footnote.">9</a>]</sup> Each type is identified by a four letter code that you have probably seen on some LinkedIn profiles. For example, INTP, aka the “thinker”, represents the position on four different scales (Extraversion (E) vs <strong>Introversion</strong> (I), Sensing (S) vs <strong>Intuition</strong> (N), <strong>Thinking</strong> (T) vs Feeling (F), Judging (J) vs <strong>Perceiving</strong> (P)). In particular, I would like to zoom on this last scale.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Judging</em> individuals are decisive, thorough and highly organized. They value clarity, predictability and closure, preferring structure and planning to spontaneity.</p>
+</li>
+<li>
+<p><em>Perceiving</em> individuals are very good at improvising and spotting opportunities. They tend to be flexible, relaxed nonconformists who prefer keeping their options open.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These traits answer questions like, “Do you prefer spontaneity or certainty?” “Do you feel more comfortable acting with all your ducks lined neatly in a row?” Or “does a certain amount of flexibility or chaos excite you and prove motivating?”<sup class="footnote">[<a id="_footnoteref_10" class="footnote" href="#_footnotedef_10" title="View footnote.">10</a>]</sup> Clearly, you will not demonstrate the same enthusiasm about complexity based on your score on this scale. <strong>The <em>judging</em> trait values structure</strong>, and translate into rigidity in practice. <strong>The <em>perceiving</em> trait is better equipped with figuring things out as they go</strong>, and translate into flexibility in face of complexity.</p>
+</div>
+<div class="paragraph">
+<p>Even if you cannot change your inborn personality type, you can (and should!) influence the aspects of your personality that you are unhappy with.<sup class="footnote">[<a id="_footnoteref_11" class="footnote" href="#_footnotedef_11" title="View footnote.">11</a>]</sup> By developing a better comprehension of complex systems, judging individuals will be able to find the minimal structure they need to really appreciate the reality of complex systems.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Understand yourself</strong> and you will better understand the world around you.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We have finished our introduction of complex systems. We have reviewed the main concepts, and appreciated their manifestation in the world around us. <strong>We are part of a system of complex systems</strong>. The current economy is made up of organisations, which are made up of human beings, which are made up of cells&#8212;&#8203;all of which are complex systems.</p>
+</div>
+<div class="paragraph">
+<p>The common approach to dealing with complexity is to reduce or constrain it. Organizations are divided into departments. Software applications are designed around modular components (e.g., microservices). However, while it may make each part simpler to address, interactions must not be ignored as outlined by our example with platform teams. The most challenging problems encompass several teams or happens in the network between software components. <strong>The goal is thus to find the right balance between simplifying a problem to make it manageable while retaining enough complexity to make it relevant</strong>. This is far easier said than done, of course.</p>
+</div>
+<div class="paragraph">
+<p>Learning to appreciate complex systems for what they are has profoundly influenced my way of thinking, at work, and in general. Complex adaptive systems are surprising. Their capacity to respond to change, to adapt, to learn is fascinating. Being part of an organization and observing these dynamics at work is so much fun, despite observing too often managers who try to “control” the system, which is never a great idea. Managers need to be part of the system, interact more with their collaborators, and be more present. <strong>Self-organisation systems will not necessarily lead to chaos. Order emerges from disorder</strong>. That’s the magic of complex systems. That’s how complex systems work.</p>
+</div>
+<div class="paragraph">
+<p>There is much, much more to complex systems than presented here. <strong>The biggest challenges of our century—war, hunger, poverty, and global warming—are complex system failures</strong>. We will not solve them by fixing one part in isolation. We may not solve them at all, especially if we don’t better understand how complex systems work.</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>You live in a system of complex systems</strong>. Complexity theory is a kind of science of all science.</p>
+</li>
+<li>
+<p><strong>You need to adopt both reductionism and holism</strong>. If you apply conventional thinking to complex problems, you will accrue the very problems you want to fix. The more ways of seeing, the better.</p>
+</li>
+<li>
+<p><strong>You must interact with the system</strong>. Managers do not solve problems, they manage messes, and thus need to get their hands dirty. Architects do not design components, they manage systems, and thus need to integrate interactions in their diagrams.</p>
+</li>
+<li>
+<p><strong>You must learn to think in systems</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you find causality in a complex system, try to ask the inverse question. If work is slowing down because employees spend their time chatting, ask if the work you ask them can generate gossip in the first place.</p>
+</li>
+<li>
+<p>If you reason using a model, remember this is just an inaccurate view of the real world.</p>
+</li>
+<li>
+<p>If you observe side-effects, admit they are just effects that reflect your poor comprehension of the system.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. <a href="https://fs.blog/2014/04/mental-model-complex-adaptive-systems/" class="bare">https://fs.blog/2014/04/mental-model-complex-adaptive-systems/</a>
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Despite using the term “game”, this theory was used in serious situations like the Cold War, and continues to be used to model exchanges between countries
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. Jurgen Appelo spent several years analyzing the theory behind complex systems to write his reference book Management 3.0. Jurgen is a great speaker and this talk is a good introduction to the book. <a href="https://www.slideshare.net/jurgenappelo/lets-help-melly-14321103/43-notaddressednotaddressedindirectbenefitprovenbenefitprovenbenefit" class="bare">https://www.slideshare.net/jurgenappelo/lets-help-melly-14321103/43-notaddressednotaddressedindirectbenefitprovenbenefitprovenbenefit</a>
+</div>
+<div class="footnote" id="_footnotedef_4">
+<a href="#_footnoteref_4">4</a>. Diagrams have been designed using resources from Freepik.com, especially the contributions by upklyak. <a href="https://www.freepik.com/search?author=13115374&amp;authorSlug=upklyak&amp;format=author" class="bare">https://www.freepik.com/search?author=13115374&amp;authorSlug=upklyak&amp;format=author</a>
+</div>
+<div class="footnote" id="_footnotedef_5">
+<a href="#_footnoteref_5">5</a>. The Four Things People Can Still Do Better Than Computers, FastCompany, Anya Kamenet, <a href="https://www.fastcompany.com/3014448/the-four-things-people-can-still-do-better-than-computers" class="bare">https://www.fastcompany.com/3014448/the-four-things-people-can-still-do-better-than-computers</a>
+</div>
+<div class="footnote" id="_footnotedef_6">
+<a href="#_footnoteref_6">6</a>. The leverage points are issued from a list of twelve points proposed by Donella Meadows, in her classic book  <em>Thinking in Systems</em>. <a href="https://en.wikipedia.org/wiki/Twelve_leverage_points" class="bare">https://en.wikipedia.org/wiki/Twelve_leverage_points</a>
+</div>
+<div class="footnote" id="_footnotedef_7">
+<a href="#_footnoteref_7">7</a>. A 2013 study found Albert Einstein&#8217;s brilliance may be linked to the fact that his brain hemispheres were extremely well-connected. <a href="https://www.psychologytoday.com/gb/blog/the-athletes-way/201310/einsteins-genius-linked-well-connected-brain-hemispheres" class="bare">https://www.psychologytoday.com/gb/blog/the-athletes-way/201310/einsteins-genius-linked-well-connected-brain-hemispheres</a>
+</div>
+<div class="footnote" id="_footnotedef_8">
+<a href="#_footnoteref_8">8</a>. A 2012 study found that the “super highway” between brain hemispheres was remarkably stronger, thicker, and more well connected in meditation practitioners. <a href="https://pubmed.ncbi.nlm.nih.gov/22374478/" class="bare">https://pubmed.ncbi.nlm.nih.gov/22374478/</a>
+</div>
+<div class="footnote" id="_footnotedef_9">
+<a href="#_footnoteref_9">9</a>. You can discover your personality type by answering a quiz on this great, and beautifully illustrated website: <a href="https://www.16personalities.com/articles/our-theory#aspects-tactics" class="bare">https://www.16personalities.com/articles/our-theory#aspects-tactics</a>
+</div>
+<div class="footnote" id="_footnotedef_10">
+<a href="#_footnoteref_10">10</a>. The same site provides detailed articles about each personality traits and types. I recommend you spend a little time reading them after the completion of your test. <a href="https://www.16personalities.com/articles/tactics-judging-vs-prospecting" class="bare">https://www.16personalities.com/articles/tactics-judging-vs-prospecting</a>
+</div>
+<div class="footnote" id="_footnotedef_11">
+<a href="#_footnoteref_11">11</a>. <a href="https://www.16personalities.com/articles/is-it-possible-to-change-your-personality-type" class="bare">https://www.16personalities.com/articles/is-it-possible-to-change-your-personality-type</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2020/02/23/simplicity-is-not-simple.html">Simplicity Is Not Simple</a>
+
+          
+            <a href="/tags/craftsmanship"
+              class="label">
+              Craftsmanship
+            </a>
+          
+          
+
+          
+            <span class="subtitle">Why Everything Doesn't Have to Be Simple</span>
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

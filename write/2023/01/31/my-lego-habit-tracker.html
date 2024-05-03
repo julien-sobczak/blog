@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>My LEGO Habit Tracker</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2023/01/31/my-lego-habit-tracker.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">January 31, 2023</span>
+
+      
+      <a href="/tags/productivity" class="label">
+      Productivity
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>My LEGO Habit Tracker</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="sect1">
+<h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One of the first examples of habit tracking is the popular <a href="https://lifehacker.com/jerry-seinfelds-productivity-secret-281626">Seinfeld Strategy</a>. Jerry Seinfeld, the famous comedian, used a big wall calendar to pressure himself to write by putting a big red X on every day where he wrote jokes. "After a few days you&#8217;ll have a chain. Just keep at it and the chain will grow longer every day. You&#8217;ll like seeing that chain, especially when you get a few weeks under your belt. Your only job next is to not break the chain."</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/wall-calendar.png" alt="wall calendar">
+</div>
+</div>
+<div class="paragraph">
+<p>Most important things in life are built over time. For example, a great runner has to run a lot and the same logic applies to any skill like playing an instrument or drawing. Consistency and perseverance are important, the results are not. (A bad workout is preferable to a missed one.)</p>
+</div>
+<div class="paragraph">
+<p>A habit tracker is a great tool to reward the process, not the outcome. Results are a side-effect of the right process.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>I can predict the long-term outcome of your success if you show me your daily habits.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; John C. Maxwell<br>
+<cite>American Author</cite>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_better_strategy"><a class="anchor" href="#a_better_strategy"></a>A Better Strategy 💪</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Seinfeld Strategy is great for your main habit. If you need to track several habits, you can hang on the wall different calendars but you may not want to practice every habit every day. Running three times per week can be a decent goal, especially for young parents where it&#8217;s very hard to have the same routine between weekdays and weekend days.</p>
+</div>
+<div class="sect2">
+<h3 id="using_applications"><a class="anchor" href="#using_applications"></a>Using Applications 👎</h3>
+<div class="paragraph">
+<p><a href="https://zapier.com/blog/best-habit-tracker-app/#habitnow">Applications</a> now exist to track any habit, allowing you to set a target number of days per week or month. These applications offer statistics that can be useful to reflect on your progress and understand why some habits are easier or more difficult. They solve for sure the previously cited limitations but they lack the visibility of a big wall calendar and they are not fun enough. Moreover, turning to your phone to track your habits is like asking a robber to watch for your belongings. We can do better.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using_lego"><a class="anchor" href="#using_lego"></a>Using LEGO 👍</h3>
+<div class="paragraph">
+<p>LEGO’s bricks are fun. They are physical elements that are enjoyable to manipulate compared to sending electrical charges on a touchscreen.</p>
+</div>
+<div class="paragraph">
+<p>I came across the idea of using LEGO to track my habit after viewing the <a href="https://www.lego.com/en-us/product/world-map-31203">LEGO World Map</a> set:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/lego-world-map-content.webp" alt="lego world map content">
+</div>
+</div>
+<div class="paragraph">
+<p>As always, my idea was not really new. There are so many LEGO fans in the world. For example, you can <a href="https://unbrickedfig.com/blog/2018/11/21/lego-habit-tracker-a-fun-way-to-visualize-developing-habits/">assemble a minifig</a> for each habit and stack plates or bricks to represent progress (one habit completed = one plate/tile/stud/brick).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/lego-original-habit-tracker.png" alt="lego original habit tracker">
+</div>
+</div>
+<div class="paragraph">
+<p>It works but the recent LEGO Art collection is more convenient (and powerful) to use as a habit tracker foundation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using_lego_art"><a class="anchor" href="#using_lego_art"></a>Using LEGO Art 🚀</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Lego_Art">LEGO Art</a> sets were introduced in 2020 to create iconic characters or artwork in a mosaic-like format using LEGO 1x1 studs. The <a href="https://www.lego.com/en-fr/product/world-map-31203">LEGO World Map</a> with its 11695 pieces is still the largest LEGO set at the time of writing and is the one I decided to use for my LEGO habit tracker.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/lego-world-map-box.webp" alt="lego world map box">
+</div>
+</div>
+<div class="paragraph">
+<p>The idea is to pin a tile for every completed habit. The final results will look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/lego-world-map-final.webp" alt="lego world map final">
+</div>
+</div>
+<div class="paragraph">
+<p>My goal was to track a few key habits on which I want to commit for the upcoming decade:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Study flashcards</strong> (<em>frequency: every day</em>): Review flashcards on my smartphone for ~15 minutes.</p>
+</li>
+<li>
+<p><strong>Exercise</strong> (<em>frequency: every two days</em>): Exercise (ex: running, swimming, elliptical bike, …) for at least 30 minutes.</p>
+</li>
+<li>
+<p><strong>Read books</strong> (<em>frequency: a book per week</em>): Complete a fiction/nonfiction book.</p>
+</li>
+<li>
+<p><strong>Write blog posts</strong> (<em>frequency: every two days</em>): Write articles (but also code on side projects) for at least 1h.</p>
+</li>
+<li>
+<p><strong>Meditate</strong> (<em>frequency: every weekday at least</em>): Practice using a timer or guided meditations during 5-10 minutes.</p>
+</li>
+<li>
+<p><strong>Draw</strong> (<em>frequency: every three days at least</em>): Draw illustrations using pencils or digital tools like Illustrator/Photoshop.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The LEGO studs and tiles in the set are divided into ten different colors. Here are the associations between colors and my habits:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/lego-tiles-legend@2x.png" alt="lego tiles legend@2x">
+</div>
+</div>
+<div class="paragraph">
+<p>As you may have noticed, I assigned the dark blue and orange colors to two additional groups:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Milestones</strong>: The motivation is to represent completed tasks. Milestones are a call for action, a motivation to complete tasks (instead of leaving tasks unfinished for too long). The only requirement is for the results to be visible or concrete. For example, I used one of these tiles after publishing a new article on my blog, a new feature on a side project, or after building my LEGO Box (see <a href="#f_a_q">F.A.Q. ❓</a>).</p>
+</li>
+<li>
+<p><strong>Buffer</strong>: When tracking several habits, we cannot expect everything to run smoothly. Some habits will become more automatic (in which case the total number of tiles could be reached before other habits). Reserving one or two colors to continue these habits after depleting their stock could be useful to continue tracking and rewarding them.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is a representation of the map where the meaning is made visible:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/lego-habit-example.png" alt="lego habit example">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_few_principles"><a class="anchor" href="#a_few_principles"></a>A Few Principles 💡</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I reflected during several months before tracking my habits using the LEGO map (as I wanted to start on New Year&#8217;s Day). I iterated on the implementation several times. Here are the recommendations that guide me in the end:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>One day. One tile.</strong> Never pin more than a single tile per day for a single habit. For example, if you split your flashcard study session because you were interrupted, only add a single tile and only if you&#8217;ve completed your daily goal.</p>
+</li>
+<li>
+<p><strong>Process &gt; Result</strong>. Except for milestones, the focus is always on the process. For example, writing for 1h or writing 500 words is more interesting than publishing an article. Quality is more important than quantity. Writing creative articles requires time. Trust the process.</p>
+</li>
+<li>
+<p><strong>Limit the number of habits</strong>. Depending on the size of your LEGO habit tracker, be sure to track habits you really (<strong>really</strong>) still plan to do in a few years. For example, I&#8217;m currently working on my English pronunciation but it&#8217;s only a temporary habit where the benefits are more immediate. I decided not to track habits like these.</p>
+</li>
+<li>
+<p><strong>Stay flexible</strong>. I see the map as a guide, not a well-defined plan to execute. For example, I group writing articles and code (on side projects) under the same color. If I end up writing more code on GitHub than articles on my blog, it&#8217;s not necessarily a bad thing. The reverse is also true. The goal is to move in the right direction, not to plan the destination.</p>
+</li>
+<li>
+<p><strong>Two-step process</strong>. Pick a tile after a habit but don&#8217;t pin it immediately. For example, when building a complex set like the LEGO World Map, you need the instructions to determine where to pin a tile. I prefer to spend more time building my habits than my LEGO habit tracker. Therefore, I usually end my weekly session where I review my notes by pinning all collected tiles during the last week. This also gives me a precise idea of my progress (= my velocity).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_lot_of_fun"><a class="anchor" href="#a_lot_of_fun"></a>A Lot of Fun 🎉</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I don&#8217;t have to wait for the completion of my map to observe some of its advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Fun</strong>. I&#8217;m not an Adult fan of LEGO (AFOL) but playing again with LEGO feels so special.</p>
+</li>
+<li>
+<p><strong>Transparence</strong>. No need to open an application, no need to wait for a weekly report mail. Place the LEGO habit tracker close to your desk and you will have a constant reminder to act.</p>
+</li>
+<li>
+<p><strong>No Interruption</strong>. No risk of being distracted when picking a tile compared to using an application where notifications are always waiting for your attention.</p>
+</li>
+<li>
+<p><strong>Kids Friendly</strong>. You may use this technique with your kids to teach them how to form new habits. (⚠️ <em>I also dread the day when I will walk into my office to find that my son will have completed the rest of my map for fun.</em> 😂)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Moreover, I expect <strong>the biggest advantages to come from the consistency brought by using the map</strong>.</p>
+</div>
+<div class="paragraph">
+<p>I haven&#8217;t really found drawbacks. For sure, you cannot travel with your LEGO habit tracker. But it isn&#8217;t a huge problem. You can simply edit a note on your phone during holidays to record your habits, or carry with you two small boxes (1 box with a stock of tiles and 1 box for the completed tiles). That&#8217;s the power of using small tiles 1x1 compared to larger LEGO pieces.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion"><a class="anchor" href="#conclusion"></a>Conclusion 📍</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Habits are essential. Good habits help us get better but their reward usually comes after many years of practice. A habit tracker creates small but frequent rewards along the way.</p>
+</div>
+<div class="paragraph">
+<p>I&#8217;m glad that I finally started tracking my habits. I have reviewed my flashcards for many years but I wasn&#8217;t as regular as during my last year. I think my habit tracker is the main reason behind this change. In a digital world where we struggle to keep our attention on what&#8217;s important for us, using a physical habit tracker is the most sensible thing to do.</p>
+</div>
+<div class="paragraph">
+<p>My habit tracker is like the cement that solidifies the bricks I lay after completing every single habit. It makes progress visible and gives the tempo. When I feel less motivated due to bad weather and a bad night, having the map in front of me showing me how often I&#8217;ve run in the past is a strong motivator to lace my shoes.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The beginning of a habit is like an invisible thread, but every time we repeat the act we strengthen the strand, add to it another filament, until it becomes a great cable and binds us irrevocably, in thought and act.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Orison Swett Marden
+</div>
+</div>
+<div class="paragraph">
+<p>LEGO tiles are my visual representation of this thread. What is yours?</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="f_a_q"><a class="anchor" href="#f_a_q"></a>F.A.Q. ❓</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="which_habits_to_track"><a class="anchor" href="#which_habits_to_track"></a>Which habits to track?</h3>
+<div class="paragraph">
+<p>Tracked habits must be representative of who you want to become. Don&#8217;t track habits for the person who should be right now. For example, if you are a parent, I don&#8217;t think you must track, for example, time spent with your kids. Playing with my son is my biggest priority. I do it naturally without having to track it. Spending time with family is more a philosophy of life, not a habit. It&#8217;s not something that must feel challenging.</p>
+</div>
+<div class="paragraph">
+<p>Other ideas that I explored but decided not to include in my experiment (not because they aren&#8217;t interesting to track!): be nice to someone 😘, connect with Nature 🏝, try something new 🧪, practice a foreign language 🗣️, sleep at least 7h 😴.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="is_it_worth_it"><a class="anchor" href="#is_it_worth_it"></a>Is it worth It?</h3>
+<div class="paragraph">
+<p>To be honest, I was not confident at first. But I strongly believe that we must do things differently if we want to have different results. After one year of practice, I&#8217;m now more confident than ever that using a habit tracker is a great idea, especially something fun as presented in this article.</p>
+</div>
+<div class="paragraph">
+<p>The LEGO World Map still represents the set with the biggest number of pieces for the most "decent" price (0.02 per tile = each reward costs you $0.02). It&#8217;s a fair price compared to the benefits of your habits.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how_large_should_the_lego_set_be"><a class="anchor" href="#how_large_should_the_lego_set_be"></a>How large should the LEGO set be?</h3>
+<div class="paragraph">
+<p>Using a set that requires a long time to complete is a great idea. The benefits of habits are rarely (never?) obvious after a few days. Your habit tracker must expand a large horizon to reflect this reality. As a bonus, completing my map after a decade will feel for sure more gratifying and more special than completing a smaller project.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="where_to_store_lego_tiles"><a class="anchor" href="#where_to_store_lego_tiles"></a>Where to store LEGO tiles?</h3>
+<div class="paragraph">
+<p>LEGO ships tiles in plastic bags. LEGO builders often use kitchen containers to store them during the assembly. In my case, the map will be filled progressively over a decade. I cannot store bowls of tiles on my desk for so long. The most obvious approach is to buy a plastic sorting box.</p>
+</div>
+<div class="paragraph">
+<p>I decided instead to design a small box in LEGO to keep a subset of the stock of tiles at hand (see <a href="#bonus_my_lego_box">Bonus: My Lego Box</a>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="where_to_start_on_the_map"><a class="anchor" href="#where_to_start_on_the_map"></a>Where to start on the map?</h3>
+<div class="paragraph">
+<p>I pinned (symbolically) the first tile where I live (in France) and build around this location to explore the world. I continued on upper plates, since the map is on my desk and it&#8217;s easier to reach the top for now (I will maybe move the map elsewhere or hang it on the wall before reaching the lower plates).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="why_track_milestones"><a class="anchor" href="#why_track_milestones"></a>Why track milestones?</h3>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The word "productivity" has the same origin as the Latin verb <em>producere</em>, which means "to produce." This means that at the end of the day, if you can&#8217;t point to some kind of output or result you&#8217;ve produced, it&#8217;s questionable whether you&#8217;ve been productive at all.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Tiago Forte<br>
+<cite>Building a Second brain</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>The dark blue tiles on my map have the same goal. Productivity must be observable. You need concrete achievements to demonstrate progress.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="what_about_other_lego_art_sets"><a class="anchor" href="#what_about_other_lego_art_sets"></a>What about other LEGO Art sets?</h3>
+<div class="paragraph">
+<p>The <a href="https://www.lego.com/fr-fr/product/world-map-31203">World Map</a> is not the only set. The LEGO Art catalog grows over time and now offers different options:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.lego.com/fr-fr/product/disney-s-mickey-mouse-31202">Mickey Mouse</a>: 2658 tiles, 4 main colors.</p>
+</li>
+<li>
+<p><a href="https://www.lego.com/product/jim-lee-batman-collection-31205">Batman</a>: 4167 tiles, 3 main colors in the Batman configuration. (💡 Different pictures are possible and two sets can be combined to create larger artworks.)</p>
+</li>
+<li>
+<p>The <a href="https://www.lego.com/product/hokusai-the-great-wave-31208">Great Wave</a>: 1810 tiles, 3 main colors on the background (⚠️ Not only 1x1 tiles on the foreground).</p>
+</li>
+<li>
+<p>The <a href="https://www.lego.com/product/mosaic-maker-40179">Mosaic Maker</a>: 4702 tiles, 5 colors, customizable picture.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="what_about_a_custom_lego_art"><a class="anchor" href="#what_about_a_custom_lego_art"></a>What about a custom LEGO Art?</h3>
+<div class="paragraph">
+<p>Let&#8217;s take this picture for illustration purposes:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/panda.png" alt="Source: Wikimedia Commons">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Open the file</strong> in Photoshop</p>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/photoshop-step1.png" alt="photoshop step1">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Crop</strong></p>
+<div class="paragraph">
+<p><em>Objective</em>: enforce the width/height ratio.</p>
+</div>
+<div class="paragraph">
+<p>Here, I crop to create a square-shaped image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/photoshop-step2.png" alt="photoshop step2">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Resize</strong> using <code>Image</code> &gt; <code>Image Size&#8230;&#8203;</code></p>
+<div class="paragraph">
+<p><em>Objective</em>: Reduce to the number of pixels matching the final number of LEGO tiles.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/photoshop-step3.png" alt="photoshop step3">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Reduce the number of colors</strong> using <code>Image</code> &gt; <code>Mode</code> &gt; <code>Inverted Colors&#8230;&#8203;</code> (click "OK" if asked to flatten layers and try <code>Pattern</code> for the dither mode)</p>
+<div class="paragraph">
+<p><em>Objective</em>: Match the number of habits you plan to track.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/photoshop-step4.png" alt="photoshop step4">
+</div>
+</div>
+<div class="paragraph">
+<p>You can use a few additional colors for a better rendering if you group several colors under the same habit. You can also plan for additional colors if you want to have a buffer.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/photoshop-step4-result.png" alt="photoshop step4 result">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Recolor</strong> using <code>Image</code> &gt; <code>Mode</code> &gt; <code>Color Table&#8230;&#8203;</code></p>
+<div class="paragraph">
+<p><em>Objective</em>: Use similar colors as the ones available on the LEGO store.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/photoshop-step5.png" alt="photoshop step5">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Count</strong> the colors</p>
+<div class="paragraph">
+<p><em>Objective</em>: Determine to number of tiles to order.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/panda-out.png" alt="panda out" width="300" height="300">
+</div>
+</div>
+<div class="paragraph">
+<p>You may use this Python script if you don&#8217;t want to count every single pixel 😅: (export the picture in a lossless format like PNG first)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">
+</span><span class="content">Requirements:</span><span class="content">
+</span><span class="content">
+</span><span class="content">  $ python3 -m pip install --upgrade pip</span><span class="content">
+</span><span class="content">  $ python3 -m pip install --upgrade Pillow</span><span class="content">
+</span><span class="content">  $ python3 -m pip install --upgrade rich</span><span class="content">
+</span><span class="content">
+</span><span class="content">Usage:</span><span class="content">
+</span><span class="content">  $ python3 pixels.py image.png</span><span class="content">
+</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+<span class="keyword">import</span> <span class="include">sys</span>
+<span class="keyword">from</span> <span class="include">PIL</span> <span class="keyword">import</span> <span class="include">Image</span>
+<span class="keyword">from</span> <span class="include">rich.console</span> <span class="keyword">import</span> <span class="include">Console</span>
+console = Console()
+
+<span class="comment"># creating a image object</span>
+im = Image.open(sys.argv[<span class="integer">1</span>])
+im.load()
+
+colors = {}
+
+<span class="keyword">for</span> x <span class="keyword">in</span> <span class="predefined">range</span>(im.width):
+    <span class="keyword">for</span> y <span class="keyword">in</span> <span class="predefined">range</span>(im.height):
+        color = im.getpixel((x, y))
+        <span class="keyword">if</span> color <span class="keyword">not</span> <span class="keyword">in</span> colors:
+            colors[color] = <span class="integer">0</span>
+        colors[color] += <span class="integer">1</span>
+
+<span class="keyword">for</span> color, count <span class="keyword">in</span> colors.items():
+    console.print(f<span class="string"><span class="delimiter">&quot;</span><span class="content">Color {count}</span><span class="delimiter">&quot;</span></span>,
+      style=f<span class="string"><span class="delimiter">&quot;</span><span class="content">rgb({color[0]},{color[1]},{color[2]}) bold</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When executed on our processed image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/panda-colors.png" alt="panda colors">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The last step is to order the tiles on a marketplace like <a href="https://www.bricklink.com/">BrickLink</a> (💰 75 x 75 = ~$60). Don&#8217;t forget to also add the pieces for the frame. (Check the required bricks on the <a href="https://www.lego.com/en-us/pick-and-build/pick-a-brick?query=&amp;page=1&amp;filters.i0.key=variants.attributes.appearsIn&amp;filters.i0.ranges.i0.from=%2231203%3A%22&amp;filters.i0.ranges.i0.to=%2231203%3A9999%22&amp;sku=31203">spare parts page</a> or in the <a href="https://www.lego.com/en-us/service/buildinginstructions/31203">notice</a> of the Lego World Map for inspiration.)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bonus_my_lego_box"><a class="anchor" href="#bonus_my_lego_box"></a>Bonus: My Lego Box</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Lego World Map package contains bags of thousands of tiles. Not very convenient to use over such a long time. My idea was to create a custom box to contain a subset of all these tiles to keep at hand and thus quickly pick a tile to add to the map.</p>
+</div>
+<div class="paragraph">
+<p>I used the official set <a href="https://www.lego.com/fr-fr/product/jewelry-box-41915">Jewelry Box</a> as inspiration (see the <a href="https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6327567.pdf">instructions</a>) and decided to create a box with 9 sorting compartments. I used the application <a href="https://www.bricklink.com/v2/build/studio.page"><em>My Studio</em> by BrickLink</a> (other applications exist) to simply place an order on BrickLink with just a click. Here is the <a href="/posts_resources/2023-01-31-lego-habit-tracker/my-lego-box.io">result</a>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/my-lego-box-top.png" alt="Top" width="500">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2023-01-31-lego-habit-tracker/my-lego-box-inside.png" alt="Inside" width="300">
+</div>
+</div>
+<div class="paragraph">
+<p>I organize my box like this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>6 compartements for my 6 habits</p>
+</li>
+<li>
+<p>1 compartement for my milestones</p>
+</li>
+<li>
+<p>1 compartement for my buffer (optional to get started)</p>
+</li>
+<li>
+<p>1 empty compartment</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The remaining tiles are preserved in plastic bags, securely stored using zippers. The box will be refilled regularly (~every year).</p>
+</div>
+<div class="paragraph">
+<p>Note that the empty compartment is important to implement the <em>two-step principle</em>. I place all new tiles in this compartment. (I created a small vertical drawer since this compartment doesn&#8217;t have to be as big as others and picking tiles on the bottom was rather annoying&#8230;&#8203; 😡). This compartment is emptied at the end of every week.</p>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2023/01/31/my-habit-year.html">My Habit Year</a>
+
+          
+            <a href="/tags/productivity"
+              class="label">
+              Productivity
+            </a>
+          
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

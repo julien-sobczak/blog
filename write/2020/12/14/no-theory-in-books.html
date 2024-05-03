@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>No Theory in Books, Only Practice</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2020/12/14/no-theory-in-books.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">December 14, 2020</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>No Theory in Books, Only Practice</h2>
+      
+      <h3>Why Books Are So Helpful in Practice</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>There is nothing as practical as a good theory.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Kurt Lewin<br>
+<cite>Father of Modern Social Psychology</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>A lot people don&#8217;t read, especially non-fiction books. “Books contain only theoretical knowledge” or “my situation is different” are common excuses. Books are considered as useless in practice. That’s nonsense to me. Here is why.</p>
+</div>
+<div class="sect1">
+<h2 id="what_is_a_theory">What is a theory?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>According to Stephen Hawking, a theory must satisfy two requirements:<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A theory must describe a large class of observations using a few arbitrary elements.</p>
+</li>
+<li>
+<p>A theory must make definite predictions about the results of future observations.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The role of observations is obvious based on this definition. A theory stems from observations (in practice) and is used to explain new observations (in practice). Newton&#8217;s theory is a good example. Legend has it that Isaac Newton was sitting under an apple tree when a fruit fell and hit him on the head, prompting him to suddenly come up with the theory of gravity. Chances are Newton was simply observing the apple falling from the tree, and wondered why it fell straight down. More explorations continued until the elaboration of his famous theory: <em>Bodies attract each other with a force that is proportional to their mass and inversely proportional to the square of the distance between them</em>. This same theory was then used to predict the motions of the sun and planets to a high degree of accuracy. <strong>A theory is just a way to connect different observations that happen in the real world</strong>.</p>
+</div>
+<div class="paragraph">
+<p>In short, theory is abstracted practice, and practice is applied theory. <strong>A theory cannot exist without practice</strong>.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-14-no-theory-in-books/theory-and-practice.png" alt="theory and practice" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>A theory may also explain things that we cannot observe directly. Electrons and black holes are great examples. But again, practice is always used to provide support, or challenge the theory. For example, we have no proof electrons exist but the concept of an electron does a remarkably good job of predicting how many things that are observable behave. <strong>Any theory is useless without practice.</strong></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_practice_behind_the_theory">The Practice Behind the Theory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, I would like to share some of the theories I discovered during my readings. The list is not exhaustive since my memory is not very reliable. I will explain the conditions under which they were created to highlight that theory and practice always go hand in hand.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>I learned about the <strong>theory of evolution</strong> in numerous books, including <a href="todo"><em>Sapiens</em></a>, by Yuval Noah Harari.</p>
+<div class="paragraph">
+<p>Long before publishing <em>The Origin of Species</em> where he introduced his theory, Charles Darwin started a journey around the globe on the ship HMS Beagle. The trip lasted almost 5 years. He suffered horribly from seasickness. Fortunately for him, he spent most of his time on land observing species. Slowly, Darwin began to see intriguing patterns in the distribution and features of organisms. The idea of evolution was born.</p>
+</div>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: A theory always follows observations of the real-world to make sense of it.</p>
+</div>
+</li>
+<li>
+<p>I learned about the <strong>germ theory of disease</strong> in <a href="todo"><em>Mastery</em></a>, by Robert Greene.</p>
+<div class="paragraph">
+<p>Ignaz Semmelweis was a 19th-century Hungarian doctor who contributed largely in the acceptance of this theory. While working at the Vienna General Hospital, Semmelweis observed a large number of women who died during childbirth. He realized doctors having examined the woman had directly come from autopsies. Semmelweis introduced handwashing and observed a sudden reduction in the mortality rate. Despite the evidences, Semmelweis and his theory were harshly rejected at that time. He was eventually admitted to an asylum where he died from infection two weeks later.</p>
+</div>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: A theory can be correct, and not widely accepted in practice. The <em>Semmelweis reflex</em> continues to describe the tendency to reject new evidence or new knowledge because it contradicts established norms, beliefs, or paradigms.</p>
+</div>
+</li>
+<li>
+<p>I learned about the <a href="https://en.wikipedia.org/wiki/Two-factor_theory"><strong>Two-factor theory</strong></a> in <a href="todo"><em>Management 3.0</em></a>, by Jurgen Appelo, and have seen it quoted so many times since.</p>
+<div class="paragraph">
+<p>The theory states that certain factors in the workplace cause job satisfaction while other factors cause dissatisfaction. A low salary is a source of demotivation but a high salary is not enough to motivate. An employee needs recognition, sense of achievement, responsibility, and meaningful work. Frederick Herzberg, the behavioural scientist behind this theory, conducted interviews with 203 engineers and accountants in nine factories in the Pittsburgh area. The same study was repeated in the following years, on thousands other persons, and today, the theory is still widely accepted in the workplace.</p>
+</div>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: A theory often relies on intuition but experiments are always used to confirm it.</p>
+</div>
+</li>
+<li>
+<p>I learned about the <strong>scientific management theory</strong> in numerous recent books, mostly to demonstrate its inadequacies with knowledge workers like developers.</p>
+<div class="paragraph">
+<p>It all started in 1890 at the <em>Midvale Steel Company</em>, one of America&#8217;s great armor plate making plants. Frederick W. Taylor, then aged 25 and working as a foreman, was constantly impressed by the failure of his team members to produce more than about one-third of what he deemed a good day&#8217;s work. Using scientific methods, he determined how long it should take men to perform each given piece of work, and started applying his ideas. The approach quickly spreaded into other manufacturing industries.</p>
+</div>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: A theory doesn’t have to work in all contexts to have a huge impact.</p>
+</div>
+</li>
+<li>
+<p>I learned about the <strong>theory of ego depletion</strong> in <a href="todo"><em>Thinking Fast and Slow</em></a>, by Daniel Kahneman.</p>
+<div class="paragraph">
+<p>Roy Baumeister’s research says if you expend your willpower on one thing, you have less left to take on another. In the study, the researchers asked two groups of 30 persons to wait in a room where there were two plates of food&#8212;&#8203;fresh-baked cookies versus red and white radishes. Each group was allowed to eat from only one plate but not the other. Next, the researchers gave both groups an unsolvable puzzle to work on. The researchers anticipated that the people in the radish group would give up sooner, as they have struggled not to eat the cookies. That’s exactly what happened. The experience was conducted again more than a hundred times on thousands of subjects. The theory became a huge success until a recent study refutes the theory.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: A theory can be wrong, but often, not completely. Theories are built on each other. Each new theory brings a new model to be used in a larger number of situations. Roy Baumeister’s study shows biology plays a role in willpower. Recent studies show this part is not as big as imagined and that psychology plays an even bigger role.</p>
+</div>
+</li>
+<li>
+<p>I learned about the <strong>General Systems theory</strong> for the first time in <a href="todo"><em>Management 3.0</em></a>, by Jurgen Appelo.</p>
+<div class="paragraph">
+<p>This theory (The whole is more than the sum of its parts) has had an enormous impact on so many disciplines including economics, sociology, psychology, and medicine. But it should come as no surprise that this theory was introduced by a biologist, Ludwig von Bertalanffy, using living organisms to refute popular beliefs in physics. The theory gave birth to a succession of complementary theories: Cybernetics, Game Theory, Chaos Theory, and many other obscure terms like Homeostasis, Self-organization, or Autopoiesis, all of which use the real world as a source of inspiration. The human body, for example, regulates its internal body temperature (homeostasis) without any external control in a decentralized manner (self-organization) and replenishes every cell within itself over the course of a ten year period (autopoiesis).</p>
+</div>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: A theory can be complex, as long as it reflects how the world works in practice. For example, managers that ignore the complex nature of human interactions will not succeed in leading people towards positive outcomes.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You may consider the above books as mostly theoretical. But if I look back at my readings, most non-fiction books don’t go so far. They simply relate the experience of their authors, like a new coworker will relate his prior experiences during lunch. The medium is different, but the goal is the same. Here are a few examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In <a href="todo"><em>The Mythical Man-Month</em></a>, Fred Brooks wrote about his experience at IBM where he managed the development of the OS/360, one of the first large-scale development endeavors. Some of his quotations are universally known like “Adding manpower to a late software project makes it later,” or the incontournable “Nine women can&#8217;t make a baby in one month.”</p>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: Books are written by authors, and sometimes writers. Authors are normal persons, like you and me, eager to share their experience.</p>
+</div>
+</li>
+<li>
+<p>In <a href="todo"><em>Trillion Dollar Coach</em></a>, Eric Schmidt and other executives at Google draw the portrait of Bill Campbell, who recently passed away. Bill was the legendary coach that changed the course of Silicon Valley. To succeed, authors interviewed more than eighty people who knew and loved Bill, and captured key moments in their lives to illustrate Bill’s principles.</p>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: Books are doors. You open them, and you find new experiences to learn from.</p>
+</div>
+</li>
+<li>
+<p>In <a href="todo"><em>Creativity, Inc.</em></a>, Ed Catmull, co-founder of Pixar, relates the history of the studio, showing at the same time, the company culture, the management principles, and the techniques to inspire employees to bring innovation to a new level.</p>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: Books let you live several lives. Your work experience can be unique, the fact is you cannot learn as much as books can teach you.</p>
+</div>
+</li>
+<li>
+<p>In <a href="todo"><em>Quiet</em></a>, Susan Cain argues that modern Western culture misunderstands and undervalues the capabilities of introverted people, leading to a colossal waste of talent, energy, and happiness. It took seven years for Susan Cain to write the book. As an introverted person, I learned so much from this book that if you are extroverted, I cannot imagine how you could learn the same thing by experience alone.</p>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: Books are an opportunity to see the world with different eyes and appreciate what is barely noticeable with your eyes.</p>
+</div>
+</li>
+<li>
+<p>In <a href="todo"><em>It Doesn&#8217;t Have to Be Crazy at Work</em></a>, Jason Fried and David Heinemeier Hansson present their way of working. Imagine the “standard” practices in the workplace totally reinvented, and you will have an accurate picture of what working at Basecamp is.</p>
+<div class="paragraph">
+<p><strong>Key lesson</strong>: Books challenge your ideas by showing how others act differently, and obtain better results.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You have probably noticed that I have omitted technical books from the previous examples. I consider software development a highly practical discipline. However, based on the definition of theory, I can list a few books that extract what is working in practice to make it accessible to a larger extent. Here are a few examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In <a href="todo"><em>Design Patterns: Elements of Reusable Object-Oriented Software</em></a>, the authors, known as the Gang of Four, introduce principles like “program to an interface, not an implementation" or "favor object composition over class inheritance," and also a list of now famous patterns&#8212;&#8203;Builder, Factory, Proxy, Adapter, Template, Observer, etc. “None of the design patterns in this book describes new or unproven designs,” the authors say in the introduction. The patterns were issued from code in existing large-scale systems. They were revised by dozens of persons during four years to create a format that makes them easily applicable in new contexts.</p>
+</li>
+<li>
+<p>In <a href="todo"><em>Refactoring</em></a>, Martin Fowler popularizes a practice that is now an integral part of software development. (Several editors automate many of the refactorings described in the book.) We can retrace the origin of refactoring to the <a href="http://cseweb.ucsd.edu/~wgg/Abstracts/gristhesis.pdf">dissertation of William Griswold</a> in 1991. The dissertation starts with a problem observed in real-world software projects: the cost of a change grows exponentially with respect to the system’s age.</p>
+</li>
+<li>
+<p>In <a href="todo"><em>Site Reliability Engineering</em></a>, the “SRE Book”, Google engineers explain how they build, deploy, monitor, and maintain some of the largest software systems in the world. They list the principles and practices used at Google, but present them in a way easily applicable elsewhere. As a result, the term SRE is now omnipresent in job openings (although we can’t say the same about the ideas present in this book).</p>
+</li>
+<li>
+<p>In <a href="todo"><em>Domain-Driven Design: Tackling Complexity in the Heart of Software</em></a>, Eric Evans presents the catalog of patterns I’ve found the most inspiring. Many ideas like the pattern Bounded Context emerged several years later with the popularization of microservices.</p>
+</li>
+<li>
+<p>In <a href="todo"><em>Extreme Programming Explained: Embrace Change</em></a>, pioneers of the Agile manifesto share a list of practices and techniques, collected over five years of experimentation. These practices are well-known, but most enterprises pick the ones they feel at ease, in the same way you could prepare a recipe with half of the ingredients. Surprise, the meal will not be tasty. The truth is you can’t apply practices if you ignore the theory. The funny thing is the Agile Manifesto only talks about values and principles. But companies prefer to talk about practices with the result we know.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>I’m done with the examples. I hope you now have a better understanding of the kind of theory you may find in books, and why it’s a good thing. From my experience, every book is an opportunity to try something new in practice.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_theory_behind_the_practice">The Theory Behind the Practice</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This article would not be complete without a few words about the limitations of theories.</p>
+</div>
+<div class="paragraph">
+<p>During the last century, a British statistician named George Box wrote the famous line, “All models are wrong, some are useful.” In fact, “scientists generally agree that no theory is 100 percent correct,” said author Yuval Noah Harai. Even Einstein&#8217;s work on relativity was not perfect. It explains how the universe works in many situations, and still breaks down in situations like black holes.</p>
+</div>
+<div class="paragraph">
+<p>But a theory does not have to be flawless to be usefufl. Brilliant minds continue to work on the <a href="https://en.wikipedia.org/wiki/Theory_of_everything">Theory of Everything</a>, the unification of the two major physics theories, which conflict on some aspects. But the reality is, while imperfect those theories are, they continue to drive innovations in practice.</p>
+</div>
+<div class="paragraph">
+<p>I want to conclude by saying you’re right when you say “It depends on the context.” Each situation is different. That’s true. But you must learn to recognize they have far more in common than what you may imagine. The goal of any software development project is to run instructions written by a bunch of developers. Problems are never totally new. Theories highlight those similarities so that you can better appreciate the differences.</p>
+</div>
+<div class="paragraph">
+<p>A theory is not a bad thing. A theory is an opportunity. Only if you decide to apply it into practice.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. In the classic <em>A Brief History of Time</em>, Stephen Hawking relates the history of the most popular theories about the universe, showing how observations played a central role in their development.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. The inverse is not necessarily true. Many things happen in practice for which no theory exists to explain them&#8212;&#8203;for example the <a href="https://en.wikipedia.org/wiki/Placebo#Effects">placebo effect</a>.
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. The full story reveals a publication bias where researchers going against the established theory were less likely to be published, but with enough evidence, the truth always wins. <a href="https://hbr.org/2016/11/have-we-been-thinking-about-willpower-the-wrong-way-for-30-years" class="bare">https://hbr.org/2016/11/have-we-been-thinking-about-willpower-the-wrong-way-for-30-years</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

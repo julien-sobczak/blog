@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>The City of Learning</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2020/12/08/the-city-of-learning.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">December 08, 2020</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>The City of Learning</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This post is part of a series. Each post uses a different metaphor to illustrate a specific aspect of the learning process. You can check the following posts <a href="/write/2020/12/08/the-landscape-of-knowledge.html">The Landscape of Knowledge</a> and <a href="/write/2020/12/08/the-pyramid-of-expertise.html">The Pyramid of Expertise</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>“Travel is like an endless university. You never stop learning.”</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Harvey Lloyd<br>
+<cite>American photographer</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>Life is a journey.</p>
+</div>
+<div class="paragraph">
+<p>The first step of our journey leads us to the city of learning. Like any tourist, our goal is to visit the most beautiful places and come back with great memories.</p>
+</div>
+<div class="paragraph">
+<p>As time is precious, a little preparation is always a good idea. At our arrival, we make a detour to the tourist information office and grab a map of the city:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-x2.png" alt="map x2">
+</div>
+<div class="title">Figure 1. The city of Learning</div>
+</div>
+<div class="paragraph">
+<p>Let’s get started!</p>
+</div>
+<div class="sect1">
+<h2 id="the_travel_guidebook">The Travel Guidebook</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before a journey, many tourists buy a city guide, available in any bookshop or library. These books contain all the “incontournable” places&#8212;&#8203;shops, museums, restaurants, and so much more. To get the most of your time, travel guides include predefined itineraries to make sure you do not miss anything.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-single-path-x2.png" alt="map single path x2">
+</div>
+<div class="title">Figure 2. Example of a predefined itinerary</div>
+</div>
+<div class="paragraph">
+<p>My wife and I are big fans of these itineraries during our first days. I’m also a huge fan of Google Maps and Google Street View (I consider myself a virtual globetrotter, better than couchsurfing since I’m using my own couch). I spent a lot of time preparing our vacations online, but once there, I’m not very reliable and it’s not uncommon for us to end in unexpected places. But that’s a good thing.</p>
+</div>
+<div class="paragraph">
+<p>Imagine if every traveller were following the same guide at the same time. We would walk along each other on the sidewalk, and wait in line to visit popular attractions at the same time. Clearly not the best travel experience. Instead, travellers are spreaded naturally all around the city, admiring the monuments, and following their own interests to determine the next street to visit. That’s what travelling is and that’s what learning must look like too.</p>
+</div>
+<div class="paragraph">
+<p>Indeed, we all have different backgrounds. We haven’t studied at the same university. We often haven’t even studied the same courses. Some of us are just joining the professional world, some are starting a new career in a new company, while others are at the same desk for a long time. That is called diversity, and provided that diversity is inclusive, which means we all have enough bagages in common to understand each other, that’s a very nice environment in which to progress and innovate.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-diversity-x2.png" alt="map diversity x2">
+</div>
+<div class="title">Figure 3. Example of diversity</div>
+</div>
+<div class="paragraph">
+<p><em>We have a team with a lot of diverse experiences, but too few common grounds to create a jelled team.</em>
+&#160;<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-diversity-inclusive-x2.png" alt="map diversity inclusive x2">
+</div>
+<div class="title">Figure 4. Example of inclusive diversity</div>
+</div>
+<div class="paragraph">
+<p><em>We have a team with diverse experiences, and also common grounds to ease the communication between team members.</em></p>
+</div>
+<div class="paragraph">
+<p>Diversity is great. You don&#8217;t follow other tourists when visiting a city. You must do the same when learning. You must find your own path. There are clearly overcrowded places that you must visit, but remember innovation always happens when someone decides to travel off the beaten path. Choose what interests you the most at the present time and follow that direction.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Learning is not a river</strong>. There is no single path to follow. Use your curiosity as a compass.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Trainings</div>
+<div class="paragraph">
+<p>Most companies offer their employees the possibility to enroll in training programs. In my previous job, I assume on several occasions the role of training instructor. I must confess that I’m not a big fan of training programs. Writing the support for a new training takes a long time and therefore, for practical reasons, you must optimize the content to satisfy the aspirations of a sufficiently large number of potential trainees. You cannot adventure in a no-man&#8217;s land.</p>
+</div>
+<div class="paragraph">
+<p>Trainings often looks like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-single-path.png" alt="map single path">
+</div>
+<div class="title">Figure 5. Example of a training course "Running Spring applications on Kubernetes"</div>
+</div>
+<div class="paragraph">
+<p>During the training session, you are on the passenger seat, observing the main streets, taking pictures of the main landmarks, but you are not really feeling the excitement of the city, which often happens in the back streets.</p>
+</div>
+<div class="paragraph">
+<p>Trainings are guided tours, like the recommended itineraries in your guide. You will learn a lot, but that’s not the most enjoyable experience.</p>
+</div>
+<div class="paragraph">
+<p>A few companies go even further, prescribing a list of mandatory training courses their employees must follow to advance their career. That’s nonsense. That’s destructive for innovation. If everyone follows the same path, you must not be surprised that everyone starts thinking similarly. Please, don’t do that. Let employees be the drivers of their career and determine their learning path. Training courses are still useful, as long as your have options.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_route_deviation">The route deviation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Learning a new subject is not easy. Sometimes, it is just too hard. As a developer, having basic knowledge in networks is not simply useful, it’s imperative since the majority of programs don’t run in isolation but communicate with the outside world. But things are not so simple. I flunked at university. I flunked at work. Sometimes, the road is too steep.</p>
+</div>
+<div class="paragraph">
+<p>What you need is to follow your inner GPS. You are not forced to turn at the next intersection. You may continue straight and find an alternative itinerary that goes to the same point, using a longer road that is considerably less steep than the initial road. Moving towards the destination is the goal. The faster we move, the better. But remember moving at a slow pace is infinitely better than being stuck at the same place. You need to find your own way, which means, once again, you need to learn to appreciate self-guided tours.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">My struggle with Computer Networks</div>
+<div class="paragraph">
+<p>Concerning my difficulties about learning networks, I decided to rethink my approach. My previous expositions on the subject all used the same <a href="https://www.goodreads.com/book/show/166190.Computer_Networks">bottom-up approach</a>, starting with the lower layers. Therefore:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>I decided to move in the opposite direction, starting with application protocols like HTTP, before <a href="https://www.goodreads.com/book/show/13661492-computer-networking">moving down the TCP/IP model</a>.</p>
+</li>
+<li>
+<p>I read several similar books even if they covered the same materials. Sometimes, a little repetition is necessary.</p>
+</li>
+<li>
+<p>I looked <a href="https://www.goodreads.com/book/show/583307.The_Implementation">under the hood of the TCP/IP stack</a> in Linux to face the reality that networking is just code running on servers, and as a developer, there is no reason I can’t make sense of it.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>My journey is not over. I’m progressing slower than my peers at work, but I’m moving, I’m learning, and so I’m succeeding.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Self-guided tours are preferable concerning learning but this strategy is not always applicable.</p>
+</div>
+<div class="paragraph">
+<p>If you are on the rear of a tandem bicycle, your handlebar is of no use to control the direction. You must be in the driver seat. You must be in control of your learning path, something that is called <em>active learning</em>.</p>
+</div>
+<div class="paragraph">
+<p>If you are at school, the teacher is often leading the lecture (<em>passive learning</em>) and there is no easy way out. But if you are reading a book, watching a conference or following a MOOC, you can pause, open the map and find a new itinerary. It may be a beginner book on the subject, a new introductory blog post to read, or simply a good night&#8217;s sleep.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Self-guided tours are the way to go</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_gift_of_ubiquity">The Gift of Ubiquity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unlike the real-world where you always stand at a well-defined location, learning is different. You can follow different paths at the same time. During your studies, you were taking different courses during the same semester, all on different topics. This is possible because we have the gift of ubiquity when it comes to learning. We can be at multiple locations, following multiple learning paths, and that’s very useful.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-two-paths-x2.png" alt="map two paths x2">
+</div>
+<div class="title">Figure 6. The ability to learn multiple subjects in parallel</div>
+</div>
+<div class="paragraph">
+<p>Indeed, learning on different subjects is preferable as it increases the time between review sessions, so that we can reflect more on the subject and slowly consolidate what we are learning to make it stick. If we had to focus on only one topic instead, we would feel literally submerged with a flood of new information, and as we know it, cramming is a bad strategy to learn and remember what we learn. The ubiquitousness of learning allows us to move slower, to appreciate the landscape, and enjoy the journey. But that’s not the only advantage.</p>
+</div>
+<div class="paragraph">
+<p>When following several paths, there are inevitably moments when paths are crossing, when we are making connections among subjects, connecting the dots like neurons are interconnected in our memory. There&#8217;s an old saying in neuroscience: “neurons that fire together wire together.” The more we create connections during learning, the stronger that learning is, and the easier it becomes to apply knowledge from one domain to a different one, which is called <em>transfer of learning</em>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Mastering a subject takes time</strong>. You may be tempted to rush, but the truth is there is an incompressible time for you to reach expertise on any subject. You will get better results if you learn several related topics at your own pace instead of trying to cram too much information like training programs try to do in a short time.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_illusion_of_teleportation">The Illusion of Teleportation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sometimes, we are not in control of our learning. We are suddenly teleported somewhere else on the map, in a remote location that looks unfamiliar. This happens when you enroll in a training session without having the prerequisites, when a colleague shares with you a new tool that he has discovered recently and you haven’t heard before, or when you must complete a challenging task. These situations are perilous and you must work hard to not stay at this place for too long.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-teleportation-x2.png" alt="map teleportation x2">
+</div>
+<div class="title">Figure 7. Learning a new subject in unknown territory is difficult.</div>
+</div>
+<div class="paragraph">
+<p>The farther you have been teleported from known lands, the more difficult the task will be. The goal is to find your way back and join one of your already explored paths. Also. Don’t panic. Ask for directions.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Be curious</strong>. A taxi driver doesn&#8217;t need to know all the streets to find his way in the city. Knowing the main roads can take you very far away. Therefore, add a little breadth to your learning so that the moment you will be dispatched to a new land, you will not be completely lost.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="breadth_vs_depth">Breadth vs Depth</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The history of your GPS positions says a lot about which kind of developer you are.</p>
+</div>
+<div class="sect2">
+<h3 id="the_dash_shaped_developer_the_buzzword_developer">The Dash-Shaped Developer (the “Buzzword Developer”)</h3>
+<div class="paragraph">
+<p>The <em>Dash-shaped</em> developer is a generalist. He has a breadth of experience, but little depth, as outlined in the following figure:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-dash-shaped-x2.png" alt="map dash shaped x2">
+</div>
+<div class="title">Figure 8. The Dash-shaped favors breadth over depth.</div>
+</div>
+<div class="paragraph">
+<p>He is eager to learn about new buzzwords, latest trends, and new technologies. He seems very knowledgeable, but as he is always driven by the latest innovations, he can’t really afford the required time to dig into any of them, and will therefore underperform at work.</p>
+</div>
+<div class="paragraph">
+<p>A software project is so much more than just a collection of buzzwords. A project often uses a single programming language for the majority of the codebase, a single paradigm, and only a few frameworks. Software projects don’t need dash-shaped developers.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-project-x2.png" alt="map project x2" width="often more than any single developer can pretend" height="but not impossible for a diverse team to reach.">
+</div>
+<div class="title">Figure 9. A software project requires depth on many subjects</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_i_shaped_developer_the_expert">The I-Shaped Developer (the “Expert”)</h3>
+<div class="paragraph">
+<p>The <em>I-shaped</em> developer is a specialist with a well-defined area of expertise.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-i-shaped-x2.png" alt="map i shaped x2">
+</div>
+<div class="title">Figure 10. The I-shaped favors depth over breadth.</div>
+</div>
+<div class="paragraph">
+<p>The I-shaped developer rarely adventures outside the quarter where he lives, but for complex problems to solve, the I-shaped developer will be the one that will get you out of trouble in the shortest time. He lacks, however, the polyvalence that projects require to reach completion, and while you may combine experts on the same project, you need to remember the differences between diversity and inclusive diversity.</p>
+</div>
+<div class="paragraph">
+<p>We can also cite <em>M-shaped</em> developers, which are a variation of I-shaped developers with multiple specialties.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_t_shaped_developer_the_recruiter_target">The T-Shaped Developer (the “Recruiter Target”)</h3>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/T-shaped_skills"><em>T-shaped</em></a> developer represents the classic agile team member, which explains why he is often the ideal hire for a company. The T-shaped developer has a specialty (e.g., Go Backend Developer), and in addition, has a wide breadth of experience with other skills (e.g., technical writing, UX Design, DevOps practices, …).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-08-the-city-of-learning/map-t-shaped-x2.png" alt="map t shaped x2">
+</div>
+<div class="title">Figure 11. The T-shaped developer favors breadth on many subjects + depth on a specific domain.</div>
+</div>
+<div class="paragraph">
+<p>We can also cite Pi-shaped developers which combine T-shaped and M-shaped developers, having depth and breadth with multiple specialities.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ In the same way diversity is important for a team, <strong>diversity is important during the learning process</strong>. Stay up-to-date with the latest innovations, and take the time to go deeper on the subjects that really motivate you.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_liberty_of_self_teaching">The Liberty of Self-Teaching</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We&#8217;re getting near the end of this first article in the series. We&#8217;ve come a long way in our journey, visiting the city using different modes of transportation, at different paces, with different objectives. What I would like you to take away are these two tips:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Follow your direction</strong>. Remember you don&#8217;t have to be on the passenger seat. You are free to explore the city on your own, choosing where you want to go, and the path to go there.</p>
+</li>
+<li>
+<p><strong>Follow your pace</strong>. Learning is a slow process. You may speed up when the road is flat. But sometimes, you have to slow down when the road becomes too steep. Learning is not a race. Learning is just moving.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the <a href="/write/2020/12/08/the-landscape-of-knowledge.html">next article of this series</a>, we will escape the city to discover the wonders of the world. We will discuss how to expand our knowledge and our ignorance in new directions at the same time. Fasten your seat belt and get ready for a wild ride.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. <a href="https://www.ted.com/talks/rocio_lorenzo_how_diversity_makes_teams_more_innovative" class="bare">https://www.ted.com/talks/rocio_lorenzo_how_diversity_makes_teams_more_innovative</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2020/12/08/the-landscape-of-knowledge.html">The Landscape of Knowledge</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2020/12/08/the-pyramid-of-expertise.html">The Pyramid of Expertise</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

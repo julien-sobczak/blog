@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Simplicity Is Not Simple</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2020/02/23/simplicity-is-not-simple.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">February 23, 2020</span>
+
+      
+      <a href="/tags/craftsmanship" class="label">
+      Craftsmanship
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Simplicity Is Not Simple</h2>
+      
+      <h3>Why Everything Doesn't Have to Be Simple</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This post is a part of a two-parts series. This first post focuses on simplicity while <a href="/write/2020/06/02/complexity-is-not-complex.html">the following one</a> focuses on complexity.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The purpose of software engineering is to control complexity, not to create it.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Jon L. Bentley<br>
+<cite>Programming Pearls</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>Make it simple.</p>
+</div>
+<div class="paragraph lead">
+<p>This simple advice is too simplistic in practice. What must be simple? Simple to do? Simple to change? Simple for the user? The truth is that simplicity is great but we can’t make everything simple. We need a better approach. But first, we need to know what we are fighting against. As British novelist Anthony Horowitz said, “You cannot defeat your enemies until you know who they are.”</p>
+</div>
+<div class="sect1">
+<h2 id="complicated_problems_vs_complex_problems">Complicated Problems vs Complex Problems</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Developing a web page that loads in less than 100ms or making sure team decisions collectively lean toward the best idea are both problems that are not simple. They are, however, very different. The first is called a complicated problem and the second a complex problem.</p>
+</div>
+<div class="paragraph">
+<p>Complicated problems can be hard to solve, but they are addressable with techniques like divide-and-conquer, and a good dose of perseverance. Launching a rocket, performing a brain surgery, designing software applications are complicated problems. Not easy to solve, but they are manageable.</p>
+</div>
+<div class="paragraph">
+<p><strong>Complex problems are not just more complicated problems</strong>. They are inherently different. They involve many unknowns and techniques like divide-and-conquer are no longer applicable because interactions between components are more important than the components themselves. A small variation of the system may result in disproportionate effects (e.g., the Butterfly effect). Nature is the perfect source of inspiration for complex problems with the rich interactions between all living beings. Peace, global warming, and human relationships are good examples of complex problems. A single conflict between two humans can cause a new war (often economical today) and plunge the whole world into jeopardy. The behavior of a minority of Western citizens affects the lives of billions of people on the other side of the planet with the climate crisis. A single revelation concerning a CEO can destroy the confidence of his employees gained over several decades. Complex problems are not easy to solve, and no single action can solve the problem, while one single action can annihilate the system.</p>
+</div>
+<div class="paragraph">
+<p>To illustrate the differences, we will use a more familiar situation: writing code in your IDE is mostly a complicated problem while designing an application as a team is mostly a complex problem.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>.</p>
+</div>
+<style>
+.comparison-table {
+  border-collapse: collapse;
+  border: none;
+}
+.comparison-table th {
+  text-align: center;
+  background-color: white;
+}
+.comparison-table tr.category {
+  border-top: 1px dotted black;
+}
+.comparison-table th, .comparison-table td {
+  padding: 1em;
+  vertical-align: top;
+}
+.comparison-table .category span {
+  color: white;
+  background-color: black;
+  border-radius: 0.5em;
+  padding: 0.5em 1em;
+}
+.comparison-table .example {
+  background-color: #EEE;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  margin: 0;
+  margin-top: 1.5em;
+  font-size: 90%;
+  font-style: italic;
+}
+.comparison-table .conclusion {
+  padding: 0 1em 2em;
+  text-align: center;
+}
+</style>
+<table class="comparison-table">
+
+<thead>
+<tr>
+<th width="50%">
+Complicated
+<p class="example">Writing Code</p>
+</th>
+<th width="50%">
+Complex
+<p class="example">Working as a team</p>
+</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr class="category"><th colspan="2"><span>Causality</span></th></tr>
+<tr>
+<td>
+Easy to find causes from observed effects.
+<p class="example">The SQL query is slow due to a missing index.</p>
+</td>
+<td>
+Too many interactions mean trying to find a cause always elude a large part of the problem.
+<p class="example">A developer can be less effective because he lacks core competencies, but also because of personal problems, fatigue, or low-motivation.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>Root-cause analysis is a waste of time with complex problems.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Linearity</span></th></tr>
+<tr>
+<td>
+The same input always results in the same output.
+<p class="example">Add more CPUs to a CPU-bound process and you will get better performance.<p>
+</td>
+<td>
+A minor variation in one place can completely change the output.
+<p class="example">A single failure to support a colleague, for example, following an incident, can definitely revoke the trust built over years of collaboration.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>One-size-fits-all solutions don’t exist for complex problems.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Reducibility</span></th></tr>
+<tr>
+<td>
+Divide-and-conquer is used to solve the problem piece by piece.
+<p class="example">You can code the search logic first, and then build a small UI to display the results.</p>
+</td>
+<td>
+Interactions between components define complex systems and make it impossible to divide them without losing meaning.
+<p class="example">You can fire an employee that opposes your management practices but other employees may feel the same, judge your decision as unfair, and this results in unexpected consequences, far bigger than what you were trying to fix.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>You can’t fix a part of a complex problem. You can only interact with the system to influence the outcomes.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Controllability</span></th></tr>
+<tr>
+<td>
+Problems are easy to diagnose and fix permanently.
+<p class="example">The authentication logic slows down the application. You can use an in-memory database to speed up queries.</p>
+</td>
+<td>
+Each interaction influences the system but it’s impossible to determine the effect of our actions.
+<p class="example">You organise a team building event and observe motivation goes up after the event, but you will never know why. It may be due to the completion of an important feature having caused higher-than-normal stress, or all team members having found a new job elsewhere.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>There is no simple problem and no simple solution when interacting with a complex system.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Constraint</span></th></tr>
+<tr>
+<td>
+Complicated systems are closed systems. You can work on a part by ignoring the outside interactions or the environment.
+<p class="example">You decide to refactor a function and simply rerun the automated tests for this function to ensure nothing is broken.</p>
+</td>
+<td>
+Complex systems are open systems where it is hard to determine where a system ends and where another starts. The context is an integral part of the system.
+<p class="example">You can’t ignore everything that happens outside the workplace. Personal problems may affect the course of the project. Likewise, bad news on TV, the company’ stock price, the announcements of your competitors, all of this influences your team performance.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>Context matters in complex systems. Don’t be blind on external interactions because what happens outside is as important as what happens inside.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Knowability</span></th></tr>
+<tr>
+<td>
+Closed systems may be modelled and fully-known.
+<p class="example">You can make a diagram to present the program architecture. Or you can become proficient with every single line of code.</p>
+</td>
+<td>
+Any model for an open system is by definition incomplete. You may generate as much data as you want, a complex system will never become a complicated system, and even less a simple one.
+<p class="example">You can make a beautiful chart to explain how people must interact in their team and the role of every member, the reality will always be different. Interactions happen during the lunch break, team members ask for help from a team member independently of his or her role. Most interactions just happen naturally.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>There is no way to manage a complex system from a distance. Come down from your ivory tower and start interacting with the system.</strong>
+</td>
+</tr>
+
+<tr class="category"><th colspan="2"><span>Adaptability</span></th></tr>
+<tr>
+<td>
+Complicated systems need an external force on them to evolve.
+<p class="example">To change the behaviour of a program, you need to update the code with a new implementation (partially true with machine learning algorithms).</p>
+</td>
+<td>
+Complex systems observe themselves and change even without external influences.
+<p class="example">A team can work well together and suddenly, things may go wrong without anything having changed, at least in appearance. Maybe the team gets frustrated because no decision was made to bury legacy code, maybe new features are not as innovative as before, maybe the company is affected by high turnover in other teams.</p>
+</td>
+</tr>
+<tr class="conclusion">
+<td colspan="2">
+<strong>Complex systems evolve whether you like it or not. Beware of large-scale changes like new methodologies.</strong>
+</td>
+</tr>
+
+</tbody>
+</table>
+<div class="paragraph">
+<p>To sum up the differences, <strong>a complicated system is nothing more than the sum of its parts</strong>, while <strong>a complex system is greater than the sum of its parts</strong>. And this makes a huge difference!</p>
+</div>
+<div class="paragraph">
+<p>These differences explain, in part, why great developers that excel at solving complicated problems don’t necessarily make great managers. Switching from one type of problem to the other must not be considered like an evolution or a promotion, but like a new job. <strong>If you manage complex things as if they are complicated, you’re doomed to failure</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, when facing a problem that doesn’t look simple, you must consider if you are facing a complicated or a complex problem, but that’s not all.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="essential_complexity_vs_accidental_complexity">Essential Complexity vs Accidental Complexity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Essential complexity</em> is caused by the problem to be solved, and nothing can remove it. For example, if users want a program to do 30 different things, then those 30 things are essential and the program must do those 30 different things.</p>
+</div>
+<div class="paragraph">
+<p><em>Accidental complexity</em> is caused by the developer, and the developer must work to find a better design. For example, if the developer writes all the code in a single file with a lot of global variables, refactoring the code can remove this complexity.</p>
+</div>
+<div class="paragraph">
+<p>In short, essential complexity is not a problem to fix, it&#8217;s the problem to solve in the first place. <strong>Writing clean code is basically solving essential complexity without introducing accidental complexity</strong>.</p>
+</div>
+<div class="paragraph">
+<p>We must note that ignoring essential complexity will for sure make your code simpler, but it’s not a solution. Addressing essential complexity isn&#8217;t over-engineering, it’s just doing your job. Over-engineering is adding more features, or more safety to solve hypothetical flaws that most users would accept. Ignoring the features that would make your code not as simple as you expect is just bad engineering.</p>
+</div>
+<div class="paragraph">
+<p>That’s all for the theory. For the rest of this article, I will ignore complex problems. This article is about simplicity and complex problems are … complex. Solutions exist to address complexity, but that&#8217;s a huge topic that deserves its own article. Moreover, you should not have simplicity in mind when facing a complex problem. Simplicity and complexity are two very different beasts, even if simplicity can emerge when complexity is addressed intelligently.</p>
+</div>
+<div class="paragraph">
+<p>Now, let&#8217;s try to apply what we have seen to a concrete example of a complicated problem.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_complicated_problem">A Complicated Problem</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>The Problem</strong>: <em>Let’s try to implement a search engine, a minimalist Google. The logic is mainly divided in two parts: the search, and the rendering</em>.</p>
+</div>
+<div class="paragraph">
+<p>First, the search. The most simple algorithm (but not the most performant one) is to retrieve the homepage, inspect the text, extract the links present in the page, and continue the search until having visited all the pages.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>q = &quot;simplicity&quot;
+url = &quot;https://mysuperwebsite.com&quot;
+pages_to_scrape = [url]
+visited = []
+
+While not pages_to_scrape.empty?
+  page_url = pages_to_scrape.pop()
+  body = http.Get(page_url)
+  document = xml.Parse(body)
+  If q in document.innerText
+    print &quot;Found $q in $page_url&quot;
+  For link in document.getElementsByTagName(&quot;a&quot;)
+    If link.href not in visited
+      append(pages_to_scrape, link.href)
+  append(visited, page_url)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Simple? Yes. This algorithm will not compete with the PageRank algorithm but it’s hard to make a more basic version. Each line of code serves its purpose.</p>
+</div>
+<div class="paragraph">
+<p>Let’s try to render an HTML document instead using code like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>output = &quot;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;Simple Search&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Results&lt;/h1&gt;
+        &lt;ul&gt;
+&quot;
+For result in results
+  output += &quot;&lt;li&gt;$result&lt;/li&gt;&quot;
+output += &quot;
+        &lt;/ul&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Simple? Yes. Like the previous snippet, we wrote the most basic version to render a list in HTML. Both programs are easy to understand in isolation. Now, let’s try to mix them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>print &quot;&lt;!html&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;Simple Search&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Results&lt;/h1&gt;
+        &lt;ul&gt;
+&quot;
+q = request.QueryParam(&quot;q&quot;)
+url = &quot;https://mysuperwebsite.com&quot;
+pages_to_scrape = [url]
+visited = []
+
+While not pages_to_scrape.empty?
+  page_url = pages_to_scrape.pop()
+  body = http.Get(page_url)
+  document = xml.Parse(body)
+  If q in document.innerText:
+    print &quot;&lt;li&gt;$page_url&lt;/li&gt;&quot; # Convert to HTML
+  For link in document.getElementsByTagName(&quot;a&quot;)
+    If link.href not in visited:
+      append(pages_to_scrape, link.href)
+  append(visited, page_url)
+
+print &quot;
+        &lt;/ul&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Simple? Not exactly. The result doesn’t look good. By composing a program from simple programs, we got a complicated program. <strong>Simplicity is not additive</strong>.</p>
+</div>
+<div class="paragraph">
+<p>The main problem is that the code uses too many variables and mixes two different responsibilities. But how to determine what is too much?</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">A look inside our brain</div>
+<div class="paragraph">
+<p>Things start to get too complicated when we stop being able to reason about them, when we can’t fit everything into our memory.</p>
+</div>
+<div class="paragraph">
+<p><strong>The part of our brain that is working hard when we are thinking over a problem is the prefrontal cortex</strong>. It’s what we call our short-term memory, and unlike a computer, short-term memory is a really scarce resource. Recent researches consider <strong>short-term memory has only a capacity for about four chunks of information</strong> (some studies go up to 8 chunks, and the number may differ between individuals). If the number of chunks is fixed, what represents a chunk is not. For example, a phone number sequence of 3-3-7-2-5-3-7 is commonly chunked as 471-1324. <strong>Creating bigger and bigger chunks is the secret of short-term memory and relies on the power of abstractions</strong>. A chess grandmaster doesn’t see 32 pieces on a board but a few combinations of pieces that he has already learned, analyzed, to determine the next move at a glance. Trying to reason when each piece uses a separate chunk is far more challenging. The good news is the more you become proficient about a subject, the more abstract or general the chunks are, and the easier it is to create connections between topics.</p>
+</div>
+<div class="paragraph">
+<p>When writing code, chunks can represent variables, functions, classes, modules, or even control structures like a condition or a loop. If, for a given part of the code, you need to understand the meaning of ten variables, used over dozens of lines using a mix of conditions and loops, and calling functions defined in the same file, in different files, and in different modules, it is more than likely that you don’t have enough chunks to really understand the code. The code is too complicated.</p>
+</div>
+<div class="paragraph">
+<p>We often say it’s harder to read code than to write it. Indeed, when you are writing code, you are progressively filling your chunks to make sense of what you are doing. But when you are reading code, your chunks are empty. You need to fill them in a very short time. That’s not easy. Therefore, <strong>your code must be obviously easy to understand when you are writing it, so that the same code will be relatively easy to understand when you will read it a few weeks later</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If we go back to our code, the solution is to reduce the number of chunks required to maintain the code, by using more powerful ones. What we need are abstractions. Abstractions can be new variables, new functions, new classes, new modules, new packages, new dependencies, etc. For this example, we will use interfaces.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>interface Search
+  search(query string) []string
+
+interface Renderer
+  render(results []string)
+
+class BruteForceSearch implements Search
+
+  def search(query string) []string
+    # Same code as above but return the results instead of printing them
+
+class HTMLRenderer implements Renderer
+
+  def render(results []string)
+    # Same code as above</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using these interfaces, our program can be rewritten as easily as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>search = new BruteForceSearch()
+renderer = new HTMLRenderer()
+
+results = search.search(“simplicity&quot;)
+renderer.render(results)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Abstractions hide implementation details behind simple to use interfaces. When we need to understand the search logic, we have a well-defined place with a single responsibility and only 3-4 variables to work with. Same goes for the display logic. Concerning the main logic, we only work with two core abstractions, completely ignoring implementation details. Every place of the code is manageable even if globally we have increased the number of lines of code, and make the code slightly more complicated with these interfaces.</p>
+</div>
+<div class="paragraph">
+<p>Here is a small diagram to visualize the refactoring:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/posts_resources/2020-02-23-simplicity-is-not-simple/abstractions-step-1-2.png" alt="abstractions step 1 2" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>Using a brute force algorithm is not optimal. We can provide a new implementation based on indexing to get better performance:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>class IndexSearch implements Search
+
+  def search(query string) []string
+    # Use an inverted index
+    # Query the index to find the matching URLs in O(1) for the average case</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similarly, we can provide a new UI using 3D to visualize the results (why not?).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>class CanvasRenderer implements Renderer
+
+  def render(results []string)
+    # Use WebGL to print the results</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is a small diagram to represent what we did:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/posts_resources/2020-02-23-simplicity-is-not-simple/abstractions-step-3.png" alt="abstractions step 3" width="300">
+</div>
+</div>
+<div class="paragraph">
+<p>The search and rendering implementations are now more complicated, mainly due to the essential complexity of the problem. But thanks to the interfaces introduced before, the main logic of the search engine remains as simple as before. In practice, we would refactor the complicated code present in <code>IndexSearch</code> to introduce new abstractions as we did before:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/posts_resources/2020-02-23-simplicity-is-not-simple/abstractions-step-4.png" alt="abstractions step 4" width="375">
+</div>
+</div>
+<div class="paragraph">
+<p>By introducing more and more components, and more and more abstractions, each component in isolation stays maintainable using our limited number of chunks in memory.</p>
+</div>
+<div class="paragraph">
+<p>To conclude this case study, we must underline <strong>it&#8217;s not a problem to have modules whose implementations are complicated, and hard to understand, if two conditions are met: the module is accessible through a simple interface, and the code complexity results from essential complexity</strong>. When the right abstractions are used, a program will be simpler to understand than if modules were implemented using more basic, less efficient implementations and no abstractions.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Abstractions are everywhere</div>
+<div class="paragraph">
+<p><strong>We use the power of abstractions all the time</strong>. One of my former coworkers used the wall socket as the perfect example for abstractions. The interface is very simple, just connect a device into the socket to use it. You don’t have to care about the wires hidden in the wall, or the complicated mechanical parts of the device. Moreover, the socket can be used with any compatible powered device. That’s the power of abstractions. They let you ignore the details to focus only on how you use it, like the steering wheel in your car.</p>
+</div>
+<div class="paragraph">
+<p>Another great example is the container. Introduced in the mid-twentieth century, containers completely revolutionized maritime transport. New ships and trucks were constructed, ship-to-shore cranes were installed in ports, and the daily tasks of dockers completely changed. This abstraction was ported to software development and also completely revolutionized how we package and deploy our applications. In addition to containers, Kubernetes comes with even more abstractions (<code>Pod</code>, <code>ReplicaSet</code>, <code>Deployment</code>, <code>Service</code>, <code>Ingress</code>, <code>PersistentVolume</code>, <code>HorizontalPodAutoscaler</code>, etc) so that for any single service to deploy, you only need to mix a few of these abstractions to deploy a rock-solid service in production.</p>
+</div>
+<div class="paragraph">
+<p>I invite you to take notice all around you to all the abstractions that make your life simpler, like the mouse you may be holding right now. <strong>Abstractions make things easy, but they are hard to get them right</strong>. (Do you think the computer mouse was the most simple idea at that time?)</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_few_lessons">A few lessons</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following is a list of guidelines to make sure your quest of simplicity does not end in the land of complexity.</p>
+</div>
+<div class="sect2">
+<h3 id="dont_do_simple_things">❌ Don&#8217;t do simple things</h3>
+<div class="paragraph">
+<p>Everyone understands simplicity is important. Clean code makes it easier to read, debug, and evolve it. But not everyone understands the path to simplicity.</p>
+</div>
+<div class="paragraph">
+<p>I would like to make it clear, <strong>doing the most simple thing is a bad strategy to get the most simple result</strong>. Writing clean code is very hard. It means refactoring the code endless times. The result may look simple, the process to reach it is not.</p>
+</div>
+<div class="paragraph">
+<p>When facing a decision, choosing the most simple option may seem like a sensible approach, but it is not. <strong>Don’t look for the simplest idea but for the best idea</strong>. The best idea may seem complex at first, and may be more difficult to absorb, but it will bring you the most long-term benefits. If all that matters to you is to make the simplest choice, it means that you don&#8217;t care about simplicity. Period.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ Stop doing the most simple thing. <strong>Start valuing the most simple result</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dont_use_principles_as_rules">❌ Don&#8217;t use principles as rules</h3>
+<div class="paragraph">
+<p><strong>Simplicity pushes to the extreme can only result in complexity</strong>. For example, writing a unit test for every function in the code is a very simple rule to follow (I haven’t said it is a good rule), but if you follow blindly this rule, you will no longer be able to change any single line without breaking a test. No refactoring is possible in these conditions. Writing good tests requires a mix of experience, intuition, and experimentation. This is not simple. But that’s the only way to have simple tests.</p>
+</div>
+<div class="paragraph">
+<p>This problem commonly occurs when principles are interpreted as rules. In fact, <strong>any principle applied blindly as a rule becomes a liability</strong>, a way to remove common sense from the equation. Here are a few examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Don&#8217;t explain bad code in comments</em> (principle) can become <em>Good code is self-documenting</em> (rule). That’s wrong. The code tells us how it works, but we still need comments to document APIs, explain decisions, which alternatives were considered, and why the present solution was chosen. Writing good comments is as much an art as writing the code itself.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+</li>
+<li>
+<p><em>Don’t Repeat Yourself</em> (the DRY principle) can become <em>No Code Duplication</em> (rule). That’s wrong. For example, you must not write your tests like your code. A little duplication in tests is better than complex tests that fail to document how the code works. Furthermore, what may seems like duplication can be a good trade to be able to change requirements later so that two similar code may evolve independently.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The problem is our brain loves rules to make sense of the world. It’s a lot harder to accept, “Well, come up with some experiments and see what happens.” But the truth is <strong>thinking is the only way to make things simple</strong>. Therefore, you must work very hard and not succumb to the temptation to see inspiring principles as stupid rules.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️ <strong>Use principles to make you think</strong>, not to not have to think.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dont_simplify_locally">❌ Don&#8217;t simplify locally</h3>
+<div class="paragraph">
+<p>Most programming languages support a garbage collector, a complicated piece of code, that makes the life of programmers easier. Without that, developers would have to release the memory explicitly in their code, which is a common source of bugs. <strong>What is simple for some, is often complex for others, and inversely</strong>. The real challenge is to address complexity where it could be best addressed.</p>
+</div>
+<div class="paragraph">
+<p>The interface between your code and your users is another good example. Don’t sacrifice the usability to make your code a little simpler. Writing a CLI with intuitive commands, autocompletion, and informative error messages requires more lines of code than a basic version. Designing a great user experience on a website requires techniques like A/B Testing, feature flags, real user monitoring, which add complexity. But all of this complexity has only one goal: simplicity for the user.</p>
+</div>
+<div class="paragraph">
+<p><strong>Simplicity is not black or white</strong>. You need to appreciate shades of gray to determine the right balance between simplicity and essential complexity.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+✔️Simplicity for you can mean complexity for others. Don’t optimize locally. <strong>Think globally</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>I conclude that there are two ways of constructing a software design: One way is to make it so simple that there are obviously no deficiencies and the other way is to make it so complicated that there are no obvious deficiencies.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; C.A.R. Hoare
+</div>
+</div>
+<div class="paragraph">
+<p>This famous quotation about software design is often quoted abridged. The quotation continues like that: <em>“The first method is far more difficult. It demands the same skill, devotion, insight, and even inspiration as the discovery of the simple physical laws which underlie the complex phenomena of nature. It also requires a willingness to accept objectives which are limited by physical, logical, and technological constraints, and to accept a compromise when conflicting objectives cannot be met.”</em> Through these words, C.A.R. Hoare clearly demonstrates that making things simple doesn’t mean doing simple things.</p>
+</div>
+<div class="paragraph">
+<p>We must care about the result. Simplicity really matters. But simplicity is the goal, not the process. Programming is mostly a creative activity. You don’t write maintainable code by always choosing the most simple line of code to add. That’s why programming is so much fun.</p>
+</div>
+<div class="paragraph">
+<p>I hope you now better understand that complexity is not a problem per se. Not everything has to be simple. Essential complexity must be addressed and accidental complexity must be avoided. And more importantly, complex systems must be considered as such or will end up solving the wrong problem with the wrong solution.</p>
+</div>
+<div class="paragraph">
+<p><strong>Simplicity is not simple</strong>. There is only one way to get it: complex thinking. <strong>So, think</strong>.</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>There are simple problems. There are complicated problems. And there are complex problems.</strong> Trying to cast all problems as simple is the guarantee to solve the wrong problem with the wrong solution.</p>
+</li>
+<li>
+<p>Make it simple. But <strong>understand what must be simple</strong>.</p>
+</li>
+<li>
+<p><strong>Simplicity is the goal, not the process</strong>. You don’t get simple solutions by doing simple things.</p>
+</li>
+<li>
+<p><strong>Simplicity is not additive</strong>. Adding simplicity over simplicity rarely result in simplicity.</p>
+</li>
+<li>
+<p>Complicated solutions are acceptable as long as the complexity is essential and hidden behind simple abstractions.</p>
+</li>
+<li>
+<p><strong>Tackling complexity for others to enjoy simplicity is sometimes a good trade</strong>.</p>
+</li>
+<li>
+<p><strong>Stop using simplicity as an argument</strong> to prevent discussions to find the best solution.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. 7 Differences between complex and complicated, Sonja Blignaut , <a href="http://www.morebeyond.co.za/7-differences-between-complex-and-complicated-systems/" class="bare">http://www.morebeyond.co.za/7-differences-between-complex-and-complicated-systems/</a>
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Coding Without Comments, Coding Horror, <a href="https://blog.codinghorror.com/coding-without-comments/" class="bare">https://blog.codinghorror.com/coding-without-comments/</a>
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. Goodbye, Clean Code, Dan Abramov, <a href="https://overreacted.io/goodbye-clean-code/" class="bare">https://overreacted.io/goodbye-clean-code/</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2020/06/02/complexity-is-not-complex.html">Complexity Is Not (So) Complex</a>
+
+          
+            <a href="/tags/management"
+              class="label">
+              Management
+            </a>
+          
+          
+
+          
+            <span class="subtitle">Why Complexity Doesn't Have to Be a Problem</span>
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

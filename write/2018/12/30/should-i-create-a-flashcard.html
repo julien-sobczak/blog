@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Should I Create a Flashcard?</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2018/12/30/should-i-create-a-flashcard.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">December 30, 2018</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+      <a href="/tags/productivity" class="label">
+      Productivity
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Should I Create a Flashcard?</h2>
+      
+      <h3>A case-by-case approach</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="paragraph lead">
+<p>Flashcards make easy to store an information in our long-term memory, and make sure that it will stay here for a long time. But not all information is a good candidate to end as a flashcard. In this post, I will help you decide if creating a flashcard is pertinent, or if you should instead consider alternatives, like using Google each time you need the information, or using a note application like Google Keep Note.</p>
+</div>
+<div class="sect1">
+<h2 id="quiz">Quiz</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before creating any flashcard, try answering this little quiz first.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2018-12-30-should-i-create-a-flashcard/quiz.svg"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/quiz.png" alt="quiz" width="700"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="explanations">Explanations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here are additional notes explaining the motivations behind these previous questions.</p>
+</div>
+<div class="sect2">
+<h3 id="1_will_the_information_still_be_valuable_5_years_from_now">1. Will the information still be valuable 5 years from now?</h3>
+<div class="paragraph">
+<p>Flashcards take a lot of time to learn. For example, when using Anki, you will need to review each flashcard at minimum 7-8 times over a period of 2-3 years (with the default settings). Creating a flashcard is a big commitment. The longer the information will stay pertinent, the more benefit you have to create a flashcard for it.</p>
+</div>
+<div class="paragraph">
+<p>Sometimes, the answer to a question could change with time. Maybe a new study reveals new evidences, maybe a new software makes your old application obsolete, maybe the tools you use are enriched. In this case, existing flashcards can become useless or need to be rewritten. You probably lost time reviewing them in the past, and now, you need to spent some time to fix them. So, always consider what can happen tomorrow to determine if you need to invest time today.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="1_do_i_have_to_know_the_information_from_memory">1’. Do I have to know the information from memory?</h3>
+<div class="paragraph">
+<p>Learning is becoming more and more crucial in the workplace. Knowledge helps us to stand apart, to evolve in new positions, where we will have to learn new things. In fast changing environments like software development, what we use today is not what we will use in just a few years from now. So, we google a ton of questions every day.</p>
+</div>
+<div class="paragraph">
+<p>It happens, however, that using Google is not an option. For example, you’re teaching a training about a new technology, and you get questions from trainees. You could say you don’t know (everyone will accept you don’t know everything), but you are expected to answer correctly to most of the questions, only with the help of your memory. Under these circumstances, although the training content may become outdated in a near future, flashcards could be a lifesaver.</p>
+</div>
+<div class="paragraph">
+<p>Another example happens when you are looking for an internship in a remote country. You could find a job position, for example, in Netherlands, or in more exotic locations like Iceland. English is largely spoken in these countries, but as outlined by Nelson Mandela: "If you talk to a man in a language he understands, that goes to his head. If you talk to him in his language, that goes to his heart." Using flashcards to learn the Danish or Icelandic vocabulary could be a good idea, even if you do not plan to stay in the country at the end of your internship.</p>
+</div>
+<div class="paragraph">
+<p>In general, if knowing the material will make a real difference for you (e.g., career advancement, relationship, personal development), you should seriously consider flashcards, but always weight their benefits against your most precious resource, your time.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="1_is_the_information_easily_retrievable_from_google">1’’. Is the information easily retrievable from Google?</h3>
+<div class="paragraph">
+<p>When the information is doomed to obsolescence, and there is no clear benefit to learn it today, you should forget flashcards. Instead, you have to choose between storing the information somewhere, or just accepting to search for it again the next time you need it. It all depends on how easily the information could be retrieved. If the first link on a Google Search is enough, don&#8217;t bother with creating a note. Otherwise, if the information is hidden inside a comment of a long, debated thread, or if the risk of finding a suboptimal solution is high, you better have to keep note of the information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2_knowing_the_information_make_me_more_productive">2. Knowing the information make me more productive?</h3>
+<div class="paragraph">
+<p>This is probably the most difficult question to answer. It depends on your context and your own judgment. What follows are some elements to illustrate the question.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>You could be more productive if</em> you stay focus for a longer period. For example, knowing the solution from memory will avoid you interruptions. No need to search on Google. You can stay in the zone.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</li>
+<li>
+<p><em>You could be more productive if</em> you are able to tackle bigger problems. For that, you need to expand your knowledge. Flashcards act like a fertilizer for your knowledge to grow upon your existing knowledge. For example, you can start creating flashcards for basic concepts, and once grasped, try learning more advanced concepts.</p>
+</li>
+<li>
+<p><em>You could be more productive if</em> you get more ideas. Nonetheless, ideas don&#8217;t appear magically and require a lot of background information in your memory on which your brain can operate (i.e., diffuse mode) like a mixer to create something new. Using Google for everything prevents your brain to demonstrate its creativity, since there is nothing on which to innovate.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This list is not exhaustive but shows there exists real value in retrieving the information from memory rather than from Google.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2_will_i_use_the_information_regularly">2’. Will I use the information regularly?</h3>
+<div class="paragraph">
+<p>Even if using a spaced repetition system is a good way to remember something, retrieving the information from memory frequently (outside your flashcard reviews) helps a lot in the process. It shows your memory that the information is really useful in practice, with the side-effect of strengthening the neural connections. The value of a flashcard is proportional to its usefulness, and the (almost) unlimited capacity of our memory is not a valid reason to store everything into it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="3_im_interested_by_the_information">3. I’m interested by the information?</h3>
+<div class="paragraph">
+<p>Do you really care about the information? If you answer no, a flashcard will not be quite helpful. Always create flashcards for information you want to remember, and not for information you think you have to. Being curious about a subject makes a long way to remember it. If you really have to remember something, try to develop an interest for it first. Read great books, subscribe to a MOOC, work hard to discover what makes the subject special. For example, I started to get interested in learning English when I discovered the countless, valuable resources published in the language of Shakespeare. Flashcards are only one part of the learning formula.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="in_practice">In practice</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s apply what we&#8217;ve just discussed to concrete, real-world situations.</p>
+</div>
+<div class="sect2">
+<h3 id="capitals_of_country">Capitals of country</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You are curious about geography. You are planning a cruise for your next vacation, and you know for sure there will be a quiz about geography when the ship will be at sea, navigating between two ports, With flashcards, you are assured to get the perfect score. You can create flashcards to learn the capitals, the flags, the main attractions, etc. If you want to win an inexpensive bag with the logo of the company (true story), go ahead and review the flashcards.
+<span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/yes.png" alt="yes" height="20"></span> <strong>Create flashcards</strong></p>
+</li>
+<li>
+<p>You are a high-school student and your geography teacher is fond of rote memorization. Flashcards are an effective way to learn a list of facts like capitals, and is probably your best option. Moreover, if you need to learn historical dates, complement with other memory techniques like associations to make them memorable.
+<span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/yes.png" alt="yes" height="20"></span> <strong>Create flashcards</strong></p>
+</li>
+<li>
+<p>You are in your couch watching a TV game show where candidates need to answer questions to test their general knowledge. You&#8217;re saying it would be fun if you could answer questions like that, but let&#8217;s face it, you will not get concrete benefits from learning this kind of facts (except if you decide to apply for the game, of course). Even if I&#8217;m a big fan of flashcards, I will not define flashcards as something particularly fun, so, keep flashcards for something you really need to learn.
+<span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/no.png" alt="no" height="20"></span> <strong>Don&#8217;t create flashcards</strong></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="software_shortcuts">Software shortcuts</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You are a web designer using a long-standing application like Adobe Photoshop. You want to be really proficient with the tool and master the most advanced options&#8201;&#8212;&#8201;the features you don&#8217;t use everyday but the ones that can make a real difference. You can use flashcards to make sure to review these items on a regular basis, and, with a little practice, they will soon be part of your toolbox. You probably don&#8217;t need, however, to create flashcards for the most common options, since as you are using the software professionally, you will get plenty of practice, making hard to forget them. In general, when it comes to computing, things are moving so fast that we should always be reluctant to create flashcards. With Adobe Photoshop whose first version dates back to 1990, you can be confident the information you will learn will be useful for the many years to come. But don&#8217;t go too far, and create flashcards for everything, and try to make them agnostic of the current version.
+<span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/yes.png" alt="yes" height="20"></span> <strong>Create flashcards</strong></p>
+</li>
+<li>
+<p>You are a software developer newly hired, and as part of your welcome package, you&#8217;ve just got a Mac laptop. You first steps on MacOS are hesitant. You was used to Linux, and even if there are some commonalities between them, you are struggling to find your marks. In this case, it can be a good idea to create flashcards to learn the trackpad gesture movements, and also the shortcuts to navigate with ease between applications. Otherwise, you will inevitably find different, but suboptimal ways to reach your goals, for example, using the mouse, and as habits are hard to change, why not start off on the right foot? But remember shortcuts are not very memorable. Try to understand why this shortcut was chosen in the first place, and visualise yourself entering the key bindings when reviewing the flashcards. And, as always, practice.
+<span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/yes.png" alt="yes" height="20"></span> <strong>Create flashcards</strong></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="programming_stuffs_developer_only">Programming stuffs (developer only)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You are a front-end developer, and there is a new framework about which everyone is talking about. You&#8217;ve just decide you need to learn it because you see more and more job positions asking for it. You can follow tutorials, read books on the subject, but without regular practice, you will very quickly forget most of your reading. You can also start working on a small side project, but unless you devote a lot of time, you will not have the opportunity to experiment with edge cases and advanced topics. Flashcards could be helpful. But front technologies are moving faster than anything else, and you are still not sure to commit yourself to this new framework. It&#8217;s a difficult choice. There is no correct answer. For example, I created specific flashcards about the Spring framework as I was teaching the training. They clearly helped me to obtain the certification, and to answer trainees' questions. In practice, I find more valuable to focus on patterns and principles when creating flashcards, as they generally outlast the framework.
+<span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/yes.png" alt="yes" height="20"></span> <span class="image"><img src="/posts_resources/2018-12-30-should-i-create-a-flashcard/no.png" alt="no" height="20"></span> <strong>It depends</strong></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="in_conclusion">In conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Creating a flashcard takes time, but reviewing it takes even longer. By asking you just a few questions, you can avoid spending time on useless flashcards, and more time reviewing the most useful ones. A good flashcard stays relevant over time, helps you progress, and concerns something you care about. If these conditions are not satisfied, think twice before creating the flashcard.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. In positive psychology, flow, also known colloquially as being in the zone, is the mental state of operation in which a person performing an activity is fully immersed in a feeling of energized focus, full involvement, and enjoyment in the process of the activity.
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2018/12/01/10-rules-for-better-flashcards.html">10 Rules for Better Flashcards</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Flashcards
+            </span>
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

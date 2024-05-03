@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Font Awesome from Scratch</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2017/06/25/font-awesome-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">June 25, 2017</span>
+
+      
+      <a href="/tags/frameworks" class="label">
+      Frameworks
+      </a>
+      
+
+      
+      <span class="label">
+        Web
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Font Awesome from Scratch</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<a href="https://github.com/FortAwesome/Font-Awesome">Font Awesome</a> is published under the <a href="https://github.com/FortAwesome/Font-Awesome#license">SIL OFL 1.1 license</a>. The code presented in this post was simplified (completeness, robustness, etc.) and should not be used outside of this context. This post is based on the version 4.7.0 of Font Awesome.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="a_basic_example">A basic example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://fontawesome.io/">Font Awesome</a>, the iconic font and CSS toolkit, gives us icons that can be easily customized — size, color, drop shadow — with the sole power of CSS. No JavaScript is required and icons scale smoothly on any devices. Here is a small HTML document that uses the main features to display of list of transportation icons:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Font Awesome Demo<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">font-awesome/css/font-awesome.min.css</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;ul&gt;</span>
+      <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-car fa-lg fa-fw</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-car<span class="tag">&lt;/li&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-plane fa-2x fa-fw</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-plane<span class="tag">&lt;/li&gt;</span>
+      <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-ship fa-3x fa-fw</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-ship<span class="tag">&lt;/li&gt;</span>
+      <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-train fa-4x fa-fw</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-train<span class="tag">&lt;/li&gt;</span>
+      <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-space-shuttle fa-5x fa-fw</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-space-shuttle<span class="tag">&lt;/li&gt;</span>
+    <span class="tag">&lt;/ul&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The only dependency is this stylesheet</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add the tag <code>&lt;i&gt;</code> to use any icon and customize it using CSS classes</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/demo-output.png" alt="HTML rendering of the previous sample">
+</div>
+</div>
+<div class="paragraph">
+<p>Having this working example, we will now turn our attention to the inner working of <em>Font Awesome</em> and implement a lightweight implementation of the library.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_first_look_under_the_hood">A first look under the hood</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As the name might suggest, <em>Font Awesome</em> is nothing more than a new font. But unlike other fonts, <em>Font Awesome</em> does not bother to design a new face for the letter &#8216;A&#8217; or other common characters and exploit a subtlety of the <a href="https://unicode-table.com/en/">Unicode Character Table</a> to add new symbols:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>In Unicode, the Private Use Areas (PUA) are three ranges of code points (U+E000–U+F8FF in the BMP, and in planes 15 and 16) that, by definition, will not be assigned characters by the Unicode Consortium. The code points in these areas cannot be considered as standardized characters in Unicode itself. They are intentionally left undefined so that third parties may define their own characters without conflicting with Unicode Consortium assignments.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Unicode Consortium<br>
+<cite>Private Use Area</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-car</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To replace an HTML tag by an icon, a common solution has always been to use the CSS property <code>background-image</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="tag">i</span><span class="class">.fa-car</span> {
+  <span class="key">background-image</span>: <span class="function"><span class="delimiter">url(</span><span class="content">&quot;car.gif&quot;</span><span class="delimiter">)</span></span>;
+  <span class="comment">/* + width, height, etc. */</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But there are many disadvantages to this solution. First, each icon requires a new file to download. CSS sprites could be used to avoid that. Second, bitmap images (jpeg, png, etc.) are not scalable. If we need to include the same picture with different sizes, we need several different files. This workaround, however, lengthen the load time of the page. <em>Font Awesome</em> solve these problems with an elegant solution based on the CSS <code>content</code> property.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/content"><code>content</code> CSS property</a> is used with the <code>::before</code> and <code>::after</code> pseudo-elements to generate content in an element. This could be a raw text, an url, a quote character, or even an incremental counter. Here is an example from the Mozilla documentation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;h1&gt;</span>5<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;p&gt;</span> We shall start this with a quote from Sir Tim Berners-Lee,
+    <span class="tag">&lt;q&gt;</span>
+        I was lucky enough to invent the Web at the time when
+        the Internet already existed - and had for a decade and a half.
+    <span class="tag">&lt;/q&gt;</span>
+    We must understand that there is nothing fundamentally wrong
+    with building on the contributions of others.
+<span class="tag">&lt;/p&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="tag">q</span> {
+    <span class="key">color</span>: <span class="color">#00008B</span>;
+    <span class="key">font-style</span>: <span class="value">italic</span>;
+}
+
+<span class="tag">q</span><span class="pseudo-class">::before</span>   { <span class="key">content</span>: <span class="value">open-quote</span> }
+<span class="tag">q</span><span class="pseudo-class">::after</span>    { <span class="key">content</span>: <span class="value">close-quote</span> }
+
+<span class="tag">h1</span><span class="pseudo-class">::before</span>  { <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Chapter </span><span class="delimiter">&quot;</span></span>; }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/css-content-property.png" alt="css content property">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s now check how <em>Font Awesome</em> use this property. Here is the definition of the CSS classes <code>fa</code> and <code>fa-car</code> used above:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.fa</span> {
+  <span class="key">display</span>: <span class="value">inline-block</span>;
+  <span class="key">font-family</span>: <span class="string"><span class="delimiter">'</span><span class="content">FontAwesome</span><span class="delimiter">'</span></span>;
+}
+<span class="class">.fa-car</span><span class="pseudo-class">:before</span> {
+  <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">\f1b9</span><span class="delimiter">&quot;</span></span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Font Awesome</em> works by prefixing a special character to the tag <code>&lt;i&gt;</code> - the tag displaying nothing itself and only used to exploit the CSS <code>:before</code> pseudo-element. The syntax <code>\f1b9</code> looks obscure but only represent a Unicode number. For example, the two following snippets are equivalent:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.fa-car</span><span class="pseudo-class">:before</span> {
+  <span class="key">content</span>: <span class="string"><span class="delimiter">'</span><span class="content">car</span><span class="delimiter">'</span></span>;
+}
+<span class="class">.fa-car</span><span class="pseudo-class">:before</span> {
+  <span class="key">content</span>: <span class="string"><span class="delimiter">'</span><span class="content">\0063\0061\0072</span><span class="delimiter">'</span></span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As mentioned previously the character <code>f1b9</code> is present in the special range reserved for third-party tools. For the browser to display something useful, we need to configure a font that define this character. This is the role of the <code>font-family</code> property initialized to the value <code>FontAwesome</code>. This font is defined in the same file using the <code>@font-face rule</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="directive">@font-face</span> {
+  <span class="key">font-family</span>: <span class="string"><span class="delimiter">'</span><span class="content">FontAwesome</span><span class="delimiter">'</span></span>;
+  <span class="key">src</span>: <span class="function"><span class="delimiter">url(</span><span class="content">'../fonts/fontawesome-webfont.eot?v=4.7.0'</span><span class="delimiter">)</span></span>;
+  <span class="key">src</span>: <span class="function"><span class="delimiter">url(</span><span class="content">'../fonts/fontawesome-webfont.eot?#iefix&amp;v=4.7.0'</span><span class="delimiter">)</span></span>
+         <span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span>(<span class="string"><span class="delimiter">'</span><span class="content">embedded-opentype</span><span class="delimiter">'</span></span>),
+       <span class="function"><span class="delimiter">url(</span><span class="content">'../fonts/fontawesome-webfont.woff2?v=4.7.0'</span><span class="delimiter">)</span></span> <span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span>(<span class="string"><span class="delimiter">'</span><span class="content">woff2</span><span class="delimiter">'</span></span>),
+       <span class="function"><span class="delimiter">url(</span><span class="content">'../fonts/fontawesome-webfont.woff?v=4.7.0'</span><span class="delimiter">)</span></span> <span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span>(<span class="string"><span class="delimiter">'</span><span class="content">woff</span><span class="delimiter">'</span></span>),
+       <span class="function"><span class="delimiter">url(</span><span class="content">'../fonts/fontawesome-webfont.ttf?v=4.7.0'</span><span class="delimiter">)</span></span> <span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span>(<span class="string"><span class="delimiter">'</span><span class="content">truetype</span><span class="delimiter">'</span></span>),
+       <span class="function"><span class="delimiter">url(</span><span class="content">'../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular'</span><span class="delimiter">)</span></span>
+         <span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span>(<span class="string"><span class="delimiter">'</span><span class="content">svg</span><span class="delimiter">'</span></span>);
+}</code></pre>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The <code>@font-face</code> CSS at-rule allows authors to specify online fonts to display text on their web pages. By allowing authors to provide their own fonts, @font-face eliminates the need to depend on the limited number of fonts users have installed on their computers.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Modzilla Developer Network<br>
+<cite>@font-face</cite>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">EOT, TTF, WOFF, SVG, WOFF2&#8230;&#8203;</div>
+<div class="paragraph">
+<p>Despite the huge variety of formats, there isn’t a single one that works in all browsers. This is why <em>Font-Awesome</em> have to make use of multiple font formats. If you want to know more, the blog post <a href="https://creativemarket.com/blog/the-missing-guide-to-font-formats">"The Missing Guide to Font Formats"</a> gives a brief overview of the origin and objectives of each format.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Having defined the CSS rule, we could easily use it to add icons without using any of the CSS classes defined by <em>Font Awesome</em> (Caution: not a good idea in term of code maintainability):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Font Awesome Demo<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">font-awesome-4.7.0/css/font-awesome.min.css</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;style&gt;</span>
+<span class="inline">      <span class="tag">p</span> {
+        <span class="key">font-family</span>: <span class="string"><span class="delimiter">'</span><span class="content">FontAwesome</span><span class="delimiter">'</span></span>; <i class="conum" data-value="1"></i><b>(1)</b>
+      }</span>
+    <span class="tag">&lt;/style&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;p&gt;</span>This is <span class="entity">&amp;#xf197;</span> a <span class="entity">&amp;#61847;</span> space shuttle.<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/use-font-FontAwesome.png" alt="use font FontAwesome">
+</div>
+</div>
+<div class="paragraph">
+<p>If we want to go deeper into <em>Font Awesome</em>, we need to go further on the subject of font creation. This is the objective of the next part.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom_font_creation">Custom Font Creation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="basics">Basics</h3>
+<div class="paragraph">
+<p>To begin, we will open the provided font with the same tool used by the team <em>Font Awesome</em>, <a href="http://fontforge.github.io/">FontForge</a>. To install, check the <a href="http://fontforge.github.io/en-US/downloads/gnulinux-dl/">official documentation</a>. On Ubuntu/Debian, run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>sudo add-apt-repository ppa:fontforge/fontforge;
+sudo apt-get update;
+sudo apt-get install fontforge;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once installed, launch the application by running the command <code>$ fontforge</code>. When ready, the application asks us to select the font file. Go to the <em>Font-Awesome</em> directory <code>fonts/</code> and select the file <code>FontAwesome.otf</code> (other formats could be generated using <em>FontForge</em> from this file.)</p>
+</div>
+<div class="paragraph">
+<p>The first Unicode numbers correspond to the same character as the ASCII encoding. As mentioned previously, no icons is defined for these characters &mdash; the browser fallbacks to other fonts when a character could not be found in the selected font.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-fa-ascii.png" alt="fontforge fa ascii">
+</div>
+</div>
+<div class="paragraph">
+<p>If we scroll to the bottom of the list, we finally found the <em>Font Awesome</em> icons:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-fa-special.png" alt="fontforge fa special">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="a_new_font">A new font</h3>
+<div class="paragraph">
+<p>Designing a new type is visually complex as well as highly technical. Even if it is easier to begin making type when using free tools like <em>FontForge</em>, the tasks remains challenging. Just have a look at the extensive <a href="http://designwithfontforge.com/en-US/index.html"><em>FontForge</em> documentation</a> to make your own opinion.  In this blog post, we will use a shortcoming. <em>FontForge</em> lets users who may be more comfortable designing their glyph outlines in some other vector design program (Illustrator, FreeHand, Inkscape, etc.), import them directly into <em>FontForge</em>. We are even taking it a step further: we will directly import a SVG file downloaded from the Internet. So, open your browser, go to Google Images, and enter <code>filetype:svg &lt;some keywords&gt;</code>. Download a picture of your choice. I choose the logo of the Haskell language <span class="image"><img src="/posts_resources/2017-06-25-font-awesome/haskell.svg" alt="Hashkell" width="20" height="30"></span>.</p>
+</div>
+<div class="paragraph">
+<p>Then,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Check <em>FontForge</em> is running. Launch it as before otherwise.</p>
+</li>
+<li>
+<p>Click <code>File</code> &gt; <code>Open</code> to create a new font. An empty grid appears.</p>
+</li>
+<li>
+<p>Click <code>Encoding</code> &gt; <code>Reencode</code> &gt; <code>ISO 10646-1 (Unicode, BMP)</code> to use the same encoding as <strong>Font Awesome</strong>.</p>
+</li>
+<li>
+<p>Scroll until you reach the Unicode number <code>F000</code> (in case of doubt, right-click on a glyph &gt; <code>Glyph Info&#8230;&#8203;</code>, the Unicode value is showed at the top of the dialog)</p>
+</li>
+<li>
+<p>Double-click on the glyph <code>F000</code> to open the glyph editor.</p>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-glyph-editor.png" alt="fontforge glyph editor">
+</div>
+</div>
+</li>
+<li>
+<p>Click <code>File</code> &gt; <code>Import</code> and select your downloaded picture.</p>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-import-dialog.png" alt="fontforge import dialog">
+</div>
+</div>
+</li>
+<li>
+<p>Be sure the glyph outline seems all right.</p>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-glyph-haskell.png" alt="fontforge glyph haskell">
+</div>
+</div>
+</li>
+<li>
+<p>Click <code>File</code> &gt; <code>Close</code> to close the glyph editor.</p>
+</li>
+<li>
+<p>The imported glyph should appear in the grid.</p>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-my-font.png" alt="fontforge my font">
+</div>
+</div>
+</li>
+<li>
+<p>Click <code>File</code> &gt; <code>Generate Fonts&#8230;&#8203;</code> to export our new font.</p>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/fontforge-generate-dialog.png" alt="fontforge generate dialog">
+</div>
+</div>
+<div class="paragraph">
+<p>Note: Be sure to use an output format supported by your browser. On my Debian machine with Google Chrome, I choose the <em>True Type</em> format and named the file <code>my-font.ttf</code>. If <em>FontForge</em> warns you about potential errors, try ignoring the warnings.</p>
+</div>
+</li>
+<li>
+<p>Close <em>FontForge</em>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="test_the_font">Test the font</h3>
+<div class="paragraph">
+<p>We create a new file <code>new-font.css</code> and declare the font.</p>
+</div>
+<div class="listingblock">
+<div class="title">new-font.css</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="directive">@font-face</span> {
+  <span class="key">font-family</span>: <span class="string"><span class="delimiter">'</span><span class="content">MyFont</span><span class="delimiter">'</span></span>;
+  <span class="key">src</span>: <span class="function"><span class="delimiter">url(</span><span class="content">'my-font.ttf'</span><span class="delimiter">)</span></span> <span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span><span class="error">a</span><span class="error">t</span>(<span class="string"><span class="delimiter">'</span><span class="content">truetype</span><span class="delimiter">'</span></span>);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We declare the equivalent of the classes <code>fa</code> and <code>fa-car</code>. We use the prefix <code>mf</code>, that stands for &#8220;My font&#8221;.</p>
+</div>
+<div class="listingblock">
+<div class="title">new-font.css</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.mf</span> {
+  <span class="key">font-family</span>: <span class="string"><span class="delimiter">'</span><span class="content">MyFont</span><span class="delimiter">'</span></span>;
+}
+<span class="class">.mf-haskell</span><span class="pseudo-class">:before</span> {
+  <span class="key">content</span>: <span class="string"><span class="delimiter">'</span><span class="content">\f000</span><span class="delimiter">'</span></span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a new HTML document importing this stylesheet and declaring an element having the class <code>mf-haskell</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">demo-mf.html</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!doctype html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Font Awesome Demo<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attribute-name">rel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">stylesheet</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">href</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">my-font.css</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> mf-haskell
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/demo-mf-output.png" alt="demo mf output">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="customize_the_icons">Customize the icons</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Icons added by <em>Font Awesome</em> can be easily customized — size, color, rotation, etc. To do so, <em>Font Awesome</em> uses basic CSS declarations. Let&#8217;s try some of them.</p>
+</div>
+<div class="sect2">
+<h3 id="colored_icons">Colored icons</h3>
+<div class="paragraph">
+<p>As we have seen, icons are just plain text. So, the CSS <code>color</code> property is working as usual:</p>
+</div>
+<div class="listingblock">
+<div class="title">demo-mf.html</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="tag">i</span> {
+  <span class="key">color</span>: <span class="value">DarkSlateBlue</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/demo-mf-color.png" alt="demo mf color">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="larger_icons">Larger icons</h3>
+<div class="paragraph">
+<p>To increase icon sizes relative to their container with <em>Font Awesome</em>, we use the <code>fa-lg</code> (33% increase), <code>fa-2x</code>, <code>fa-3x</code>, <code>fa-4x</code>, or <code>fa-5x</code> classes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-camera-retro fa-lg</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-lg
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-camera-retro fa-2x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-2x
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-camera-retro fa-3x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-3x
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-camera-retro fa-4x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-4x
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-camera-retro fa-5x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-5x</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As icons are just plain text, we could easily support this feature playing with the <code>font-size</code> property.</p>
+</div>
+<div class="listingblock">
+<div class="title">my-font.css</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.mf-lg</span> {
+  <span class="key">font-size</span>: <span class="float">1.33333333em</span>;
+}
+<span class="class">.mf-2x</span> {
+  <span class="key">font-size</span>: <span class="float">2em</span>;
+}
+<span class="class">.mf-3x</span> {
+  <span class="key">font-size</span>: <span class="float">3em</span>;
+}
+<span class="class">.mf-4x</span> {
+  <span class="key">font-size</span>: <span class="float">4em</span>;
+}
+<span class="class">.mf-5x</span> {
+  <span class="key">font-size</span>: <span class="float">5em</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We update our HTML document to use these classes:</p>
+</div>
+<div class="listingblock">
+<div class="title">demo-mf.html</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-lg</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span><span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-2x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span><span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-3x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span><span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-4x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span><span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-5x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span><span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/demo-mf-size.png" alt="demo mf size">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="fixed_width_icons">Fixed width icons</h3>
+<div class="paragraph">
+<p>To make all icons having the same width, we just need to define a fixed width while centering the icon inside the CSS box.</p>
+</div>
+<div class="listingblock">
+<div class="title">my-font.css</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.mf-fw</span> {
+  <span class="key">width</span>: <span class="float">1.28571429em</span>;
+  <span class="key">text-align</span>: <span class="value">center</span>;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rotated_icons">Rotated icons</h3>
+<div class="paragraph">
+<p>To arbitrarily rotate icons with <em>Font Awesome</em>, we use the <code>fa-rotate-*</code> classes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-shield</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> normal<span class="tag">&lt;br&gt;</span>
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-shield fa-rotate-90</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-rotate-90<span class="tag">&lt;br&gt;</span>
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-shield fa-rotate-180</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-rotate-180<span class="tag">&lt;br&gt;</span>
+<span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fa fa-shield fa-rotate-270</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> fa-rotate-270<span class="tag">&lt;br&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/demo-fa-rotation.png" alt="demo fa rotation">
+</div>
+</div>
+<div class="paragraph">
+<p>Using CSS 3 transformations, this feature is implemented in a few lines of code.</p>
+</div>
+<div class="listingblock">
+<div class="title">my-font.css</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="class">.mf-rotate-90</span> {
+  <span class="key">transform</span>: <span class="error">r</span><span class="error">o</span><span class="error">t</span><span class="error">a</span><span class="error">t</span><span class="error">e</span>(<span class="float">90deg</span>);
+}
+<span class="class">.mf-rotate-180</span> {
+  <span class="key">transform</span>: <span class="error">r</span><span class="error">o</span><span class="error">t</span><span class="error">a</span><span class="error">t</span><span class="error">e</span>(<span class="float">180deg</span>);
+}
+<span class="class">.mf-rotate-270</span> {
+  <span class="key">transform</span>: <span class="error">r</span><span class="error">o</span><span class="error">t</span><span class="error">a</span><span class="error">t</span><span class="error">e</span>(<span class="float">270deg</span>);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We update the HTML document to exploit the last two sections:</p>
+</div>
+<div class="listingblock">
+<div class="title">demo-mf.html</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-2x mf-fw</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> mf-haskell<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-2x mf-fw mf-rotate-90</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> mf-haskell<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-2x mf-fw mf-rotate-180</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> mf-haskell<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="tag">&lt;i</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mf mf-haskell mf-2x mf-fw mf-rotate-270</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;/i&gt;</span> mf-haskell<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2017-06-25-font-awesome/demo-mf-rotation.png" alt="demo mf rotation">
+</div>
+</div>
+<div class="paragraph">
+<p>This ends the part devoted to the icons customization and this post too.</p>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Congratulations!</div>
+<div class="paragraph">
+<p>We have build a minimal but functional version of <em>Font Awesome</em> (with just one icon but that&#8217;s a good start!). If you want to go further:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Why not try to create our own custom font using only <em>FontForge</em> editor.</p>
+</li>
+<li>
+<p>Why not inspect the other possible customizations such as stacked icons, animated icons, bordered icons.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

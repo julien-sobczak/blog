@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Clean Code Obsession</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2021/05/04/clean-code-obsession.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">May 04, 2021</span>
+
+      
+      <a href="/tags/craftsmanship" class="label">
+      Craftsmanship
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Clean Code Obsession</h2>
+      
+      <h3>Why Worshipping Cleanliness Is Wrong</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="paragraph lead">
+<p>Clean code is code that is easy to understand and easy to change. Writing such code is not easy and goes well beyond one of the most difficult problems in programming—naming things.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> You need to integrate general principles—<a href="https://en.wikipedia.org/wiki/KISS_principle" title="Keep It Simple, Stupid">KISS</a>, <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" title="Don&#8217;t Repeat Yourself">DRY</a>, <a href="https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it" title="You aren&#8217;t gonna need it">YAGNI</a>, low-level principles—<a href="https://en.wikipedia.org/wiki/Single-responsibility_principle" title="Single-responsibility principle">SRP</a>, <a href="https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle" title="<a href="" title=">OCP</a>, <a href=">LSP</a>, and sometimes, the principles differ between your production code and your tests (<a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" title="Don&#8217;t Repeat Yourself">DRY</a> vs <a href="https://testing.googleblog.com/2019/12/testing-on-toilet-tests-too-dry-make.html" title="Descriptive and Meaningful Phrases">DAMP</a>). And we are not even talking about patterns (GoF, P of EAA, POSA, DDD), architecture styles (microservices, hexagonal architecture), and deployment best practices. Writing clean code is hard, and as important as it is, it must not become an obsession.</p>
+</div>
+<div class="sect1">
+<h2 id="the_origin_of_clean_code_obsession">The Origin of Clean Code Obsession</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s begin by visualizing the main obstacles of clean code.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-05-04-clean-code-obsession/clean-code-obsession-illustrated.png" alt="A peak representing clean code" width="surrounded by two cliffs. On the left" height="the peak of fragility with legacy code on the bottom. On the right">
+</div>
+</div>
+<div class="paragraph">
+<p>Any program gets more and more complex over time. The larger the program, and the more people that work on it, the more difficult it is to manage complexity. Clean code is a solution to reduce this complexity and add more and more features to the program. But <a href="/write/2021/03/24/common-sense-doesnt-make-sense.html">what means clean code is not obvious</a> in practice. Many things can go wrong along the way&#8230;&#8203;</p>
+</div>
+<div class="sect2">
+<h3 id="the_cliff_of_fragility">The Cliff of Fragility</h3>
+<div class="paragraph">
+<p>The cliff of fragility is the land of too many "yes." "Yes" to new features on top of weak foundations. "Yes" to tight deadlines. "Yes" to features that users will not use. "Yes" to pull requests failing to document the code with automated tests. Etc.</p>
+</div>
+<div class="paragraph">
+<p><strong>You know that you have entered the world of fragility when developers are moving from the code, and new developers work hard to avoid changing it.</strong> You can no longer integrate new features. It&#8217;s not clean code. It&#8217;s legacy code.</p>
+</div>
+<div class="paragraph">
+<p>Legacy code is so scary that developers may be tempted to run as far as possible in the opposite direction, but that situation is not much better&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_cliff_of_rigidity">The Cliff of Rigidity</h3>
+<div class="paragraph">
+<p>The cliff of rigidity is the land of too many "no." "No" to new features so that you can migrate your code to the latest popular framework. "No" to intuitive interfaces so that you can keep the number of lines in the front code low. "No" to business rules so that you can keep your code simple. "No" to merge requests missing a single unit test even when there are already too many. Etc.</p>
+</div>
+<div class="paragraph">
+<p><strong>You know that you have entered the world of rigidity when developers are talking more about clean code than about the meaning of these lines of code.</strong> Developers start to develop an obsession with clean code. You can no longer integrate new features, not because the code is not "clean," but because you spend your time elsewhere. It&#8217;s not clean code. It&#8217;s useless code.</p>
+</div>
+<div class="paragraph">
+<p>The challenge is thus to navigate between these two extremes. Since clean coders love code, here is a definition of clean code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">function</span> <span class="function">maintainable</span>() {
+  <span class="keyword">return</span> respectNamingConventions() &amp;&amp;
+         followSOLIDPrinciples() &amp;&amp;
+         followPatternsThatDevelopersFindRelevant();
+}
+<span class="keyword">function</span> <span class="function">usable</span>() {
+  <span class="keyword">return</span> implementAllFeaturesUsersNeedToDoTheirJob() &amp;&amp;
+         isUserFriendly() &amp;&amp;
+         followingAccessibilityStandards() &amp;&amp;
+         haveAcceptablePerformance();
+}
+
+<span class="keyword">function</span> <span class="function">isLegacyCode</span>() {
+  <span class="keyword">return</span> !maintainable() &amp;&amp; usable();
+}
+<span class="keyword">function</span> <span class="function">isRigidCode</span>() {
+  <span class="keyword">return</span> maintainable() &amp;&amp; !usable();
+}
+<span class="keyword">function</span> <span class="function">isCleanCode</span>() {
+  <span class="keyword">return</span> maintainable() &amp;&amp; usable();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this article, I will focus on the clean code obsession depicted on the right side of the illustration. Legacy code is much easier to detect, and I cannot imagine a sane developer developing an obsession for legacy code.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_symptoms_of_clean_code_obsession">The Symptoms of Clean Code Obsession</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>So, when clean code stops being clean code? This section presents the seven deadly sins of clean code, using everyday situations to help you identify when you are crossing the line.</p>
+</div>
+<div class="sect2">
+<h3 id="symptom_1_when_you_use_principles_as_rules">Symptom 1: When you use principles as rules</h3>
+<div class="paragraph">
+<p><em>Example (DRY)</em>: You know code duplication is wrong and thus track down every single occurrence to refactor it. <strong>You&#8217;re wrong</strong>. <a href="https://overreacted.io/goodbye-clean-code/">Not all code duplications are bad</a>. If two functions are similar but are expected to evolve differently, this is not a code duplication. Similarly, since tests don&#8217;t have tests, a little code redundancy can make your tests more readable and more obviously correct (which can be helpful 😀). <a href="https://testing.googleblog.com/2019/12/testing-on-toilet-tests-too-dry-make.html">This DAMP principle (Descriptive and Meaningful Phrases) originated at Google</a> and is not incompatible with the DRY principle, except if you consider the DRY principle as a rule.</p>
+</div>
+<div class="paragraph">
+<p><em>Example (YAGNI)</em>: You know that implementing features before you actually need them is wrong and thus refuse to even talk about them. <strong>You&#8217;re wrong</strong>. Future requirements are like the future, unpredictable, but some of them are a lot more likely. Using YAGNI as a rule, and ignoring even what you already know, will cause huge refactoring later and result in a poor design.</p>
+</div>
+<div class="paragraph">
+<p><strong>Principles are not rules</strong>. You must use your judgment to determine when a principle applies and when it doesn&#8217;t.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="symptom_2_when_you_set_arbitrary_rules">Symptom 2: When you set arbitrary rules</h3>
+<div class="paragraph">
+<p><em>Example</em>: You know unit tests are essential and thus impose 90 percent of code coverage for every class. <strong>You&#8217;re wrong</strong>. Not all classes are easily testable and some of them are better covered using other types of tests. If you try stubbornly to reach your target, chances are your code will be hard to change, maybe even harder than in the absence of tests. (Especially if you have another arbitrary rule like a unit test must test a single function.)</p>
+</div>
+<div class="paragraph">
+<p><strong>No rules rules</strong>.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> Especially rules using arbitrary values—no more than <em>500</em> lines per file, only <em>one</em> web component per file, no <em>more than 10</em> for the cyclomatic complexity of a function, <em>no</em> comments in code, use mocks for <em>all</em> dependencies, &#8230;&#8203; These "rules", often enforced by static code analysers, are just hints, opportunities to engage a discussion on the code. When used as rules, they must never be followed blindly or set in stone.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">We Love Rules.</div>
+<div class="paragraph">
+<p>The truth is rules are comfortable as we don&#8217;t have to think. Testing <em>every function</em> is easier in practice than testing <em>the smallest piece of testable software for which an observable result exists</em>, but things don&#8217;t work like that. You have to think hard to make your code easy to maintain. <strong>Rules don&#8217;t make us think. Rules don&#8217;t create clean code.</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="symptom_3_when_you_ignore_functional_requirements">Symptom 3: When you ignore functional requirements</h3>
+<div class="paragraph">
+<p><em>Example</em>: You are proud of your web application optimized for desktop, but your users are using their smartphones more and more. Supporting mobile devices isn&#8217;t easy. It means implementing responsive interfaces, supporting new devices, and versioning the API as you may no longer control the clients to force an upgrade. It means more lines of code. Your clean code is in danger. <strong>You&#8217;re wrong</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Clean code is code that meets functional requirements.</strong> Of course, ignoring some functional constraints can make your code cleaner, but if your users stop using your application as a consequence, it&#8217;s just useless code.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="symptom_4_when_you_value_simplicity">Symptom 4: When you value simplicity</h3>
+<div class="paragraph">
+<p><em>Example</em>: You know simplicity is important to keep your code clean, and thus are reluctant to add code that will make it more complicated. <strong>You&#8217;re wrong</strong>. <a href="/write/2020/02/23/simplicity-is-not-simple.html">Simplicity is not simple</a>. For example, the Google search engine uses a single text field to search for anything&#8212;&#8203;a website, a location, an image, but also the latest trends, your next flight, the real-time stock info, or even the result of a calculation. <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/googlecluster-ieee.pdf">The code behind this form is not simple</a> but being simple to use makes this complicated code so valuable.</p>
+</div>
+<div class="paragraph">
+<p><strong>Clean code is not simple code but simpler code</strong>. Clean code reduces code complexity but does not remove it completely. There is always a user for your code. It can be a human or another program, and you must care about <a href="https://overreacted.io/what-are-the-react-team-principles/">simplicity from their viewpoints, not yours</a>. Returning user-friendly error messages is not simple. Responding under a few hundred milliseconds is not simple. Offering intuitive interfaces is not simple. But it is not because the code is complicated that it cannot be clean too. You can, for example, encapsulate the complexity in a module that you will not have to touch for a long time.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="symptom_6_when_you_expect_too_much_from_frameworks">Symptom 6: When you expect too much from frameworks</h3>
+<div class="paragraph">
+<p><em>Example</em>: You have developed your web application following React best practices until the release of React 16.8, which introduced hooks, a new way to write your components using simple functions instead of classes. You cannot wait to rewrite your code to use hooks and interrupt the current sprint to make your code clean again. <strong>You&#8217;re wrong</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Frameworks don&#8217;t make clean code</strong>. Frameworks are often the implementations of a few patterns to reduce boilerplate code from your codebase. Frameworks limit the number of lines of code you need to write, which is great to keep your code more maintainable but is unrelated to clean code. You can write clean code without any framework at all.</p>
+</div>
+<div class="paragraph">
+<p>In fact, <a href="https://css-tricks.com/how-the-web-is-really-built/">most of the web is still running on old, stable technologies</a>. More than 80% of websites are still using jQuery in 2020 when only 4% of all websites are coded in React. Most of the sites we use every day aren&#8217;t written with the latest technologies either. But they provide the most value, and as they exist for a long time, their codebase should probably be considered clean.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="symptom_5_when_you_use_binary_thinking">Symptom 5: When you use binary thinking</h3>
+<div class="paragraph">
+<p><em>Example</em>: You are starting a new job and are reading the codebase for the first time. You quickly notice something that looks unnecessarily complicated and think it must be refactored. Worse, <a href="https://overreacted.io/goodbye-clean-code/">you are starting the refactoring even without talking about the developers that wrote it</a>. <strong>You&#8217;re wrong</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Code is not clean or dirty</strong>. A pattern is not correct or wrong. A framework is not great or obsolete. Your code is maybe running on binary machines, your thinking doesn&#8217;t have to follow the same rules. All-or-nothing thinking is what is pushing you to the dangerous extremes depicted by the previous illustration. There may be good reasons to explain how the code looks like, and you need to understand them before making your judgment. You need to stop viewing code in black and white because your application runs in a world made of shades of grey.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="symptom_7_when_clean_code_is_a_goal">Symptom 7: When clean code is a goal</h3>
+<div class="paragraph">
+<p><em>Example</em>: You are reviewing a Pull Request and focus most of your attention on the naming, the number of lines of code, the code coverage, the formatting rules. <strong>You&#8217;re wrong</strong>. What about the usability of your code? Can the API be more simple even if that means a more complicated code? Is the UI user-friendly? In short, do you have better ideas to make the feature even greater?</p>
+</div>
+<div class="paragraph">
+<p><strong>Clean code is not a goal, only part of the solution</strong>. Your code must be clean but also correct, secure, reliable, obvious, efficient, consistent, performant, and so much more. If your code runs in a plane at 30,000 feet, you must care more about writing robust code than clean code, even if both are somewhat related. The end goal is always to ship features.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_remedies_for_clean_code_obsession">The Remedies for Clean Code Obsession</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="learn_more_about_clean_code">Learn more about clean code</h3>
+<div class="paragraph">
+<p>If you are obsessed with clean code, you have probably not explored the subject enough. You may have read the book <em>Clean Code</em>, which is excellent but is only a good introduction. You need to read a lot more. Books such as <em>A Philosophy of Software Design</em> and <em>Domain-Driven Design</em> will teach you that clean code is not just code that looks beautiful. Learning is essential to think clearly about clean code. <strong>The more you will learn about clean code, the more you will understand how hard it is to define clean code</strong>. There are constraints to satisfy and compromises to make everywhere. For example, patterns have pros and cons, and are best applied in some contexts but are still useful in others. <strong>Your definition of clean code must be objective.</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="read_more_code">Read more code</h3>
+<div class="paragraph">
+<p>If you are obsessed with clean code, you have probably not read enough code. In the same way that you cannot know if a book is great if it&#8217;s the only one you have read, <strong>you need to read a lot of code to determine if your code is clean</strong>. OSS is a wonderful source of inspiration. <a href="https://github.blog/2018-11-08-100m-repos/">There are more than 100 millions repositories on GitHub</a>, written by more than 30 millions of developers having contributed more than a billion times in them. That&#8217;s a lot of code to read. If you read the source of popular OSS projects closely, you will discover that some principles are violated, some functions are poorly documented, some features are not correctly tested, some FIXMEs are still present, and also that some code looks too complicated, at first. And yet, the code is widely used in production and was probably written by developers better than you and me. <strong>Your definition of clean code must match reality.</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="think_more_globally">Think more globally</h3>
+<div class="paragraph">
+<p>If you are obsessed with clean code, you have probably forgotten why you are writing the code in the first place. You need to understand how your code makes the life of your users easier. We don&#8217;t write code to have clean code. An acceptable code will always be better than a "perfect" code waiting in a pull request for weeks or months because you are polishing every detail. <a href="https://www.joelonsoftware.com/2009/09/23/the-duct-tape-programmer/">Shipping is a feature</a>. Of course, you must ship code that you can be proud of, but that does not mean everything has to be perfect. Use your energy to create the best product and not just the best code. <strong>Your definition of clean code must include its purpose.</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="one_last_word">One Last Word</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Good developers know clean code is important. Great developers know there is something more than just clean code</strong>. Too much of anything is never any good. If you are obsessed about clean code, you need to learn more about it to think less about it. Code isn&#8217;t written to be stored in repositories but run on servers and used by users. Clean code must make the software development process more enjoyable. Clean code must make the shipping of new features more frequent. If it isn&#8217;t, no matter what you think of your code, it&#8217;s probably not a great example of clean code.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. There are only two hard things in Computer Science: cache invalidation and naming things.—Phil Karlton <a href="https://martinfowler.com/bliki/TwoHardThings.html" class="bare">https://martinfowler.com/bliki/TwoHardThings.html</a>
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. I must quote my inspiration for this one on the eponymous book co-written by Reed Hastings, CEO of Netflix.
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

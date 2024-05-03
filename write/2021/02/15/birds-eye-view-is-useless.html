@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>A Bird's-Eye View Is Useless if You Cannot Land on Your Feet</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2021/02/15/birds-eye-view-is-useless.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">February 15, 2021</span>
+
+      
+      <a href="/tags/management" class="label">
+      Management
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>A Bird's-Eye View Is Useless if You Cannot Land on Your Feet</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Details create the big picture.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Sanford I. Weill<br>
+<cite>American banker</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>I observe too often people navigating inside a company like a plane flying at a certain altitude. The developers are working on the ground when the CEO is adopting the 30,000-foot view, the famous Big Picture. Between these two extremes, a crowd of managers is filling the air space, flying at 1,000 feet, 5,000 feet, 10,000 feet based on their position in the organizational chart. That&#8217;s stupid. Commercial airliners are maybe flying at 30,000 feet; they still have to land. That&#8217;s true for you too.</p>
+</div>
+<div class="sect1">
+<h2 id="the_perils_of_the_worms_eye_view">The perils of the Worm&#8217;s-eye view 👎</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many developers excel at solving problems. It makes sense that you want to find a solution to every one of your problems. But implementing a solution that is not optimal will lead you to new problems that you will solve the same way, without never taking the time to consider the global situation to find a correct solution.</p>
+</div>
+<div class="paragraph">
+<p>For example, you may start deploying your application on a virtual machine using a configuration management tool like Ansible. Over time, your playbook becomes more and more complex. You deploy your application in a new environment and add new variables to condition some configuration parts. The YAML configuration files grow, and you start to use advanced syntaxes to overcome the limitations of the tool. The code is less and less maintainable, but you still find workarounds for every new problem. It works.</p>
+</div>
+<div class="paragraph">
+<p>Now, imagine other developers in different teams deploying using the same approach. Everyone is doing the same thing. Everyone is adding commands to keep packages up-to-date. Everyone is improving their architecture to make their application more resilient. Everyone is collecting system metrics to prevent incidents. None of these problems is hard to solve. But if you step back and look at the overall picture, it does not look great. Every team solved the same problems when the best approach was to find a solution to prevent this duplication of effort.</p>
+</div>
+<div class="paragraph">
+<p><strong>The worm’s eye view alone is not enough.</strong> Local optimizations always mean suboptimizations.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_perils_of_the_birds_eye_view">The perils of the Bird&#8217;s-eye view 👎</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many managers excel at never touching the ground. They use their 30,000-foot view to skim over details as a way to cover up their lack of knowledge on the subject. Their incompetence makes things so blurry that they even stop seeing the ground and are effectively 30,000 feet above reality. We don&#8217;t need that. Moving up the corporate ladder is not an excuse to stop bothering with lower-level problems.</p>
+</div>
+<div class="paragraph">
+<p>Indeed, not being able to stand on the ground is dangerous. It&#8217;s like flying in a hot air balloon, carried by the winds without controlling the direction. You may have a bird&#8217;s-eye view and a large vision, it&#8217;s not very helpful. Innovation happens when you face real-world problems using a new approach. Innovation must not be easy. It&#8217;s going against the winds. You can&#8217;t do that if you are stuck in your balloon.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-birds-eye-view-is-useless/balloon.png" alt="balloon">
+</div>
+<div class="title">Figure 1. A landscape with developers on the ground and managers drifting in hot air balloons without any control of the direction.</div>
+</div>
+<div class="paragraph">
+<p>Over time, management will look like a giant balloon meeting. There will be balloons everywhere in the sky, all drifting in the same direction. If you are one of those managers, you should not be surprised if employees on the ground look at you with curiosity but aren&#8217;t going to trust you for the direction and the vision.</p>
+</div>
+<div class="paragraph">
+<p><strong>The bird’s eye view alone is not enough.</strong> The big picture is useless if the details are blurry.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="worms_eye_view_birds_eye_view">Worm&#8217;s-eye view + Bird&#8217;s-eye view = 💪</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Whatever your title or position in your organization, you need to think using a worm&#8217;s-eye view AND a bird&#8217;s-eye view. You need both to solve the right problems with the right solutions.</p>
+</div>
+<div class="paragraph">
+<p>The challenge is not just to adopt a bird&#8217;s-eye view but to act like a bird. You must be able to fly high and stand firmly on your feet. You must be an eagle soaring high in the air, ready to swoop down on your prey running on the ground.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-birds-eye-view-is-useless/jetpack.png" alt="jetpack">
+</div>
+<div class="title">Figure 2. The same landscape where all employees are using a jetpack to observe the world from different perspectives.</div>
+</div>
+<div class="paragraph">
+<p><strong>The Big Picture is a giant jigsaw. You must collect the pieces on the ground and understand how they fit together.</strong></p>
+</div>
+<div class="paragraph">
+<p>What that means in practice differs according to your professional domain. In this section, I will focus on tech companies whose principal asset is often a SaaS product.</p>
+</div>
+<div class="paragraph">
+<p>For example, <strong>as a developer</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You don’t need to know how to solve every programming problem at your company, <em>but</em> you have to ask yourself if the problem you are trying to solve could not be better addressed at a more global level.</p>
+</li>
+<li>
+<p>You don&#8217;t need to know how to code in all programming languages used in your company, <em>but</em> you need to understand in which context each language excels to choose wisely what is best for the company, and not just what is best for our convenience.</p>
+</li>
+<li>
+<p>You don’t need to know your customers, <em>but</em> you need to understand how your code helps them get their job done so that you can consider what you could do even better.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, <strong>as a manager</strong> (VP/CEO/Executive/Product Manager/…):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You don&#8217;t need to know how to write a Dockerfile, <em>but</em> you have to understand what containers are (simple processes using Linux mechanisms to provide isolation) to understand why migrating your application to containers will save you resources.</p>
+</li>
+<li>
+<p>You don&#8217;t need to know that Golang supports variadic functions, <em>but</em> you have to understand that the Go runtime has a small memory footprint and includes modern concurrency primitives to exploit your resources efficiently.</p>
+</li>
+<li>
+<p>You don&#8217;t need to know which framework is used to create microservices, <em>but</em> you have to understand how microservices allow your teams to scale horizontally and the technical challenges that such an architecture raises (the fallacies of distributed computing, the importance of observability, the standardization of deployments, etc.).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are just a few examples. There are many more to know. You may think this is absurd and that employees are more effective when they focus on their immediate work. But it just doesn’t work. A manager will not support an initiative that he does not understand. And a developer will resist change if he does not understand why he needs to learn something new.</p>
+</div>
+<div class="paragraph">
+<p>In the end, every decision is a technical and business decision. You may debate how to reorganize your teams; the core problem is how to group employees so that their skills are better aligned to create a better product. You may debate which frameworks to use; the core problem is to decide which will contribute to a better product. Developers must understand the business orientation <em>and</em> managers must understand the technical challenges. The worm’s-eye view and the bird’s-eye view are two sides of the same coin.</p>
+</div>
+<div class="paragraph">
+<p>Remember that you can’t appreciate the beauty of the earth simply by looking out an airplane window. You don’t see more with distance. You just see differently. At 30,000 feet, it’s often just clouds.</p>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2021/02/15/your-organizational-chart-lies.html">Your Organizational Chart Lies</a>
+
+          
+            <a href="/tags/management"
+              class="label">
+              Management
+            </a>
+          
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

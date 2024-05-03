@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Book or Ebook?</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2019/01/05/book-or-ebook.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">January 05, 2019</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+      <span class="label">
+        Reading
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Book or Ebook?</h2>
+      
+      <h3>An honest comparative between two really different supports</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Books are no more threatened by Kindle than stairs by elevators.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Stephen Fry<br>
+<cite>English comedian</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>Books and e-readers have advantages and inconvenients. Instead of trying once again to elect a winner, I will compare them and show they are not incompatible.</p>
+</div>
+<div class="paragraph lead">
+<p>I often hear people having never try an e-reader say they prefer to read on paper. On the opposite, I always hear people having bought an e-reader say they will never return (exclusively) to paper books. The fact is today in US, more people are reading electronic books than printed volumes.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> If e-readers are so good we can&#8217;t ignore them, paper books still have their word to say, hence we can&#8217;t ignore them completely.</p>
+</div>
+<div class="sect1">
+<h2 id="electronic_books">Electronic Books</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s begin with the new contestant, ebooks, which comes with solid arguments, a prerequisite to challenge millenia-old paper books.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>E-readers</em> are lightweight (6 ounces for a 6-inch reader vs 12 ounces for a book), and let you turn the pages by tapping the left or right side of the screen. So, <strong>you can read a book with just one hand</strong>, and this makes a huge difference. You can read while lying on your side in bed, you can read in public transports while using your other hand to secure your messenger bag, you can read comfortably while holding a pencil to take notes, and you can even read when you’re eating! In addition, as your e-reader will easily fit in your handbag, you will have plenty of opportunities to read more. You are not wasting your time any more. Your train is delayed this morning, no problem, open your e-reader, which, by the way, always start instantly.</p>
+</li>
+<li>
+<p><em>E-readers</em> have a large memory (and ebooks are relatively small), enough to <strong>hold with you hundred of books</strong>. As soon as you finish a book, just click on the next one to continue the reading, even if sometimes too many books make the choice harder (personally, I love browsing the catalog to select my next book). Furthermore, ebooks don’t exists physically. You can have your dream library even when living in a tiny apartment. And relocation sucks when your bookshelf is full of books to carry with you.</p>
+</li>
+<li>
+<p><em>E-readers</em>, with their lit screens, <strong>make reading as comfortable as possible</strong>, under any conditions. Pages are perfectly flat, always white, with enough contrast, so you can read in total darkness with completely no shadow. The backlight is not aggressive for the eyes, unlike the blue light emitted by tablets that are known to disturb sleep.</p>
+</li>
+<li>
+<p><em>E-readers</em> make freely accessible the <strong>tens of thousands of books in public domain</strong>. A dictionary is also included to access a word definition, just by tapping on it. A good way to read old books or immerse yourself in foreign literature.</p>
+</li>
+<li>
+<p><em>E-readers</em> protect your <strong>privacy</strong>. The book cover is not visible on the back of the device. This may seem stupid as argument but I really appreciate it, especially in public transports. Nobody needs to know what you&#8217;re reading. You can safely read books about meditation, religion, health, sleep, personal development without someone judging you.</p>
+</li>
+<li>
+<p>There are also smaller differences that do not make a huge difference. You don&#8217;t need a bookmark as the e-reader saves your position in every started book. You can adjust the look (font, size, margins, etc), something persons with disabilities will really appreciate.</p>
+</li>
+<li>
+<p>Not an advantage, but something worth mentioning, e-readers are different from your phone. Don&#8217;t worry about the battery life, e-readers are not voracious creatures and you will be able to read several books before having to find an electric plug. Furthermore, there are affordable and durable. My e-reader is slowly approaching its fifth anniversary and I don&#8217;t have a plan to find him a successor any time soon. You don&#8217;t need to buy a high-end product to read fiction books, but if you read nonfiction books like software development books, you may benefit from a larger screen.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Tablets are not a-readers!</div>
+<div class="paragraph">
+<p>Tablets have a larger screen, rich color capabilities, support more formats than any e-reader, but tablets suck for reading. The battery will let you read only one book, the blue light emitted causes eye fatigue, and more importantly, they include too many distractions to stay focused on your book. <em>“I will mark this new mail as read”, “Someone mentions me in a Facebook publication”, “I still haven’t blocked this application that flood me with notifications”</em>. <strong>Interruptions are omnipresent when using a tablet</strong> (or a computer). Most applications are fighting for your attention (the more you use them, the more they are valuable in the eyes of investors). Don&#8217;t try to read ebooks on tablet to determine if you will buy an e-reader. They are incomparable and you will be disappointed. I only use my tablet to read very specific kind of ebooks (comics, photography books).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="paper_books">Paper Books</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Despite the previous long list of undeniable advantages for ebooks, books have not yet said their last word. And probably will never do.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Paperback or Hardcover?</div>
+<div class="paragraph">
+<p>This question arises when you are buying a book: should I pay more for the hardcover edition? The difference goes well beyond the price (hardcovers are 10-15$ more expensive for fiction and the difference can increase up to 30-50$ for nonfiction).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Hardcovers</strong>, aka hardbacks, are larger, heavier, mainly due to the rigid cover and the thicker paper, <strong>designed to stand the test of time</strong>. Paperbacks will start becoming yellowish after a few decades (the paper of hardcovers has a neutral pH value of 7 to avoid this natural damage), and the cover may start to dematerialize with the pages, as they are held together by glue. Paperbacks are, however, easier to carry with you, something appreciable when commuting.</p>
+</li>
+<li>
+<p>Hardcovers allow the books to <strong>lie flat on a surface</strong> when opened, a good point to study. The text is often printed larger, and may be enriched with illustrations, and extra content, compared to the paperback edition.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So, if you are a collector, accepts the more expensive price and buy hardcovers. If the book content will quickly become obsolete, don’t invest in high quality printing and go for the paperback. Last, if the book have just been released, you have no choice, since most publishers release new publications as hardcovers, a few months before their parution in paperback format.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Books</em> are real objects, with a specific size, a weight that differs according the number of pages. You develop a <strong>special relation</strong> with it. I was awaken more than once by heavy books that fell on my head when feeling sleepy. In addition, paper books are superior when it comes to let you know your place in a book. Some e-readers display the remaining time until the end of the chapter, but you can&#8217;t feel the pages slowly decreasing under your right thumb.</p>
+</li>
+<li>
+<p><em>Books</em> have margins for you to annotate, you can stick post-its on it, or highlight key ideas with a marker. Physical books make <strong>easier to read more actively</strong>. E-readers support annotations, but it&#8217;s slow, and far too rigid, at least for now.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> You need to take notes in another way. Personally, I sometimes draw mind maps, add new flashcards, or create notes in Google Keep as alternatives when reading ebooks. Author Ryan Holiday is a fervent advocate of physical books (and of physical <a href="https://ryanholiday.net/the-notecard-system-the-key-for-remembering-organizing-and-using-everything-you-read/">note cards</a>), to annotate the pages, organize the books on his bookshelves, and thus get more intimate with the books he read. This works very well for him but there are drawbacks you need to accept if you follow his lead. For example, he carries regularly in his luggage close to ten books when in <a href="https://www.instagram.com/p/BqOWAhehIY0/">vacation</a>.</p>
+</li>
+<li>
+<p>Ebooks are green-friendly, but e-readers aren&#8217;t. According to an <a href="https://goodereader.com/blog/electronic-readers/are-e-readers-environmentally-friendly">excellent article</a> on the subject, if you are not an avid reader, <strong>books can be a greener alternative</strong>, particularly if you borrow them from a local library (you have to buy more than 50 books to start having a positive impact with your e-reader).</p>
+</li>
+<li>
+<p><em>Books</em> can be shared with friends and are the <strong>perfect gift for book lovers</strong>. Offering an electronic book is not a widespread practice (you will instead buy an electronic gift card, but you are not choosing the book any more). Books can be traded, or resold after reading them. In comparison, the price of ebooks is only around 20 percent off, and don’t hope to resell them. You are not buying a book, you are buying words, so don’t buy an e-reader to save money.</p>
+</li>
+<li>
+<p><em>Books</em> are seen by many as treasures, but strangely enough, <strong>no one will steal a book</strong> left on the beach when you are swimming. I would not advise you to reproduce the experiment with your e-reader. When going outdoor, it&#8217;s safer to take with you a book or a magazine.</p>
+</li>
+<li>
+<p><em>Books</em> can be <strong>works of art</strong>, which pixels will never duplicate, at least not in this form. There are many kind of books outside fiction literature. Photography books are optimized for a particular book size, with very specific paper to make colors alive. Comics have also a standard page size, that if you try to read them on an another medium, you lost a part of the creative process. There are a few attempts to bring comics to e-readers, through new numeric format (cbr), but E-ink is still limited to black &amp; white .<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup> The fact is many books come alive only through a physical medium. Visit your national library to feel the beauty of ancient books.</p>
+</li>
+<li>
+<p>Last, research appears to lean towards paper.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup>. Reading on paper may boost retention, while reading an ebook before bedtime decreases the production of melatonin, a hormone that preps the body for sleep.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnotedef_5" title="View footnote.">5</a>]</sup>. In my experience, I didn’t  observe significant differences. I forgot most of what I read, paper or not, therefore I use techniques like flashcards to solve the problem more efficiently than just hope for the support to make a real difference. Moreover, I still struggle to stay awake when reading at night. Different supports, same results for me.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">What about Speed Reading?</div>
+<div class="paragraph">
+<p>Most readers average between 150 and 200 words per minute (wpm). The six time world champion Anne Jones is recorded for 4200 wpm. You may be skeptical of such performance, but the truth is, all readers can aim to double or triple their reading speed with practice. There are numerous books on the subject, some written by highly respected authors (former US president Theodore Roosevelt figures among the famous examples of speed readers). In practice, speed readers uses several techniques, like previewing the content, using a hand as a metronome to impose the pace of reading, reading multiple words for each eye fixation. In addition, you better had turn the pages very quickly to reach such performance. In short, speed reading imposes additional constraints.</p>
+</div>
+<div class="paragraph">
+<p><strong>E-readers was not designed with speed reading in mind</strong>. Previewing chapters is hard, if not impossible with current e-readers. You can’t flip through the pages quickly to have a glimpse at what is awaiting you in the next pages. Amazon, with its <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=201852380"><strong>Word Runner</strong></a>, helps you read while minimizing eye movements, but this represents only an insufficient and anecdotal part of the solution.</p>
+</div>
+<div class="paragraph">
+<p>Personally. I’m not a speed reader (I read around 300 wpm). In my opinion, high-end e-readers, with their faster processors, are a workable solution to reach 1000 wpm, but do not expect to go much further. I may be wrong on that.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ebooks_are_not_just_about_reading">Ebooks are not just about reading</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Electronic books create truly new possibilities. One click lets you start the reading of any book immediately on your kindle. There is no shipping (just a file downloading). You can even continue the story by switching seamlessly between reading and listening.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnotedef_6" title="View footnote.">6</a>]</sup> <strong>Ebooks already reinvented the reading experience</strong> and this is just the beginning. What follows are a few examples to measure the concrete impact of ebooks in literature.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>E-readers can already detect which parts of the book you read fast, or which page you took a break. Author Yuval Noah Harari, in <strong>Homo Deus</strong>, claims that e-readers may be upgraded with face recognition and biometric sensors to know what made you laugh, what made you sad and what made you angry&#8201;&#8212;&#8201;very precious information for the author (and also for Amazon and its recommendation system). "Books will read you while you are reading them", says Harari. Big brother is reading you.</p>
+</li>
+<li>
+<p><strong>Self-publication has never being so easy</strong> since the democratization of ebooks. New platforms like Leanpub help authors create, publish and sell quality in-progress and completed ebooks, with advantageous royalties. As a consequence, self-published authors are free to produce niche work without worrying about where it will sit on the shelves of local bookstores. Ebooks contribute to expand literature in new directions.</p>
+</li>
+<li>
+<p>Anywhere you live, when you enter a local bookstore, you are immediately surrounded by tons of books, but if you look a little closer, there is a high probability all of these books come from only a few countries in the world. The situation is different online with booksellers like Amazon and their millions of referenced books, but similarly, if we look closely, diversity is still disappointing. The reality is making all books published on earth accessible to anyone is a huge challenge, but with the Internet, <strong>ebooks can be easily published, and made accessible to billions of human beings</strong>. The promise of <a href="https://en.wikipedia.org/wiki/World_literature">universal literature</a>, devised by Goethe and which consists of the full circulation of words far behind the border of their countries, will maybe become possible two centuries later thanks to ebooks.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In essence, ebooks bring us closer to what reading is about: the transfer of knowledge, ideas, stories from one person, the author, to a large audience, the readers. Words are important, pages are not, as are the layout, the paper, the cover, etc. <strong>Ebooks connect new authors with new readers in a way that would not have been possible with physical books</strong>. That does not mean we will all have to abandon the physical medium. The New York Public Library was the first to make available, in 2007, an Espresso Book Machine to let you print a physical bounded book from any electronic book.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnotedef_7" title="View footnote.">7</a>]</sup> This way, electronic books would become the universal storage format for widely adoption, with local print-on-demand services to ensure physical books, with their particular smell, will continue to furnish our shelves.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On a practical side, e-readers created a whole new reading experience. Accessibility to books has never been easier. But ebooks are more than just a new medium, there are a new way to share information widely. Book publishing is facing a revolution, which aims to replace the centralized distribution of physical books by a fully decentralized distribution model, bringing authors and readers as close as possible.</p>
+</div>
+<div class="paragraph">
+<p>Ebooks are the most promising future to reach universal literature, where words do not have frontiers, and ideas can spread instantly. I imagine a world where books written in any language will be available right since their publication for any people of the world, in his native spoken language.</p>
+</div>
+<div class="paragraph">
+<p>Although I read almost exclusively on my e-reader nowadays, I still feel this mysterious sensation when entering a bookstore. Books changed the world, and I really appreciate initiatives to convert electronic books to physical books. Do we really have to choose a unique medium? We don’t.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. 2018 was the year with the most new e-reader devices
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Some manufacturers, such as Onyx, add a Wacom layer on top of the reader to make note processing more responsive
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. There is hope to see the first color e-readers before the next decade, probably coming from Onyx manufacturer
+</div>
+<div class="footnote" id="_footnotedef_4">
+<a href="#_footnoteref_4">4</a>. Books vs. e-books: The science behind the best way to read <a href="https://www.cbsnews.com/news/kindle-nook-e-reader-books-the-best-way-to-read/" class="bare">https://www.cbsnews.com/news/kindle-nook-e-reader-books-the-best-way-to-read/</a>
+</div>
+<div class="footnote" id="_footnotedef_5">
+<a href="#_footnoteref_5">5</a>. <a href="http://www.pnas.org/content/112/4/1232.full.pdf" class="bare">http://www.pnas.org/content/112/4/1232.full.pdf</a>
+</div>
+<div class="footnote" id="_footnotedef_6">
+<a href="#_footnoteref_6">6</a>. Whispersync facility available on Kindle e-readers
+</div>
+<div class="footnote" id="_footnotedef_7">
+<a href="#_footnoteref_7">7</a>. Espresso Book Machines print books in minutes for immediate pick up or delivery <a href="http://www.ondemandbooks.com/" class="bare">http://www.ondemandbooks.com/</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2018/11/16/why-i-read-books.html">Why I Read Books?</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Reading
+            </span>
+          
+
+          
+            <span class="subtitle">9 reasons why you should start reading nonfiction books</span>
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2018/12/11/do-not-follow-book-recommendations.html">Don't Follow (My) Book Recommendations</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Reading
+            </span>
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

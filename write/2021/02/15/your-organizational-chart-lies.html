@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Your Organizational Chart Lies</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2021/02/15/your-organizational-chart-lies.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">February 15, 2021</span>
+
+      
+      <a href="/tags/management" class="label">
+      Management
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Your Organizational Chart Lies</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Every company has two organizational structures: The formal one is written on the charts; the other is the everyday relationship of the men and women in the organization.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Harold Geneen<br>
+<cite>American businessman 1910-1997</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>The Conway law states that companies implement systems reflecting their communication structure. This structure is commonly represented as an organizational chart that must be updated after every reorganization or restructuring. In practice, companies are often stuck in endless reorganizations, and their organizational chart becomes quickly outdated. Do we need this organizational chart?</p>
+</div>
+<div class="sect1">
+<h2 id="the_pros_and_cons_of_organizational_charts">The Pros and Cons of Organizational Charts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An organizational chart illustrates how formal communications happen inside an organization, how a manager higher in the ladder spreads information, and how employees on the lower rung report to them. By grouping employees in boxes, called teams, an organizational chart also forces communications to happen. You are more likely to exchange with your teammates than with other employees, at least if you consider only formal meetings like daily standups or retrospectives.</p>
+</div>
+<div class="paragraph">
+<p>But an organizational chart says nothing about the invisible organization where crucial, informal communications happen. Employees nurture relationships&#8201;&#8212;&#8201;at lunch, during incidents, at the coffee machine&#8201;&#8212;&#8201;that help them overcome problems and solve challenges in their daily tasks. These informal interactions illustrate your culture, and using a tree model like an organizational chart cannot depict such a complex social network.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/graph.png" alt="graph" width="600">
+</div>
+<div class="title">Figure 1. A graph depicting employees and their interactions.</div>
+</div>
+<div class="paragraph">
+<p>Researches show that leaders who understand this informal structure are more successful. The organizational chart (formal structure) highlights the divisions, while the social network (informal structure) highlights the interactions. As explained in a previous post about <a href="/write/2020/06/02/complexity-is-not-complex.html">complexity</a>, complex systems are mostly defined by their interactions, not their structure. Holism (the whole is greater than the parts) beats reductionism (divide-and-conquer) in management.</p>
+</div>
+<div class="paragraph">
+<p>This social network explains, for example, that employees are not interchangeable. You cannot replace an employee having complex interactions nurtured over time by a fresh one completely disconnected in this network on his first workday, even if they have the same skills.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/mapping.png" alt="mapping" width="600">
+</div>
+<div class="title">Figure 2. A comparison between the visible organization as captured by the organizational chart and the invisible organization as it happens through informal interactions.</div>
+</div>
+<div class="paragraph">
+<p>Therefore, an organizational chart is not the more accurate description of your company. But completely removing it would be a mistake&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="goodbye_organizational_charts">Goodbye Organizational Charts?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Removing the organizational chart is wrong, especially if you fail to replace it with something more helpful, more actionable.</p>
+</div>
+<div class="paragraph">
+<p>For example, saying, "We don&#8217;t need a hierarchy. We are all together in the same boat. We are one big team" sounds appealing. I like this metaphor. But this simplistic model is useless. You need everyone to row in the same direction to reach the destination.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/boat.png" alt="boat">
+</div>
+<div class="title">Figure 3. A bunch of employees in a small boat completely disorganized with no clear direction.</div>
+</div>
+<div class="paragraph">
+<p>The metaphor hides the reality:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We don&#8217;t want all employees to communicate with everyone else. No work would be done at all! Humans can only manage a small number of relationships.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> So we must limit their interactions if we want these relations to grow rich.</p>
+</li>
+<li>
+<p>We still have decisions to take to reach the destination. The all-in-the-same-boat metaphor simply says that someone in the boat has to make them. Not very helpful. We need to figure out how to solve the inevitable decision conflicts when more than one brain is working on a problem.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a practical example to illustrate this last point. Imagine that the marketing department is asking for a new feature on your flagship product. But the product team has a divergent opinion. Who must have the last say? Based on the boat metaphor, it&#8217;s not clear.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="analogical_thinking">Analogical Thinking</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To continue with the previous example, several options are possible. What follows is the organizational chart of this fictive company.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/chart.png" alt="chart" width="600">
+</div>
+<div class="title">Figure 4. A basic organizational chart with three teams reporting to the CEO.</div>
+</div>
+<div class="sect2">
+<h3 id="analogy_1_the_parenting_analogy"><strong>Analogy 1</strong>: The parenting analogy</h3>
+<div class="paragraph">
+<p>The first approach is the classic example of top-down management. The Product team and the Marketing team expose their conflicting opinions to the CEO, which arbiters the final decision, like when two children complain to their mother because they want to play with the same toy</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/parenting-analogy.png" alt="parenting analogy" width="500">
+</div>
+<div class="title">Figure 5. What happens when decision conflicts are settled by upper management.</div>
+</div>
+<div class="paragraph">
+<p>Few companies will admit they decide like this, but most are doing it. A better alternative is to empower one of the two teams to make the decision.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="analogy_2_the_puppeteer_analogy"><strong>Analogy 2</strong>: The puppeteer analogy</h3>
+<div class="paragraph">
+<p>You may decide that the marketing department is better advised and thus can make more informed decisions. In case of disagreement, the marketing must determine what to include or not in the products. This strategy makes sense but let&#8217;s try to find an analogy to illustrate this approach.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/puppeteer-analogy.png" alt="puppeteer analogy" width="500">
+</div>
+<div class="title">Figure 6. What happens when a team decides the tasks of another team.</div>
+</div>
+<div class="paragraph">
+<p>Depicted like that, that approach does not look great. You will not create strong product teams using this approach. And what if the marketing analysis were wrong. We have plenty of examples where customers didn&#8217;t really know what they wanted. Henry Ford captured this idea with his quotation:  “If I had asked people what they wanted, they would have said faster horses.” Apple is famous for bringing products to the market that nobody asked. Therefore, if innovation is key to your business, you need to reconsider your decision-making approach.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="analogy_3_the_turbine_analogy"><strong>Analogy 3</strong>: The turbine analogy</h3>
+<div class="paragraph">
+<p>Innovation happens when you are facing a problem. It&#8217;s a bottom-up process, and you must empower your product teams to make the right decisions.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-02-15-your-organizational-chart-lies/turbine-analogy.png" alt="turbine analogy" width="600">
+</div>
+<div class="title">Figure 7. What happens when a team is empowered and other teams are working towards the same goal.</div>
+</div>
+<div class="paragraph">
+<p>Product teams are giant wind turbines. The goal of your company is to make the turbines rotate as fast as possible. The marketing team acts like an air ventilator, providing the market analysis the product team needs to make well-informed decisions. The platform team acts as the soil on which the turbines can stand firmly. And the product team acts as the rotor, making continual adjustments to keep the turbines running as fast as possible.</p>
+</div>
+<div class="paragraph">
+<p>Using this analogy, it becomes obvious who must make the decisions. The product team is empowered to do its job, one of the main motivation factors at work.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p>Note that all analogies presented in this section are perfectly compatible with the initial organizational chart. It illustrates once again that organizational charts are incomplete. It&#8217;s a great tool to communicate the structure, but not the interactions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="to_sum_up">To sum up</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the same way that you cannot understand the human body by observing its skeleton, you cannot understand how a company is working simply by looking at its organizational chart. But learning about the human skeleton is valuable. You still need your organizational chart. Any company has a global structure, and you had better represent it as clearly as possible.</p>
+</div>
+<div class="paragraph">
+<p>What we learned in this article is that you need to complement your organizational chart with other tools that focus more on the interactions. Using analogies is a great idea to foster the interactions you want to observe more, but make sure they reflect a reality and not an impossible ideal.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. The book <em>Driving Results Through Social Networks: How Top Organizations Leverage Networks for Performance and Growth</em> elaborates on the importance to visualize this network in order to drive your organization.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. The Dunbar&#8217;s number defines the number of people with whom one can maintain stable social relationships. 150 is "the number of people you would not feel embarrassed about joining uninvited for a drink if you happened to bump into them in a bar."
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. <a href="https://en.wikipedia.org/wiki/Two-factor_theory" class="bare">https://en.wikipedia.org/wiki/Two-factor_theory</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2021/02/15/birds-eye-view-is-useless.html">A Bird's-Eye View Is Useless if You Cannot Land on Your Feet</a>
+
+          
+            <a href="/tags/management"
+              class="label">
+              Management
+            </a>
+          
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

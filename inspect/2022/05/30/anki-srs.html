@@ -1,0 +1,2734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Anki SRS Algorithm</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2022/05/30/anki-srs.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">May 30, 2022</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+      <span class="label">
+        Flashcards
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Anki SRS Algorithm</h2>
+      
+      <h3>Spaced Repetition Explained with Code</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Humans more easily remember or learn items when they are studied a few times over a long period of time (spaced presentation), rather than studied repeatedly in a short period of time.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Hermann Ebbinghaus<br>
+<cite>German Psychologist having introduced the Forgetting Curve</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>Forgetting is key to learning. Forgetting is what separates what is useful and what is not. Sometimes, we want to make a piece of knowledge stick in memory despite what our memory thinks. Spaced Repetition is an effective solution to this problem and Anki is the most popular OSS tool to help you.</p>
+</div>
+<div class="admonitionblock tip content">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">What You Will Learn</div>
+<div class="ulist">
+<ul>
+<li>
+<p>What is the history of SRS algorithms.</p>
+</li>
+<li>
+<p>How Anki SRS algorithm is implemented.</p>
+</li>
+<li>
+<p>How Anki SRS algorithm differs from other known implementations.</p>
+</li>
+<li>
+<p>How Anki SRS algorithm can be improved.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The Anki source code is published under <a href="https://www.gnu.org/licenses/agpl-3.0.en.html">AGPL v3</a>. The code presented in this article has been slightly adapted for learning and readability purposes.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Prerequisites</div>
+<div class="paragraph">
+<p>I assume that you have used Anki before. All code examples use the Python language, mainly because Anki was implemented only in Python until recently, and also because it&#8217;s a great language for novice programmers. You don&#8217;t need to have a solid understanding of the language to follow the article as the code uses basic Python syntax.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="srs_primer">SRS Primer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The role of any Spaced Repetition System (SRS) algorithm is to determine what the user should review now, or say differently when must happen the next review for every remembered item. <strong>The goal of any implementation is to counteract the effect of the forgetting curve</strong>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/forgetting-curve.png"><img src="/posts_resources/2022-05-30-anki-srs/forgetting-curve.png" alt="forgetting curve" width="750"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>As soon as we learn or review a piece of knowledge, the decay begins. SRS algorithms need to determine the optimal interval between two reviews to ensure we haven&#8217;t completely forgotten it (memory retention = 0%) while trying to limit as much as possible the number of reviews. In practice, most algorithms use 10% for the forgetting index (= 90% of items are remembered correctly) so that we don&#8217;t have too many items to review again while keeping the number of reviews close to optimal.</p>
+</div>
+<div class="paragraph">
+<p>The details of the different algorithms differ greatly between systems. We will start by reviewing the most popular ones in history before introducing Anki&#8217;s solution.</p>
+</div>
+<div class="sect2">
+<h3 id="the_leitner_system_1970">The Leitner System (1970-)</h3>
+<div class="paragraph">
+<p>If <a href="https://en.wikipedia.org/wiki/Hermann_Ebbinghaus">Hermann Ebbinghaus</a> is credited for the initial research behind SRS, the <a href="https://en.wikipedia.org/wiki/Leitner_system">Leiter System</a> is often quoted as the first algorithm. This system uses a physical box as depicted by the following illustration:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/Leitner-original.png"><img src="/posts_resources/2022-05-30-anki-srs/Leitner-original.png" alt="Leitner original" width="500"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is a small Python program implementing the logic behind the original Leitner system:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">from</span> <span class="include">queue</span> <span class="keyword">import</span> <span class="include">Queue</span>
+<span class="keyword">import</span> <span class="include">random</span>
+
+CARDS_PER_CM = <span class="integer">5</span>
+
+BOX = [
+    Queue(<span class="integer">1</span>  * CARDS_PER_CM),
+    Queue(<span class="integer">2</span>  * CARDS_PER_CM),
+    Queue(<span class="integer">5</span>  * CARDS_PER_CM),
+    Queue(<span class="integer">8</span>  * CARDS_PER_CM),
+    Queue(<span class="integer">14</span> * CARDS_PER_CM),
+]
+
+<span class="keyword">def</span> <span class="function">add</span>(card, i):
+    BOX[i].put(card)
+    <span class="keyword">if</span> BOX[i].full():
+        study()
+
+<span class="keyword">def</span> <span class="function">review</span>(card):
+    <span class="keyword">return</span> random.choice([<span class="predefined-constant">True</span>, <span class="predefined-constant">True</span>, <span class="predefined-constant">True</span>, <span class="predefined-constant">False</span>])
+
+<span class="keyword">def</span> <span class="function">study</span>():
+    <span class="keyword">for</span> index, partition <span class="keyword">in</span> <span class="predefined">enumerate</span>(BOX):
+        <span class="keyword">if</span> partition.full():
+            <span class="comment"># Time to review the cards</span>
+            print(f<span class="string"><span class="delimiter">&quot;</span><span class="content">Time to study partition {index + 1}!</span><span class="delimiter">&quot;</span></span>)
+
+            cards_to_review = []
+            <span class="keyword">while</span> <span class="keyword">not</span> partition.empty():
+                cards_to_review.append(partition.get())
+
+            <span class="keyword">for</span> card <span class="keyword">in</span> cards_to_review:
+                answer = review(card)
+                new_index = <span class="predefined-constant">None</span>
+                <span class="keyword">if</span> answer <span class="keyword">and</span> index + <span class="integer">1</span> &lt; <span class="predefined">len</span>(BOX):
+                    <span class="comment"># Promote</span>
+                    new_index = index + <span class="integer">1</span>
+                <span class="keyword">elif</span> <span class="keyword">not</span> answer <span class="keyword">and</span> index - <span class="integer">1</span> &gt; <span class="integer">0</span>:
+                    <span class="comment"># Demote</span>
+                    new_index = <span class="integer">0</span>
+                <span class="keyword">else</span>:
+                    <span class="comment"># Replace in the same partition</span>
+                    new_index = index
+                add(card, new_index)
+
+<span class="keyword">if</span> __name__ == <span class="string"><span class="delimiter">&quot;</span><span class="content">__main__</span><span class="delimiter">&quot;</span></span>:
+
+    <span class="comment"># Populate the box</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">140</span>):
+        add(<span class="string"><span class="delimiter">&quot;</span><span class="content">New Card</span><span class="delimiter">&quot;</span></span>, <span class="integer">0</span>)
+
+    <span class="comment"># Study</span>
+    study()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The original Leitner system cannot really be considered a spaced repetition system. There is no concept of an (optimum) interval. The system simply prioritizes which items to review based on the available physical space in each partition.</p>
+</div>
+<div class="paragraph">
+<p>An alternative method using three boxes where incorrect answers are only moved back to the previous box is often privileged:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/Leitner-modern.png"><img src="/posts_resources/2022-05-30-anki-srs/Leitner-modern.png" alt="Leitner modern" width="700"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is a program implementing this new logic:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">from</span> <span class="include">queue</span> <span class="keyword">import</span> <span class="include">Queue</span>
+<span class="keyword">import</span> <span class="include">random</span>
+<span class="keyword">from</span> <span class="include">datetime</span> <span class="keyword">import</span> <span class="include">datetime</span>, <span class="include">timedelta</span>
+
+A = <span class="integer">0</span>
+B = <span class="integer">1</span>
+C = <span class="integer">2</span>
+SYSTEM = [
+    Queue(), <span class="comment"># Box A: every day</span>
+    Queue(), <span class="comment"># Box B: every 2-3 days (ex: Tuesday &amp; Friday)</span>
+    Queue(), <span class="comment"># Box C: every week (ex: Sunday)</span>
+]
+
+
+<span class="keyword">def</span> <span class="function">add</span>(card, i):
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Add a new card in the Leitner system.</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    SYSTEM[i].put(card)
+
+<span class="keyword">def</span> <span class="function">review</span>(card):
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Answer a single card.</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    <span class="keyword">return</span> random.choice([<span class="predefined-constant">True</span>, <span class="predefined-constant">True</span>, <span class="predefined-constant">True</span>, <span class="predefined-constant">False</span>])
+
+<span class="keyword">def</span> <span class="function">study_box</span>(number):
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Review all cards in a box.</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    cards_to_review = []
+    <span class="keyword">while</span> <span class="keyword">not</span> SYSTEM[number].empty():
+        cards_to_review.append(SYSTEM[number].get())
+
+    <span class="keyword">for</span> card <span class="keyword">in</span> cards_to_review:
+        answer = review(card)
+        new_number = <span class="predefined-constant">None</span>
+        <span class="keyword">if</span> answer <span class="keyword">and</span> number &lt; C:
+            <span class="comment"># Promote</span>
+            new_number = number + <span class="integer">1</span>
+        <span class="keyword">elif</span> <span class="keyword">not</span> answer <span class="keyword">and</span> number &gt; A:
+            <span class="comment"># Demote</span>
+            new_number = number - <span class="integer">1</span>
+        <span class="keyword">else</span>:
+            <span class="comment"># Replace in the same box</span>
+            new_number = number
+        add(card, new_number)
+
+<span class="keyword">def</span> <span class="function">study</span>(day):
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Study the box according the week day.</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    weekday = day.weekday()
+    <span class="keyword">if</span> weekday == <span class="integer">0</span>: <span class="comment"># Monday</span>
+        study_box(A)
+    <span class="keyword">elif</span> weekday == <span class="integer">1</span>: <span class="comment"># Tuesday</span>
+        study_box(A)
+        study_box(B)
+    <span class="keyword">elif</span> weekday == <span class="integer">2</span>: <span class="comment"># Wednesday</span>
+        study_box(A)
+    <span class="keyword">elif</span> weekday == <span class="integer">3</span>: <span class="comment"># Thursday</span>
+        study_box(A)
+    <span class="keyword">elif</span> weekday == <span class="integer">4</span>: <span class="comment"># Friday</span>
+        study_box(A)
+        study_box(B)
+    <span class="keyword">elif</span> weekday == <span class="integer">5</span>: <span class="comment"># Saturday</span>
+        study_box(A)
+    <span class="keyword">elif</span> weekday == <span class="integer">6</span>: <span class="comment"># Sunday</span>
+        study_box(A)
+        study_box(C)
+
+<span class="keyword">if</span> __name__ == <span class="string"><span class="delimiter">&quot;</span><span class="content">__main__</span><span class="delimiter">&quot;</span></span>:
+
+    <span class="comment"># Populate the box</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">140</span>):
+        add(<span class="string"><span class="delimiter">&quot;</span><span class="content">New Card</span><span class="delimiter">&quot;</span></span>, <span class="integer">0</span>)
+
+    <span class="comment"># Study (over 10 days)</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">10</span>):
+        day = datetime.today() - timedelta(days=<span class="integer">10</span> - i)
+        study(day)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The modern Leitner system assigns intervals to the different boxes. Variants exist with more boxes but for this system to be considered a spaced repetition system, we would need a lot more boxes to have longer and longer intervals between reviews.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sm_0_1985">SM-0 (1985)</h3>
+<div class="paragraph">
+<p>Algorithms are precise instructions to carry out. As we have seen with the Leitner system, algorithms don&#8217;t have to be executed on computers at all. We can manually perform what a computer does, except we will need a lot more time. The first version of the SuperMemo Algorithm was also thought to be executed manually.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="http://super-memory.com/articles/paper.htm">SM-0 algorithm</a> (aka the paper-and-pencil SuperMemo method) was published in 1985 and relies on <a href="http://super-memory.com/articles/paper.htm">paper books filled with tables</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/sm-0.png"><img src="/posts_resources/2022-05-30-anki-srs/sm-0.png" alt="sm 0" width="800"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Although the algorithm was designed to be executed manually, we can still capture the logic using code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">import</span> <span class="include">random</span>
+<span class="keyword">from</span> <span class="include">datetime</span> <span class="keyword">import</span> <span class="include">date</span>, <span class="include">timedelta</span>
+<span class="keyword">from</span> <span class="include">queue</span> <span class="keyword">import</span> <span class="include">Queue</span>
+
+<span class="comment"># The table of repetition intervals determines the number of days between</span>
+<span class="comment"># two successive reviews.</span>
+<span class="comment"># SM-0 applies the factor 1.7 between two successive values.</span>
+<span class="comment"># Ex: 4, 7, 12, 20, ...</span>
+TABLE_REPETITION_INTERVALS = [<span class="integer">4</span>] <span class="comment"># First review after 4 days</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">1</span>, <span class="integer">15</span>): <span class="comment"># 15 repetitions max</span>
+    prev = TABLE_REPETITION_INTERVALS[i - <span class="integer">1</span>]
+    next = <span class="predefined">int</span>(prev * <span class="float">1.7</span>)
+    TABLE_REPETITION_INTERVALS.append(<span class="predefined">next</span>)
+
+<span class="comment"># The book containing the pages to review</span>
+DATABOOK = []
+<span class="comment"># The book containing the page numbers to review day after day</span>
+<span class="comment"># NB: We use a sparse dictionary where only dates</span>
+<span class="comment"># with one or more pages to review are present</span>
+SCHEDULE_BOOK = {} <span class="comment"># &lt;date, [page numbers]&gt;</span>
+
+<span class="comment"># Fake the user in answering the question</span>
+<span class="keyword">def</span> <span class="function">review_question</span>(question, repetitions):
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">
+</span><span class="content">    Randomly answer a question.</span><span class="content">
+</span><span class="content">    The chance of answering correctly increases with the number of repetitions.</span><span class="content">
+</span><span class="content">    </span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    <span class="keyword">return</span> random.choice([<span class="predefined-constant">True</span>] * repetitions * <span class="integer">4</span> + [<span class="predefined-constant">False</span>])
+
+<span class="comment"># A single page in the data book.</span>
+<span class="keyword">class</span> <span class="class">Page</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="predefined-constant">self</span>, questions, answers):
+        <span class="comment"># &quot;Question field&quot; column</span>
+        <span class="predefined-constant">self</span>.questions = questions
+        <span class="comment"># &quot;Answer field&quot; column</span>
+        <span class="predefined-constant">self</span>.answers = answers
+        <span class="comment"># &quot;Repetition scores&quot; column</span>
+        <span class="comment"># =&gt; Determined during the review session</span>
+        <span class="comment"># &quot;Repetitions&quot; column</span>
+        <span class="predefined-constant">self</span>.repetitions = []
+
+    <span class="keyword">def</span> <span class="function">review</span>(<span class="predefined-constant">self</span>):
+        remaining_questions = Queue(<span class="predefined-constant">self</span>.questions)
+
+        <span class="comment"># Review until there is no more cards wrongly answered</span>
+        iteration = <span class="integer">1</span>
+        <span class="comment"># Memorize the number of wrong answers during the first iteration</span>
+        U = <span class="integer">0</span>
+        <span class="keyword">while</span> <span class="keyword">not</span> remaining_questions.empty():
+
+            questions_to_review = []
+            <span class="keyword">while</span> <span class="keyword">not</span> remaining_questions.empty():
+                questions_to_review.append(remaining_questions.get())
+
+            <span class="keyword">for</span> question <span class="keyword">in</span> questions_to_review:
+                <span class="keyword">if</span> <span class="keyword">not</span> review_question(question, iteration): <i class="conum" data-value="1"></i><b>(1)</b>
+                    <span class="comment"># Review again</span>
+                    remaining_questions.append(question)
+                    <span class="keyword">if</span> iteration == <span class="integer">1</span>:
+                        U += <span class="integer">1</span>
+            iteration += <span class="integer">1</span>
+
+        <span class="predefined-constant">self</span>.repetitions.append({
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">No</span><span class="delimiter">&quot;</span></span>: <span class="predefined">len</span>(<span class="predefined-constant">self</span>.repetitions) + <span class="integer">1</span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">Dat</span><span class="delimiter">&quot;</span></span>: <span class="predefined">str</span>(date.today()),
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">U</span><span class="delimiter">&quot;</span></span>: U,
+        })
+
+
+<span class="keyword">if</span> __name__ == <span class="string"><span class="delimiter">&quot;</span><span class="content">__main__</span><span class="delimiter">&quot;</span></span>:
+    <span class="comment"># Add a new page for illustration purposes</span>
+    DATABOOK.append(Page(
+        questions=[<span class="string"><span class="delimiter">&quot;</span><span class="content">Question 1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Question 2</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Question 3</span><span class="delimiter">&quot;</span></span>],
+        answers=[<span class="string"><span class="delimiter">&quot;</span><span class="content">Answer 1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Answer 2</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Answer 3</span><span class="delimiter">&quot;</span></span>],
+    ))
+    page_number = <span class="predefined">len</span>(DATABOOK) - <span class="integer">1</span>
+
+    <span class="comment"># Mark the page to review according the table of repetition intervals</span>
+    now = date.today()
+    <span class="keyword">for</span> interval <span class="keyword">in</span> TABLE_REPETITION_INTERVALS:
+        review_date = <span class="predefined">str</span>(now + timedelta(days=interval))
+        <span class="keyword">if</span> review_date <span class="keyword">not</span> <span class="keyword">in</span> SCHEDULE_BOOK:
+            SCHEDULE_BOOK[review_date] = []
+        print(f<span class="string"><span class="delimiter">&quot;</span><span class="content">Page {page_number} to review on {review_date}</span><span class="delimiter">&quot;</span></span>)
+        SCHEDULE_BOOK[review_date] = [page_number]
+
+    <span class="comment"># Review sessions during one year</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">365</span>):
+        day = <span class="predefined">str</span>(now + timedelta(days=i))
+        <span class="keyword">if</span> <span class="keyword">not</span> day <span class="keyword">in</span> SCHEDULE_BOOK:
+            <span class="comment"># Nothing to review today</span>
+            <span class="keyword">continue</span>
+        <span class="comment"># Review each planned pages</span>
+        <span class="keyword">for</span> page <span class="keyword">in</span> SCHEDULE_BOOK[day]:
+            print(f<span class="string"><span class="delimiter">&quot;</span><span class="content">Reviewing page {page} on {day}</span><span class="delimiter">&quot;</span></span>)
+            DATABOOK[page].review()</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The grade of the answer does not influence the next interval. Difficult items are reviewed again the same day but the next intervals are fixed and determined with a factor 1.7 when creating the page.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The SM-0 algorithm can be challenging in practice for different reasons:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>All items on a given page are reviewed at the same time</strong>. For hard-to-remember items (items that require more than 3 reviews on a given day to be recalled), SM-0 recommends duplicating them on a new page in your book. These items will be reviewed more frequently, and some will maybe be duplicated again if still too hard to remember.</p>
+</li>
+<li>
+<p><strong>The intervals are determined using an estimation of the average case</strong> (x1.7) but the ideal intervals depend on the complexity and your familiarity with the subject. You probably need shorter intervals for science subjects like Mathematics for example.</p>
+</li>
+<li>
+<p>Last but not least, executing the algorithm manually works, but is far from being a smooth learning experience&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Enter the computer.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sm_2_1987">SM-2 (1987)</h3>
+<div class="paragraph">
+<p>Unlike physical systems where cards are grouped in the same box/partition/page and are reviewed collectively, digital systems consider each item separately. For example, the SuperMemo algorithm called <a href="https://www.supermemo.com/en/archives1990-2015/english/ol/sm2">SM-2</a> assigns a specific level of difficulty to every card and determines the appropriate intervals between repetitions using this specific value (called the E-Factor).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/sm-2.png"><img src="/posts_resources/2022-05-30-anki-srs/sm-2.png" alt="sm 2" width="800"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, the same logic but implemented as code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">import</span> <span class="include">random</span>
+<span class="keyword">from</span> <span class="include">datetime</span> <span class="keyword">import</span> <span class="include">date</span>, <span class="include">timedelta</span>
+<span class="keyword">from</span> <span class="include">queue</span> <span class="keyword">import</span> <span class="include">Queue</span>
+
+<span class="keyword">def</span> <span class="function">grade</span>(question, repetitions):
+    <span class="comment"># Increase the chance of success with the increased number of repetitions</span>
+    choices = [<span class="integer">0</span>] * <span class="integer">1</span> * repetitions + [<span class="integer">1</span>] * <span class="integer">2</span> * repetitions + \
+              [<span class="integer">2</span>] * <span class="integer">3</span> * repetitions + [<span class="integer">3</span>] * <span class="integer">4</span> * repetitions + \
+              [<span class="integer">4</span>] * <span class="integer">5</span> * repetitions + [<span class="integer">5</span>] * <span class="integer">6</span> * repetitions
+    <span class="keyword">return</span> random.choice(choices)
+
+<span class="comment"># Settings</span>
+I1 = <span class="integer">1</span>
+I2 = <span class="integer">6</span>
+MIN_EF = <span class="float">1.3</span> <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="keyword">class</span> <span class="class">Item</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="predefined-constant">self</span>, question, answer):
+        <span class="predefined-constant">self</span>.question = question
+        <span class="predefined-constant">self</span>.answer = answer
+        <span class="predefined-constant">self</span>.EF = <span class="float">2.5</span> <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="predefined-constant">self</span>.I = I1
+        <span class="predefined-constant">self</span>.next_review = date.today() + timedelta(days=<span class="predefined-constant">self</span>.I)
+        <span class="predefined-constant">self</span>.repetitions = <span class="integer">0</span>
+
+    <span class="keyword">def</span> <span class="function">review</span>(<span class="predefined-constant">self</span>, day, q):
+        <span class="predefined-constant">self</span>.EF = <span class="predefined">max</span>(<span class="predefined-constant">self</span>.EF+(<span class="float">0.1</span>-(<span class="integer">5</span>-q)*(<span class="float">0.08</span>+(<span class="integer">5</span>-q)*<span class="float">0.02</span>)), MIN_EF) <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="keyword">if</span> q &lt; <span class="integer">3</span>:
+            <span class="predefined-constant">self</span>.I = I1
+        <span class="keyword">elif</span> <span class="predefined-constant">self</span>.I == I1:
+            <span class="predefined-constant">self</span>.I = I2
+        <span class="keyword">else</span>:
+            <span class="predefined-constant">self</span>.I = <span class="predefined">round</span>(<span class="predefined-constant">self</span>.I * <span class="predefined-constant">self</span>.EF)
+        <span class="predefined-constant">self</span>.next_review = day + timedelta(days=<span class="predefined-constant">self</span>.I)
+        <span class="predefined-constant">self</span>.repetitions += <span class="integer">1</span>
+        <span class="keyword">return</span> q &lt; <span class="integer">4</span>
+
+<span class="keyword">if</span> __name__ == <span class="string"><span class="delimiter">&quot;</span><span class="content">__main__</span><span class="delimiter">&quot;</span></span>:
+    <span class="comment"># Populate items</span>
+    items = []
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">1</span>, <span class="integer">100</span>):
+        items.append(Item(f<span class="string"><span class="delimiter">&quot;</span><span class="content">Q{i}</span><span class="delimiter">&quot;</span></span>, f<span class="string"><span class="delimiter">&quot;</span><span class="content">A{i}</span><span class="delimiter">&quot;</span></span>))
+
+    <span class="comment"># Review one year</span>
+    <span class="comment"># for i in range(365):</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">365</span>):
+        day = date.today() + timedelta(days=i)
+
+        items_to_review = Queue()
+        <span class="keyword">for</span> item <span class="keyword">in</span> items:
+            <span class="keyword">if</span> item.next_review == day:
+                items_to_review.put(item)
+
+        <span class="keyword">while</span> <span class="keyword">not</span> items_to_review.empty():
+            item = items_to_review.get()
+            q = grade(item.question, item.repetitions + <span class="integer">1</span>)
+            <span class="keyword">if</span> <span class="keyword">not</span> item.review(day, q): <i class="conum" data-value="4"></i><b>(4)</b>
+                items_to_review.put(item)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The E-Factor never goes down lower than 1.3. SuperMemo found out that items having lower E-Factors were repeated annoyingly often when the root cause was usually their formulation and not the review process. We will see how Anki manages such cards later. These items must often be reformulated to conform to the <a href="https://supermemo.guru/wiki/Minimum_information_principle">minimum information principle</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The E-Factor is always initialized to the same difficulty value. It will decrease for bad grades and increase for good grades.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Unlike SM-0, the grades (= item difficulty) influence the factor used to determine the next interval.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Like SM-0, difficult items are reviewed again the same day.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The SM-2 algorithm, while relatively basic, remains popular even today as you will discover in the rest of this article.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="anki_algorithm">Anki Algorithm</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From <a href="https://en.wikipedia.org/wiki/Anki_(software)">Wikipedia</a>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>"The SM-2 algorithm, created for SuperMemo in the late 1980s, forms the basis of the spaced repetition methods employed in the program. Anki&#8217;s implementation of the algorithm has been modified to allow priorities on cards and to show flashcards in order of their urgency.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Wikipedia
+</div>
+</div>
+<div class="paragraph">
+<p>Anki source code includes different versions of its SRS algorithm (called <em>Scheduler</em>). All got inspiration from SM-2. The <a href="https://faqs.ankiweb.net/the-anki-2.1-scheduler.html">V2</a> is in use since 2018 even if the <a href="https://faqs.ankiweb.net/the-2021-scheduler.html">V3</a> is looming. For this article, we can ignore the details between these versions. Check the source code on GitHub if you are interested in the differences between the <a href="https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v1.py">V1</a>, <a href="https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v2.py">V2</a>, or <a href="https://github.com/ankitects/anki/blob/2.1.49/pylib/anki/scheduler/v3">V3</a>.</p>
+</div>
+<div class="paragraph">
+<p>We will analyze the V2.1 scheduler as it is the version I&#8217;m familiar with. We will use the <a href="https://github.com/ankitects/anki/blob/2.1.10/anki/schedv2.py">version 2.10.0</a> of Anki Desktop to ignore recent refactorings (the rewrite of backend code in Rust, the introduction of Protocol Buffer messages, the factorization of common code among scheduler versions using inheritance, etc.). This will help us keep the code easy to grasp.</p>
+</div>
+<div class="paragraph">
+<p>Here is a recall of <a href="https://docs.ankiweb.net/getting-started.html#key-concepts">Anki terminology</a>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/anki-terminology.png"><img src="/posts_resources/2022-05-30-anki-srs/anki-terminology.png" alt="anki terminology" width="750"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>As outlined by the schema, we will focus on the core abstractions (Collection, Note, Card) that affects how the SRS algorithm works. In addition, cards in Anki are scheduled differently according to their state:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/anki-workflow.png"><img src="/posts_resources/2022-05-30-anki-srs/anki-workflow.png" alt="anki workflow" width="700"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an overview of the Anki algorithm:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/anki-srs.png"><img src="/posts_resources/2022-05-30-anki-srs/anki-srs.png" alt="anki srs" width="750"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The use of separate new/review queues tries to remediate a common complaint with the standard SM-2 algorithm is that repeated failings of a card cause the card to get stuck in "low interval hell" (also known as "ease hell"). <a href="https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html#review-cards">In Anki</a>, the initial acquisition process does not influence the ease factor.</p>
+</div>
+<div class="sect2">
+<h3 id="part_1_settings">Part 1: Settings</h3>
+<div class="paragraph">
+<p>Unlike previous systems, Anki is highly configurable. Not all settings affect the SRS algorithm. Here are the default setting values used by Anki that will be used:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Whether new cards should be mixed with reviews, or shown first or last</span>
+NEW_CARDS_DISTRIBUTE = <span class="integer">0</span>
+NEW_CARDS_LAST = <span class="integer">1</span>
+NEW_CARDS_FIRST = <span class="integer">2</span>
+
+<span class="comment"># The initial factor when a card gets promoted</span>
+STARTING_FACTOR = <span class="integer">2500</span>
+
+<span class="comment"># Default collection configuration</span>
+colConf = {
+    <span class="string"><span class="delimiter">'</span><span class="content">newSpread</span><span class="delimiter">'</span></span>: NEW_CARDS_DISTRIBUTE,
+    <span class="string"><span class="delimiter">'</span><span class="content">collapseTime</span><span class="delimiter">'</span></span>: <span class="integer">1200</span>, <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+<span class="comment"># Default deck configuration</span>
+deckConf = {
+    <span class="string"><span class="delimiter">'</span><span class="content">new</span><span class="delimiter">'</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="string"><span class="delimiter">'</span><span class="content">delays</span><span class="delimiter">'</span></span>: [<span class="integer">1</span>, <span class="integer">10</span>],
+        <span class="string"><span class="delimiter">'</span><span class="content">ints</span><span class="delimiter">'</span></span>: [<span class="integer">1</span>, <span class="integer">4</span>],
+        <span class="string"><span class="delimiter">'</span><span class="content">initialFactor</span><span class="delimiter">'</span></span>: STARTING_FACTOR,
+        <span class="string"><span class="delimiter">'</span><span class="content">perDay</span><span class="delimiter">'</span></span>: <span class="integer">20</span>,
+    },
+    <span class="string"><span class="delimiter">'</span><span class="content">rev</span><span class="delimiter">'</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="string"><span class="delimiter">'</span><span class="content">perDay</span><span class="delimiter">'</span></span>: <span class="integer">200</span>,
+        <span class="string"><span class="delimiter">'</span><span class="content">ease4</span><span class="delimiter">'</span></span>: <span class="float">1.3</span>,
+        <span class="string"><span class="delimiter">'</span><span class="content">maxIvl</span><span class="delimiter">'</span></span>: <span class="integer">36500</span>,
+        <span class="string"><span class="delimiter">'</span><span class="content">hardFactor</span><span class="delimiter">'</span></span>: <span class="float">1.2</span>,
+    },
+    <span class="string"><span class="delimiter">'</span><span class="content">lapse</span><span class="delimiter">'</span></span>: { <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="string"><span class="delimiter">'</span><span class="content">delays</span><span class="delimiter">'</span></span>: [<span class="integer">10</span>],
+        <span class="string"><span class="delimiter">'</span><span class="content">mult</span><span class="delimiter">'</span></span>: <span class="integer">0</span>,
+        <span class="string"><span class="delimiter">'</span><span class="content">minInt</span><span class="delimiter">'</span></span>: <span class="integer">1</span>,
+        <span class="string"><span class="delimiter">'</span><span class="content">leechFails</span><span class="delimiter">'</span></span>: <span class="integer">8</span>,
+    },
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If there is no more card to review now but the next card in learning is in less than <code>collapseTime</code> seconds, show it now.<br>
+<div class="ulist">
+<ul>
+<li>
+<p><code>collapseTime</code>: Tells Anki how to behave when there is nothing left to study in the current deck but cards in learning.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Basic</code> &gt; <code>Learn ahead limit</code> * 60 (default: <code>20</code> minutes)</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The settings differ based on the queue where a card belongs. For example, when learning (<code>new</code>) cards, the delay is increased by graduating steps whereas the delay is multiplied by a given factor for review (<code>rev</code>) cards. The meaning of individual settings will become clearer when we will detail the logic.<br>
+<div class="ulist">
+<ul>
+<li>
+<p><code>new.delays</code>: The list of successive delays between the learning steps of the new cards. The first delay will be used when you press the <code>Again</code> button on a new card. The <code>Good</code> button will advance to the next step. Once all steps have been passed, the card will become a review card and will appear on a different day.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>New Cards</code> &gt; <code>Learning steps</code> (Default: <code>1m 10m</code>)</p>
+</li>
+<li>
+<p><code>new.ints</code>: The list of delays according to the button pressed while leaving the learning mode after pressing "Good" or "Easy."<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>New Cards</code> &gt; <code>Graduating interval</code>/<code>Easy interval</code> (Default: <code>1</code> and <code>4</code>)</p>
+</li>
+<li>
+<p><code>new.initialFactor</code>: The ease multiplier new cards start with. By default, the <code>Good</code> button on a newly-learned card will delay the next review by 2.5x the previous delay.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Advanced</code> &gt; <code>Starting ease</code> (Default: <code>2.50</code>),</p>
+</li>
+<li>
+<p><code>new.perDay</code>: The maximum number of new cards to introduce in a day, if new cards are available.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Daily Limits</code> &gt; <code>New cards/day</code> (Default: <code>20</code>)</p>
+</li>
+<li>
+<p><code>rev.perDay</code>: The maximum number of review cards to show in a day, if cards are ready for review.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Daily Limits</code> &gt; <code>Maximum reviews/day</code> (Default: <code>50</code>)</p>
+</li>
+<li>
+<p><code>rev.ease4</code>: An extra multiplier that is applied to a review card&#8217;s interval when you rate it <code>Easy</code>.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Advanced</code> &gt; <code>Easy bonus</code> (Default: <code>1.30</code>)</p>
+</li>
+<li>
+<p><code>rev.maxIvl</code>: The maximum number of days a review card will wait. When reviews have reached the limit, <code>Hard</code>, <code>Good</code> and <code>Easy</code> will all give the same delay.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Advanced</code> &gt; <code>Maximum interval</code> (Default: <code>36500</code>)</p>
+</li>
+<li>
+<p><code>rev.hardFactor</code>: The multiplier applied to a review interval when answering <code>Hard</code>.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Advanced</code> &gt; <code>Hard interval</code> (Default: <code>1.20</code>)</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>When you forget a review card, it is said to have "lapsed", and the card must be relearnt. The default behavior for lapsed reviews is to reset the interval (<code>minInt</code>) to 1 (i.e. make it due tomorrow) and put it in the learning queue for a refresher (<code>delays</code>) in 10 minutes.<br>
+<div class="ulist">
+<ul>
+<li>
+<p><code>lapse.delays</code>: The list of successive delays between the learning steps of lapsed cards. By default, pressing the <code>Again</code> button on a review card will show it again 10 minutes later.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Lapses</code> &gt; <code>Relearning steps</code> (Default: <code>10m</code>)</p>
+</li>
+<li>
+<p><code>lapse.minInt</code>: The minimum interval given to a review card after answering <code>Again</code>.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Lapses</code> &gt; <code>Minimum interval</code> (Default: <code>1</code>)</p>
+</li>
+<li>
+<p><code>lapse.mult</code>: The multiplier applied to a review interval when answering <code>Again</code>.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Advanced</code> &gt; <code>New interval</code> (Default: <code>0</code>)</p>
+</li>
+<li>
+<p><code>lapse.leechFails</code>: The number of times <code>Again</code> needs to be pressed on a review card before it is marked as a leech.<br>
+<em>Setting</em>: <code>Preferences</code> &gt; <code>Lapses</code> &gt; Leech threshold (Default: <code>8</code>)</p>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_2_model">Part 2: Model</h3>
+<div class="paragraph">
+<p>Let&#8217;s begin with the model. Anki stores cards in an SQLite database. In this tutorial, we will mimic the same model but we will store the cards directly in memory inside the collection object. We will also ignore decks completely as they mostly allow reviewing different cards using different settings or at different times but don&#8217;t profoundly change how Anki works.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Collection</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="predefined-constant">self</span>, id=<span class="predefined-constant">None</span>):
+        d = datetime.datetime.today()
+        d = datetime.datetime(d.year, d.month, d.day)
+        <span class="comment"># Timestamp of the creation date in seconds.</span>
+        <span class="predefined-constant">self</span>.crt = <span class="predefined">int</span>(time.mktime(d.timetuple()))
+        <span class="comment"># In-memory list of cards</span>
+        <span class="predefined-constant">self</span>.cards = []
+        <span class="predefined-constant">self</span>.sched = Scheduler(<span class="predefined-constant">self</span>) <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="keyword">def</span> <span class="function">addNote</span>(<span class="predefined-constant">self</span>, note):
+        <span class="predefined-constant">self</span>.cards.append(Card(note))
+
+<span class="keyword">class</span> <span class="class">Note</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>.id = intId() <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="predefined-constant">self</span>.tags = []
+
+    <span class="keyword">def</span> <span class="function">addTag</span>(<span class="predefined-constant">self</span>, tag):
+        <span class="keyword">if</span> <span class="keyword">not</span> tag <span class="keyword">in</span> <span class="predefined-constant">self</span>.tags:
+            <span class="predefined-constant">self</span>.tags.append(tag)
+
+<span class="keyword">class</span> <span class="class">Card</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="predefined-constant">self</span>, note, id=<span class="predefined-constant">None</span>):
+        <span class="predefined-constant">self</span>.id = intId() <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="predefined-constant">self</span>.note = note
+        <span class="comment"># Timestamp of the creation date in second.</span>
+        <span class="predefined-constant">self</span>.crt = intTime()
+        <span class="comment"># 0=new, 1=learning, 2=review, 3=relearning</span>
+        <span class="predefined-constant">self</span>.type = <span class="integer">0</span>
+        <span class="comment"># Queue type:</span>
+        <span class="comment">#   -1=suspend =&gt; leeches (as manual suspension is not supported)</span>
+        <span class="comment">#    0=new     =&gt; new (never shown)</span>
+        <span class="comment">#    1=lrn     =&gt; learning/relearning</span>
+        <span class="comment">#    2=rev     =&gt; review (as for type)</span>
+        <span class="predefined-constant">self</span>.queue = <span class="integer">0</span>
+        <span class="comment"># The interval. Negative = seconds, positive = days</span>
+        <span class="predefined-constant">self</span>.ivl = <span class="integer">0</span>
+        <span class="comment"># The ease factor in permille.</span>
+        <span class="comment"># Ex: 2500 = the interval will be multiplied by 2.5</span>
+        <span class="comment"># the next time you press &quot;Good&quot;.</span>
+        <span class="predefined-constant">self</span>.factor = <span class="integer">0</span>
+        <span class="comment"># The number of reviews.</span>
+        <span class="predefined-constant">self</span>.reps = <span class="integer">0</span>
+        <span class="comment"># The number of times the card went from a &quot;was answered correctly&quot;</span>
+        <span class="comment"># to &quot;was answered incorrectly&quot; state.</span>
+        <span class="predefined-constant">self</span>.lapses = <span class="integer">0</span>
+        <span class="comment"># Of the form a*1000+b, with:</span>
+        <span class="comment">#   a =&gt; the number of reps left today</span>
+        <span class="comment">#   b =&gt; the number of reps left till graduation</span>
+        <span class="comment"># Ex: '2004' = 2 reps left today and 4 reps till graduation</span>
+        <span class="predefined-constant">self</span>.left = <span class="integer">0</span>
+        <span class="comment"># Due is used differently for different card types:</span>
+        <span class="comment"># - new =&gt; note id or random int</span>
+        <span class="comment"># - lrn =&gt; integer timestamp in second</span>
+        <span class="comment"># - rev =&gt; integer day, relative to the collection's creation time</span>
+        <span class="predefined-constant">self</span>.due = <span class="predefined-constant">self</span>.id</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>Scheduler</code> implementation will be the main topic of the remaining of this section.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The identifiers are initialized using a helper function <code>intId()</code> which uses the current time and ensures two successive calls return different values. Here is the definition:</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">import</span> <span class="include">time</span>
+
+<span class="keyword">def</span> <span class="function">intId</span>():
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Returns a unique integer identifier.</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    t = intTime(<span class="integer">1000</span>)
+    <span class="comment"># Make sure the next call to the function returns a different value</span>
+    <span class="keyword">while</span> intTime(<span class="integer">1000</span>) == t:
+        time.sleep(<span class="integer">1</span>)
+    <span class="keyword">return</span> t
+
+<span class="keyword">def</span> <span class="function">intTime</span>(scale=<span class="integer">1</span>):
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">The time in integer seconds. Pass scale=1000 to get milliseconds.</span><span class="delimiter">&quot;</span></span>
+    <span class="keyword">return</span> <span class="predefined">int</span>(time.time()*scale)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Scheduler</code> is the largest class that will be covered. A scheduler in Anki is an object supporting two methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>getCard()</code>: Returns the next card to review</p>
+</li>
+<li>
+<p><code>answerCard(card, ease)</code>: Updates the card after an answer (<code>ease</code>: <code>0</code> for "Again", <code>1</code> for "Hard", <code>2</code> for "Good", and <code>3</code> for "Easy")</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="predefined-constant">self</span>, col):
+        <span class="comment"># The collection used to retrieve the cards</span>
+        <span class="predefined-constant">self</span>.col = col
+        <span class="comment"># An upper limit for new and review cards</span>
+        <span class="predefined-constant">self</span>.queueLimit = <span class="integer">50</span>
+        <span class="comment"># An upper limit for learning cards</span>
+        <span class="predefined-constant">self</span>.reportLimit = <span class="integer">1000</span>
+        <span class="comment"># The number of already reviewed cards today</span>
+        <span class="predefined-constant">self</span>.reps = <span class="integer">0</span>
+        <span class="comment"># The number of days since the collection creation</span>
+        <span class="predefined-constant">self</span>.today = <span class="predefined-constant">self</span>._daysSinceCreation() <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="comment"># The timestamp of the end of day</span>
+        <span class="predefined-constant">self</span>.dayCutoff = <span class="predefined-constant">self</span>._dayCutoff() <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment"># The timestamp in seconds to determine the learn ahead limit</span>
+        <span class="predefined-constant">self</span>._lrnCutoff = <span class="integer">0</span> <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="predefined-constant">self</span>.reset()</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The attribute <code>today</code> represents the number of days since the collection creation. It is used when searching for review cards where the attribute <code>due</code> represents the number of days relative to it. The value is initialized like this:
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_daysSinceCreation</span>(<span class="predefined-constant">self</span>):
+        startDate = datetime.datetime.fromtimestamp(<span class="predefined-constant">self</span>.col.crt)
+        <span class="keyword">return</span> <span class="predefined">int</span>((time.time() - time.mktime(startDate.timetuple())) // <span class="integer">86400</span>)
+        <span class="comment"># Note: 86400s = 1d</span></code></pre>
+</div>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The attribute <code>dayCutoff</code> represents the timestamp of the beginning of the next day. Anki allows customizing at which hour a day ends. Here, we simply use midnight:
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_dayCutoff</span>(<span class="predefined-constant">self</span>):
+        date = datetime.datetime.today()
+        date = date.replace(hour=<span class="integer">0</span>, minute=<span class="integer">0</span>, second=<span class="integer">0</span>, microsecond=<span class="integer">0</span>)
+        <span class="keyword">if</span> date &lt; datetime.datetime.today():
+            date = date + datetime.timedelta(days=<span class="integer">1</span>)
+        stamp = <span class="predefined">int</span>(time.mktime(date.timetuple()))
+        <span class="keyword">return</span> stamp</code></pre>
+</div>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The attribute <code>_lrnCutoff</code> is related to the setting <code>collapseTime</code> (also called the learn ahead limit). The method <code>_updateLrnCutoff()</code> is used to initialize it and update it:
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_updateLrnCutoff</span>(<span class="predefined-constant">self</span>, force):
+        nextCutoff = intTime() + <span class="predefined-constant">self</span>.col.colConf[<span class="string"><span class="delimiter">'</span><span class="content">collapseTime</span><span class="delimiter">'</span></span>]
+        <span class="keyword">if</span> nextCutoff - <span class="predefined-constant">self</span>._lrnCutoff &gt; <span class="integer">60</span> <span class="keyword">or</span> force:
+            <span class="predefined-constant">self</span>._lrnCutoff = nextCutoff
+            <span class="keyword">return</span> <span class="predefined-constant">True</span>
+        <span class="keyword">return</span> <span class="predefined-constant">False</span></code></pre>
+</div>
+</div></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_3_queues_management">Part 3: Queues Management</h3>
+<div class="paragraph">
+<p>The method <code>reset()</code> present in the last line of the `Scheduler&#8217;s constructor initializes the queues managed by Anki:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">reset</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>._resetLrn()
+        <span class="predefined-constant">self</span>._resetRev()
+        <span class="predefined-constant">self</span>._resetNew()
+
+    <span class="comment"># New cards</span>
+    <span class="comment">#################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_resetNew</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>._newQueue = [] <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="predefined-constant">self</span>._updateNewCardRatio() <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="keyword">def</span> <span class="function">_fillNew</span>(<span class="predefined-constant">self</span>):
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._newQueue:
+            <span class="keyword">return</span> <span class="predefined-constant">True</span>
+        lim = <span class="predefined">min</span>(<span class="predefined-constant">self</span>.queueLimit, deckConf[<span class="string"><span class="delimiter">&quot;</span><span class="content">new</span><span class="delimiter">&quot;</span></span>][<span class="string"><span class="delimiter">&quot;</span><span class="content">perDay</span><span class="delimiter">&quot;</span></span>])
+        <span class="predefined-constant">self</span>._newQueue = <span class="predefined">list</span>(<span class="predefined">filter</span>(<span class="keyword">lambda</span> card: card.queue == <span class="integer">0</span>,
+            <span class="predefined-constant">self</span>.col.cards)) <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="predefined-constant">self</span>._newQueue.sort(key=<span class="keyword">lambda</span> card: card.due)
+        <span class="predefined-constant">self</span>._newQueue = <span class="predefined-constant">self</span>._newQueue[:lim]
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._newQueue:
+            <span class="keyword">return</span> <span class="predefined-constant">True</span>
+
+    <span class="keyword">def</span> <span class="function">_updateNewCardRatio</span>(<span class="predefined-constant">self</span>):
+        <span class="keyword">if</span> colConf[<span class="string"><span class="delimiter">'</span><span class="content">newSpread</span><span class="delimiter">'</span></span>] == NEW_CARDS_DISTRIBUTE:
+            <span class="keyword">if</span> <span class="predefined-constant">self</span>._newQueue:
+                newCount = <span class="predefined">len</span>(<span class="predefined-constant">self</span>._newQueue)
+                revCount = <span class="predefined">len</span>(<span class="predefined-constant">self</span>._revQueue)
+                <span class="predefined-constant">self</span>.newCardModulus = (
+                    (newCount + revCount) // newCount)
+                <span class="comment"># if there are cards to review, ensure modulo &gt;= 2</span>
+                <span class="keyword">if</span> revCount:
+                    <span class="predefined-constant">self</span>.newCardModulus = <span class="predefined">max</span>(<span class="integer">2</span>, <span class="predefined-constant">self</span>.newCardModulus)
+                <span class="keyword">return</span>
+        <span class="predefined-constant">self</span>.newCardModulus = <span class="integer">0</span> <span class="comment"># = Do not distribute new cards</span>
+
+
+    <span class="comment"># Learning cards</span>
+    <span class="comment">#################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_resetLrn</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>._updateLrnCutoff(force=<span class="predefined-constant">True</span>)
+        <span class="predefined-constant">self</span>._lrnQueue = [] <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="keyword">def</span> <span class="function">_fillLrn</span>(<span class="predefined-constant">self</span>):
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._lrnQueue:
+            <span class="keyword">return</span> <span class="predefined-constant">True</span>
+        cutoff = intTime() + colConf[<span class="string"><span class="delimiter">'</span><span class="content">collapseTime</span><span class="delimiter">'</span></span>]
+        <span class="predefined-constant">self</span>._lrnQueue = <span class="predefined">list</span>(<span class="predefined">filter</span>(<span class="keyword">lambda</span> card: card.queue == <span class="integer">1</span> <span class="keyword">and</span>
+            card.due &lt; cutoff, <span class="predefined-constant">self</span>.col.cards)) <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="predefined-constant">self</span>._lrnQueue.sort(key=<span class="keyword">lambda</span> card: card.id)
+        <span class="predefined-constant">self</span>._lrnQueue = <span class="predefined-constant">self</span>._lrnQueue[:<span class="predefined-constant">self</span>.reportLimit]
+        <span class="keyword">return</span> <span class="predefined-constant">self</span>._lrnQueue
+
+    <span class="comment"># Review cards</span>
+    <span class="comment">#################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_resetRev</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>._revQueue = [] <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="keyword">def</span> <span class="function">_fillRev</span>(<span class="predefined-constant">self</span>):
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._revQueue:
+            <span class="keyword">return</span> <span class="predefined-constant">True</span>
+        lim = <span class="predefined">min</span>(<span class="predefined-constant">self</span>.queueLimit, <span class="predefined-constant">self</span>.col.deckConf[<span class="string"><span class="delimiter">&quot;</span><span class="content">rev</span><span class="delimiter">&quot;</span></span>][<span class="string"><span class="delimiter">&quot;</span><span class="content">perDay</span><span class="delimiter">&quot;</span></span>])
+        <span class="predefined-constant">self</span>._revQueue = <span class="predefined">list</span>(<span class="predefined">filter</span>(<span class="keyword">lambda</span> card: card.queue == <span class="integer">2</span> <span class="keyword">and</span>
+            card.due &lt;= <span class="predefined-constant">self</span>.today, <span class="predefined-constant">self</span>.col.cards)) <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="predefined-constant">self</span>._revQueue.sort(key=<span class="keyword">lambda</span> card: card.due)
+        <span class="predefined-constant">self</span>._revQueue = <span class="predefined-constant">self</span>._revQueue[:lim]
+
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._revQueue:
+            r = random.Random()
+            r.seed(<span class="predefined-constant">self</span>.today)
+            r.shuffle(<span class="predefined-constant">self</span>._revQueue)
+            <span class="keyword">return</span> <span class="predefined-constant">True</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>By default, the queues are empty. Anki defers their filling until a card is retrieved.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The method <code>_updateNewCardRatio()</code> determines the frequency for new cards (only when new cards are spread among other cards). For example, if there are 50 review cards and 10 new cards, the ratio will be 5 so that a new card is returned after every 5 review cards. The attribute <code>reps</code> present in <code>Scheduler</code> keeps the current number of reviewed cards for the current study session and will be useful when using the ratio <code>_newCardModulus</code> to determine if the next card must be a new card or a review card.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Anki searches for all cards in the queue <code>0</code> (= <code>new</code>) and sorts them by their due date before returning the first N cards based on the current daily limit.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Anki searches for all cards in the queue <code>1</code> (= <code>lrn</code>) that are due and sorts them by timestamp as the id is initialized from the creation timestamp</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Anki searches for all cards in the queue <code>2</code> (= <code>rev</code>) that are due and sorts them by the due date before returning the first N shuffled cards based on the current daily limit.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The logic to initialize the queues is ready but will be executed in the next step when retrieving a card to study.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_4_card_retrieving">Part 4: Card Retrieving</h3>
+<div class="paragraph">
+<p>The main method is the method <code>getCard()</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">getCard</span>(<span class="predefined-constant">self</span>):
+        card = <span class="predefined-constant">self</span>._getCard()
+        <span class="keyword">if</span> card:
+            <span class="predefined-constant">self</span>.reps += <span class="integer">1</span>
+            <span class="keyword">return</span> card</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method delegates to <code>_getCard()</code> and simply increases the counter of studied cards except when the study session is completed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_getCard</span>(<span class="predefined-constant">self</span>): <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">Return the next due card or None.</span><span class="delimiter">&quot;</span></span>
+
+        <span class="comment"># learning card due?</span>
+        c = <span class="predefined-constant">self</span>._getLrnCard()
+        <span class="keyword">if</span> c:
+            <span class="keyword">return</span> c
+
+        <span class="comment"># new first, or time for one?</span>
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._timeForNewCard():
+            c = <span class="predefined-constant">self</span>._getNewCard()
+            <span class="keyword">if</span> c:
+                <span class="keyword">return</span> c
+
+        <span class="comment"># card due for review?</span>
+        c = <span class="predefined-constant">self</span>._getRevCard()
+        <span class="keyword">if</span> c:
+            <span class="keyword">return</span> c
+
+        <span class="comment"># new cards left?</span>
+        c = <span class="predefined-constant">self</span>._getNewCard()
+        <span class="keyword">if</span> c:
+            <span class="keyword">return</span> c
+
+        <span class="comment"># collapse or finish</span>
+        <span class="keyword">return</span> <span class="predefined-constant">self</span>._getLrnCard(collapse=<span class="predefined-constant">True</span>)
+
+
+    <span class="comment"># New cards</span>
+    <span class="comment">##########################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_getNewCard</span>(<span class="predefined-constant">self</span>):
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._fillNew(): <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="keyword">return</span> <span class="predefined-constant">self</span>._newQueue.pop()
+
+    <span class="keyword">def</span> <span class="function">_timeForNewCard</span>(<span class="predefined-constant">self</span>):
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">True if it's time to display a new card when distributing.</span><span class="delimiter">&quot;</span></span>
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="predefined-constant">self</span>._newQueue:
+            <span class="keyword">return</span> <span class="predefined-constant">False</span>
+        <span class="keyword">if</span> colConf[<span class="string"><span class="delimiter">'</span><span class="content">newSpread</span><span class="delimiter">'</span></span>] == NEW_CARDS_LAST:
+            <span class="keyword">return</span> <span class="predefined-constant">False</span>
+        <span class="keyword">elif</span> colConf[<span class="string"><span class="delimiter">'</span><span class="content">newSpread</span><span class="delimiter">'</span></span>] == NEW_CARDS_FIRST:
+            <span class="keyword">return</span> <span class="predefined-constant">True</span>
+        <span class="keyword">elif</span> <span class="predefined-constant">self</span>.newCardModulus:
+            <span class="keyword">return</span> <span class="predefined-constant">self</span>.reps <span class="keyword">and</span> <span class="predefined-constant">self</span>.reps % <span class="predefined-constant">self</span>.newCardModulus == <span class="integer">0</span>
+
+
+    <span class="comment"># Learning queues</span>
+    <span class="comment">##########################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_getLrnCard</span>(<span class="predefined-constant">self</span>, collapse=<span class="predefined-constant">False</span>):
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._fillLrn(): <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="keyword">return</span> <span class="predefined-constant">self</span>._lrnQueue.pop()
+
+    <span class="comment"># Reviews</span>
+    <span class="comment">##########################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_getRevCard</span>(<span class="predefined-constant">self</span>):
+        <span class="keyword">if</span> <span class="predefined-constant">self</span>._fillRev(): <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="keyword">return</span> <span class="predefined-constant">self</span>._revQueue.pop()</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>By default, Anki shows cards in a well-defined order:
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>New cards when <code>newSpread == NEW_CARDS_FIRST</code></p>
+</li>
+<li>
+<p>Learning cards that are due</p>
+</li>
+<li>
+<p>New cards when <code>newSpread == NEW_CARDS_DISTRIBUTE</code> (default)</p>
+</li>
+<li>
+<p>Review cards</p>
+</li>
+<li>
+<p>New cards when <code>newSpread == NEW_CARDS_LAST</code></p>
+</li>
+</ol>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The methods <code>_fillXXX()</code> return <code>True</code> when a queue is not empty, in which case, we simply have to pop an element from it.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The queues are now initialized when retrieving the first card in each of them. This works great for the current session but when a new day begins, Anki must reinitialize the queues because other cards may have reached their due date.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+<strong class="highlighted">4</strong>
+5
+6
+7
+8
+<strong class="highlighted">9</strong>
+<strong class="highlighted">10</strong>
+<strong class="highlighted">11</strong>
+<strong class="highlighted">12</strong>
+<strong class="highlighted">13</strong>
+<strong class="highlighted">14</strong>
+15
+<strong class="highlighted">16</strong>
+<strong class="highlighted">17</strong>
+<strong class="highlighted">18</strong>
+<strong class="highlighted">19</strong>
+20
+21
+<strong class="highlighted">22</strong>
+23
+24
+25
+26
+</pre></td>
+  <td class="code"><pre><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">reset</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>._updateCutoff() <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="predefined-constant">self</span>._resetLrn()
+        <span class="predefined-constant">self</span>._resetRev()
+        <span class="predefined-constant">self</span>._resetNew()
+
+    <span class="keyword">def</span> <span class="function">_updateCutoff</span>(<span class="predefined-constant">self</span>):
+        <span class="comment"># days since col created</span>
+        <span class="predefined-constant">self</span>.today = <span class="predefined-constant">self</span>._daysSinceCreation()
+        <span class="comment"># end of day cutoff</span>
+        <span class="predefined-constant">self</span>.dayCutoff = <span class="predefined-constant">self</span>._dayCutoff()
+        <span class="keyword">return</span> stamp
+
+    <span class="keyword">def</span> <span class="function">_checkDay</span>(<span class="predefined-constant">self</span>):
+        <span class="comment"># check if the day has rolled over</span>
+        <span class="keyword">if</span> time.time() &gt; <span class="predefined-constant">self</span>.dayCutoff:
+            <span class="predefined-constant">self</span>.reset()
+
+    <span class="keyword">def</span> <span class="function">getCard</span>(<span class="predefined-constant">self</span>):
+        <span class="predefined-constant">self</span>._checkDay() <i class="conum" data-value="2"></i><b>(2)</b>
+        card = <span class="predefined-constant">self</span>._getCard()
+        <span class="keyword">if</span> card:
+            <span class="predefined-constant">self</span>.reps += <span class="integer">1</span>
+            <span class="keyword">return</span> card
+</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The method <code>_updateCutoff()</code> is called every time the queues are reset (= once a day). When this happens, it means a new day began and therefore the day limit must be refreshed too.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The method <code>_checkDay()</code> is called every time we retrieve a new card to study. This way, if we have passed the current day, the queue will be reset before returning the next card.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_5_card_updating">Part 5: Card Updating</h3>
+<div class="paragraph">
+<p>Now that we have a method to empty the list of cards to study, we will turn our attention to the core part of the SRS algorithm. Every time we study a card, the card must be rescheduled. In short, we need to update the attribute <code>due</code> (= the next review date) of the card but the logic varies according to its current state (ex: the current queue, ease factor, and interval).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">answerCard</span>(<span class="predefined-constant">self</span>, card, ease):
+        <span class="keyword">assert</span> <span class="integer">1</span> &lt;= ease &lt;= <span class="integer">4</span>
+        <span class="keyword">assert</span> <span class="integer">0</span> &lt;= card.queue &lt;= <span class="integer">4</span>
+
+        card.reps += <span class="integer">1</span>
+
+        <span class="keyword">if</span> card.queue == <span class="integer">0</span>:
+            <span class="predefined-constant">self</span>._answerNewCard(card, ease)
+        <span class="keyword">elif</span> card.queue <span class="keyword">in</span> [<span class="integer">1</span>, <span class="integer">3</span>]:
+            <span class="predefined-constant">self</span>._answerLrnCard(card, ease)
+        <span class="keyword">elif</span> card.queue == <span class="integer">2</span>:
+            <span class="predefined-constant">self</span>._answerRevCard(card, ease)
+        <span class="keyword">else</span>:
+            <span class="keyword">assert</span> <span class="integer">0</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will detail each case separately.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_5_1_answering_new_cards">Part 5.1: Answering New Cards</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_answerNewCard</span>(<span class="predefined-constant">self</span>, card, ease):
+        <span class="comment"># came from the new queue, move to learning</span>
+        card.queue = <span class="integer">1</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        card.type = <span class="integer">1</span> <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment"># init reps to graduation</span>
+        card.left = <span class="predefined-constant">self</span>._startingLeft(card) <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="keyword">def</span> <span class="function">_startingLeft</span>(<span class="predefined-constant">self</span>, card):
+        conf = <span class="predefined-constant">self</span>._lrnConf(card)
+        tot = <span class="predefined">len</span>(conf[<span class="string"><span class="delimiter">'</span><span class="content">delays</span><span class="delimiter">'</span></span>])
+        tod = <span class="predefined-constant">self</span>._leftToday(conf[<span class="string"><span class="delimiter">'</span><span class="content">delays</span><span class="delimiter">'</span></span>], tot)
+        <span class="keyword">return</span> tot + tod*<span class="integer">1000</span>
+
+    <span class="keyword">def</span> <span class="function">_leftToday</span>(<span class="predefined-constant">self</span>, delays, left, now=<span class="predefined-constant">None</span>):
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">The number of steps that can be completed by the day cutoff.</span><span class="delimiter">&quot;</span></span>
+        <span class="keyword">if</span> <span class="keyword">not</span> now:
+            now = intTime()
+        delays = delays[-left:]
+        ok = <span class="integer">0</span>
+        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="predefined">len</span>(delays)):
+            now += delays[i]*<span class="integer">60</span>
+            <span class="keyword">if</span> now &gt; <span class="predefined-constant">self</span>.dayCutoff:
+                <span class="keyword">break</span>
+            ok = i
+        <span class="keyword">return</span> ok+<span class="integer">1</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Anki simply updates the attribute <code>queue</code> to move a card to a different queue. When the destination queue will be reset (ex: for tomorrow&#8217;s session), the card will be automatically inserted into it.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The attribute <code>type</code> is similar to the attribute <code>queue</code> (they share the same values <code>0</code>, <code>1</code>, and <code>2</code>). In practice, the attributes <code>queue</code> and <code>type</code> may differ for example after a lapse. When pressing "Again," on a review card, the card will be moved back to the learning back (<code>queue = 1</code>) but the type will be unchanged (<code>type = 2</code>) to remember the card was previously a review card. This will be useful when graduating the card back to the review queue after relearning.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The attribute <code>left</code> is particular. The numeric format keeps two pieces of information: how many times the card will be reviewed today, and how many steps before graduation. The methods <code>_startingLeft</code> and <code>_leftToday</code> implement this logic. You can safely ignore the details.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>So, when answering a new card, the card is automatically promoted to the learning queue.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_5_2_answering_learning_cards">Part 5.2: Answering Learning Cards</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_answerLrnCard</span>(<span class="predefined-constant">self</span>, card, ease):
+        conf = <span class="predefined-constant">self</span>._lrnConf(card) <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="comment"># immediate graduate?</span>
+        <span class="keyword">if</span> ease == <span class="integer">4</span>:
+            <span class="predefined-constant">self</span>._rescheduleAsRev(card, conf, <span class="predefined-constant">True</span>)
+        <span class="comment"># next step?</span>
+        <span class="keyword">elif</span> ease == <span class="integer">3</span>:
+            <span class="comment"># graduation time?</span>
+            <span class="keyword">if</span> (card.left%<span class="integer">1000</span>)-<span class="integer">1</span> &lt;= <span class="integer">0</span>:
+                <span class="predefined-constant">self</span>._rescheduleAsRev(card, conf, <span class="predefined-constant">False</span>)
+            <span class="keyword">else</span>:
+                <span class="predefined-constant">self</span>._moveToNextStep(card, conf)
+        <span class="keyword">elif</span> ease == <span class="integer">2</span>:
+            <span class="predefined-constant">self</span>._repeatStep(card, conf)
+        <span class="keyword">else</span>:
+            <span class="comment"># back to first step</span>
+            <span class="predefined-constant">self</span>._moveToFirstStep(card, conf)
+
+    <span class="keyword">def</span> <span class="function">_lrnConf</span>(<span class="predefined-constant">self</span>, card):
+        <span class="keyword">if</span> card.type == <span class="integer">2</span>:
+            <span class="keyword">return</span> <span class="predefined-constant">self</span>.col.deckConf[<span class="string"><span class="delimiter">&quot;</span><span class="content">lapse</span><span class="delimiter">&quot;</span></span>]
+        <span class="keyword">else</span>:
+            <span class="keyword">return</span> <span class="predefined-constant">self</span>.col.deckConf[<span class="string"><span class="delimiter">&quot;</span><span class="content">new</span><span class="delimiter">&quot;</span></span>]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The settings differ according to if the card comes from the review or new queue. For example, the steps are different after a lapse than when learning a new card for the first time.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We will detail what happens depending on which button was pressed when answering the card.</p>
+</div>
+<div class="sect3">
+<h4 id="after_pressing_again">After pressing "Again"&#8230;&#8203;</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="predefined-constant">self</span>._moveToFirstStep(card, conf)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The card is moved back to the first step:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_moveToFirstStep</span>(<span class="predefined-constant">self</span>, card, conf):
+        card.left = <span class="predefined-constant">self</span>._startingLeft(card) <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="comment"># relearning card?</span>
+        <span class="keyword">if</span> card.type == <span class="integer">3</span>:
+            <span class="predefined-constant">self</span>._updateRevIvlOnFail(card, conf) <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="keyword">return</span> <span class="predefined-constant">self</span>._rescheduleLrnCard(card, conf) <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="keyword">def</span> <span class="function">_updateRevIvlOnFail</span>(<span class="predefined-constant">self</span>, card, conf):
+        card.ivl = <span class="predefined-constant">self</span>._lapseIvl(card, conf)
+
+    <span class="keyword">def</span> <span class="function">_lapseIvl</span>(<span class="predefined-constant">self</span>, card, conf):
+        ivl = <span class="predefined">max</span>(<span class="integer">1</span>, conf[<span class="string"><span class="delimiter">'</span><span class="content">minInt</span><span class="delimiter">'</span></span>], <span class="predefined">int</span>(card.ivl*conf[<span class="string"><span class="delimiter">'</span><span class="content">mult</span><span class="delimiter">'</span></span>]))
+        <span class="keyword">return</span> ivl
+
+    <span class="keyword">def</span> <span class="function">_rescheduleLrnCard</span>(<span class="predefined-constant">self</span>, card, conf, delay=<span class="predefined-constant">None</span>):
+        <span class="comment"># normal delay for the current step?</span>
+        <span class="keyword">if</span> delay <span class="keyword">is</span> <span class="predefined-constant">None</span>:
+            delay = <span class="predefined-constant">self</span>._delayForGrade(conf, card.left)
+
+        card.due = <span class="predefined">int</span>(time.time() + delay)
+        card.queue = <span class="integer">1</span>
+        <span class="keyword">return</span> delay
+
+    <span class="keyword">def</span> <span class="function">_delayForGrade</span>(<span class="predefined-constant">self</span>, conf, left): <i class="conum" data-value="4"></i><b>(4)</b>
+        left = left % <span class="integer">1000</span>
+        delay = conf[<span class="string"><span class="delimiter">'</span><span class="content">delays</span><span class="delimiter">'</span></span>][-left]
+        <span class="keyword">return</span> delay*<span class="integer">60</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We restore the attribute <code>left</code> as if the card were new.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We process lapses differently. By default, we reset the attribute <code>ivl</code> to <code>1</code> (next review in one day).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The card due date is determined by adding the next step to the current date. The card remains in the learning queue (<code>1</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The method <code>_delayForGrade()</code> is a helper method to get the next step interval. The method extracts the number of remaining steps from the attribute <code>left</code> (Ex: <code>1002</code> &#8658; 2 remaining steps) and uses the setting <code>delay</code> to find the matching delay (Ex: <code>1m 10m 1d</code> &#8658; next study in <code>10m</code>).</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="after_pressing_hard">After pressing "Hard"&#8230;&#8203;</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="predefined-constant">self</span>._repeatStep(card, conf)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The current card step is repeated. This means the attribute <code>left</code> is unchanged. We still have the same number of remaining steps before graduation. The difference is that the card will be rescheduled in a delay slightly longer than the previous one. We average the last and next delays (Ex: <code>1m 10m 20m</code> and we are at the step 2 &#8658; repeat in <code>15m</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_repeatStep</span>(<span class="predefined-constant">self</span>, card, conf):
+        delay = <span class="predefined-constant">self</span>._delayForRepeatingGrade(conf, card.left)
+        <span class="predefined-constant">self</span>._rescheduleLrnCard(card, conf, delay=delay) <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="keyword">def</span> <span class="function">_delayForRepeatingGrade</span>(<span class="predefined-constant">self</span>, conf, left):
+        <span class="comment"># halfway between last and next</span>
+        delay1 = <span class="predefined-constant">self</span>._delayForGrade(conf, left)
+        delay2 = <span class="predefined-constant">self</span>._delayForGrade(conf, left-<span class="integer">1</span>)
+        avg = (delay1+<span class="predefined">max</span>(delay1, delay2))//<span class="integer">2</span>
+        <span class="keyword">return</span> avg</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We reuse the method <code>_rescheduleLrnCard()</code> introduced just before to update the card&#8217;s due date.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="after_pressing_good">After pressing "Good"&#8230;&#8203;</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># graduation time?</span>
+<span class="keyword">if</span> (card.left%<span class="integer">1000</span>)-<span class="integer">1</span> &lt;= <span class="integer">0</span>:
+    <span class="predefined-constant">self</span>._rescheduleAsRev(card, conf, <span class="predefined-constant">False</span>)
+<span class="keyword">else</span>:
+    <span class="predefined-constant">self</span>._moveToNextStep(card, conf)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The decision depends on if there are remaining steps or not:</p>
+</div>
+<div class="paragraph">
+<p><em>Case 1</em>: If we have finished the last step, the card is graduated to the learning queue:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_rescheduleAsRev</span>(<span class="predefined-constant">self</span>, card, conf, early):
+        lapse = card.type == <span class="integer">2</span>
+
+        <span class="keyword">if</span> lapse:
+            <span class="predefined-constant">self</span>._rescheduleGraduatingLapse(card) <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="keyword">else</span>:
+            <span class="predefined-constant">self</span>._rescheduleNew(card, conf, early) <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="keyword">def</span> <span class="function">_rescheduleGraduatingLapse</span>(<span class="predefined-constant">self</span>, card):
+        card.due = <span class="predefined-constant">self</span>.today+card.ivl
+        card.type = card.queue = <span class="integer">2</span>
+
+    <span class="keyword">def</span> <span class="function">_rescheduleNew</span>(<span class="predefined-constant">self</span>, card, conf, early):
+        card.ivl = <span class="predefined-constant">self</span>._graduatingIvl(card, conf, early)
+        card.due = <span class="predefined-constant">self</span>.today+card.ivl
+        card.factor = conf[<span class="string"><span class="delimiter">'</span><span class="content">initialFactor</span><span class="delimiter">'</span></span>]
+        card.type = card.queue = <span class="integer">2</span>
+
+    <span class="keyword">def</span> <span class="function">_graduatingIvl</span>(<span class="predefined-constant">self</span>, card, conf, early):
+        <span class="keyword">if</span> card.type <span class="keyword">in</span> (<span class="integer">2</span>,<span class="integer">3</span>):
+            <span class="keyword">return</span> card.ivl
+        <span class="keyword">if</span> <span class="keyword">not</span> early: <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="comment"># graduate</span>
+            ideal =  conf[<span class="string"><span class="delimiter">'</span><span class="content">ints</span><span class="delimiter">'</span></span>][<span class="integer">0</span>]
+        <span class="keyword">else</span>:
+            <span class="comment"># early remove</span>
+            ideal = conf[<span class="string"><span class="delimiter">'</span><span class="content">ints</span><span class="delimiter">'</span></span>][<span class="integer">1</span>]
+        <span class="keyword">return</span> ideal</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>When a lapse is graduated, we add the previous interval to the current date to determine the due date.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>When a new card is graduated, we initialize the two key attributes relative to the SRS algorithm: the ease factor and the interval. These fields will be necessary to determine the next due date for review cards.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>When graduating a new card, the initial interval will be different if we are completed all steps ("Good") or if we have pressed ("Easy") to immediately graduate the card (1 vs 4 days by default).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Case 2</em>: If there are remaining steps:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_moveToNextStep</span>(<span class="predefined-constant">self</span>, card, conf):
+        <span class="comment"># decrement real left count and recalculate left today</span>
+        left = (card.left % <span class="integer">1000</span>) - <span class="integer">1</span>
+        card.left = <span class="predefined-constant">self</span>._leftToday(conf[<span class="string"><span class="delimiter">'</span><span class="content">delays</span><span class="delimiter">'</span></span>], left)*<span class="integer">1000</span> + left <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="predefined-constant">self</span>._rescheduleLrnCard(card, conf)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The attribute <code>left</code> is updated to decrement the number of remaining steps and to recalculate the number of studies until the next day.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="after_pressing_easy">After pressing "Easy"&#8230;&#8203;</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="predefined-constant">self</span>._rescheduleAsRev(card, conf, <span class="predefined-constant">True</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The card is graduated to the review queue similarly to when we complete every step. The only exception is that the initial interval will be larger as explained in the previous point.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="part_5_3_answering_review_cards">Part 5.3: Answering Review Cards</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+   <span class="keyword">def</span> <span class="function">_answerRevCard</span>(<span class="predefined-constant">self</span>, card, ease):
+        <span class="keyword">if</span> ease == <span class="integer">1</span>:
+            <span class="predefined-constant">self</span>._rescheduleLapse(card)
+        <span class="keyword">else</span>:
+            <span class="predefined-constant">self</span>._rescheduleRev(card, ease)</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="after_pressing_again_2">After pressing "Again"&#8230;&#8203;</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_rescheduleLapse</span>(<span class="predefined-constant">self</span>, card):
+        conf = <span class="predefined-constant">self</span>.col.deckConf[<span class="string"><span class="delimiter">&quot;</span><span class="content">lapse</span><span class="delimiter">&quot;</span></span>]
+
+        card.lapses += <span class="integer">1</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        card.factor = <span class="predefined">max</span>(<span class="integer">1300</span>, card.factor-<span class="integer">200</span>) <i class="conum" data-value="2"></i><b>(2)</b>
+
+        suspended = <span class="predefined-constant">self</span>._checkLeech(card, conf) <i class="conum" data-value="3"></i><b>(3)</b>
+
+        <span class="keyword">if</span> <span class="keyword">not</span> suspended:
+            card.type = <span class="integer">2</span>
+            delay = <span class="predefined-constant">self</span>._moveToFirstStep(card, conf) <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="keyword">else</span>:
+            <span class="comment"># no relearning steps</span>
+            <span class="predefined-constant">self</span>._updateRevIvlOnFail(card, conf) <i class="conum" data-value="5"></i><b>(5)</b>
+            delay = <span class="integer">0</span>
+
+        <span class="keyword">return</span> delay
+
+    <span class="comment"># Leeches</span>
+    <span class="comment">##########################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_checkLeech</span>(<span class="predefined-constant">self</span>, card, conf):
+        <span class="keyword">if</span> card.lapses &gt;= conf[<span class="string"><span class="delimiter">'</span><span class="content">leechFails</span><span class="delimiter">'</span></span>]:
+            <span class="comment"># add a leech tag</span>
+            f = card.note
+            f.addTag(<span class="string"><span class="delimiter">&quot;</span><span class="content">leech</span><span class="delimiter">&quot;</span></span>)
+            <span class="comment"># Suspend</span>
+            card.queue = -<span class="integer">1</span>
+            <span class="keyword">return</span> <span class="predefined-constant">True</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The number of lapses for this card is increased.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ease factor is reduced by 0.2 (but no lower than 1.3 as recommended by SM-2).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If the number of lapses reaches the value of the setting <code>leechFails</code>, the card is marked as a leech. A tag is added to the note and the card is moved to the queue <code>-1</code> (= suspended). The card will therefore be ignored when filling the different queue as no method <code>_fillXXX()</code> considers cards in the queue <code>-1</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="after_pressing_hard_good_easy">After pressing "Hard," "Good," "Easy"&#8230;&#8203;</h4>
+<div class="paragraph">
+<p>The card will be rescheduled in an "ideal" number of days. In practice, most cards reside in the learning queue, and the "Again" button is pressed rarely. This means the core logic of the Anki SRS algorithm is determined by the following methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">class</span> <span class="class">Scheduler</span>:
+
+    <span class="keyword">def</span> <span class="function">_rescheduleRev</span>(<span class="predefined-constant">self</span>, card, ease):
+        <span class="comment"># update interval</span>
+        <span class="predefined-constant">self</span>._updateRevIvl(card, ease) <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="comment"># then the rest</span>
+        card.factor = <span class="predefined">max</span>(<span class="integer">1300</span>, card.factor+[-<span class="integer">150</span>, <span class="integer">0</span>, <span class="integer">150</span>][ease-<span class="integer">2</span>]) <i class="conum" data-value="2"></i><b>(2)</b>
+        card.due = <span class="predefined-constant">self</span>.today + card.ivl
+
+    <span class="keyword">def</span> <span class="function">_updateRevIvl</span>(<span class="predefined-constant">self</span>, card, ease):
+        card.ivl = <span class="predefined-constant">self</span>._nextRevIvl(card, ease)
+
+    <span class="comment"># Interval management</span>
+    <span class="comment">##########################################################################</span>
+
+    <span class="keyword">def</span> <span class="function">_nextRevIvl</span>(<span class="predefined-constant">self</span>, card, ease): <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">Next review interval for CARD, given EASE.</span><span class="delimiter">&quot;</span></span>
+        delay = <span class="predefined-constant">self</span>._daysLate(card)
+        conf = <span class="predefined-constant">self</span>.col.deckConf[<span class="string"><span class="delimiter">&quot;</span><span class="content">rev</span><span class="delimiter">&quot;</span></span>]
+        fct = card.factor / <span class="integer">1000</span>
+        hardFactor = conf.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">hardFactor</span><span class="delimiter">&quot;</span></span>, <span class="float">1.2</span>)
+        <span class="keyword">if</span> hardFactor &gt; <span class="integer">1</span>:
+            hardMin = card.ivl
+        <span class="keyword">else</span>:
+            hardMin = <span class="integer">0</span>
+        ivl2 = <span class="predefined-constant">self</span>._constrainedIvl(card.ivl * hardFactor, conf, hardMin)
+        <span class="keyword">if</span> ease == <span class="integer">2</span>:
+            <span class="keyword">return</span> ivl2
+
+        ivl3 = <span class="predefined-constant">self</span>._constrainedIvl((card.ivl + delay // <span class="integer">2</span>) * fct, conf, ivl2)
+        <span class="keyword">if</span> ease == <span class="integer">3</span>:
+            <span class="keyword">return</span> ivl3
+
+        ivl4 = <span class="predefined-constant">self</span>._constrainedIvl(
+            (card.ivl + delay) * fct * conf[<span class="string"><span class="delimiter">'</span><span class="content">ease4</span><span class="delimiter">'</span></span>], conf, ivl3)
+        <span class="keyword">return</span> ivl4
+
+    <span class="keyword">def</span> <span class="function">_daysLate</span>(<span class="predefined-constant">self</span>, card):
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">Number of days later than scheduled.</span><span class="delimiter">&quot;</span></span>
+        <span class="keyword">return</span> <span class="predefined">max</span>(<span class="integer">0</span>, <span class="predefined-constant">self</span>.today - card.due)
+
+    <span class="keyword">def</span> <span class="function">_constrainedIvl</span>(<span class="predefined-constant">self</span>, ivl, conf, prev):
+        ivl = <span class="predefined">max</span>(ivl, prev+<span class="integer">1</span>, <span class="integer">1</span>)
+        ivl = <span class="predefined">min</span>(ivl, conf[<span class="string"><span class="delimiter">'</span><span class="content">maxIvl</span><span class="delimiter">'</span></span>])
+        <span class="keyword">return</span> <span class="predefined">int</span>(ivl)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The attribute <code>ivl</code> determines the next due date (we add it to the current date to determine the value of the attribute <code>due</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ease factor is changed by removing 0.15 for "Hard" cards or by adding 0.15 for "Easy" cards. The ease factor is left unchanged for "Good" cards. Only their intervals will be changed to increase the period between studies.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The method <code>_nextRevIvl()</code> determine the next interval:
+<div class="ulist">
+<ul>
+<li>
+<p>"Hard": the current interval is multiplied by the value of the hard interval (1.2 by default).</p>
+</li>
+<li>
+<p>"Good": the current interval is multiplied by the current ease (+ a bonus if the card was late).</p>
+</li>
+<li>
+<p>"Easy": the current interval is multiplied by the current ease times the easy bonus (1.3 by default) (+ a bonus if the card was late).</p>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>We are done</strong> 🎉. The complete code is available in the <a href="https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_minimal_v3.py">companion GitHub repository</a>. A more complete <a href="https://github.com/julien-sobczak/anki-srs-under-the-hood/blob/main/anki/schedv2_annotated.py">annotated version</a> is also available in the same repository including two additional features described next.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bonus_day_boundaries">Bonus: Day Boundaries</h3>
+<div class="paragraph">
+<p><a href="https://docs.ankiweb.net/deck-options.html?#day-boundaries">Anki treats small steps and steps that cross a day boundary differently</a>. With small steps, the cards are shown as soon as the delay has passed, in preference to other due cards in review. This is done so that you can answer the card as closely to the calculated delay as possible. In contrast, if the interval crosses a day boundary, it is automatically converted to days.</p>
+</div>
+<div class="paragraph">
+<p>In the implementation, the code splits the learning queue into two distinct queues: sub-day learning and day learning.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># ...</span>
+
+<span class="keyword">def</span> <span class="function">_resetLrn</span>(<span class="predefined-constant">self</span>):
+    <span class="predefined-constant">self</span>._lrnQueue = []
+    <span class="predefined-constant">self</span>._lrnDayQueue = [] <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="comment"># ...</span>
+
+<span class="keyword">def</span> <span class="function">_rescheduleLrnCard</span>(<span class="predefined-constant">self</span>, card, conf, delay=<span class="predefined-constant">None</span>):
+    <span class="comment"># normal delay for the current step?</span>
+    <span class="keyword">if</span> delay <span class="keyword">is</span> <span class="predefined-constant">None</span>:
+        delay = <span class="predefined-constant">self</span>._delayForGrade(conf, card.left)
+
+    card.due = <span class="predefined">int</span>(time.time() + delay)
+    <span class="comment"># due today?</span>
+    <span class="keyword">if</span> card.due &lt; <span class="predefined-constant">self</span>.dayCutoff: <i class="conum" data-value="2"></i><b>(2)</b>
+        card.queue = <span class="integer">1</span>
+    <span class="keyword">else</span>:
+        <span class="comment"># the card is due in one or more days, so we need to use the</span>
+        <span class="comment"># day learn queue</span>
+        ahead = ((card.due - <span class="predefined-constant">self</span>.dayCutoff) // <span class="integer">86400</span>) + <span class="integer">1</span>
+        card.due = <span class="predefined-constant">self</span>.today + ahead
+        card.queue = <span class="integer">3</span>
+
+<span class="comment"># ...</span>
+
+<span class="keyword">def</span> <span class="function">_getCard</span>(<span class="predefined-constant">self</span>):
+    <span class="comment"># learning card due?</span>
+    c = <span class="predefined-constant">self</span>._getLrnCard() <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="keyword">if</span> c:
+        <span class="keyword">return</span> c
+
+    <span class="comment"># new first, or time for one?</span>
+    <span class="keyword">if</span> <span class="predefined-constant">self</span>._timeForNewCard():
+        c = <span class="predefined-constant">self</span>._getNewCard()
+        <span class="keyword">if</span> c:
+            <span class="keyword">return</span> c
+
+    <span class="comment"># card due for review?</span>
+    c = <span class="predefined-constant">self</span>._getRevCard()
+    <span class="keyword">if</span> c:
+        <span class="keyword">return</span> c
+
+    <span class="comment"># day learning card due?</span>
+    c = <span class="predefined-constant">self</span>._getLrnDayCard() <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="keyword">if</span> c:
+        <span class="keyword">return</span> c
+
+    <span class="comment"># new cards left?</span>
+    c = <span class="predefined-constant">self</span>._getNewCard()
+    <span class="keyword">if</span> c:
+        <span class="keyword">return</span> c
+
+    <span class="comment"># collapse or finish</span>
+    <span class="keyword">return</span> <span class="predefined-constant">self</span>._getLrnCard(collapse=<span class="predefined-constant">True</span>)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The previous queue is split into two queues:
+<div class="ulist">
+<ul>
+<li>
+<p><code>_lrnQueue</code> (<code>queue == 1</code>) = sub-day learning queue</p>
+</li>
+<li>
+<p><code>_lrnDayQueue</code> (<code>queue == 3</code>) = day learning queue</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Learning cards are rescheduled in the sub-day queue <code>1</code> when the next review is planned before the end of the day review session. The due date is the number of seconds until the next review. Otherwise, the card is rescheduled in the day learning queue <code>3</code> and the delay is the number of days until the next review.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Sub-day learning cards are prioritized first to be sure to review them as close as their delay in seconds. Day learning cards are reviewed last since their delay in days tolerates more flexibility (reviewing them the next day is not as bad as for sub-day learning cards).</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bonus_fuzzing">Bonus: Fuzzing</h3>
+<div class="paragraph">
+<p>When you select an ease button on a review card, <a href="https://docs.ankiweb.net/studying.html#fuzz-factor">Anki also applies a small amount of random “fuzz”</a> to prevent cards that were introduced at the same time and given the same ratings from sticking together and always coming up for review on the same day.</p>
+</div>
+<div class="paragraph">
+<p>Here is the code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">def</span> <span class="function">_fuzzedIvl</span>(<span class="predefined-constant">self</span>, ivl): <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="predefined">min</span>, max = <span class="predefined-constant">self</span>._fuzzIvlRange(ivl)
+    <span class="keyword">return</span> random.randint(<span class="predefined">min</span>, <span class="predefined">max</span>)
+
+<span class="keyword">def</span> <span class="function">_fuzzIvlRange</span>(<span class="predefined-constant">self</span>, ivl):
+    <span class="keyword">if</span> ivl &lt; <span class="integer">2</span>:
+        <span class="keyword">return</span> [<span class="integer">1</span>, <span class="integer">1</span>]
+    <span class="keyword">elif</span> ivl == <span class="integer">2</span>:
+        <span class="keyword">return</span> [<span class="integer">2</span>, <span class="integer">3</span>]
+    <span class="keyword">elif</span> ivl &lt; <span class="integer">7</span>: <i class="conum" data-value="2"></i><b>(2)</b>
+        fuzz = <span class="predefined">int</span>(ivl*<span class="float">0.25</span>)
+    <span class="keyword">elif</span> ivl &lt; <span class="integer">30</span>: <i class="conum" data-value="2"></i><b>(2)</b>
+        fuzz = <span class="predefined">max</span>(<span class="integer">2</span>, <span class="predefined">int</span>(ivl*<span class="float">0.15</span>))
+    <span class="keyword">else</span>: <i class="conum" data-value="2"></i><b>(2)</b>
+        fuzz = <span class="predefined">max</span>(<span class="integer">4</span>, <span class="predefined">int</span>(ivl*<span class="float">0.05</span>))
+    <span class="comment"># fuzz at least a day</span>
+    fuzz = <span class="predefined">max</span>(fuzz, <span class="integer">1</span>)
+    <span class="keyword">return</span> [ivl-fuzz, ivl+fuzz]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The function <code>_fuzzedIvl()</code> is only called for intervals greater than one day. For sub-day learning cards introduced in the previous point, fuzzing is also applied up to 5 minutes:
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">maxExtrax = <span class="predefined">min</span>(<span class="integer">300</span>, <span class="predefined">int</span>(delay*<span class="float">0.25</span>))
+fuzz = random.randrange(<span class="integer">0</span>, maxExtra)</code></pre>
+</div>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The fuzz factor is reduced but the fuzzing increases as intervals become larger.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_better_anki_srs_algorithm">A Better Anki SRS Algorithm?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="http://www.supermemo.com/english/ol/sm2.htm">SM-2 algorithm</a>, on which Anki is based, was released in 1987 in SuperMemo 1.0. It was revised several times since:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://super-memory.com/english/ol/sm4.htm">SM-4</a> (1989)</p>
+</li>
+<li>
+<p><a href="http://super-memory.com/english/ol/sm5.htm">SM-5</a> (1989)</p>
+</li>
+<li>
+<p><a href="http://super-memory.com/english/ol/sm6.htm">SM-6</a> (1991)</p>
+</li>
+<li>
+<p><a href="http://super-memory.com/english/algsm8.htm">SM-8</a> (1995)</p>
+</li>
+<li>
+<p><a href="http://super-memory.com/english/algsm11.htm">SM-11</a> (2002)</p>
+</li>
+<li>
+<p><a href="http://super-memory.com/english/algsm15.htm">SM-15</a> (2011)</p>
+</li>
+<li>
+<p><a href="https://supermemo.guru/wiki/Algorithm_SM-17">SM-17</a> (2015)</p>
+</li>
+<li>
+<p><a href="https://supermemo.guru/wiki/Algorithm_SM-18">SM-18</a> (2019)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each version iterates over deficiencies of the previous one.
+You can find a <a href="https://supermemo.guru/wiki/History_of_SuperMemo_algorithm">short summary</a> of the main changes or a (very) <a href="https://www.supermemo.com/fr/articles/history">long summary</a> of the history of SuperMemo. The short version is probably too terse to understand the improvements, and the long version is probably too detailed to understand everything. (It took me more than 5 hours to read it but it was worth the reading!)</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>SuperMemo 2 was great. Its simple algorithm has survived in various mutations to this day in popular apps such as Anki or Mnemosyne. However, the algorithm was dumb in the sense that there was no way of modifying the function of optimum intervals. The findings of 1985 were set in stone. Memory complexity and stability increase were expressed by the same single number: E-factor. It is a bit like using a single lever in a bike to change gears and the direction of driving.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Piotr Wozniak<br>
+<cite>Original author of SuperMemo</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>From a high-level perspective, the main motivation for every version is to determine better optimal intervals (= the ideal periods between reviews of a single card) so that the forgetting index is close to 10% (= recall of 90% is acceptable).</p>
+</div>
+<div class="paragraph">
+<p>From a low-level perspective, several approaches were experimented by SuperMemo. The first major version (SM-2) introduced the ease factor to capture the difficulty of an item (the lower the ease factor = the more difficult = the shorter the interval). The ease factor was multiplied by the previous interval to determine the next interval.</p>
+</div>
+<div class="paragraph">
+<p>The successive iterations become more and more elaborate by adding new dimensions, in particular, what is called by SuperMemo the <a href="https://supermemo.guru/wiki/Two_component_model_of_memory">two-component model</a>: <strong>stability</strong> and <strong>retrievability</strong> (in complement to <strong>difficulty</strong> represented by the E-Factor). Stability tells you how long a piece of knowledge can last in memory. Retrievability tells you how easy it is to recall a piece of knowledge. These notions may appear similar but they aren&#8217;t. "If you take two memories right after a review, one with a short optimum interval, and the other with a long optimum interval, the memory status of the two must differ," declares Piotr Wozniak, "Both can be recalled perfectly (maximum retrievability) and they also need to differ in how long they can last in memory (different stability)."</p>
+</div>
+<div class="paragraph">
+<p>What follows is an example of the optimum factors (OF) matrix used in SM-4/SM-5. The matrix ignores the retrievability dimension, which was introduced in SM-6.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="/posts_resources/2022-05-30-anki-srs/sm-5-matrix.png"><img src="/posts_resources/2022-05-30-anki-srs/sm-5-matrix.png" alt="sm 5 matrix" width="700"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>A two-dimensional matrix is easier to represent but the logic is similar with more dimensions. Initially, the matrix was defined based on prior measurements in SuperMemo. After each answer, the grade tells SuperMemo how well the interval "performed." If the grade is low, the interval was too long. If the grade is high, the interval was too short. The entry in the matrix is updated in consequence and matrix smoothing is applied (= if a value increases, a smaller increase can be beneficial to neighbors too).</p>
+</div>
+<div class="paragraph">
+<p>The two-component model of long-term memory still represents the foundation of SuperMemo since its introduction in SM-4 in 1989. <a href="http://super-memory.com/articles/kowal.htm">Piotr Wozniak was pessimistic about a better, faster, and more effective algorithm</a> as soon as 1994. The versions of the algorithm that appeared after that didn&#8217;t introduce a breakthrough improvement like SuperMemo did when it abandoned the SM-2 algorithm in 1989, the same algorithm that keeps popping up in new applications.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">"New" Applications</div>
+<div class="paragraph">
+<p>Many applications relying on SRS appeared in popular app stores more or less recently: <a href="https://quizlet.com/">Quizlet</a>, <a href="https://www.memrise.com/">Memrise</a>, <a href="https://www.duolingo.com/">Duolingo</a>, <a href="https://www.lingodeer.com/">LingoDeer</a>, <a href="https://www.brainscape.com/">Brainscape</a>, <a href="https://lingvist.com/">Lingvist</a>, <a href="https://chegg.com">Chegg</a>, <a href="https://www.remnote.com/">RemNote</a>, <a href="https://mochi.cards/">Mochi</a>, <a href="https://www.memcode.com/">Memcode</a>, &#8230;&#8203;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://mochi.cards/docs/#spaced-repetition"><em>Mochi</em>'s algorithm</a> is very simple. The card interval is doubled after each correct answer, and cut in half otherwise.</p>
+</li>
+<li>
+<p><a href="https://memrise.zendesk.com/hc/en-us/articles/360015889057-How-does-the-spaced-repetition-system-work-"><em>Memrise</em>'s algorithm</a> is similar to <em>Mochi</em>'s. The card interval increases using the following steps: 4 hours, 12 hours, 24 hours, 6 days, 12 days, 48 days, 96 days, and 6 months. Any wrong answer moves back the card to the first interval.</p>
+</li>
+<li>
+<p><a href="https://quizlet.com/blog/spaced-repetition-for-all-cognitive-science-meets-big-data-in-a-procrastinating-world">Quizlet&#8217;s algorithm</a> has known several iterations. The first implementation simply repeats all the questions you got wrong. The second implementation is similar to Anki where the card interval increases by approximately 2.2 and wrong answers reset the interval to one day. The next implementation relies on machine learning and uses the millions of answers to determine the recall probability, which is the chance you answer correctly. This allows, for example, to reduce the interval for words with irregular spellings when learning a foreign language.</p>
+</li>
+<li>
+<p><a href="https://blog.duolingo.com/how-we-learn-how-you-learn/"><em>Duolingo</em>'s algorithm</a> is similar to Quizlet. Duolingo has millions of students who generate billions of statistics about language learning every day. Like Quizlet, Duolingo uses machine learning to predict how likely you are to remember any given word at any time. This is represented by the strength meter (still strong, pretty good, time to practice, overdue) below every lesson.</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=IwaoV-C9az8&amp;ab_channel=RemNote">RemNote&#8217;s algorithm</a> is customizable like Anki and most settings will look familiar to Anki users, especially after following this tutorial.</p>
+</li>
+<li>
+<p><a href="https://news.ycombinator.com/item?id=23948541">Memcode&#8217;s algorithm</a> also uses SM-2.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In my opinion, <strong>Anki is not perfect but there is no need to focus too much on optimizing it</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Adding more dimensions</strong>? What if you review inadvertently a card, for example when explaining the idea to a coworker. No algorithm can exploit this and postpone the next review. <strong>No algorithm will ever be perfect</strong>.</p>
+</li>
+<li>
+<p><strong>Using machine learning</strong>? Applying the lessons from other learners is great for common datasets. For example, if most French users have trouble learning a particular English word, chances are future French users will need shorter intervals too. But what about custom-edited cards about subjects such as science, management, and parenting. What about your interest in any of these subjects. We remember more easily what passionates us. <strong>Machine learning excels when there are patterns but learning is profoundly a personal, unique experience</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Therefore, <strong>I think we should focus more on optimizing our practices rather than the tools</strong>. Here are two key practices:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Devote time to understand</strong>. Learning is a 3-steps process: encoding, storage, and retrieval. Anki helps to store information for a longer period by reviewing it ("use it or lose it"). But Anki is dependent on how good the encoding happened. You cannot learn something you haven&#8217;t understood first. Therefore, you must devote (a lot of) time <a href="https://www.juliensobczak.com/write/2018/12/01/10-rules-for-better-flashcards.html">writing your own flashcards</a>. <strong>A poor encoding process will make the best SRS algorithm useless.</strong></p>
+</li>
+<li>
+<p><strong>Devote time to learn</strong>. Trying Anki is easy. Sticking to it is hard. Many users quickly abandon Anki probably because its benefits can only be visible after several years of making it a habit. And everyone knows changing habits is hard, otherwise <em>Atomic Habits</em> would not be the #1 best-selling book on Amazon last year. <strong>A lack of motivation will make the best SRS algorithm useless.</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>One last important thing,</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Learning is one of the most enjoyable things in the world.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Piotr Wozniak
+</div>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To Remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>A Spaced Repetition System (SRS) counteracts the effect of the forgetting curve</strong>. Memory decay is inevitable but can be influenced.</p>
+</li>
+<li>
+<p><strong>SRS systems can be implemented with or without a computer</strong>. The Leitner system remains popular.</p>
+</li>
+<li>
+<p><strong>SRS systems often target a retention close to 90%</strong> (= 10% of cards are wrongly answered).</p>
+</li>
+<li>
+<p><strong>SuperMemo</strong> introduced the first <strong>SRS algorithm running on a computer</strong> (SM-2).</p>
+</li>
+<li>
+<p><strong>SM-2 continues to be used by most applications</strong> including Anki, despite having been abandoned in SuperMemo three decades ago.</p>
+</li>
+<li>
+<p><strong>Anki makes the SM-2 highly configurable</strong> and uses different queues to manage cards differently based on if they are new, in learning, or simply in review.</p>
+</li>
+<li>
+<p><strong>Most algorithms use the item difficulty</strong> (known as the ease factor) to determine optimal intervals. SuperMemo goes well beyond and also uses memory stability and memory retrievability.</p>
+</li>
+<li>
+<p><strong>Recent SRS applications rely on machine learning</strong> to exploit the specificities of the learning materials (ex: English words with irregular syntax) and to use the information collected from their massive dataset of users to tune their algorithm. SuperMemo never chose this approach.</p>
+</li>
+<li>
+<p><strong>The perfect SRS algorithm will never exist</strong>. No algorithm can determine if you are passionate about a subject, or if you review by chance the content of a card at work during a discussion with a coworker (in which case an "ideal" algorithm must postpone the next review).</p>
+</li>
+<li>
+<p><strong>Creating great flashcards and making reviewing them a habit have probably a far bigger impact</strong> than any improvement in the SRS algorithm you use.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="additional_links">Additional Links</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="https://faqs.ankiweb.net/what-spaced-repetition-algorithm.html">Anki Website</a> explains succinctly the main differences between its algorithm and SM-2.</p>
+</li>
+<li>
+<p><a href="https://github.com/ankidroid/Anki-Android/wiki/Database-Structure">Anki Database Structure</a>: The most up-to-date guide to the Anki internal database schema, which was more than useful during the writing of this article.</p>
+</li>
+<li>
+<p><a href="https://web.archive.org/web/20200926103540/https://massimmersionapproach.com/table-of-contents/anki/low-key-anki/the-ease-factor-problem/">The Ease Factor Problem</a>: Interesting insight about the impact of changing the ease factor after a lapse.</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=1XaJjbCSXT0">A great video</a> to introduce most of the notions covered in the Anki section.</p>
+</li>
+<li>
+<p>Last but not least, <a href="https://www.supermemo.com/en/articles/history">the true history of spaced repetition</a>: An extensive coverage of the subject by Piotr Wozniak. A reference.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2020/12/26/anki-scripting-for-non-programmers.html">Anki Scripting for Non-Programmers</a>
+
+          
+            <a href="/tags/tools"
+              class="label">
+              Tools
+            </a>
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Flashcards
+            </span>
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

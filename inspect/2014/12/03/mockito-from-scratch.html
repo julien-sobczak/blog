@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Implementing Mockito from Scratch</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2014/12/03/mockito-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">December 03, 2014</span>
+
+      
+      <a href="/tags/frameworks" class="label">
+      Frameworks
+      </a>
+      
+
+      
+      <span class="label">
+        Java
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Implementing Mockito from Scratch</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are reading a translation of an <a href="https://julien-sobczak.github.io/blog-fr/inspect/2014/12/03/mockito-from-scratch.html">old blog post</a> published on my previous blog in French.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>We decided during the main conference that we should use JUnit 4 and Mockito because we think they are the future of TDD and mocking in Java.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Dan North, creator of BDD
+</div>
+</div>
+<div class="paragraph lead">
+<p>The elegant syntax of Mockito probably explains its huge success in the Java ecosystem. How Mockito manages to keep our tests readable? What the code looks like behind this API? Let&#8217;s find it out.</p>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<a href="https://github.com/mockito/mockito">Mockito</a> is published under <a href="http://opensource.org/licenses/MIT">MIT license</a>. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the last version of Mockito (1.10.14) at the publication time.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="a_first_example">A First Example</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">Registry</span>
+{
+    <span class="predefined-type">Object</span> lookup(<span class="predefined-type">String</span> name);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This basic interface follows the pattern <a href="http://martinfowler.com/eaaCatalog/registry.html">Registry</a>. To limit the number of calls to the registry, we decide to cache results using the <a href="https://en.wikipedia.org/wiki/Decorator_pattern">pattern Decorator</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RegistryCacheDecorator</span> <span class="directive">implements</span> <span class="predefined-type">Registry</span>
+{
+
+    <span class="directive">private</span> <span class="predefined-type">Registry</span> decoratedRegistry;
+    <span class="directive">private</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; cache = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt;();
+
+    <span class="directive">public</span> RegistryCacheDecorator(<span class="predefined-type">Registry</span> registry) {
+        <span class="local-variable">this</span>.decoratedRegistry = registry;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> lookup(<span class="predefined-type">String</span> name) {
+        <span class="keyword">if</span> (!cache.containsKey(name)) {
+            cache.put(name, decoratedRegistry.lookup(name));
+        }
+        <span class="keyword">return</span> cache.get(name);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How to test this class to ensure the registry has not been called twice for the same argument? We need a Test Double for that, in particular, a mock. (See <a href="http://martinfowler.com/articles/mocksArentStubs.html">this post by Martin Fowler to understand the differences between the types of Test Double</a>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">static</span> <span class="include">org.mockito.Mockito</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">RegistryCacheDecoratorUnitTest</span>
+{
+
+    <span class="directive">private</span> RegistryCacheDecorator decorator;
+    <span class="directive">private</span> <span class="predefined-type">Registry</span> registry;
+
+    <span class="annotation">@Before</span>
+    <span class="directive">public</span> <span class="type">void</span> before() {
+        registry = mock(<span class="predefined-type">Registry</span>.class); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        decorator = <span class="keyword">new</span> RegistryCacheDecorator(registry);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> registryShouldOnlyBeCalledOnceForTheSameName() {
+        <span class="comment">// Given</span>
+        when(registry.lookup(anyString())).thenReturn(<span class="keyword">new</span> BasicDataSource()); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="comment">// When</span>
+        decorator.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">datasource</span><span class="delimiter">&quot;</span></span>);
+        decorator.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">datasource</span><span class="delimiter">&quot;</span></span>);
+
+        <span class="comment">// Then</span>
+        verify(registry, times(<span class="integer">1</span>)).lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">datasource</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We instantiate a new mock for each test.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We configure this mock to associate an instance of <code>DataSource</code> with the name <code>"dataSource"</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We check that the registry has been called once with this name.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When running the class, the test succeeds. <strong>The goal is now to remove all Mockito import statements and to rewrite the minimal code to make the test successful again</strong>. We will try to match as much as possible the original code of Mockito, when naming classes, when writing algorithms, etc., even if some compromises will be necessary to keep this post relatively short.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lets_go">Let&#8217;s Go!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Following the removal of imports, the code no longer compiles. We start by defining the signature of missing methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Mockito</span>
+{
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; T mock(<span class="predefined-type">Class</span>&lt;T&gt; classToMock) {
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>; <span class="comment">// Implemented in the section &quot;mock&quot;</span>
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; OngoingStubbing&lt;T&gt; when(T methodCall) {
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>; <span class="comment">// Implemented in the section &quot;when&quot;</span>
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; T verify(T mock, <span class="predefined-type">Object</span> aDefinir) {
+        <span class="keyword">return</span> mock; <span class="comment">// Implemented in the section &quot;verify&quot;</span>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code still doesn&#8217;t compile due to a reference to the type <code>OngoingStubbing</code>. The following code will fix this problem:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">OngoingStubbing</span>&lt;T&gt;
+{
+    OngoingStubbing&lt;T&gt; thenReturn(T value);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can ignore this interface for now. It will be introduced later.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mockito-from-scratch-mock"><code>mock</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Creating a mock means creating a proxy, an object that looks like the actual instance but whose behavior is preprogrammed. Since Java 1.3, we can use <a href="http://www.oracle.com/technetwork/java/generic-listener2-138155.html">Dynamic Proxies</a> to create dynamically a new class but only from an interface. This restriction is often problematic in practice, and most projects like Spring, Hibernate, or Mockito use a different library that manipulates the bytecode. The most famous library is <a href="https://github.com/cglib/cglib">cglib</a>. This library works by extending the class, a more flexible approach (the class must just not be declared <code>final</code>).</p>
+</div>
+<div class="paragraph">
+<p>Mockito abstracts cglib behind two interfaces: <code>MockMaker</code> and <code>MockHandler</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">MockMaker</span> {
+
+    &lt;T&gt; T createMock(<span class="predefined-type">Class</span>&lt;T&gt; classToMock, MockHandler handler);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An implementation of <code>MockMaker</code> is responsible for instantiating a proxy so that each call is delegated to the instance of the class <code>MockHandler</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">MockHandler</span>
+{
+    <span class="predefined-type">Object</span> handle(Invocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The class <code>Invocation</code> is a simple type grouping various properties related to a single method call:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Invocation</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Object</span> mock;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Method</span> method;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Object</span><span class="type">[]</span> arguments;
+    <span class="directive">private</span> <span class="directive">final</span> MethodProxy methodProxy; <span class="comment">// Specific cglib</span>
+
+    <span class="directive">public</span> Invocation(<span class="predefined-type">Object</span> mock, <span class="predefined-type">Method</span> method, <span class="predefined-type">Object</span><span class="type">[]</span> args, MethodProxy methodProxy) {
+        <span class="local-variable">this</span>.method = method;
+        <span class="local-variable">this</span>.mock = mock;
+        <span class="local-variable">this</span>.methodProxy = methodProxy;
+        <span class="local-variable">this</span>.arguments = args;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> getMock() {
+        <span class="keyword">return</span> mock;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Method</span> getMethod() {
+        <span class="keyword">return</span> method;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span><span class="type">[]</span> getArguments() {
+        <span class="keyword">return</span> arguments;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cglibasmobjenesis">cglib/ASM/Objenesis</h3>
+<div class="paragraph">
+<p>We are approaching the low-level details of how Mockito is working. The code is relatively easy to understand due to the cglib API that relies internally on the API of another low-level library, <a href="http://asm.ow2.org/">ASM</a>. Here is the implementation of <code>MockMaker</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.mockito.cglib.core.CodeGenerationException</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.cglib.proxy.Callback</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.cglib.proxy.Enhancer</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.cglib.proxy.Factory</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.cglib.proxy.MethodInterceptor</span>;
+<span class="keyword">import</span> <span class="include">org.mockito.exceptions.base.MockitoException</span>;
+<span class="keyword">import</span> <span class="include">org.objenesis.ObjenesisStd</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CglibMockMaker</span> <span class="directive">implements</span> MockMaker {
+
+    <span class="directive">public</span> &lt;T&gt; T createMock(<span class="predefined-type">Class</span>&lt;T&gt; mockedType, MockHandler handler) {
+
+        <span class="keyword">try</span> {
+            MethodInterceptor interceptor = <span class="keyword">new</span> MethodInterceptorFilter(handler);
+
+            <span class="predefined-type">Class</span>&lt;Factory&gt; proxyClass = createProxyClass(mockedType);
+            <span class="predefined-type">Object</span> proxyInstance = createProxy(proxyClass, interceptor);
+            <span class="keyword">return</span> mockedType.cast(proxyInstance);
+        } <span class="keyword">catch</span> (<span class="exception">ClassCastException</span> cce) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> MockitoException(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Exception occurred while creating the mockito proxy</span><span class="delimiter">&quot;</span></span>, cce);
+        }
+
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Class</span>&lt;Factory&gt; createProxyClass(<span class="predefined-type">Class</span>&lt;?&gt; mockedType) {
+        Enhancer enhancer = <span class="keyword">new</span> Enhancer();
+        enhancer.setUseFactory(<span class="predefined-constant">true</span>);
+        enhancer.setSuperclass(mockedType);
+        enhancer.setCallbackTypes(<span class="keyword">new</span> <span class="predefined-type">Class</span><span class="type">[]</span>{MethodInterceptor.class});
+
+        <span class="keyword">try</span> {
+            <span class="keyword">return</span> enhancer.createClass();
+        } <span class="keyword">catch</span> (CodeGenerationException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> MockitoException(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Mockito cannot mock this class: </span><span class="delimiter">&quot;</span></span> + mockedType);
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Object</span> createProxy(<span class="predefined-type">Class</span>&lt;Factory&gt; proxyClass, MethodInterceptor interceptor) {
+        ObjenesisStd objenesis = <span class="keyword">new</span> ObjenesisStd();
+        Factory proxy = objenesis.newInstance(proxyClass);
+        proxy.setCallbacks(<span class="keyword">new</span> <span class="predefined-type">Callback</span><span class="type">[]</span> {interceptor});
+        <span class="keyword">return</span> proxy;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Don&#8217;t panic if you do not understand everything. The code is not as complex as it may seem. Let&#8217;s go through the code step by step.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We start by creating an instance of <a href="http://cglib.sourceforge.net/apidocs/net/sf/cglib/proxy/Enhancer.html"><code>Enhancer</code></a>, the main class in cglib, responsible for creating new classes dynamically.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Enhancer enhancer = <span class="keyword">new</span> Enhancer();</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We then describe what our mock must look like:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">enhancer.setUseFactory(<span class="predefined-constant">true</span>);
+enhancer.setSuperclass(mockedType);
+enhancer.setCallbackTypes(<span class="keyword">new</span> <span class="predefined-type">Class</span><span class="type">[]</span>{MethodInterceptor.class});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The most important line is the second one, where we specify the class of our mock. To understand the first line, you need to know that all classes generated by cglib implement by default the interface <code>Factory</code>. This interface allows, for example, to switch the callback. The method <code>setUseFactory</code> allows to disable this feature, but we are simply setting the default value and is therefore useless. The last line defines the kind of callback we are going to use. Several ones are available such as <code>FixedValue</code> to return the same value for every method call. The most flexible callback is <code>MethodInterceptor</code> that gives us full control of all call metadata to determine the result.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We create the <code>Class</code> object that will be used to instantiate our mock.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">return</span> enhancer.createClass();</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We call the method <code>newInstance</code> to create a new instance from the object <code>Class</code> we got just before:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">Class</span>&lt;T&gt; cls = ...:
+<span class="keyword">return</span> cls.newInstance();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method requires a default constructor. This restriction may cause problems in some cases.</p>
+</div>
+<div class="paragraph">
+<p>Imagine that the class to mock inherits another class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Parent</span> {
+  <span class="directive">public</span> Parent() {
+    <span class="comment">// will be executed by Child.class.newInstance()...</span>
+  }
+
+}
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Child</span> <span class="directive">extends</span> Parent {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on what the parent constructor does, the result may be problematic.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Can we instantiate an object in Java without using a constructor?</div>
+<div class="paragraph">
+<p>Yes, by using the library <a href="http://objenesis.org/">Objenesis</a>. Again, this library works by manipulating the bytecode that may differ based on the version of the JVM, the vendor, &#8230;&#8203; (See the class <a href="http://objenesis.org/apidocs/org/objenesis/strategy/StdInstantiatorStrategy.html"><code>StdInstantiatorStrategy</code></a> if you are curious).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With this new knowledge, we can go back to the class <code>MockHandler</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">MethodInterceptor interceptor = <span class="keyword">new</span> MethodInterceptorFilter(handler);
+ObjenesisStd objenesis = <span class="keyword">new</span> ObjenesisStd();
+Factory proxy = objenesis.newInstance(proxyClass);
+proxy.setCallbacks(<span class="keyword">new</span> <span class="predefined-type">Callback</span><span class="type">[]</span> {interceptor});
+<span class="keyword">return</span> proxy;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Objenesis creates a new instance of our dynamic proxy. Our mock is born. We associate it to an instance of <code>MethodInterceptorFilter</code> to connect cglib with our <code>MockHandler</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.mockito.cglib.proxy.MethodInterceptor</span>;
+
+<span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">MethodInterceptorFilter</span> <span class="directive">implements</span> MethodInterceptor {
+
+    <span class="directive">private</span> <span class="directive">final</span> MockHandler handler;
+
+    <span class="directive">public</span> MethodInterceptorFilter(MockHandler handler) {
+        <span class="local-variable">this</span>.handler = handler;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> intercept(<span class="predefined-type">Object</span> proxy, <span class="predefined-type">Method</span> method,
+        <span class="predefined-type">Object</span><span class="type">[]</span> args, MethodProxy methodProxy)
+            <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+
+        Invocation invocation = <span class="keyword">new</span> Invocation(proxy, method, args, methodProxy);
+        <span class="keyword">return</span> handler.handle(invocation);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before closing this first section, you may have noticed that Mockito repackages cglib (and ASM):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.mockito.cglib.proxy.Enhancer</span>;</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Why repackage cglib?</div>
+<div class="paragraph">
+<p>The maintenance of Cglib is not perfect. A few unstable versions have been pushed to Central Maven. It forces projects like <a href="https://github.com/Sdogruyol/mockito/tree/master/cglib-and-asm">Mockito</a> or <a href="http://docs.spring.io/spring/docs/3.2.5.RELEASE/javadoc-api/org/springframework/cglib/package-summary.html">Spring</a> to repackage it in their namespace to guarantee a stable version.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It also raises another question.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Is cglib still the best solution?</div>
+<div class="paragraph">
+<p>The trend is clearly no. Major frameworks like <a href="http://relation.to/16658.lace">Hibernate</a> or <a href="https://jira.spring.io/browse/SPR-8190">Spring</a> planned the migration to a different library like <a href="http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/">javassist</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To know more about CGlib, I recommend <a href="http://java.dzone.com/articles/cglib-missing-manual">this excellent article</a> to fix the missing official documentation.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mockito-from-scratch-when"><code>when</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Even if we are done with low-level bytecode manipulation, the following sections are not necessarily more straightforward. The Mockito API is simple to use but not necessarily to write.</p>
+</div>
+<div class="sect2">
+<h3 id="a_first_glimpse">A first glimpse&#8230;&#8203;.</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">when(registry.lookup(anyString())).thenReturn(<span class="keyword">new</span> <span class="predefined-type">Object</span>());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When executing this line of code:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The method <code>anyString</code> is called first. We memorize the use of an <code>ArgumentMatcher</code> (in a kind of global variable).</p>
+</li>
+<li>
+<p>The method <code>registry#lookup(String)</code> is then called (in fact, we call the interceptor of our mock). We memorize the invocation still using the global variable.</p>
+</li>
+<li>
+<p>The method <code>when</code> is called. We know at this moment that we are configuring our mock.</p>
+</li>
+<li>
+<p>The method <code>thenReturn</code> is called last. We exploit everything we memorized before, we save the expected result to return it when the mock will be really called during the test.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s start with the global variable. This variable is an instance of the class <code>MockingProgress</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MockingProgress</span>
+{
+
+    <span class="comment">/** Global variable */</span>
+    <span class="directive">public</span> <span class="directive">static</span> MockingProgress INSTANCE = <span class="keyword">new</span> MockingProgress();
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; matcherStack = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">Matcher</span>&gt;();
+    <span class="directive">private</span> OngoingStubbing ongoingStubbing;
+
+
+    <span class="comment">/** Called by every ArgumentMatcher (anyString, eq, ...) */</span>
+    <span class="directive">public</span> <span class="type">void</span> reportMatcher(<span class="predefined-type">Matcher</span> matcher) {
+        matcherStack.add(matcher);
+    }
+
+    <span class="comment">/** Called when the mock is executed during the when() */</span>
+    <span class="directive">public</span> <span class="type">void</span> reportOngoingStubbing(OngoingStubbing ongoingStubbing) {
+        <span class="local-variable">this</span>.ongoingStubbing = ongoingStubbing;
+    }
+
+    <span class="comment">/** Called by the method when() to confirm the stubbing */</span>
+    <span class="directive">public</span> <span class="type">void</span> stubbingStarted() {
+
+    }
+
+    <span class="comment">/** Returns the memorized ArgumentMatchers */</span>
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; pullMatchers() {
+        <span class="keyword">if</span> (matcherStack.isEmpty()) {
+            <span class="keyword">return</span> <span class="predefined-type">Collections</span>.emptyList();
+        }
+
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; matchers = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">Matcher</span>&gt;(matcherStack);
+        matcherStack.clear();
+        <span class="keyword">return</span> matchers;
+    }
+
+    <span class="comment">/**
+     * Called by the method when() to retrieve the instance
+     * to return to chain the methods.
+     */</span>
+    <span class="directive">public</span> OngoingStubbing pullOngoingStubbing() {
+        OngoingStubbing temp = ongoingStubbing;
+        ongoingStubbing = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> temp;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This class will be modified in the last part. The code appears complex but the logic is simple: every time we know more about our position in the code, we communicate this position to this class, so we will be able to retrieve everything later.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s talk about something more simple: the instances of <code>ArgumentMatcher</code>, based on the excellent library <a href="http://hamcrest.org/">Hamcrest</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.hamcrest.BaseMatcher</span>;
+
+<span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">ArgumentMatcher</span>&lt;T&gt; <span class="directive">extends</span> BaseMatcher&lt;T&gt; {
+
+    <span class="directive">public</span> <span class="directive">abstract</span> <span class="type">boolean</span> matches(<span class="predefined-type">Object</span> argument);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mockito offers many matchers. For our example, only two matchers are necessary:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Any</span>&lt;T&gt; <span class="directive">extends</span> ArgumentMatcher&lt;T&gt; {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> matches(<span class="predefined-type">Object</span> actual) {
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>; <span class="comment">// all values are OK</span>
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> describeTo(Description description) {
+        description.appendText(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;any&gt;</span><span class="delimiter">&quot;</span></span>);
+    }
+}
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Equals</span>&lt;T&gt; <span class="directive">extends</span> ArgumentMatcher&lt;T&gt; {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Object</span> wanted;
+
+    <span class="directive">public</span> Equals(<span class="predefined-type">Object</span> wanted) {
+        <span class="local-variable">this</span>.wanted = wanted;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> matches(<span class="predefined-type">Object</span> actual) {
+        <span class="keyword">return</span> wanted == actual;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> describeTo(Description description) {
+        description.appendText(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;eq&gt;</span><span class="delimiter">&quot;</span></span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Their use requires that we call a factory method instead. This factory serves two purposes: communicates the matcher has been used and returns the right type for the code to compile (Note: instantiating a matcher directly instead of using <code>anyString()</code> would not compile):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Matchers</span>
+{
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">String</span> anyString() {
+        MockingProgress.INSTANCE.reportMatcher(<span class="keyword">new</span> Any());
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; T eq(T value) {
+        MockingProgress.INSTANCE.reportMatcher(<span class="keyword">new</span> Equals(value));
+        <span class="keyword">return</span> value;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before moving to the last section, we need to introduce the class <code>InvocationMatcher</code> that we will encounter many times. This class associates an instance of <code>Invocation</code> (a method call) with the list of used matchers. Even if we receive the arguments in the object <code>Invocation</code>, the matchers are not present as attested by the previous code (<code>anyString</code> returns for example an empty string). Here is the code of this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">InvocationMatcher</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> Invocation invocation;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; matchers;
+
+    <span class="directive">public</span> InvocationMatcher(Invocation invocation, <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; matchers) {
+        <span class="local-variable">this</span>.invocation = invocation;
+        <span class="keyword">if</span> (matchers.isEmpty()) {
+            <span class="local-variable">this</span>.matchers = argumentsToMatchers(invocation.getArguments());
+        } <span class="keyword">else</span> {
+            <span class="local-variable">this</span>.matchers = matchers;
+        }
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; argumentsToMatchers(<span class="predefined-type">Object</span><span class="type">[]</span> arguments) {
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; matchers = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">Matcher</span>&gt;(arguments.length); <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="keyword">for</span> (<span class="predefined-type">Object</span> arg : arguments) {
+            matchers.add(<span class="keyword">new</span> Equals(arg));
+        }
+        <span class="keyword">return</span> matchers;
+    }
+
+    <span class="directive">public</span> Invocation getInvocation() {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.invocation;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; getMatchers() {
+        <span class="keyword">return</span> <span class="local-variable">this</span>.matchers;
+    }
+
+    <span class="directive">public</span> <span class="type">boolean</span> matches(Invocation actual) {
+        <span class="keyword">return</span> invocation.getMock() == actual.getMock()
+                &amp;&amp; hasSameMethod(actual)
+                &amp;&amp; hasMatchingArguments(<span class="local-variable">this</span>, actual);
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> hasSameMethod(Invocation candidate) {
+        <span class="predefined-type">Method</span> m1 = <span class="local-variable">this</span>.getInvocation().getMethod();
+        <span class="predefined-type">Method</span> m2 = candidate.getMethod();
+        <span class="keyword">return</span> m1.equals(m2);
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> hasMatchingArguments(InvocationMatcher invocationMatcher,
+                                         Invocation actual) {
+        <span class="predefined-type">Object</span><span class="type">[]</span> actualArgs = actual.getArguments();
+        <span class="keyword">if</span> (actualArgs.length != invocationMatcher.getMatchers().size()) {
+            <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+        }
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="integer">0</span>; i &lt; actualArgs.length; i++) {
+            <span class="keyword">if</span> (!invocationMatcher.getMatchers().get(i).matches(actualArgs[i])) {
+                <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+            }
+        }
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>When calling a method on a mock (when using <code>when</code> or <code>verify</code>), Mockito requires only literal values/variables, or only matchers. Under the hood, Mockito makes sure to only work with matchers. This is the role of the method <code>argumentsToMatchers</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We still have a few classes to introduce like the class <code>InvocationContainer</code>. Unlike <code>MockingProgress</code>, shared between all mocks and all tests, every mock gets its own instance of <code>InvocationContainer</code>. This class keeps track of all stubbed invocations, which are all invocations using <code>when</code> to program the mock but also all invocations during the test execution that will be very useful to check assertions (<code>verify</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">InvocationContainer</span>
+{
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Map</span>&lt;InvocationMatcher, Answer&gt; stubbed =
+      <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;InvocationMatcher, Answer&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> InvocationMatcher invocationForStubbing; <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">private</span> <span class="predefined-type">LinkedList</span>&lt;Invocation&gt; registeredInvocations =
+      <span class="keyword">new</span> <span class="predefined-type">LinkedList</span>&lt;Invocation&gt;(); <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="directive">public</span> <span class="type">void</span> setInvocationForPotentialStubbing(
+      InvocationMatcher invocationMatcher) {
+        registeredInvocations.add(invocationMatcher.getInvocation()); <i class="conum" data-value="4"></i><b>(4)</b>
+        invocationForStubbing = invocationMatcher;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> addAnswer(Answer answer) {
+        registeredInvocations.removeLast();
+        stubbed.put(invocationForStubbing, answer);
+        invocationForStubbing = <span class="predefined-constant">null</span>;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Invocation&gt; getInvocations() {
+        <span class="keyword">return</span> registeredInvocations;
+    }
+
+    <span class="directive">public</span> Answer findAnswerFor(Invocation invocation) {
+        <span class="keyword">for</span> (Entry&lt;InvocationMatcher, Answer&gt; eachEntry : stubbed.entrySet()) {
+            InvocationMatcher eachInvocationMatcher = eachEntry.getKey();
+            Answer eachAnswer = eachEntry.getValue();
+            <span class="keyword">if</span> (eachInvocationMatcher.matches(invocation)) {
+                <span class="keyword">return</span> eachAnswer;
+            }
+        }
+
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>stubbed</code> contains all method calls recorded using <code>when</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>invocationForStubbing</code> contains the current method call. We ignore for now the context (<code>when</code>, normal call, or <code>verify</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>registeredInvocations</code> contains all the effective method calls (calls happening outside a call to <code>when</code> or <code>verify</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This method is called every time we call a method on the mock. It can happen when exercising the mock or at the end of a test when calling <code>verify</code>. In the first case, the method <code>addAnwser</code> will be called just after (by the method <code>thenReturn</code> for example) to allow us to record this invocation in the list of stubbed invocations. For the second case, it is our only chance to take note of the call as there would not later method call like <code>thenReturn</code> to confirm the invocation context. Therefore, we add the invocation to the list of effective invocations, and we will remove it if a method like <code>addAnswer</code> is called just after.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The answers are represented by the interface <code>Answer</code>. They may describe a return value (<code>thenReturn</code>), an exception to propagate (<code>thenThrow</code>), etc.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">Answer</span>&lt;T&gt; {
+    T answer(Invocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span>;
+}
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Returns</span> <span class="directive">implements</span> Answer&lt;<span class="predefined-type">Object</span>&gt; {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Object</span> value;
+
+    <span class="directive">public</span> Returns(<span class="predefined-type">Object</span> value) {
+        <span class="local-variable">this</span>.value = value;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> answer(Invocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+        <span class="keyword">return</span> value;
+    }
+
+}
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ThrowsException</span> <span class="directive">implements</span> Answer&lt;<span class="predefined-type">Object</span>&gt; {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Throwable</span> throwable;
+
+    <span class="directive">public</span> ThrowsException(<span class="predefined-type">Throwable</span> throwable) {
+        <span class="local-variable">this</span>.throwable = throwable;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> answer(Invocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+        <span class="keyword">throw</span> throwable;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The recording of all answers is done by one of the first abstractions we introduced in this article—the class <code>OngoingStubbing</code> that is returned by the method <code>when</code>. Here is the new definition of this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">OngoingStubbing</span>&lt;T&gt;
+{
+
+    <span class="directive">private</span> <span class="directive">final</span> InvocationContainer invocationContainer;
+
+    <span class="directive">public</span> OngoingStubbing(InvocationContainer invocationContainer) {
+        <span class="local-variable">this</span>.invocationContainer = invocationContainer;
+    }
+
+    <span class="directive">public</span> OngoingStubbing&lt;T&gt; thenReturn(T value) {
+        <span class="keyword">return</span> thenAnswer(<span class="keyword">new</span> Returns(value));
+    }
+
+    <span class="directive">public</span> OngoingStubbing&lt;T&gt; thenThrow(<span class="predefined-type">Throwable</span> throwable) {
+        <span class="keyword">return</span> thenAnswer(<span class="keyword">new</span> ThrowsException(throwable));
+    }
+
+    <span class="directive">public</span> OngoingStubbing&lt;T&gt; thenAnswer(Answer&lt;?&gt; answer) {
+        invocationContainer.addAnswer(answer);
+        <span class="keyword">return</span> <span class="local-variable">this</span>;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This second section is almost complete. We just need to assemble the different classes in <code>MockHandler</code>, the interceptor called on every method execution on our mock:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MockHandlerImpl</span>&lt;T&gt; <span class="directive">implements</span> MockHandler
+{
+
+    <span class="directive">private</span> MockingProgress mockingProgress = MockingProgress.INSTANCE;
+    <span class="directive">private</span> InvocationContainer invocationContainer;
+
+    <span class="directive">public</span> MockHandlerImpl() {
+        <span class="local-variable">this</span>.invocationContainer = <span class="keyword">new</span> InvocationContainer(); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> handle(Invocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; lastMatchers = mockingProgress.pullMatchers(); <i class="conum" data-value="2"></i><b>(2)</b>
+        InvocationMatcher invocationWithMatchers =
+          <span class="keyword">new</span> InvocationMatcher(invocation, lastMatchers);
+
+        invocationContainer.setInvocationForPotentialStubbing(
+          invocationWithMatchers); <i class="conum" data-value="3"></i><b>(3)</b>
+        OngoingStubbing&lt;T&gt; ongoingStubbing =
+          <span class="keyword">new</span> OngoingStubbing&lt;T&gt;(invocationContainer);
+        mockingProgress.reportOngoingStubbing(ongoingStubbing);
+
+        <span class="comment">// look for existing answers for this invocation</span>
+        Answer answer = invocationContainer.findAnswerFor(invocation);
+
+        <span class="keyword">if</span> (answer == <span class="predefined-constant">null</span>) { <span class="comment">// when?</span>
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        } <span class="keyword">else</span> { <span class="comment">// called by the test</span>
+            <span class="keyword">return</span> answer.answer(invocation); <i class="conum" data-value="4"></i><b>(4)</b>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Each <code>MockHandler</code> is associated with an instance of a mock. It&#8217;s the best place to create the instance of <code>InvocationContainer</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We dequeue all matchers to create an instance of <code>InvocationMatcher</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We record a possible stubbing (will be confirmed later, or not).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If an answer has already been programmed, we simply return it.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We must not forget to update our initial implementation of the method <code>when</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Mockito</span>
+{
+    <span class="comment">// ...</span>
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; OngoingStubbing&lt;T&gt; when(T methodCall) {
+        mockingProgress.stubbingStarted();
+        <span class="keyword">return</span> mockingProgress.pullOngoingStubbing();
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mockito-from-scratch-verify"><code>verify</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Compared to the previous section, this last one will be far less challenging.</p>
+</div>
+<div class="sect2">
+<h3 id="a_first_glimpse_2">A first glimpse&#8230;&#8203;</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">verify(registry, times(<span class="integer">1</span>)).lookup(anyString());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When executing this line of code:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The method <code>times</code> is called. This factory simply creates an instance of <code>VerificationMode</code>.</p>
+</li>
+<li>
+<p>The method <code>verify</code> is called. We memorize the expected result passed in parameter (<code>times(1)</code>) in our global object <code>MockingProgress</code>.</p>
+</li>
+<li>
+<p>The method <code>anyString()</code> is called. As usual, we memorize the matchers for later.</p>
+</li>
+<li>
+<p>The method <code>registry#lookup(String)</code> is called again. We end up in the <code>MockHandler</code> implementation where the verification is really done. We check the matchers and look for a matching invocation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s start by introducing the interface <code>VerificationMode</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">VerificationMode</span>
+{
+    <span class="type">void</span> verify(VerificationData data);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As for matchers, several implementations are available. Only <code>times</code> is used by our example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Times</span> <span class="directive">implements</span> VerificationMode
+{
+
+    <span class="directive">final</span> <span class="type">int</span> wantedCount;
+
+    <span class="directive">public</span> Times(<span class="type">int</span> wantedNumberOfInvocations) {
+        <span class="local-variable">this</span>.wantedCount = wantedNumberOfInvocations;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> verify(VerificationData data) {
+        <span class="type">int</span> actualCount = <span class="integer">0</span>;
+        <span class="keyword">for</span> (Invocation eachInvocation : data.getAllInvocations()) {
+            <span class="keyword">if</span> (data.getWanted().matches(eachInvocation)) {
+                actualCount++;
+            }
+        }
+        <span class="keyword">if</span> (actualCount != wantedCount) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> MockitoAssertionError(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Actual: </span><span class="delimiter">&quot;</span></span> + actualCount + <span class="string"><span class="delimiter">&quot;</span><span class="content">, expected: </span><span class="delimiter">&quot;</span></span> + wantedCount);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The verification is trivial by using the content of <code>VerificationData</code> containing all effective invocations, plus the invocations triggered by the <code>verify</code> functions. We just have to find the matching invocations and compare them with the expected number of invocations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">VerificationData</span>
+{
+
+    <span class="directive">private</span> <span class="directive">final</span> InvocationMatcher wanted;
+    <span class="directive">private</span> <span class="directive">final</span> InvocationContainer invocations;
+
+    <span class="directive">public</span> VerificationData(InvocationContainer invocations,
+      InvocationMatcher wanted) {
+        <span class="local-variable">this</span>.invocations = invocations;
+        <span class="local-variable">this</span>.wanted = wanted;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Invocation&gt; getAllInvocations() {
+        <span class="keyword">return</span> invocations.getInvocations();
+    }
+
+    <span class="directive">public</span> InvocationMatcher getWanted() {
+        <span class="keyword">return</span> wanted;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We need to revise our implementation of the method <code>verify</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Mockito</span>
+{
+
+    <span class="comment">// …</span>
+
+    <span class="directive">public</span> <span class="directive">static</span> &lt;T&gt; T verify(T mock, VerificationMode mode) {
+        mockingProgress.verificationStarted(mode);
+        <span class="keyword">return</span> mock;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And <code>MockingProgress</code> too:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MockingProgress</span>
+{
+
+    <span class="comment">// …</span>
+
+    <span class="directive">private</span> VerificationMode verificationMode;
+
+    <span class="directive">public</span> <span class="type">void</span> verificationStarted(VerificationMode verify) {
+        ongoingStubbing = <span class="predefined-constant">null</span>;
+        verificationMode = verify;
+    }
+
+    <span class="directive">public</span> VerificationMode pullVerificationMode() {
+        VerificationMode temp = verificationMode;
+        verificationMode = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> temp;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The last change occurs in <code>MockHandler</code> where the main logic resides:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+<strong class="highlighted">13</strong>
+14
+15
+16
+17
+18
+<strong class="highlighted">19</strong>
+<strong class="highlighted">20</strong>
+<strong class="highlighted">21</strong>
+<strong class="highlighted">22</strong>
+<strong class="highlighted">23</strong>
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+</pre></td>
+  <td class="code"><pre><span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">MockHandlerImpl</span>&lt;T&gt; <span class="directive">implements</span> MockHandler
+{
+
+    <span class="directive">private</span> MockingProgress mockingProgress = MockingProgress.INSTANCE;
+    <span class="directive">private</span> InvocationContainer invocationContainer;
+
+    <span class="directive">public</span> MockHandlerImpl() {
+        <span class="local-variable">this</span>.invocationContainer = <span class="keyword">new</span> InvocationContainer();
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> handle(Invocation invocation) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+
+        VerificationMode verificationMode = mockingProgress.pullVerificationMode();
+
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">Matcher</span>&gt; lastMatchers = mockingProgress.pullMatchers();
+        InvocationMatcher invocationWithMatchers =
+          <span class="keyword">new</span> InvocationMatcher(invocation, lastMatchers);
+
+        <span class="keyword">if</span> (verificationMode != <span class="predefined-constant">null</span>) { <span class="comment">// verify?</span>
+            VerificationData data = createVerificationData(
+              invocationContainer, invocationWithMatchers);
+            verificationMode.verify(data);
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+
+        invocationContainer.setInvocationForPotentialStubbing(invocationWithMatchers);
+        OngoingStubbing&lt;T&gt; ongoingStubbing =
+          <span class="keyword">new</span> OngoingStubbing&lt;T&gt;(invocationContainer);
+        mockingProgress.reportOngoingStubbing(ongoingStubbing);
+
+        <span class="comment">// look for the existing answers for this invocation</span>
+        Answer answer = invocationContainer.findAnswerFor(invocation);
+
+        <span class="keyword">if</span> (answer == <span class="predefined-constant">null</span>) { <span class="comment">// when?</span>
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        } <span class="keyword">else</span> { <span class="comment">// called by the test</span>
+            <span class="keyword">return</span> answer.answer(invocation);
+        }
+    }
+
+    <span class="directive">private</span> VerificationData createVerificationData(
+      InvocationContainer invocationContainer, InvocationMatcher invocationMatcher) {
+        <span class="keyword">return</span> <span class="keyword">new</span> VerificationData(invocationContainer, invocationMatcher);
+    }
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="admonitionblock note congratulations">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Congratulations!</div>
+<div class="paragraph">
+<p>Congratulations, you have just written <strong>a minimal but operational version of Mockito in less than 500 lines</strong>. The complete source code is available <a href="https://github.com/julien-sobczak/mockito-from-scratch">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="its_not_over">It&#8217;s Not Over!</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="bonus_multithreading">Bonus: Multithreading</h3>
+<div class="paragraph">
+<p>Most classes are used by a single mock instance. For example, each mock has its own instance of <code>MockHandler</code>. The only class to synchronize is the class <code>MockingProgress</code>, used as the global placeholder to support the flexibility of the Mockito API. Using the Java class <code>ThreadLocal</code>, making this class thread-safe is trivial:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ThreadSafeMockingProgress</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">ThreadLocal</span>&lt;MockingProgress&gt; mockingProgress =
+        <span class="keyword">new</span> <span class="predefined-type">ThreadLocal</span>&lt;MockingProgress&gt;();
+
+    <span class="directive">static</span> MockingProgress threadSafely() {
+        <span class="keyword">if</span> (mockingProgress.get() == <span class="predefined-constant">null</span>) {
+            mockingProgress.set(<span class="keyword">new</span> MockingProgress());
+        }
+        <span class="keyword">return</span> mockingProgress.get();
+    }
+
+    <span class="comment">// ...</span>
+
+    <span class="directive">public</span> <span class="type">void</span> verificationStarted(VerificationMode verify) {
+        threadSafely().verificationStarted(verify);
+    }
+
+    <span class="directive">public</span> VerificationMode pullVerificationMode() {
+        <span class="keyword">return</span> threadSafely().pullVerificationMode();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each method retrieves systematically the instance associated with the current thread using the method <code>get</code> defined on <code>ThreadLocal</code>. We just have to replace all references to this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">MockingProgress mockingProgress = MockingProgress.INSTANCE;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">MockingProgress mockingProgress = <span class="keyword">new</span> ThreadSafeMockingProgress();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s done!</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bonus_error_management">Bonus: Error Management</h3>
+<div class="paragraph">
+<p>Reporting errors use without surprise Java exceptions, but these exceptions are not thrown directly when an error is detected. Mockito delegates this responsibility to the class <code>Reporter</code>, which centralizes all possible errors. A specific method exists for every kind of error. Here is an extract of this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.mockito.exceptions</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Reporter</span> {
+
+    <span class="directive">public</span> <span class="type">void</span> incorrectUseOfApi() {
+        <span class="keyword">throw</span> <span class="keyword">new</span> MockitoException(join(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Incorrect use of API detected here:</span><span class="delimiter">&quot;</span></span>,
+                <span class="keyword">new</span> LocationImpl(),
+                <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">You probably stored a reference to OngoingStubbing ...</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Examples of correct usage:</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    when(mock.isOk()).thenReturn(true).thenThrow(exception);</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    when(mock.isOk()).thenReturn(true, false).thenThrow(exception);</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+        ));
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> notAMockPassedToWhenMethod() {
+        <span class="keyword">throw</span> <span class="keyword">new</span> NotAMockException(join(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Argument passed to when() is not a mock!</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Example of correct stubbing:</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    doThrow(new RuntimeException()).when(mock).someMethod();</span><span class="delimiter">&quot;</span></span>
+        ));
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> invalidUseOfMatchers(<span class="type">int</span> expectedMatchersCount,
+                                     <span class="predefined-type">List</span>&lt;LocalizedMatcher&gt; recordedMatchers) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> InvalidUseOfMatchersException(join(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">Invalid use of argument matchers!</span><span class="delimiter">&quot;</span></span>,
+                expectedMatchersCount + <span class="string"><span class="delimiter">&quot;</span><span class="content"> matchers expected, </span><span class="delimiter">&quot;</span></span> + recordedMatchers.size() +
+                    <span class="string"><span class="delimiter">&quot;</span><span class="content"> recorded:</span><span class="delimiter">&quot;</span></span> + locationsOf(recordedMatchers),
+                <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">This exception may occur if matchers are combined with raw values:</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    //incorrect:</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    someMethod(anyObject(), </span><span class="char">\&quot;</span><span class="content">raw String</span><span class="char">\&quot;</span><span class="content">);</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">When using matchers, all arguments have to be provided by matchers.</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">For example:</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    //correct:</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">    someMethod(anyObject(), eq(</span><span class="char">\&quot;</span><span class="content">String by matcher</span><span class="char">\&quot;</span><span class="content">));</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">For more info see javadoc for Matchers class.</span><span class="delimiter">&quot;</span></span>,
+                <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+        ));
+    }
+
+    <span class="comment">// …</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The main advantage of this class is to centralize all error messages in the same place to make sure their formatting is consistent. Here is an example of use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">new</span> Reporter().invalidUseOfMatchers(...);</code></pre>
+</div>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>An API can be simple to use but not so simple to implement</strong>.</p>
+</li>
+<li>
+<p>It is <strong>possible to instantiate a class in Java without calling the constructor</strong> using libraries like Objenesis.</p>
+</li>
+<li>
+<p>To create a <strong>proxy for a concrete class in Java</strong>, we have to use <strong>bytecode manipulation</strong> using libraries like Cglib or Javassist.</p>
+</li>
+<li>
+<p>Cglib is still ubiquitous in many popular frameworks, but most are migrating to Javassist.</p>
+</li>
+<li>
+<p>Using <code>ThreadLocal</code> gives access to a global context for every thread of an application.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Try for yourself!</div>
+<div class="paragraph">
+<p>The rewrite of Mockito is missing many great features. Here are a few examples of some features omitted that you may find interesting to inspect:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Mockito supports the verification <code>inOrder</code> to make sure two mocks have been called in a precise order. We have seen that <code>InvocationContainer</code> is associated with a single mock. How Mockito manages to support this use case?<br>
+<em>Hint</em>: The class <a href="https://github.com/mockito/mockito/blob/master/src/org/mockito/internal/invocation/InvocationImpl.java"><code>InvocationImpl</code></a> contains an attribute <code>sequenceNumber</code>.</p>
+</li>
+<li>
+<p>Mockito supports the verification <code>verifyZeroInteractions</code>, which as its name suggests, makes sure no interaction besides the ones defined occurred. How does it work?<br>
+<em>Hint</em>: The class <a href="https://github.com/mockito/mockito/blob/master/src/org/mockito/internal/invocation/InvocationImpl.java"><code>InvocationImpl</code></a> contains an attribute <code>verified</code>.</p>
+</li>
+<li>
+<p>Mockito supports, for a single call to the method <code>when</code>, to chain several calls to the methods <code>thenReturn</code>, <code>thenThrow</code>, etc., that will match the result of the first execution, then the second, and so on.<br>
+<em>Hint</em>: Compare <code>OngoingStubbingImpl</code> with <code>ConsecutiveStubbing</code>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

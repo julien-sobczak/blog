@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Floating-Point Numbers Demystified</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2019/03/10/floating-point-numbers-demystified.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">March 10, 2019</span>
+
+      
+      <a href="/tags/languages" class="label">
+      Languages
+      </a>
+      
+      <a href="/tags/computer-science" class="label">
+      Computer-science
+      </a>
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Floating-Point Numbers Demystified</h2>
+      
+      <h3>A Problem-Solving Approach to understand the IEEE 754 Standard</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Nothing brings fear to my heart more than a floating point number.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Gerald Jay Sussman<br>
+<cite>MIT Professor</cite>
+</div>
+</div>
+<div class="paragraph lead">
+<p>In this post, I tried to debunk common myths about floating-point numbers by explaining their subtleties, introducing each of them by showing the problem they are solving. This is a long blog post. To write it, I read several dozen articles on the subject, often shorter, but none answered all my questions. I hope it will answer yours.</p>
+</div>
+<div class="sect1">
+<h2 id="floating_point_numbers">Floating-Point Numbers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s get started by running a few instructions using the Python interpreter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ python
+>>> 0.1+0.2
+0.3000000000000000<strong>4</strong>
+>>> 1.2-1.0
+0.<strong>19999999999999996</strong>
+>>> 0.1 + 0.1 + 0.1 - 0.3 # 0?
+<strong>5.55111512313e-17</strong></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hmm, that&#8217;s weird. A bug in Python? No. You get the same result in almost all languages, since most of them follow the same specification (a little bit about that later).</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try the same test in JavaScript, directly from your browser, by simply entering <code>javascript:alert(0.1+0.2)</code> in the address bar. A popup appears and displays <code>0.30000000000000004</code>. Too bad. The same result, which will make the hair of any math teacher stand on end. (Indeed, I&#8217;m writing this article following a discussion with a math professor that is teaching Python to his students.)</p>
+</div>
+<div class="sect2">
+<h3 id="the_base">The base</h3>
+<div class="paragraph">
+<p>First, computers are electronic devices, full of components, in particular transistors. The basic operation of a transistor is switching (on and off). In other words, it is 0 or 1. So, computers work with what is called <em>Binary Number System</em> in mathematics, instead of the <em>Decimal Number System</em> we use everyday (1 is represented as <code>1</code> in binary, 2 as <code>10</code>, 3 as <code>11</code>, 4 as <code>100</code>, and so on).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/decimal-binary-systems.png" alt="decimal binary systems" width="450">
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on the base (e.g., 10 or 2), there exist numbers that cannot be represented. For example, 1/3 cannot be represented as a decimal number as there is an infinite number of digits after the floating point (0.33333…). In binary system, 0.1 cannot be represented for the same reason, in the same way that 0.2 cannot neither. Why? Mathematics to our rescue.</p>
+</div>
+<div class="paragraph">
+<p>Take the prime factors of the base (i.e., the prime numbers that can be multiplied to give the base number). For the decimal base, the prime factors are 2 and 5, since <code>10 = 2 * 5</code>. When you divide a number by a prime different from one of these prime factors like 3, problems are lurking. (<code>30/3</code> is OK but <code>10/3</code>, <code>1/3</code>, <code>7/3</code> are all failing examples that cannot be represented with the decimal system).</p>
+</div>
+<div class="paragraph">
+<p>The larger the base, the more there are prime factors and the more there are numbers that can be represented in this base (base 30 = 2 * 3 * 5, base 10 = 2 * 5, base 2 = euh… just 2).  In short, there is no worse base than binary system to represent numbers but when hardware is around, it often has the last word.</p>
+</div>
+<div class="paragraph">
+<p>To illustrate the problem with a concrete example, consider 0.2 in base 2.</p>
+</div>
+<div class="paragraph">
+<p>First, how do we build numbers in the decimal system? By composition. Look at this example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/number-composition.png" alt="number composition" width="550">
+</div>
+</div>
+<div class="paragraph">
+<p>Here are the equivalent numbers on which to compose in base 2:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/binary-composition.png" alt="binary composition" width="320">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try to represent 25 in binary using the above table. 25 = 16 + 8 + 1 in decimal, so 10000 + 1000 + 1 = 11001 in binary. Easy.</p>
+</div>
+<div class="paragraph">
+<p>What about 1/5? Not so easy&#8230;&#8203; There is no 1/5 in the table, and there are no values we can add to get this result. Therefore, we have to approximate and use the available representable numbers. The (partial) solution is 1/8 + 1/16 + 1/128 + 1/256 + 1/2048 + 1/4096 = 0.001100110011 in binary, and 0.19995117187 in decimal. Pretty close, but not exact. These approximations will result in more rounding errors when we are going to talk about floating arithmetic in the second part of this article.</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="paragraph">
+<p>We&#8217;ve learned than, regardless the number system, <strong>there are numbers we cannot represent exactly without having to use fractions</strong>. Nobody will be surprised that 0.333333333333 is not an exact value for ⅓, but we sometimes forget computers are working with 0&#8217;s and 1&#8217;s, and when we are entering 0.1, the programming language uses the inexact binary representation instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Is that the only problem with floating-point numbers? Of course, not!</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="to_finite_and_beyond">To finite and beyond</h3>
+<div class="paragraph">
+<p>Computers are physical devices, with hardware limitations. Our disk and memory are limited, and thus, even the biggest machine will never be able to store the largest number (integer or floating-point number).</p>
+</div>
+<div class="paragraph">
+<p>Moreover, the processor acts as the computer brain. It supports a specific list of <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instructions</a> (e.g., <code>ADD</code>, <code>DIVIDE</code>, <code>LOAD</code>), which operates on fixed length operands (e.g., 32 bits, 64 bits). What this means is you can ask your processor to add two numbers as long as these numbers does not exceed a predefined size limit. If you want to add larger numbers, you have to use software code, but this considerably slows down the process. So, in practice, programming languages often add abstractions for large numbers, but for performance and implementation concerns, the basic types follows these underlying restrictions imposed by the computer hardware.</p>
+</div>
+<div class="paragraph">
+<p>What it means for floating-point numbers to be limited in size?</p>
+</div>
+<div class="paragraph">
+<p>In short, a maximum size limits the numbers that we may fit inside. To measure the impact of this limit, we will use decimals in the following examples because we are used to, but remember what we have just seen in the previous section, computers work with binary numbers.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try to put the number &pi; into a fixed floating-point number:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+-------------+ size limit
+| <strong>3.141592653</strong> | 5897932384626433832795028841971...
++-------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Problem. Without surprise, not all digits can be fit into the space. It&#8217;s like when you take the subway in rush hours, you may be surprised by how many people can tightly fit into it, there will always be people staying on the platform. On this example, the stored number will be rounded as the next digit is 5. Size limit is synonym with rounding errors too.</p>
+</div>
+<div class="paragraph">
+<p>The number &pi; is a fascinating number but there are many other floating-point numbers you may want to represent. An astronomer may want to measure the distance between planets, whereas a chemist will work with infinitesimal numbers such as the mass of an neutron. And you want to make everyone happy!</p>
+</div>
+<div class="paragraph">
+<p>Here is the approximate distance to Mars in millimeters:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+-------------+ size limit
+| <strong>54624378953</strong> | 679.68543445...
++-------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Problem. The floating point is not even included, so the number is meaningless.</p>
+</div>
+<div class="paragraph">
+<p>Here is the approximate mass of a neutron in grams (1.675 * 10<sup>-24</sup> g):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+-------------+ size limit
+| <strong>0.000000000</strong> | 000000000000001675
++-------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Problem. No significant digits are included&#8230;&#8203; Completely useless too.</p>
+</div>
+<div class="paragraph">
+<p>Clearly, we need a better solution to satisfy both the astronomer and the chemist, to store large and small floating-point numbers using as few digits as allowed by the machine. The solution is called <a href="https://en.wikipedia.org/wiki/Decimal_floating_point">Decimal floating point</a> where a number is represented by a fixed number of significant digits (the significand) and scaled using an exponent in some fixed base. An example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/decimal-floating-point.png" alt="decimal floating point" width="450">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try the previous examples again using this technique.</p>
+</div>
+<div class="paragraph">
+<p>The number &pi; (<code>314159 * 10<sup>-5</sup></code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  Sign.  | exp.
++----------------+ size limit
+| 314159 |    -5 |
++----------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Distance to Mars (<code>546244 * 10<sup>8</sup></code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  Sign.  | exp.
++----------------+ size limit
+| 546244 |     8 |
++----------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mass of a neutron (<code>1675 * 10<sup>-27</sup></code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  Sign.  | exp.
++----------------+ size limit
+|   1675 |   -27 |
++----------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s a lot better. We preserve the most meaningful digits. We still have the rounding problem. But numbers have meaning and are now usable. Not being able to put all your stuffs inside a box does not mean the box is useless!</p>
+</div>
+<div class="paragraph">
+<p>There is, however, a new question to answer. If we have, for example, 32 bits to store a floating number, how many bits should be used for the significand, and how many bits should be used for the exponent. (For the base, if we always use the same base, there is no need to store it).</p>
+</div>
+<div class="paragraph">
+<p>There isn&#8217;t a clear answer. If we allocate more bits for the significand, we get increased precision. If we allocate more bits for the exponent, we may store larger and smaller number. There is, however, a commonly accepted solution, known as the IEEE Standard 754.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Why a standard?</div>
+<div class="paragraph">
+<p>We need to turn the clock back to understand the motivations. Floating-point binary numbers were beginning to be used in the mid 50s. <strong>At that time, each manufacturer was deciding the number of bits and the format used by the floating-point unit (FPU)</strong>, the piece of hardware responsible for making operations on floating-point numbers very fast. It was working, except if you decide to move your program to another machine, hence with a different way of representing floating numbers. The results were different (different rounding, different precision errors).</p>
+</div>
+<div class="paragraph">
+<p>By mid 1980s, a committee was formed to standardize everything around floating-point numbers: How are they stored? How to manage exceptions such as division by 0? etc. This standard was adopted in 1985 by all computer manufacturers so that programs were portable among computers, since every floating-point arithmetic unit was implementing the standard. This explains why we were able to reproduce our initial example using different programming languages. <strong>The standard brings portability, reproducibility, and predictability</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The IEEE 754 standard provides not just one format, but different formats, such as single precision, double precision, double extended, each differing in their size (the number of bits), and thus, the total count of numbers that can be represented (without approximation). We commonly find these types in popular programming languages, like in Java, where we have the choice between <code>float</code> vs <code>double</code> (single vs double precision).</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 90%;">
+<caption class="title">Table 1. IEEE Standard 754 Types</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-center valign-top">Sign</th>
+<th class="tableblock halign-center valign-top">Exponent</th>
+<th class="tableblock halign-center valign-top">Significand/Mantissa</th>
+<th class="tableblock halign-right valign-top">Total bits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Single</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">23</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">32</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Double</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">11</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">52</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">64</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extended precision</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">64</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">80</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Significand or Mantissa?</div>
+<div class="paragraph">
+<p>In American English, the usage of the term <em>mantissa</em> remains common in computing and among computer scientists. However, <strong>the term <em>significand</em> is encouraged by the IEEE floating-point standard</strong> and by some professionals such as Donald Knuth to <strong>avoid confusion</strong> with the pre-existing use of mantissa for the fractional part of a logarithm. We will use the term <em>significand</em> in this article.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try to represent &pi; using the single precision type (32 bits in base 2).</p>
+</div>
+<div class="paragraph">
+<p>We will see that the situation is a little more complex compared to our previous attempt. To help us, we can get the answer using the Golang method <code>math.Float32bits</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">math</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+    <span class="keyword">var</span> number <span class="predefined-type">float32</span>
+    number = <span class="float">3.141592653589793238462</span>
+    bits := math.Float32bits(number)
+    fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="delimiter">&quot;</span></span>, bits)
+    <span class="comment">// 01000000010010010000111111011011</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(<a href="https://play.golang.org/p/ioznRYQVpWO"><em>Try it by yourself</em></a>)</p>
+</div>
+<div class="paragraph">
+<p>So, <code>01000000010010010000111111011011</code> is the final answer. Great, welcome to the binary system again!</p>
+</div>
+<div class="paragraph">
+<p>Using the previous IEEE 754 table, we can decompose the answer:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> sign  exponent   significand
+ +---+----------+-------------------------+
+ | 0 | 10000000 | 10010010000111111011011 |
+ +---+----------+-------------------------+</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The sign <code>0</code> means the number is positive.</p>
+</li>
+<li>
+<p>The exponent is <code>10000000</code> (<code>2<sup>8</sup></code>) (128 in decimal).</p>
+</li>
+<li>
+<p>The significand is <code>10010010000111111011011</code> (4788187 in decimal).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If we apply the formula <code>(±) significand * 2<sup>exponent</sup></code>, we get:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="error">$</span> python
+&gt;&gt;&gt; + <span class="integer">4788187</span> * <span class="integer">2</span>**<span class="integer">128</span>
+<span class="integer">1629335605620067578555305271434895937106870272L</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Even if we don&#8217;t know the number &pi; by heart, it&#8217;s definitely wrong. To explain this result, we need to introduce details of the standard.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_exponent_bias">The Exponent Bias</h3>
+<div class="paragraph">
+<p>First, the standard defines an exponent bias (127 for single precision) that is added to the real exponent value. That means we need to subtract this value (128 - 127 = 1 on the previous example) to get the real exponent value.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Exponent_bias">exponent bias</a> is just an optimization when comparing exponents in hardware. To understand the motivations, the exponent can be positive or negative to represent both tiny and huge values, but the usual representation for signed values in computers is to add a leading bit for the sign (0 and 1 for positive and negative values). This leading bit would make the comparison harder. So, by shifting the value by 127, all values become positive (0 now means -127, 1 means -126, … 128 means 1, 255 means 128). You may safely forget the details, but remember to subtract the bias!</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try to revise our previous calculation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="error">$</span> python
+&gt;&gt;&gt; +<span class="integer">1</span> * <span class="integer">2</span>**(<span class="integer">128</span> - <span class="integer">127</span>) * <span class="integer">4788187</span>
+<span class="integer">9576374</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Still wrong&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="normalized_numbers">Normalized Numbers</h3>
+<div class="paragraph">
+<p>Second, the significand is not a simple binary number, where the rightmost bit is 2<sup>0</sup>, then 2<sup>1</sup>, 2<sup>2</sup>, &#8230;&#8203; until 2<sup>23</sup>. The significand represents a sum of fractions where the leftmost bit is 2<sup>-1</sup> (1/2), then 2<sup>-2</sup> (1/4), 2<sup>-3</sup> (1/8), &#8230;&#8203; until 2<sup>-24</sup>. Basically, the floating-point is not on the right, but on the left:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/normalized-number.png" alt="normalized number" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>The result is a number always between 0 and 1, far different from our previous calculation.</p>
+</div>
+<div class="paragraph">
+<p>Using our example, the significand represents:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><strong>1</strong>00<strong>1</strong>00<strong>1</strong>0000<strong>111111</strong>0<strong>11</strong>0<strong>11</strong>
+= 2<sup><strong>-1</strong></sup> + 2<sup><strong>-4</strong></sup> + 2<sup><strong>-7</strong></sup> + ...
+= 1/<strong>2</strong> + 1/<strong>16</strong> + 1/<strong>128</strong> + ...
+= 0.5707963705062866</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The complete calculation using Python:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="error">$</span> python
+&gt;&gt;&gt; significand = <span class="integer">2</span>**-<span class="integer">1</span> + <span class="integer">2</span>**-<span class="integer">4</span> + <span class="integer">2</span>**-<span class="integer">7</span> + <span class="integer">2</span>**-<span class="integer">12</span> + <span class="integer">2</span>**-<span class="integer">13</span> + \
+               <span class="integer">2</span>**-<span class="integer">14</span> + <span class="integer">2</span>**-<span class="integer">15</span> + <span class="integer">2</span>**-<span class="integer">16</span> + <span class="integer">2</span>**-<span class="integer">17</span> + <span class="integer">2</span>**-<span class="integer">19</span> + \
+               <span class="integer">2</span>**-<span class="integer">20</span> + <span class="integer">2</span>**-<span class="integer">22</span> + <span class="integer">2</span>**-<span class="integer">23</span>
+&gt;&gt;&gt; exponent = <span class="integer">128</span>-<span class="integer">127</span> <span class="comment"># subtract the exponent bias</span>
+&gt;&gt;&gt; +<span class="integer">1</span> * <span class="integer">2</span>**exponent * significand
+<span class="float">1.1415927410125732</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Still wrong, but closer! There is one last detail to discuss, the <strong>hidden bit</strong>.</p>
+</div>
+<div class="paragraph">
+<p>In practice, any binary floating-point numbers can be represented as <code>1.ffffff x 2<sup>exponent</sup></code> by adjusting the exponent. This representation is called the <em>normalized representation</em>, and you probably have used this technique in school with the decimal system. We learned that 0.050 × 10<sup>3</sup> is equivalent to 0.5000 × 10<sup>2</sup>, 5.000 × 10<sup>1</sup>, and so on. When applying the same technique to binary numbers, the first bits is always <code>1</code> (except for edge cases like 0 or Infinity, more about that later in this article). With the IEEE standard 754, we must omit the initial <code>1</code> when storing the significand. This optimization gets us better precision (e.g., the saved bit is reused to represent <code>2<sup>-23</sup></code> in single precision).</p>
+</div>
+<div class="paragraph">
+<p>Finally, to fix our calculation, we just need to add 1 to the significand we evaluated previously (thus, the significant is now always between 1 and 2, except for some edge cases):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="error">$</span> python
+<span class="comment"># Before: +1 * 2**1 * significand</span>
+<span class="comment"># Now:</span>
+&gt;&gt;&gt; +<span class="integer">1</span> * <span class="integer">2</span>**<span class="integer">1</span> * (<span class="integer">1</span> + significand)
+&gt;&gt;&gt; +<span class="integer">1</span> * <span class="integer">2</span>**<span class="integer">1</span> * (<span class="integer">1</span> + <span class="float">0.5707963705062866</span>)
+<span class="float">3.1415927410125732</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s much better!</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="paragraph">
+<p>We&#8217;ve learned that floating-point numbers are not stored verbatim. <strong>The sign, significand and exponent are used to represent tiny and large numbers</strong> with just as few as 32 bits in single precision. <strong>The IEEE standard 754 ensures the portability between computers and programming languages</strong> by defining the number of bits for each element. We have also seen that the standard includes some optimizations important to know to correctly interpret the binary representation like the hidden bit and the exponent bias.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Are we done with floating-point numbers imprecision? I&#8217;m afraid not. We should now inspect one of the most common sources of confusion (and a major source of imprecision).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mind_the_gap">Mind the Gap</h3>
+<div class="paragraph">
+<p>Here is a small Go program to illustrate what we are going to talk:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+        <span class="keyword">var</span> f <span class="predefined-type">float32</span>
+        f = <span class="float">16777216.0</span>
+        <span class="keyword">if</span> f == f+<span class="integer">1</span> {
+                fmt.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Are you serious?</span><span class="delimiter">&quot;</span></span>)
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When running this program (<a href="https://play.golang.org/p/_XL4UB8jYxu"><em>Try it by yourself</em></a>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Are you serious?</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s not a bug. The good news is we have already seen everything we need to know in the previous section to be able to explain this behavior.</p>
+</div>
+<div class="sect3">
+<h4 id="why_such_gaps">Why such gaps?</h4>
+<div class="paragraph">
+<p>To illustrate the problem, we will use a dummy 4-bit floating-point type (2-bit exponent, 2-bit significand). We omit the sign bit for simplicity, but we will use the same optimizations as described by the IEEE standard 754: a hidden 1-bit and the offset bias exponent (only -1 to subtract in this case). The following list presents <strong>all</strong> the representable numbers and their decimal representations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>exponent significand binary        decimal
+
+      00 00          1.0  * 2<sup>-1</sup>     0.5
+      00 01          1.25 * 2<sup>-1</sup>     0.625
+      00 10          1.5  * 2<sup>-1</sup>     0.75
+      00 11          1.75 * 2<sup>-1</sup>     0.875
+      01 00          1.0  * 2<sup>0</sup>      1.0
+      01 01          1.25 * 2<sup>0</sup>      1.25
+      01 10          1.5  * 2<sup>0</sup>      1.5
+      01 11          1.75 * 2<sup>0</sup>      1.75
+      10 00          1.0  * 2<sup>1</sup>      2.0
+      10 01          1.25 * 2<sup>1</sup>      2.5
+      10 10          1.5  * 2<sup>1</sup>      3.0
+      10 11          1.75 * 2<sup>1</sup>      3.5
+      11 00          1.0  * 2<sup>2</sup>      4.0
+      11 01          1.25 * 2<sup>2</sup>      5.0
+      11 10          1.5  * 2<sup>2</sup>      6.0
+      11 11          1.75 * 2<sup>2</sup>      7.0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Our dummy 4-bit type can <strong>only</strong> represent the numbers present on this list. <strong>Any other number should be rounded to the closest number present on this list</strong>. Consequently, it&#8217;s really easy to get the kind of weird behavior highlighted previously. For example, <code>4.0 - 4.2 == 0</code> will print <code>True</code> because the closest number for <code>4.2</code> is <code>4</code>.</p>
+</div>
+<div class="paragraph">
+<p>Here is a diagram to visualize the gaps between these numbers:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/dummy-normalized-numbers.png" alt="dummy normalized numbers" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>For standard types such as single or double precision, the pattern is very similar, except there are a lot more numbers. If we add the bit sign, we just need to reflect the diagram to get something like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/all-normalized-numbers.png" alt="all normalized numbers" width="750">
+</div>
+</div>
+<div class="paragraph">
+<p>Gaps are larger and larger when numbers are getting smaller or bigger.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try to understand the logic behind these gaps.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="predict_the_gaps">Predict the gaps</h4>
+<div class="paragraph">
+<p>In our Go example, <code>16777217.0</code> was not selected randomly. It&#8217;s the first integer than cannot be represented accurately. There is no magic. Let&#8217;s go deeper and understand how we could have found it ourselves.</p>
+</div>
+<div class="paragraph">
+<p>A <em>n</em>-bits number can represent 2<sup>n</sup> different values. For example, with 2 bits, you can represent 2<sup>2</sup> values: <code>00</code>, <code>01</code>, <code>10</code>, and <code>11</code>. The significand contains 23 bits (+1 hidden bit), and thus, can represent <code>2<sup>24</sup></code> different numbers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0000 0000 0000 0000 0000 0000 = 0
+0000 0000 0000 0000 0000 0001 = 1
+0000 0000 0000 0000 0000 0010 = 2
+0000 0000 0000 0000 0000 0011 = 3
+...
+0000 0000 0000 0000 0010 1010 = 42
+...
+1111 1111 1111 1111 1111 1110 = 16777214
+1111 1111 1111 1111 1111 1111 = 16777215</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the IEEE 754 format, we have seen that the significand should be normalized, so that the first bit is 1 in order to save a bit. So, in reality, we have:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>42 = 0000 0000 0000 0000 0010 1010 x 2<sup>0</sup>
+   = 0000 0000 0000 0000 0101 0100 x 2<sup>-1</sup>
+   = 0000 0000 0000 0000 1010 1000 x 2<sup>-2</sup>
+   = 0000 0000 0000 0001 0101 0000 x 2<sup>-3</sup>
+   = 1010 1000 0000 0000 0000 0000 x 2<sup>-24</sup>
+      ----------------------------
+           23-bits significand</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s exactly what we learned in school about decimals. Move the comma to the left and increase the exponent by 1, move the comma to the right and decrease the exponent by 1. Moving the comma does not change the result. It just change the representation.</p>
+</div>
+<div class="paragraph">
+<p>The same logic is applied here with binaries. The following figure shows why integers can be safely represented using the normalized representation, using the 4-bit dummy type as the example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/normal-vs-normalized.png" alt="normal vs normalized" width="550">
+</div>
+</div>
+<div class="paragraph">
+<p>Normalized or not, we can represent the same numbers when using the same number of bits.</p>
+</div>
+<div class="paragraph">
+<p>If we apply this same logic for the single precision format (32 bits), we would find that all integers ranging from −2<sup>24</sup> to +2<sup>24</sup> may be safely represented in IEEE 754 (24 bits for the significand). Note that this is only true for integers, not decimals, because if you remember the beginning of this article, 0.1 cannot be represented.</p>
+</div>
+<div class="paragraph">
+<p>Here are the previous examples normalized:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>               23-bits significand
+             -----------------------
+1        = 1|00000000000000000000000 with exponent = 0
+2        = 1|00000000000000000000000 with exponent = 1
+3        = 1|10000000000000000000000 with exponent = 1
+...
+42       = 1|01010000000000000000000 with exponent = 5
+...
+16777214 = 1|11111111111111111111110 with exponent = 23
+16777215 = 1|11111111111111111111111 with exponent = 23</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, until <code>16777215</code>, everything is correct.</p>
+</div>
+<div class="paragraph">
+<p>What about <code>16777216</code> and <code>16777217</code>?</p>
+</div>
+<div class="paragraph">
+<p>If we look more closely, their binary representation consist of 25 bits:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>1000000000000000000000000
+1000000000000000000000001</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>25 bits for 24 bits available&#8230;&#8203; We have a problem. But why <code>16777216</code> is correctly represented and 16777217 is not?</p>
+</div>
+<div class="paragraph">
+<p>Let’s begin with 16777216:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  1000000000000000000000000
+= 1000000000000000000000000. x 2<sup>0</sup>
+= 100000000000000000000000.0 x 2<sup>1</sup>
+= 10000000000000000000000.00 x 2<sup>2</sup>
+...
+= 1.000000000000000000000000 x 2<sup>24</sup>
+    -----------------------
+      23-bits significand</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This gives us:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 10010111 00000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>sign: <code>0</code> because the number is positive</p>
+</li>
+<li>
+<p>exponent: <code>10010111</code> corresponding to 24 + 127 in binary</p>
+</li>
+<li>
+<p>significand: <code>00000000000000000000000</code> as the first bit is hidden</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>No meaningless digits was lost, so <code>16777216</code> is accurately represented.</p>
+</div>
+<div class="paragraph">
+<p>Let’s try the same operation with <code>16777217</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  1000000000000000000000001
+= 1000000000000000000000001. x 2<sup>0</sup>
+= 100000000000000000000000.1 x 2<sup>1</sup>
+= 10000000000000000000000.01 x 2<sup>2</sup>
+...
+= 1.000000000000000000000001 x 2<sup>24</sup>
+    -----------------------X
+      23-bits significand</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In IEEE 754 format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 10010111 00000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same representation as <code>16777216</code>&#8230;&#8203; There is no way to fit a 25-bits number in a 24-bits space if the 25th bit is important.</p>
+</div>
+<div class="paragraph">
+<p><em>What is the gap?</em></p>
+</div>
+<div class="paragraph">
+<p>The smallest difference between two numbers is obtained by switching the last bit (<code>2<sup>-23</sup></code>) in the significand like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 10010111 0000000000000000000000<strong>0</strong>
+0 10010111 0000000000000000000000<strong>1</strong></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Which increment represents this change?</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  2<sup>-23</sup> (the last bit) * 2<sup>24</sup> (the exponent)
+= 2<sup>-23+24</sup>
+= 2<sup>1</sup>
+= 2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course! This increment explains why starting from 16777216, not all integer can be safely represented. Indeed, the next integer is 16777218, then 16777220, 16777222, and so on.</p>
+</div>
+<div class="paragraph">
+<p>In fact, the gaps are easily predictable and depend only on the exponent value. On the previous example, the gap between two successive numbers will always be 2 as long as the exponent is 24 (or 151 with the exponent bias). When the exponent is increased to 25 (or 152 with the exponent bias), the gap becomes <code>2<sup>-23</sup> * 2<sup>25</sup> = 2<sup>2</sup> = 4</code>. The representable numbers are 33554432, 33554436, 33554440, and so on until 67108856, 67108860.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/gaps.png" alt="gaps" width="700">
+</div>
+</div>
+<div class="paragraph">
+<p>We observe that the gap increases by the next multiple of 2 each time the exponent is incremented. To better visualise the gap, let&#8217;s try a bigger exponent to measure how large the gap becomes as numbers are getting bigger. For example, let’s try the exponent 120 (or 247 with the exponent bias):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 11110111 00000000000000000000001
+
+Gap = 2<sup>-23</sup> * 2<sup>120</sup>
+    = 2<sup>-23+120</sup>
+    = 2<sup>97</sup>
+    = 1.5845632502852868e+29
+    = 158456325028528680000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In practice, this means that any number between two representable numbers will be rounded to the "closest" value. For example, 1329228005784916000000000000000000000 will get rounded to 1329227995784916000000000000000000000 (that&#8217;s a huge rounding!).</p>
+</div>
+<div class="paragraph">
+<p>We can reproduce the initial example of this section using larger numbers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+        <span class="keyword">var</span> f <span class="predefined-type">float32</span>
+        f = <span class="float">1.329227995784916e+36</span>
+        <span class="keyword">if</span> f + <span class="integer">10000000000000000000000000000</span> == f {
+                fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">Equals</span><span class="delimiter">&quot;</span></span>)
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The program prints <code>Equals</code> (<a href="https://play.golang.org/p/YsW2u9zrmjM"><em>Try it by yourself</em></a>).</p>
+</div>
+<div class="sect4">
+<h5 id="bonus">Bonus</h5>
+<div class="paragraph">
+<p>Before closing this section, we can apply what we learned with single precision and try to predict the first unrepresentable number in double precision. (Hint: the significand uses 52 bits over the 64 bits available for double precision instead of the 23 bits in single precision.)</p>
+</div>
+<div class="paragraph">
+<p>Answer: If <code>2<sup>24</sup> + 1</code> is the first integer unrepresentable in single precision, <code>2<sup>53</sup> + 1</code> should be the first integer not representable in double precision:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>2<sup>53</sup> + 1 = 9,007,199,254,740,993</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The proof in code, using Python, where floating numbers only use the double precision format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="error">$</span> python
+&gt;&gt;&gt; <span class="float">9007199254740993.0</span>
+<span class="integer">9007199254740992</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bingo!</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="paragraph">
+<p>We&#8217;ve learned that floating-point types don&#8217;t just define a range of representable numbers. <strong>There exists gaps inside this interval where numbers cannot be represented, resulting in rounding</strong>. This is due to the format significand-exponent. We cannot store large and tiny numbers and be able to store everything between these extremes in a restricted number of bits. No magic.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="zero">Zero</h3>
+<div class="paragraph">
+<p>Before moving on arithmetic, there is still a question we didn&#8217;t address. We say there is always a hidden bit whose value is 1 in the significand, or say differently, that we should add 1 to the significand (since <code>1 x 2<sup>0</sup> = 1 x 1 = 1</code>). But how do we represent <code>0</code>?</p>
+</div>
+<div class="paragraph">
+<p>The trick used by IEEE 754 standard is to define 0 like this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>0</code> for the exponent</p>
+</li>
+<li>
+<p><code>0</code> for the significand</p>
+</li>
+<li>
+<p>And <code>0</code> or <code>1</code> for the bit sign (positive zero vs negative zero)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So, when we have these numbers in single precision:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 00000000 00000000000000000000000
+1 00000000 00000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We know they should be interpresent as zero and we have to ignore the hidden bit. Easy? That&#8217;s not the end of the story.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="subnormal_numbers">Subnormal numbers</h3>
+<div class="paragraph">
+<p>Let&#8217;s try to find the smallest normalized number in single precision. We know that exponent can&#8217;t be only 0 because it&#8217;s reserved for zero, so, we have:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 0000000<strong>1</strong> 00000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This number corresponds to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>1 x 2<sup>(1-127)</sup> = 2<sup>-126</sup> = 1.1754944e-38</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The next representable number is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 00000001 0000000000000000000000<strong>1</strong></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The gap of between these two numbers is equivalent to <code>2<sup>-23</sup> * 2<sup>-126</sup> = 2<sup>-149</sup> = 1.4012985e-45</code>.</p>
+</div>
+<div class="paragraph">
+<p>Here are the first normal numbers (normalized numbers are also called normal numbers):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  1.17549<strong>43</strong>50822286e-38
++ <em>1.4012985e-45</em> (gap)
+= 1.17549<strong>44</strong>90952134e-38
++ <em>1.4012985e-45</em> (gap)
+= 1.17549<strong>46</strong>31081980e-38
++ <em>1.4012985e-45</em> (gap)
+= 1.17549<strong>47</strong>71211827e-38
++ <em>1.4012985e-45</em> (gap)
+= 1.17549<strong>49</strong>11341673e-38
++ <em>1.4012985e-45</em> (gap)
+= 1.17549<strong>50</strong>51471520e-38
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s not obvious but there is a huge chasm between zero and these first normal numbers. It&#8217;s not really easy to visualise it because we are talking about really small numbers, but if the distance between zero and the first normal number represents the distance Paris-New York, the distance between each successive normal number is only two feet. To fill this gap, IEEE 754 was revised to include subnormal (or denormal) numbers. The principle is simple, if the exponent is 0, the hidden bit is 0. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 00000000 00000000000000000000001
+= (0 + 2<sup>-23</sup>) x 2<sup>-126</sup>
+= 2<sup>-23</sup> x 2<sup>-126</sup>
+= 2<sup>149</sup>
+= 1.401298464324817e-45
+# This is the same gap as normal numbers with the same exponent</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 00000000 11111111111111111111111
+= (2<sup>-1</sup> + 2<sup>-2</sup> + ... + 2<sup>-23</sup>) x 2<sup>-126</sup>
+= 1.1754942106924411e-38</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These two numbers represent respectively the smallest and largest subnormals numbers. We observe that the gap between two subnormal numbers is identical to the gap of the first normal numbers. That&#8217;s a good news. With subnormals, we can now move from Paris to New York by increment of two feet instead of taking a plane.</p>
+</div>
+<div class="paragraph">
+<p>Indeed, subnormal numbers solve the gap we had on the diagram when we tried to visualize representable numbers:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/normals-subnormals.png" alt="normals subnormals" width="700">
+</div>
+</div>
+<div class="paragraph">
+<p>It is important to realise that subnormal numbers are represented with less precision than normal numbers. This is due to the presence of the leading 0, and thus leading zero bits in the significand no longer function as significant bits of precision. Consequently, the precision is less than that of normalized floating-point numbers.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/subnormals-precision.png" alt="subnormals precision" width="650">
+</div>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="paragraph">
+<p>We&#8217;ve learned that <strong>subnormal numbers were introduced to fill the gap between 0 and the first normal number</strong>, and allow to represent very small positive and negative floating-point numbers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all concerning floating-point numbers. We come a long way since our initial example but there is still more to discover about the subject. Take a pause, a big breath, and let&#8217;s move on!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="floating_point_arithmetic">Floating-Point Arithmetic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Until now, we&#8217;ve only talk about floating-point numbers. We didn&#8217;t even try to add two numbers. In this part, we will face new problems when we are doing so, and will see how the IEEE standard 754 solves them.</p>
+</div>
+<div class="sect2">
+<h3 id="addition">Addition</h3>
+<div class="paragraph">
+<p>We will reuse the first example of this article:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ python
+&gt;&gt;&gt; 0.1+0.2
+0.30000000000000004</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These numbers are represented like this in IEEE 754:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0.1 = 0 01111011 10011001100110011001101
+0.2 = 0 01111100 10011001100110011001101</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Floating-point addition (or subtraction) is analogous to addition (or subtraction) using scientific notation. For example, to add <code>3.3 x 10<sup>0</sup></code> to <code>9.985 x 10<sup>2</sup></code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Shift the decimal point of the smaller number to the left until the exponents are equal (<code>2.5 x 10<sup>0</sup></code> becomes <code>0.025 x 10<sup>2</sup></code>).</p>
+</li>
+<li>
+<p>Add the numbers using integer addition (<code>0.033 + 9.985 = 10.018 x 10<sup>2</sup></code>).</p>
+</li>
+<li>
+<p>Normalize the result (<code>1.0018 x 10<sup>3</sup></code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try the same logic on the binary numbers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0.1 = 0 01111011 (1) 10011001100110011001101 (exp -4)
+0.2 = 0 01111100 (1) 10011001100110011001101 (exp -3)</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The smaller exponent is incremented and the significand is shifted right until the exponents are equal:</p>
+<div class="listingblock">
+<div class="content">
+<pre>                                            X lost
+0.1 = 0 01111100 (0) 110011001100110011001101 (exp -3) &gt;&gt;&gt; shift
+0.2 = 0 01111100 (1) 10011001100110011001101  (exp -3)</pre>
+</div>
+</div>
+</li>
+<li>
+<p>The significands are added using integer addition:</p>
+<div class="listingblock">
+<div class="content">
+<pre>0.1 = 0 01111100 (0) 11001100110011001100110 (exp -3)
+0.2 = 0 01111100 (1) 10011001100110011001101 (exp -3)
+                ----------------------------
+              = (10) 01100110011001100110011</pre>
+</div>
+</div>
+</li>
+<li>
+<p>The result is not normalized. The sum overflows the position of the hidden bit. We need to shift one bit to the right the significand and to increment the exponent in consequence:</p>
+<div class="listingblock">
+<div class="content">
+<pre>0 01111100 (10) 01100110011001100110011  (exp -3)
+=&gt;
+0 01111101 (1)  001100110011001100110011 (exp -2) &gt;&gt;&gt; shift
+                                       X lost</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This example demonstrates we can lose precision during the operation (one bit was lost when we aligned the exponent of <code>0.1</code> and one bit was lost when we normalized the final result). Floating-point arithmetic is subject to rounding errors too. Here is the result in decimal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ python
+(1 + 2**-3 + 2**-4 + 2**-7 + 2**-8 + 2**-11 + 2**-12 + \
+     2**-15 + 2**-16 + 2**-19 + 2**-20 + 2**-23) * 2**-2
+&gt;&gt;&gt; 0.29999998211860657</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The result differs slightly from what Python printed if we execute <code>0.1 + 0.2</code> (the result is <code>0.30000000000000004</code>). There are two reasons to explain this difference. First, <strong>IEEE 754 defines rounding modes</strong> instead of just truncating the numbers like we did. The actual significand is <code>00110011001100110011010</code>, and the actual value is <code>0.30000001192092896</code>. Second, <strong>Python don&#8217;t use single precision but only double precision</strong>. This doesn&#8217;t solve the problem. We still have the same rounding errors but with greater precision (see below).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rounding_modes">Rounding modes</h3>
+<div class="paragraph">
+<p>Rounding is unavoidable when squeezing an infinite number of numbers into a finite number of bits. If a number cannot be represented, we have to use one of the representable number as a replacement. We have also seen that arithmetic operations introduce additional rounding errors too. When adding two numbers, the correct answer may be somewhere between two representable numbers. The IEEE standard 754 guarantees the same behaviour, independently of the hardware or the software, and thus, defines precisely the rounding rules.</p>
+</div>
+<div class="paragraph">
+<p>In fact, there are several rounding modes defined by the standard: <em>round toward positive</em> rounds to the closest superior value, <em>round toward negative</em> rounds to the closest inferior value, <em>round toward zero</em> rounds to the closest value towards 0, and the default <em>round to nearest</em> (renamed <em>round ties to even</em> in the last standard version).</p>
+</div>
+<div class="paragraph">
+<p>We will not go deeper on the subject. Just remember that rounding errors are unavoidable, but they are portable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="arithmetic_precision">Arithmetic precision</h3>
+<div class="paragraph">
+<p>Consider the addition of the following two numbers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 <strong>01111111</strong> (1) 00000000000000000000001 = 2<sup>-23</sup> * 2<sup><strong>0</strong></sup>  = 2<sup>-23</sup>
+0 <strong>10011000</strong> (1) 00000000000000000000001 = 2<sup>-23</sup> * 2<sup><strong>25</strong></sup> = 2<sup>2</sup></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first step requires the smaller exponent to be incremented and the significand shifted right until the exponents match. This means:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 <strong>01111111</strong> (1) 00000000000000000000001|
+0 10000000 (0) 10000000000000000000000|1
+0 10000001 (0) 01000000000000000000000|01
+0 10000010 (0) 00100000000000000000000|001
+...
+0 <strong>10011000</strong> (0) 00000000000000000000000|100000000000000000000001
+               ----------------------- XXXXXXXXXXXXXXXXXXXXXXXX
+                 23 bits significand</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The significand of the first number becomes zero. Therefore, the result of the addition will be equals to the second number. This example demonstrates a <strong>truncation error</strong>. If we have 24 bits for the significand in single precision (including the hidden bit), and we need to shift by more than 24 bits to align the exponent, we will inevitably lost all meaningful bits. <strong>The size of the significand determines the arithmetic precision</strong>.</p>
+</div>
+<div class="paragraph">
+<p>In practice, 24 bits allow to represent decimal numbers until approximately 7 digits (ex: <code>5555555</code> is represented as the 23-bits representation <code>10101001100010101100011</code> in binary). This explains why we often say that the precision of single precision floating-point arithmetic is approximately 7 decimal digits. In comparison, the precision of double precision floating-point arithmetic, which uses 53 bits for the significand, is approximately 15 decimal digits (e.g., compare <code>0.30000001192092896</code> with <code>0.30000000000000004</code> in the previous section)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="overflowunderflow">Overflow/Underflow</h3>
+<div class="paragraph">
+<p>Any positive number added to the largest representable floating-point number results in <strong>overflow</strong>. Any negative number subtracted to the smallest representable floating-point number results in <strong>underflow</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see what happen precisely.</p>
+</div>
+<div class="paragraph">
+<p>The largest single precision number is obtained by using the largest exponent and significand values:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 <strong>11111110</strong> <strong>11111111111111111111111</strong>
+= 1.11111111111111111111111 x 2<sup>127</sup>
+= 3.4028234663852886e+38</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note: The exponent <code>11111111</code> is reserved for <code>NaN</code> and <code>Inf</code> values and cannot be used.</p>
+</div>
+<div class="paragraph">
+<p>We will use Golang for illustration purpose, as it supports single precision floating-numbers. Here is a small program adding a small value to this large number:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">math</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+        <span class="keyword">var</span> f1, f2 <span class="predefined-type">float32</span>
+        f1 = <span class="float">3.4028234663852886e+38</span>
+        f2 = f1 + <span class="integer">1</span>
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, math.Float32bits(f1)) <span class="comment">// 01111111011111111111111111111111</span>
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, math.Float32bits(f2)) <span class="comment">// 01111111011111111111111111111111</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The addition did nothing. It&#8217;s an example of overflow.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="infinity">Infinity</h3>
+<div class="paragraph">
+<p>Now, let&#8217;s try to add a larger number instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">math</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+        <span class="keyword">var</span> f1, f2 <span class="predefined-type">float32</span>
+        f1 = <span class="float">3.4028234663852886e+38</span>
+        f2 = f1 + <span class="predefined-type">float32</span>(math.Pow(<span class="integer">2</span>, <span class="integer">103</span>)) <span class="comment">// 2^103</span>
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, math.Float32bits(f1)) <span class="comment">// 01111111011111111111111111111111</span>
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, math.Float32bits(f2)) <span class="comment">// 01111111100000000000000000000000</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unlike the previous example, we notice a difference in the result. Why? Because there was a change in magnitude. On the first example about overflow, we added a small number that doesn&#8217;t change the exponent. The result is rounded to the largest representable number, thus the value didn&#8217;t change. On this second example, we add a number that would change the exponent. By adding the product of the smallest significand (2<sup>-24</sup>) with the current exponent (2<sup>127</sup>), the exponent has to change, but it can&#8217;t, it&#8217;s already set to the maximum value. Rounding to the largest value is not as pertinent in this case, so a special value is returned instead, the <strong>positive infinity</strong>.</p>
+</div>
+<div class="paragraph">
+<p>IEEE 754 standard defines positive and negative infinity using the following representations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>sign = <code>0</code> for positive infinity, <code>1</code> for negative infinity.</p>
+</li>
+<li>
+<p>exponent = all 1 bits.</p>
+</li>
+<li>
+<p>significand = all 0 bits.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+Inf <strong>0</strong>1111111100000000000000000000000
+-Inf <strong>1</strong>1111111100000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is exactly the result we got in our last example when running the Go program. We may use another example to illustrate the negative infinity:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">math</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+        <span class="keyword">var</span> f, r <span class="predefined-type">float32</span>
+        f = <span class="integer">-1</span>
+        r = f/<span class="integer">0</span>
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%f</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, r)
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, math.Float32bits(r))
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The program prints what is defined by the standard:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-Inf
+11111111100000000000000000000000</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="nan">NaN</h3>
+<div class="paragraph">
+<p>Some operations on floating-point numbers are invalid, such as taking the square root of a negative number. The act of reaching an invalid result is represented by a special code called a <code>NaN</code>, for "Not a Number".</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s try to replace the numerator by 0 in the previous example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> (
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">math</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> main() {
+        <span class="keyword">var</span> f, r <span class="predefined-type">float32</span>
+        f = <span class="integer">0</span>
+        r = f/<span class="integer">0</span>
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%f</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, r)
+        fmt.Printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">%.32b</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, math.Float32bits(r))
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result has changed to return <code>NaN</code> instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NaN
+11111111110000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Why this special value? Without <code>NaN</code>, the program would have to abort completely to report the error. In practice, however, it sometimes makes sense for a computation to continue despite encountering such a scenario, so <code>NaN</code> let the programmer decides if the program should go on. (For example, Go has a method <code>math.IsNaN()</code> to check the value.)</p>
+</div>
+<div class="paragraph">
+<p>All <code>NaN</code>s in IEEE 754 have this format:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>sign = either <code>0</code> or <code>1</code>.</p>
+</li>
+<li>
+<p>exponent = all 1 bits.</p>
+</li>
+<li>
+<p>significand = anything except all 0 bits (since all 0 bits represents infinity).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So, all of the following representations are valid <code>NaN</code> examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>0 <strong>11111111</strong> 00000000000000000000001
+1 <strong>11111111</strong> 00000000000000000000001
+1 <strong>11111111</strong> 10000000000000000000000
+0 <strong>11111111</strong> 11111111111111111111111</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In fact, there are a lot a possible representations for <code>NaN</code>s: 2<sup>23-1</sup> for single precision (23 bits for the significand) if we omit the bit sign. That&#8217;s a lot of valid combinaisons!</p>
+</div>
+<div class="paragraph">
+<p>The IEEE standard interprets differently these two representations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>1 11111111 <strong>0</strong>0000000000000000000001
+1 11111111 <strong>1</strong>0000000000000000000000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the first bit of the trailing significand is <code>0</code>, we have a <strong>quiet NaN</strong> (<code>qNaN</code>). If it is <code>1</code>, we have a <strong>signaling NaN</strong> (<code>sNaN</code>). <em>Signaling</em> means an exception should be raised, whereas <em>quiet</em> means <code>NaN</code> should be propagated through every arithmetic operation without signaling an exception (it is always possible to raise an exception at the end of the calculation if we want, as the <code>NaN</code> information is preserved). Semantically, <code>qNaN</code>'s denote indeterminate operations, while <code>sNaN</code>'s denote invalid operations. When programming in most of the languages, you are only using <code>qNaN</code> and have to test the value with an utility method like the <code>math.IsNaN</code> in Go.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Why so many representations for NaNs?</div>
+<div class="paragraph">
+<p><strong>The quiet/signaling distinction imposes only two representations</strong> (<code>1 11111111 00000000000000000000001</code> and <code>1 11111111 10000000000000000000000</code> are sufficient). The standard doesn&#8217;t explicit what can be done with all of these additional representations. These remaining bits are called the payload and can be use to provide context about the origin of the error. But this isn&#8217;t the only known use.</p>
+</div>
+<div class="paragraph">
+<p>A known technique, called <strong>NaN-boxing</strong>, is implemented by some interpreters like JavaScriptCore, to <strong>pack other types such as pointers (48-bits) or integers (32-bit) inside the space left by NaNs in double precisions</strong> (where the significand represents 52 bits). As a variable can be of any type, the interpreter uses only double precision floating-points to store everything. If it&#8217;s a floating-point, it uses the usual IEEE 754 representation. If it&#8217;s another type, it uses the available 51-bits for <code>NaN</code>s to store any value (a pointer address, an integer, etc). If you want to know more about this hack, you can start looking at this <a href="https://anniecherkaev.com/the-secret-life-of-nan">great article</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2019-03-10-floating-point-numbers-demystified/nan-boxing.png" alt="nan boxing" width="650">
+</div>
+<div class="title">Figure 1. NaN-Boxing</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="paragraph">
+<p>We&#8217;ve learned that the <strong>IEEE Standard 754 defines special formats to represent Zero, Infinity, and NaN</strong>. When you see all <code>0</code>-bits or all <code>1</code>-bits in the exponent, you know there is something special about that number.</p>
+</div>
+<div class="paragraph">
+<p>We have also learned that <strong>floating-point arithmetic may result in exceptions</strong>: invalid operations like the square root of a negative number return <code>NaN</code>, a division by zero returns ±Infinity, an addition/subtraction/multiplication may result in overflow/underflow when the exponent would be smaller or larger than the allowed value, and we should not forget that rounding is omnipresent.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When I started writing this article, I was not prepared to go so far on the subject. We covered a large scope of the standard. If you decide to pore over it, you will see we have introduced almost every detail. We didn&#8217;t talk about the hardware implementation, or how software uses the processor instructions, but they are very low-level details, and they aren&#8217;t part of the standard anyway. I think we should stop here, and digest everything we have learned. If you want to know more about the subject, you may try this <a href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">detailled article</a>, or why not read a <a href="https://www.springer.com/us/book/9780817647056">full book</a> on the subject!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The IEEE committee succeeded in defining a standard followed by every manufacturer that make floating-point numbers predictable when porting a program between different computers, or even when copying a code snippet between programming languages. But IEEE 754 does not hide the complexity of working with floating-point numbers. Joel Spolsky, co-founder of Stack Overflow, said in 2002: "All non-trivial abstractions, to some degree, are leaky." Floating-point numbers are the perfect example of a leaky abstraction. They act as a black box most of the time, but you occasionally have to open it to avoid damages.</p>
+</div>
+<div class="paragraph">
+<p>For a lot of applications, numbers describe measurements, which are inherently inexact. Adding rounding to the equation may be acceptable, but when you are able to compute a more accurate result in your head than your computer can, floating-point numbers are clearly not an acceptable solution.</p>
+</div>
+<div class="paragraph">
+<p>By understanding the underlying logic behind the standard, you are now better equipped to decide if floating-point numbers are usable for your use case, or if you should use language extensions offering precise arithmetic at the expense of decreased performance.</p>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Myths vs Reality</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Myth</strong>: I can use floating-point numbers to represent common numbers like amounts.
+<em><strong>Wrong</strong>. Floating-point numbers cannot represent simple numbers such as 0.1 or 0.2.</em></p>
+</li>
+<li>
+<p><strong>Myth</strong>: I will not have problems if I use double precision (64 bits).
+<em><strong>Wrong</strong>. Problems are identical, but less frequent. Gaps are smaller but there are rounding errors too, and numbers such as 0.1 cannot be represented with floating-point numbers, single or double precision.</em></p>
+</li>
+<li>
+<p><strong>Myth</strong>: Floating-point numbers approximation only affects insignificant digits after the floating-point.
+<em><strong>Wrong</strong>. Not all integers can be represented. There exists gaps, even for relatively small values like 16,777,217 when using single precision.</em></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

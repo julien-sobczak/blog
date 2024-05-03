@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Don't Follow (My) Book Recommendations</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2018/12/11/do-not-follow-book-recommendations.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">December 11, 2018</span>
+
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+      <span class="label">
+        Reading
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Don't Follow (My) Book Recommendations</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>My Best Friend is a person who will give me a book I have not read.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Abraham Lincoln
+</div>
+</div>
+<div class="paragraph lead">
+<p>When people ask me for book recommendations, I can not resist to speak about some of the books that I have particularly enjoyed. Is that a good thing? Should I invite them to read books that I have read or books that I haven&#8217;t read?</p>
+</div>
+<div class="paragraph lead">
+<p>One thing for sure, book recommendations are popular on Google with more than four billion results, all following the same titles "Books Everyone Should Read", "Books To Read Before [Bad Things Happens]" or "Books That Will Make You [a Better You]." Personally, I often click on these eye-catching headlines. Why are we influenced by recommendations? When to ignore them?</p>
+</div>
+<div class="sect1">
+<h2 id="when_to_follow_recommendations">When to follow recommendations?</h2>
+<div class="sectionbody">
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>There are no faster or firmer friendships than those formed between people who love the same books.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Clarence Darrow for the Defense<br>
+<cite>Irving Stone</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>Recommendations from strangers don&#8217;t have the same impact on me as the ones from close friends. As we know each other, and often share the same interests, I have confidence that recommendations will be relevant to me. To illustrate this point, books often stay a long time on my e-reader but when one of my relationship praises a book, it&#8217;s enough for me to start the reading. It happened recently with <em>Thinking Fast &amp; Slow</em>, <em>Team Geek</em>, <em>Creativity Inc.</em>. As my reading list is steadily increasing, recommendations makes a real difference, between reading a book in the next week, and hoping to read it one day (not to say never).</p>
+</div>
+<div class="paragraph">
+<p>In the same way, if I think a book may be valuable to one of my relationships, I try to let him know. If it&#8217;s a friend, I would just say "You should read this book", but if it&#8217;s someone I barely know (or someone who is not used to reading), I will instead try to cite the book in a discussion by quoting its funny facts or its most challenging ideas to arouse his or her curiosity. In practice, I badly fail. Most people are unwilling to read books (especially nonfiction books) but it does not discourage me to try.</p>
+</div>
+<div class="paragraph">
+<p>When you are lucky enough to find someone to read the same book, it opens the door for conversations about how each of you perceived the book content. By doing so, you may reformulate what you read, get a better comprehension of the main ideas, and remember more (active learning). It is not surprising that book discussion clubs are popular among readers. Reading the books through different eyes brings new insights.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="when_to_ignore_recommendations">When to ignore recommendations?</h2>
+<div class="sectionbody">
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Diversity: the art of thinking independently together.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Malcolm Forbes
+</div>
+</div>
+<div class="paragraph">
+<p>If we all read the same things, there is the risk we all end thinking the same way, and this idea is just completely boring. Even if I&#8217;m exaggerating the situation because the way we think is only slightly influenced by our readings (the more you read, the more you are influenced by books), there are numerous advantages to reading different books.</p>
+</div>
+<div class="paragraph">
+<p>The biggest problem for me with recommendations is how to recommend when you have read only an tiny part of the literature on any subject? Maybe the book you read was excellent but that say nothing about other books. You cannot determine which iceberg is the largest one only by considering the tips. When you follow book recommendations, it is important to acknowledge that there is a whole submerged part that was not considered. This explains why I&#8217;m very skeptical concerning initiatives like the book written by Dr Peter Boxall, <em>1001 Books You Must Read Before You Die</em>, or the <a href="https://www.nextbigideaclub.com"><em>Next Big Idea Club</em></a>, whose headline is <em>The world’s most brilliant minds, hand-picking the ideas that will change your life</em>. Even highly successful authors, and avid readers will never be able to pick you a tailor-made list of books that you should read. That&#8217;s not the way they proceed themselves.</p>
+</div>
+<div class="paragraph">
+<p>Indeed, almost all nonfiction authors read a lot of books as a source of inspiration for their own work. Ryan Holiday with his <a href="https://ryanholiday.net/the-notecard-system-the-key-for-remembering-organizing-and-using-everything-you-read/">notecard system</a> is a good example, and in general, you just have to look at the bibliographies to see how books mesh together to form a large network of the literature. If all authors was reading the same books, there wouldn&#8217;t be a lot of new books to read. Fresh ideas only comes from diversified ones, and thus, from diversified readings. For example, writer Ann Morgan realized that most books in her bookshelves were by British or American authors. She undertook to read, over the course of a year, at least one book from each of the world&#8217;s 196 countries. Her experience is transcribed in her book <em>Reading the World</em>, which would never have existed if Ann had not chosen to follow her own path. It&#8217;s only by following new directions that you can land in unexplored territories. Of course, you may get lost somewhere, that is why Ann asked for suggestions from bibliophiles from all over the world. Book recommendations are here to help you navigate across the unknowns, but there is no point in following only recommendations.</p>
+</div>
+<div class="paragraph">
+<p>Another problem is recommendations are only pertinent if you have the required background. It happens to me when a friend advised me to read Sam Harris' <em>Waking Up</em> book about meditation. This was my first introduction to mindfulness and the reading was awful. When I later decide to read <em>Meditation for Fidgety Skeptics</em>, a beginner-friendly book on the subject, I truly get a better comprehension of the subject, that will now help me appreciate more elaborate books on the subject. Unsurprisingly, this friend had read the previous book of Dan Harris first, and even if he found it less impactful in the end, we need to climb the stairs one at a time.</p>
+</div>
+<div class="paragraph">
+<p>Nonetheless, I should acknowledge sharing a reading list can also be beneficial. For example, companies have sometimes a list of books newcomers are advised to read. At one time, Microsoft used to give the book <em>How to Solve It</em> to all of its new programmers.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> More recently, upon becoming CEO, Satya Nadella bought all the members of his senior leadership team a copy of the book <em>Nonviolent Communication</em>.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> Such readings contribute to spread the company culture and are very valuable to fertilize the soil on which diversity must prevails.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="to_follow_or_not_to_follow">To follow or not to follow?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the end, I think everyone should pursue his or her centers of interest. When it comes to learning, nothing brings the same feeling of freedom as books. In the same way as companies value diversity, we should favour a greatest diversity on our bookshelves. Conversations will be more diversified, more interesting, with the side effect, you will still want to read books other people love.</p>
+</div>
+<div class="paragraph">
+<p>Recommendations are like pointers when you ask for directions when travelling by car. It help you get closer to your direction but you can&#8217;t ask someone after every turn. You have to take decisions. Choose books on your own. Follow recommendations judiciously, not blindly, and not always.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Code Complete, 2nd Edition, by Steve McConnell
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. <a href="https://www.businessinsider.fr/us/microsoft-satya-nadella-nonviolent-communication-2018-10" class="bare">https://www.businessinsider.fr/us/microsoft-satya-nadella-nonviolent-communication-2018-10</a>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2018/11/16/why-i-read-books.html">Why I Read Books?</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Reading
+            </span>
+          
+
+          
+            <span class="subtitle">9 reasons why you should start reading nonfiction books</span>
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

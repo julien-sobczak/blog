@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Implementing Prism from Scratch</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2014/11/25/prism-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">November 25, 2014</span>
+
+      
+      <a href="/tags/web" class="label">
+      Web
+      </a>
+      
+
+      
+      <span class="label">
+        Javascript
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Implementing Prism from Scratch</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are reading a translation of an <a href="https://julien-sobczak.github.io/blog-fr/inspect/2014/11/25/prism-from-scratch.html">old blog post</a> published on my previous blog in French.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Many thanks to Lea Verou, et al., for Prism.js!</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Brendan Eich, creator of JavaScript
+</div>
+</div>
+<div class="paragraph">
+<p>Many JavaScript libraries have supported syntactic coloration for a long time. A recent newcomer has become popular and is already used by major websites like Mozilla. This library is Prism and was created by Lea Verou, author of the library <a href=""/inspect/2014/11/06/prefix-free-from-scratch.html">-prefix-free</a> and code playbook <a href="http://dabblet.com/">Dabblet</a>. Using Prism, our code is even more beautiful. What is the most surprising about Prims is the size of the codebase: only 400 lines of JavaScript (Google Prettify and SyntaxHighlighter count more than 2000 lines).</p>
+</div>
+<div class="paragraph">
+<p>How does Prism achieve this tour de force? We&#8217;ll find out by rewriting Prism from scratch.</p>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<a href="http://prismjs.com/">Prism</a> is published under the <a href="http://opensource.org/licenses/MIT">MIT license</a>. The code presented in this article has been simplified for obvious reasons and must not be used outside this learning context. This article is based on the latest version of Prism at the moment of the publication of this article.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="lets_go">Let&#8217;s Go!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="http://prismjs.com/extending.html">The documentation to extend Prism</a> gives us interesting details about the inner working of the library. Let&#8217;s start by outlining the global structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">var</span> Prism = (<span class="keyword">function</span>() {
+
+ <span class="keyword">var</span> self = {
+
+  <span class="key">languages</span> : {}, <span class="comment">// Every supported langague is added here</span>
+
+  <span class="function">highlightAll</span> : <span class="keyword">function</span>() { <i class="conum" data-value="1"></i><b>(1)</b>
+   <span class="keyword">var</span> elements = document.querySelectorAll(<span class="string"><span class="delimiter">'</span><span class="content">code[class*=&quot;language-&quot;]</span><span class="delimiter">'</span></span>);
+
+   <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>, element; element = elements[i++];) {
+    self.highlightElement(element);
+   }
+  },
+
+  <span class="function">highlightElement</span> : <span class="keyword">function</span>(element) {
+   <span class="keyword">var</span> language = element.className.match(<span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">language-(?!</span><span class="content">\*</span><span class="content">)(</span><span class="char">\w</span><span class="content">+)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">i</span></span>)[<span class="integer">1</span>];
+   <span class="keyword">var</span> grammar = self.languages[language];
+
+   <span class="comment">// Set the language on the parent, for styling</span>
+   <span class="keyword">var</span> parent = element.parentNode;
+   <span class="keyword">if</span> (<span class="regexp"><span class="delimiter">/</span><span class="content">pre</span><span class="delimiter">/</span><span class="modifier">i</span></span>.test(parent.nodeName)) {
+    parent.className = parent.className + <span class="string"><span class="delimiter">'</span><span class="content"> language-</span><span class="delimiter">'</span></span> + language;
+   }
+
+   <span class="keyword">var</span> code = element.textContent;
+
+   element.innerHTML = self.highlight(code, grammar, language); <i class="conum" data-value="2"></i><b>(2)</b>
+  },
+
+  <span class="function">highlight</span> : <span class="keyword">function</span>(text, grammar, language) {
+   <span class="keyword">var</span> tokens = self.tokenize(text, grammar); <i class="conum" data-value="3"></i><b>(3)</b>
+   <span class="keyword">return</span> self.Token.stringify(tokens, language);
+  },
+
+  <span class="function">tokenize</span> : <span class="keyword">function</span>(text, grammar) {
+  <span class="comment">// This is the most low-level function implementing the</span>
+  <span class="comment">// lexical analyzer.</span>
+  }
+ };
+
+ <span class="keyword">return</span> self;
+
+})();
+
+document.addEventListener(<span class="string"><span class="delimiter">'</span><span class="content">DOMContentLoaded</span><span class="delimiter">'</span></span>, Prism.highlightAll);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This is the entry point. We look for all source code present in the document.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We replace the previous content with the stylized one.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We tokenize the source code to colorize it using CSS classes.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The code is relatively simple to apprehend. We search the tags <code>&lt;code&gt;</code> having a CSS class starting with <code>language-</code>. We extract their content to split it into tokens as a compiler or interpreter would do. The main difference is that a compiler goes well beyond by creating an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">abstract syntaxic tree</a> as an intermediate representation before generating code in the target language. Here, we don&#8217;t even try to ensure the code is valid. We are just looking for tokens to surround them with new tags having CSS classes on them.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_lexical_analyzer">The Lexical Analyzer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The function <code>tokenize</code> accepts two parameters:</p>
+</div>
+<div class="ulist compact">
+<ul>
+<li>
+<p><code>text</code>: the content of a tag <code>&lt;code&gt;</code>.</p>
+</li>
+<li>
+<p><code>grammar</code>: the definition of the programming language, often defined in different files.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take an example to illustrate the working of this function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html">// exemple.html
+<span class="tag">&lt;pre&gt;</span><span class="tag">&lt;code</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">language-javalite</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        String test = &quot;Hello World!&quot;;
+        System.out.println(test);
+    }
+}
+<span class="tag">&lt;/code&gt;</span><span class="tag">&lt;/pre&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We define a subset of the Java language named <code>javalite</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="comment">// prism-javalite.js</span>
+Prism.languages.javalite = {
+ <span class="key"><span class="delimiter">'</span><span class="content">keyword</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">(public|static|class|void)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">string</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="content">(&quot;|')(</span><span class="char">\\</span><span class="content">?.)*?</span><span class="char">\1</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">punctuation</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="content">[{}[</span><span class="content">\]</span><span class="content">;(),.:]</span><span class="delimiter">/</span><span class="modifier">g</span></span>
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable <code>text</code> contains the code of our program <code>HelloWorld</code> and <code>grammar</code> contains the object <code>Prism.languages.javalite</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note that the definition of this <code>javalite</code> language is basic. Prism supports more options to address more exotic rules that will be discussed later in this article. Our definition consists only of three tokens with a regular expression to found them.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Token ou Lexeme?</div>
+<div class="paragraph">
+<p>The <a href="https://www.goodreads.com/book/show/703102.Compilers">Dragon Book</a> brings us the answer: "A lexeme is a sequence of characters in the source program that matches the pattern for a token and is identified by the lexical analyzer as an instance of that token."</p>
+</div>
+<div class="paragraph">
+<p>To illustrate this difference using the previous example, our definition of language <code>javalite</code> uses three tokens (ex: <code>keyword</code>). The strings <code>"public"</code> or <code>"static"</code> are examples of lexemes of the same token <code>keyword</code>.</p>
+</div>
+<div class="paragraph">
+<p>This better definition is not followed in the source code of Prism where lexemes and tokens are named using the same term token.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the result returned by the function <code>tokenize</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">[
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">keyword</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">public</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">keyword</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">class</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> HelloWorld </span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">keyword</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">public</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">keyword</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">static</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">keyword</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">void</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> main</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">(</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[</span><span class="delimiter">&quot;</span></span>},
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">]</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> args</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">)</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="char">\t</span><span class="char">\t</span><span class="content">String test = </span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">string</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\&quot;</span><span class="content">Hello World!</span><span class="char">\&quot;</span><span class="delimiter">&quot;</span></span>},
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">;</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="char">\t</span><span class="char">\t</span><span class="content">System</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">out</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">println</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">(</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">)</span><span class="delimiter">&quot;</span></span>},
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">;</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>,
+  { <span class="key">type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">punctuation</span><span class="delimiter">&quot;</span></span>, <span class="key">content</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>},
+  <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We retrieve our code sample divided into lexemes. For each lexeme having an associated token (<code>string</code>, <code>punctuation</code>, <code>keyword</code>), an object <code>Token</code> is created containing the text of the lexeme and the name of the token:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="function">Token</span>: <span class="keyword">function</span>(type, content) {
+ <span class="local-variable">this</span>.type = type;
+ <span class="local-variable">this</span>.content = content;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confused? Don&#8217;t worry. We will go back on the lexical analyzer in the last part.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_syntaxic_coloration">The Syntaxic Coloration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once the list of lexemes is identified, colorizing the code is trivial. It&#8217;s the job of the method <code>Token.stringify</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">Token.<span class="function">stringify</span> = <span class="keyword">function</span>(o, language, parent) {
+ <span class="keyword">if</span> (<span class="keyword">typeof</span> o == <span class="string"><span class="delimiter">'</span><span class="content">string</span><span class="delimiter">'</span></span>) { <span class="comment">// Lexeme without defined token?</span>
+  <span class="keyword">return</span> o;
+ }
+
+ <span class="keyword">if</span> (Array.isArray(o)) { <span class="comment">// List of lexemes =&gt; recurse</span>
+  <span class="keyword">return</span> o.map(<span class="keyword">function</span>(element) {
+   <span class="keyword">return</span> Token.stringify(element, language, o);
+  }).join(<span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span>);
+ }
+
+ <span class="keyword">var</span> content = Token.stringify(o.content, language, parent);
+ <span class="keyword">var</span> classes = [ <span class="string"><span class="delimiter">'</span><span class="content">token</span><span class="delimiter">'</span></span>, o.type ];
+
+ <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">&lt;span class=&quot;</span><span class="delimiter">'</span></span> + classes.join(<span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>) + <span class="string"><span class="delimiter">'</span><span class="content">&quot;&gt;</span><span class="delimiter">'</span></span> + content + <span class="string"><span class="delimiter">'</span><span class="content">&lt;/span&gt;</span><span class="delimiter">'</span></span>;
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This recursive method is called initially with the complete list of lexemes. For every lexeme without a token found, the original value is preserved. For other lexemes, we decorate the value using a new tag <code>&lt;span&gt;</code> having the CSS classes <code>token</code> and the token name (<code>keyword</code>, <code>punctuation</code>, <code>string</code>, &#8230;&#8203;).</p>
+</div>
+<div class="paragraph">
+<p>Then, we have to define a few CSS declarations. (The tag <code>&lt;pre&gt;</code> is important to preserve the spacing and newlines).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="tag">pre</span> {
+    <span class="key">font-family</span>: <span class="value">Consolas</span>, <span class="value">Monaco</span>, <span class="string"><span class="delimiter">'</span><span class="content">Andale Mono</span><span class="delimiter">'</span></span>, <span class="value">monospace</span>;<span class="error">*</span>
+    <span class="key">line-height</span>: <span class="float">1.5</span>;
+    <span class="key">color</span>: <span class="value">black</span>;
+}
+<span class="class">.token</span><span class="class">.punctuation</span> {
+    <span class="key">color</span>: <span class="color">#999</span>;
+}
+<span class="class">.token</span><span class="class">.string</span> {
+    <span class="key">color</span>: <span class="color">#690</span>;
+}
+<span class="class">.token</span><span class="class">.keyword</span> {
+    <span class="key">color</span>: <span class="color">#07a</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is what our code looks like when these styles are applied:</p>
+</div>
+<iframe src="/posts_resources/2014-11-25-prism-from-scratch/prism-demo-simple.html"
+    width="100%" height="185px"
+    style="border: none">
+</iframe>
+<div class="paragraph">
+<p>The last missing piece from our puzzle is still the lexical analyzer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_lexical_analyzer_again">The Lexical Analyzer (Again)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s get started with a first version supporting the previous basic grammar:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="function">tokenize</span> : <span class="keyword">function</span>(text, grammar) {
+    <span class="keyword">var</span> strarr = [ text ];
+
+    tokenloop: <span class="keyword">for</span> ( <span class="keyword">var</span> token <span class="keyword">in</span> grammar) {
+        <span class="keyword">if</span> (!grammar.hasOwnProperty(token) || !grammar[token]) {
+            <span class="keyword">continue</span>;
+        }
+
+        <span class="keyword">var</span> pattern = grammar[token];
+
+        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>; i &lt; strarr.length; i++) {
+
+            <span class="keyword">var</span> str = strarr[i];
+
+            <span class="keyword">if</span> (str <span class="keyword">instanceof</span> self.Token) {
+                <span class="keyword">continue</span>;
+            }
+
+            <span class="keyword">var</span> match = pattern.exec(str);
+
+            <span class="keyword">if</span> (match) {
+                <span class="keyword">var</span> from = match.index - <span class="integer">1</span>,
+                    match = match[<span class="integer">0</span>],
+                    len = match.length,
+                    to = from + len,
+                    before = str.slice(<span class="integer">0</span>, from + <span class="integer">1</span>),
+                    after = str.slice(to + <span class="integer">1</span>);
+
+                <span class="keyword">var</span> args = [ i, <span class="integer">1</span> ];
+
+                <span class="keyword">if</span> (before) {
+                    args.push(before);
+                }
+
+                <span class="keyword">var</span> wrapped = <span class="keyword">new</span> self.Token(token, match);
+
+                args.push(wrapped);
+
+                <span class="keyword">if</span> (after) {
+                    args.push(after);
+                }
+
+                Array.prototype.splice.apply(strarr, args);
+            }
+        }
+    }
+
+    <span class="keyword">return</span> strarr;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At first, the function may seem obscure but the logic is more simple as it may seem. For every token defined of the language grammar, we iterate over the input list containing initially a single string with the complete source code, but after several iterations, this string will be split into lexemes.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s unwind the algorithm on our example, considering only the token <code>keyword</code> defined by the regular expression: <code>/\b(public|static|class|void)\b/g</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">strarray = [<span class="string"><span class="delimiter">'</span><span class="content">public class HelloWorld { … }</span><span class="delimiter">'</span></span>];
+i = <span class="integer">0</span>       +-----------------------------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Does <code>'public class HelloWorld { … }'</code> matches the regular expression? <strong>Yes</strong></p>
+</div>
+<div class="paragraph">
+<p>We replace this element with three new elements:</p>
+</div>
+<div class="ulist compact">
+<ul>
+<li>
+<p>The string before the match: the string is empty. We have nothing to add.</p>
+</li>
+<li>
+<p>The found lexeme: <code>public</code>.</p>
+</li>
+<li>
+<p>The string after the match: <code>' class HelloWorld { … }'</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">strarray = [Token, <span class="string"><span class="delimiter">'</span><span class="content"> class HelloWorld { … }</span><span class="delimiter">'</span></span>];
+i = <span class="integer">1</span>              +-----------------------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Does <code>' class HelloWorld { … }'</code> matches the regular expression? <strong>Yes</strong></p>
+</div>
+<div class="paragraph">
+<p>Similarly, we replace the element with three new elements:</p>
+</div>
+<div class="ulist compact">
+<ul>
+<li>
+<p>The string before the match: the space character.</p>
+</li>
+<li>
+<p>The found lexeme: <code>class</code>.</p>
+</li>
+<li>
+<p>The string after the match: <code>' HelloWorld { … }'`</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">strarray = [Token, <span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>, Token, <span class="string"><span class="delimiter">'</span><span class="content"> HelloWorld { … }</span><span class="delimiter">'</span></span>];
+i = <span class="integer">2</span>                   +---+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The element is already a processed token. We continue.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">strarray = [Token, <span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>, Token, <span class="string"><span class="delimiter">'</span><span class="content"> HelloWorld { … }</span><span class="delimiter">'</span></span>];
+i = <span class="integer">3</span>                          +-----------------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Does <code>' HelloWorld { … }'</code> matches the regular expression? <strong>No</strong></p>
+</div>
+<div class="paragraph">
+<p>After several more iterations, we finally reach the end of the array, before restarting the same logic with the next token, and so on, until having processed the whole grammar.</p>
+</div>
+<div class="admonitionblock note congratulations">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Congratulations!</div>
+<div class="paragraph">
+<p>We have finished the rewrite of Prism. <strong>Less than 120 lines of code have been necessary</strong>. You can find the complete source code <a href="https://github.com/julien-sobczak/prism-from-scratch">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bonus_the_reality_of_programming_languages">Bonus: The Reality of Programming Languages</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Defining tokens using regular expressions is common. The <a href="http://en.wikipedia.org/wiki/Lex_(software)">program LEX</a>, created in 1975 by Mike Lesk et Eric Schmidt, worked already like that. Sadly, regular expressions have limitations, especially as their support in some languages like JavaScript is not as complete as reference languages like Perl.</p>
+</div>
+<div class="sect2">
+<h3 id="an_example_java_class_names">An example: Java class names</h3>
+<div class="paragraph">
+<p>A first regular expression would be: <code>[a-z0-9_]+</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Problem</strong>: This regular expression returns also variables and constants.<br>
+<strong>Solution</strong>: We can use Java conventions to only matches identifiers starting with an uppercase letter, but this solution is probably too restrictive for a library like Prism. The solution implemented by Prims is different. A class name is expected at well-defined places (ex: after the keyword <code>class</code>). The idea is to look around the matches. We can do that with regular expressions. But&#8230;&#8203;</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">lookbehind + lookahead = lookaround</div>
+<div class="paragraph">
+<p>Lookahead and Lookbehind support assertions about what must precede or follow the match. For example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>java(?!script)</code> searches for occurrences of <code>java</code> not followed by <code>script</code> (<code>java</code>, <code>javafx</code> but not <code>javascript</code>).<br>
+We talk about <strong>Negative Lookahead</strong>.</p>
+</li>
+<li>
+<p><code>java(?=script)</code> searches for occurrences of <code>java</code> followed by <code>script</code> (<code>javascript</code> but not <code>java</code> or <code>javafx</code>).<br>
+We talk about <strong>Positive Lookahead</strong>.</p>
+</li>
+<li>
+<p><code>(?&lt;!java)script</code> searches for occurrences of <code>script</code> not preceded by <code>java</code> (<code>script</code>, <code>postscript</code> but not <code>javascript</code>).<br>
+We talk about <strong>Negative Lookbehind</strong>.</p>
+</li>
+<li>
+<p><code>(?&lt;=java)script</code> searches for occurrences of <code>script</code> preceded by <code>java</code> (<code>javascript</code> but not <code>postscript</code>).<br>
+We talk about <strong>Positive Lookbehind</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Caution: The regular expression <code>(?&lt;=java)script</code> is different from <code>javascript</code>. The characters satisfying the lookarounds are not returned in the matching string (the result is <code>script</code> for the first regular expression and <code>javascript</code> for the second one).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The idea behind lookarounds is relatively easy to grasp. But their support varies between languages. For example, many languages, including Perl, restrict the characters allowed in a lookbehind (no metacharacters allowed since Perl must determine the number of characters he must go back). You can find more information <a href="http://www.regular-expressions.info/lookaround.html">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>What about JavaScript? The answer is simple: <strong>JavaScript does not support lookaheads</strong>. Therefore, Prism has to implement a workaround:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="comment">// prism-javalite.js</span>
+Prism.languages.javalite = {
+  <span class="key"><span class="delimiter">'</span><span class="content">class-name</span><span class="delimiter">'</span></span>: {
+    <span class="key">pattern</span>: <span class="regexp"><span class="delimiter">/</span><span class="content">(?:(class|interface|extends|implements|instanceof|new)</span><span class="char">\s</span><span class="content">+)[a-z0-9_]+</span><span class="delimiter">/</span><span class="modifier">ig</span></span>,
+    <span class="key">lookbehind</span>: <span class="predefined-constant">true</span>
+  }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this new definition, we are looking for identifiers preceded by one of the defined keywords. From the implementation, if lookbehind is enabled, Prism removes the value of the first captured group to define the actual value of the lexeme.</p>
+</div>
+<div class="paragraph">
+<p>Here the method <code>tokenize</code> with the changed lines highlighted:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong class="highlighted">10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+<strong class="highlighted">26</strong>
+<strong class="highlighted">27</strong>
+<strong class="highlighted">28</strong>
+29
+30
+<strong class="highlighted">31</strong>
+<strong class="highlighted">32</strong>
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+</pre></td>
+  <td class="code"><pre><span class="function">tokenize</span> : <span class="keyword">function</span>(text, grammar) {
+ <span class="keyword">var</span> strarr = [ text ];
+
+ tokenloop: <span class="keyword">for</span> ( <span class="keyword">var</span> token <span class="keyword">in</span> grammar) {
+  <span class="keyword">if</span> (!grammar.hasOwnProperty(token) || !grammar[token]) {
+   <span class="keyword">continue</span>;
+  }
+
+  <span class="keyword">var</span> pattern = grammar[token],
+      lookbehind = !!pattern.lookbehind,
+      lookbehindLength = <span class="integer">0</span>;
+
+  pattern = pattern.pattern || pattern;
+
+  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>; i &lt; strarr.length; i++) {
+    <span class="comment">// Don’t cache length as it changes during the loop</span>
+
+   <span class="keyword">var</span> str = strarr[i];
+
+   <span class="keyword">if</span> (str <span class="keyword">instanceof</span> self.Token) {
+    <span class="keyword">continue</span>;
+   }
+
+   <span class="keyword">var</span> match = pattern.exec(str);
+
+   <span class="keyword">if</span> (match) {
+    <span class="keyword">if</span> (lookbehind) {
+      lookbehindLength = match[<span class="integer">1</span>].length;
+    }
+
+    <span class="keyword">var</span> from = match.index - <span class="integer">1</span> + lookbehindLength,
+        match = match[<span class="integer">0</span>].slice(lookbehindLength),
+        len = match.length,
+        to = from + len,
+        before = str.slice(<span class="integer">0</span>, from + <span class="integer">1</span>),
+        after = str.slice(to + <span class="integer">1</span>);
+
+    <span class="keyword">var</span> args = [ i, <span class="integer">1</span> ];
+
+    <span class="keyword">if</span> (before) {
+     args.push(before);
+    }
+
+    <span class="keyword">var</span> wrapped = <span class="keyword">new</span> self.Token(token, match);
+
+    args.push(wrapped);
+
+    <span class="keyword">if</span> (after) {
+     args.push(after);
+    }
+
+    Array.prototype.splice.apply(strarr, args);
+   }
+  }
+ }
+
+ <span class="keyword">return</span> strarr;
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this new feature, we can now test our code with more advanced examples:</p>
+</div>
+<iframe src="/posts_resources/2014-11-25-prism-from-scratch/prism-demo-advanced.html"
+    width="100%" height="600px"
+    style="border: none">
+</iframe>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Quiz: Which token matches this regular expression?</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="regexp"><span class="delimiter">/</span><span class="content">(^|[^</span><span class="delimiter">/</span></span>])<span class="error">\</span>/(?!<span class="error">\</span><span class="regexp"><span class="delimiter">/</span><span class="content">)(</span><span class="content">\[</span><span class="content">.+?]|</span><span class="char">\\</span><span class="content">.|[^</span><span class="delimiter">/</span></span><span class="error">\</span>r<span class="error">\</span>n])+<span class="error">\</span><span class="regexp"><span class="delimiter">/</span><span class="content">[gim]{0,3}(?=</span><span class="char">\s</span><span class="content">*($|[</span><span class="char">\r</span><span class="char">\n</span><span class="content">,.;})]))</span><span class="delimiter">/</span><span class="modifier">g</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Solution</em>: This regular expression matches&#8230;&#8203; regular expressions.</p>
+</div>
+<div class="paragraph">
+<p>You may notice the use of the lookbehind workaround supported by Prism and the lookahead supported by all browsers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the complete rewrite:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">var</span> Prism = (<span class="keyword">function</span>() {
+
+ <span class="keyword">var</span> self = {
+
+  <span class="key">languages</span> : {},
+
+  <span class="function">highlightAll</span> : <span class="keyword">function</span>() {
+   <span class="keyword">var</span> elements = document.querySelectorAll(<span class="string"><span class="delimiter">'</span><span class="content">code[class*=&quot;language-&quot;]</span><span class="delimiter">'</span></span>);
+
+   <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>, element; element = elements[i++];) {
+    self.highlightElement(element);
+   }
+  },
+
+  <span class="function">highlightElement</span> : <span class="keyword">function</span>(element) {
+   <span class="keyword">var</span> language = element.className.match(<span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">language-(?!</span><span class="content">\*</span><span class="content">)(</span><span class="char">\w</span><span class="content">+)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">i</span></span>)[<span class="integer">1</span>];
+   <span class="keyword">var</span> grammar = self.languages[language];
+
+   <span class="comment">// Set language on the parent, for styling</span>
+   <span class="keyword">var</span> parent = element.parentNode;
+   <span class="keyword">if</span> (<span class="regexp"><span class="delimiter">/</span><span class="content">pre</span><span class="delimiter">/</span><span class="modifier">i</span></span>.test(parent.nodeName)) {
+    parent.className = parent.className + <span class="string"><span class="delimiter">'</span><span class="content"> language-</span><span class="delimiter">'</span></span> + language;
+   }
+
+   <span class="keyword">var</span> code = element.textContent;
+
+   element.innerHTML = self.highlight(code, grammar, language);
+  },
+
+  <span class="function">highlight</span> : <span class="keyword">function</span>(text, grammar, language) {
+   <span class="keyword">var</span> tokens = self.tokenize(text, grammar);
+   <span class="keyword">return</span> self.Token.stringify(tokens, language);
+  },
+
+  <span class="function">tokenize</span> : <span class="keyword">function</span>(text, grammar) {
+   <span class="keyword">var</span> strarr = [ text ];
+
+   tokenloop: <span class="keyword">for</span> ( <span class="keyword">var</span> token <span class="keyword">in</span> grammar) {
+    <span class="keyword">if</span> (!grammar.hasOwnProperty(token) || !grammar[token]) {
+     <span class="keyword">continue</span>;
+    }
+
+    <span class="keyword">var</span> pattern = grammar[token],
+        lookbehind = !!pattern.lookbehind,
+        lookbehindLength = <span class="integer">0</span>;
+
+    pattern = pattern.pattern || pattern;
+
+    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="integer">0</span>; i &lt; strarr.length; i++) {
+      <span class="comment">// Don’t cache length as it changes during the loop</span>
+
+     <span class="keyword">var</span> str = strarr[i];
+
+     <span class="keyword">if</span> (str <span class="keyword">instanceof</span> self.Token) {
+      <span class="keyword">continue</span>;
+     }
+
+     <span class="keyword">var</span> match = pattern.exec(str);
+
+     <span class="keyword">if</span> (match) {
+      <span class="keyword">if</span> (lookbehind) {
+       lookbehindLength = match[<span class="integer">1</span>].length;
+      }
+
+      <span class="keyword">var</span> from = match.index - <span class="integer">1</span> + lookbehindLength,
+          match = match[<span class="integer">0</span>].slice(lookbehindLength),
+          len = match.length,
+          to = from + len,
+          before = str.slice(<span class="integer">0</span>, from + <span class="integer">1</span>),
+          after = str.slice(to + <span class="integer">1</span>);
+
+      <span class="keyword">var</span> args = [ i, <span class="integer">1</span> ];
+
+      <span class="keyword">if</span> (before) {
+       args.push(before);
+      }
+
+      <span class="keyword">var</span> wrapped = <span class="keyword">new</span> self.Token(token, match);
+
+      args.push(wrapped);
+
+      <span class="keyword">if</span> (after) {
+       args.push(after);
+      }
+
+      Array.prototype.splice.apply(strarr, args);
+     }
+    }
+   }
+
+   <span class="keyword">return</span> strarr;
+  },
+
+  <span class="function">Token</span>: <span class="keyword">function</span>(type, content) {
+   <span class="local-variable">this</span>.type = type;
+   <span class="local-variable">this</span>.content = content;
+
+   self.Token.<span class="function">stringify</span> = <span class="keyword">function</span>(o, language, parent) {
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> o == <span class="string"><span class="delimiter">'</span><span class="content">string</span><span class="delimiter">'</span></span>) {
+     <span class="keyword">return</span> o;
+    }
+
+    <span class="keyword">if</span> (Array.isArray(o)) {
+     <span class="keyword">return</span> o.map(<span class="keyword">function</span>(element) {
+      <span class="keyword">return</span> self.Token.stringify(element, language, o);
+     }).join(<span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span>);
+    }
+
+    <span class="keyword">var</span> content = self.Token.stringify(o.content, language, parent);
+    <span class="keyword">var</span> classes = [ <span class="string"><span class="delimiter">'</span><span class="content">token</span><span class="delimiter">'</span></span>, o.type ];
+
+    <span class="keyword">return</span> <span class="string"><span class="delimiter">'</span><span class="content">&lt;span class=&quot;</span><span class="delimiter">'</span></span> + classes.join(<span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>) + <span class="string"><span class="delimiter">'</span><span class="content">&quot;&gt;</span><span class="delimiter">'</span></span> + content + <span class="string"><span class="delimiter">'</span><span class="content">&lt;/span&gt;</span><span class="delimiter">'</span></span>;
+   };
+  }
+ };
+
+ <span class="keyword">return</span> self;
+
+})();
+
+document.addEventListener(<span class="string"><span class="delimiter">'</span><span class="content">DOMContentLoaded</span><span class="delimiter">'</span></span>, Prism.highlightAll);
+
+
+Prism.languages.java = {
+ <span class="comment">// C-like</span>
+ <span class="key"><span class="delimiter">'</span><span class="content">comment</span><span class="delimiter">'</span></span>: {
+   <span class="key">pattern</span>: <span class="regexp"><span class="delimiter">/</span><span class="content">(^|[^</span><span class="char">\\</span><span class="content">])</span><span class="content">\/</span><span class="content">\*</span><span class="content">[</span><span class="char">\w</span><span class="char">\W</span><span class="content">]*?</span><span class="content">\*</span><span class="content">\/</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+   <span class="key">lookbehind</span>: <span class="predefined-constant">true</span>
+ },
+ <span class="key"><span class="delimiter">'</span><span class="content">string</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="content">(&quot;|')(</span><span class="char">\\</span><span class="content">?.)*?</span><span class="char">\1</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">class-name</span><span class="delimiter">'</span></span>: {
+  <span class="key">pattern</span>: <span class="regexp"><span class="delimiter">/</span><span class="content">((?:(?:class|interface|extends|implements|trait|instanceof|new)</span><span class="char">\s</span><span class="content">+)|(?:catch</span><span class="char">\s</span><span class="content">+</span><span class="content">\(</span><span class="content">))[a-z0-9_</span><span class="content">\.</span><span class="char">\\</span><span class="content">]+</span><span class="delimiter">/</span><span class="modifier">ig</span></span>,
+  <span class="key">lookbehind</span>: <span class="predefined-constant">true</span>
+ },
+ <span class="key"><span class="delimiter">'</span><span class="content">keyword</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">boolean</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">(true|false)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">function</span><span class="delimiter">'</span></span>: {
+  <span class="key">pattern</span>: <span class="regexp"><span class="delimiter">/</span><span class="content">[a-z0-9_]+</span><span class="content">\(</span><span class="delimiter">/</span><span class="modifier">ig</span></span>,
+ },
+ <span class="key"><span class="delimiter">'</span><span class="content">number</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">-?(0x[</span><span class="char">\d</span><span class="content">A-Fa-f]+|</span><span class="char">\d</span><span class="content">*</span><span class="content">\.</span><span class="content">?</span><span class="char">\d</span><span class="content">+([Ee]-?</span><span class="char">\d</span><span class="content">+)?)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">operator</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="content">[-+]{1,2}|!|&lt;=?|&gt;=?|={1,3}|&amp;{1,2}|</span><span class="content">\|</span><span class="content">?</span><span class="content">\|</span><span class="content">|</span><span class="content">\?</span><span class="content">|</span><span class="content">\*</span><span class="content">|</span><span class="content">\/</span><span class="content">|</span><span class="content">\~</span><span class="content">|</span><span class="content">\^</span><span class="content">|</span><span class="content">\%</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">ignore</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="content">&amp;(lt|gt|amp);</span><span class="delimiter">/</span><span class="modifier">gi</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">punctuation</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="content">[{}[</span><span class="content">\]</span><span class="content">;(),.:]</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+
+ <span class="comment">// Java Specific</span>
+ <span class="key"><span class="delimiter">'</span><span class="content">keyword</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">(abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|private|this|break|double|implements|protected|throw|byte|else|import|public|throws|case|enum|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|const|float|native|super|while)</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">g</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">number</span><span class="delimiter">'</span></span>: <span class="regexp"><span class="delimiter">/</span><span class="char">\b</span><span class="content">0b[01]+</span><span class="char">\b</span><span class="content">|</span><span class="char">\b</span><span class="content">0x[</span><span class="char">\d</span><span class="content">a-f]*</span><span class="content">\.</span><span class="content">?[</span><span class="char">\d</span><span class="content">a-fp</span><span class="content">\-</span><span class="content">]+</span><span class="char">\b</span><span class="content">|</span><span class="char">\b</span><span class="char">\d</span><span class="content">*</span><span class="content">\.</span><span class="content">?</span><span class="char">\d</span><span class="content">+[e]?[</span><span class="char">\d</span><span class="content">]*[df]</span><span class="char">\b</span><span class="content">|</span><span class="char">\W</span><span class="char">\d</span><span class="content">*</span><span class="content">\.</span><span class="content">?</span><span class="char">\d</span><span class="content">+</span><span class="char">\b</span><span class="delimiter">/</span><span class="modifier">gi</span></span>,
+ <span class="key"><span class="delimiter">'</span><span class="content">operator</span><span class="delimiter">'</span></span>: {
+  <span class="key">pattern</span>: <span class="regexp"><span class="delimiter">/</span><span class="content">(^|[^</span><span class="content">\.</span><span class="content">])(?:</span><span class="content">\+</span><span class="content">=|</span><span class="content">\+</span><span class="content">\+</span><span class="content">?|-=|--?|!=?|&lt;{1,2}=?|&gt;{1,3}=?|==?|&amp;=|&amp;&amp;?|</span><span class="content">\|</span><span class="content">=|</span><span class="content">\|</span><span class="content">\|</span><span class="content">?|</span><span class="content">\?</span><span class="content">|</span><span class="content">\*</span><span class="content">=?|</span><span class="content">\/</span><span class="content">=?|%=?|</span><span class="content">\^</span><span class="content">=?|:|~)</span><span class="delimiter">/</span><span class="modifier">gm</span></span>,
+  <span class="key">lookbehind</span>: <span class="predefined-constant">true</span>
+ }
+};</code></pre>
+</div>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Try for yourself!</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Prism provides hooks to extend the library with plugins. To understand these extension points and how plugins use them, you can check <a href="https://github.com/LeaVerou/prism/blob/gh-pages/components/prism-core.js">prism-core.js</a> and the directory <a href="https://github.com/LeaVerou/prism/tree/gh-pages/plugins">plugins</a>.</p>
+</li>
+<li>
+<p>Prism supports one language to include other languages (ex: HTML files often contain JavaScript and CSS blocks). The implementation is elegant, requiring only a dozen of lines of code. Check the file <a href="https://github.com/LeaVerou/prism/blob/gh-pages/components/prism-core.js">prism-core.js</a>. Hint: Search for properties <code>inside</code> and <code>rest</code>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To Remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Mastering regular expressions</strong> is a superpower for a developer.</p>
+</li>
+<li>
+<p><strong>JavaScript does not support lookbehinds</strong>.</p>
+</li>
+<li>
+<p><strong>Token != Lexeme</strong>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

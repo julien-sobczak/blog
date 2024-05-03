@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Unicode for Impatient Developers Loving Puzzlers 🤔</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2021/06/29/unicode-for-impatient-developers.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">June 29, 2021</span>
+
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Unicode for Impatient Developers Loving Puzzlers 🤔</h2>
+      
+      <h3>The Bare "Minimum" Every Developer Must Know About Unicode</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This post is a shorter version of my previous post <a href="/inspect/2021/06/19/unicode-for-curious-developers.html">Unicode for Curious Developers Loving Code 😉</a>. My motivation is to persuade you that you must learn more about Unicode and that you should read my other post 😀.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Modern programs must handle Unicode—Python has excellent support for Unicode, and will keep getting better.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Guido van Rossum, Inventor of Python
+</div>
+</div>
+<div class="paragraph lead">
+<p>Unicode is omnipresent. Your operating system, your programming language, and your everyday applications all support Unicode so that you can use your own language in a multilingual environment like the internet. All this is possible because developers before you learned about Unicode. What about you? Let&#8217;s test your comprehension using a few puzzlers.</p>
+</div>
+<div class="sect1">
+<h2 id="puzzler_1_normalization">Puzzler 1: Normalization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>What is the output of this program?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Python 3</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">à</span><span class="delimiter">&quot;</span></span> == <span class="string"><span class="delimiter">&quot;</span><span class="content">à</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="answer">Answer</h3>
+<div class="paragraph">
+<p>The answer is <code>False</code>. That&#8217;s right. You read correctly. Try to copy/paste this snippet in your terminal using the Python interpreter. You can even convert this line to your favorite (modern) programming language and get the same result. But why?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="explanation">Explanation</h3>
+<div class="paragraph">
+<p>Unicode defines more than 100,000 characters (and has room for more than one million more!). <strong>Unicode characters are code points, not glyphs</strong>. This means that Unicode declares that U+0041 is A, U+03B1 is α, etc. Unicode doesn&#8217;t care how characters look. Your operating system is often responsible for displaying these characters on screen using glyphs defined in font files.</p>
+</div>
+<div class="paragraph">
+<p>So, when you are reading the previous example, you are viewing the rendered representation of this Python program (also made of Unicode characters). You see glyphs, not code points. Right?</p>
+</div>
+<div class="paragraph">
+<p>The program can be made more explicit like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Using Unicode Character code points:</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="char">\u00E0</span><span class="delimiter">&quot;</span></span> == <span class="string"><span class="delimiter">&quot;</span><span class="char">\u0061</span><span class="char">\u0300</span><span class="delimiter">&quot;</span></span>)
+<span class="comment"># Using Unicode Character names:</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="char">\N{LATIN SMALL LETTER A WITH GRAVE}</span><span class="delimiter">&quot;</span></span> ==
+      <span class="string"><span class="delimiter">&quot;</span><span class="char">\N{LATIN SMALL LETTER A}</span><span class="char">\N{COMBINING GRAVE ACCENT}</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both lines return <code>False</code> again, but the result now seems a lot more obvious. <strong>Unicode defines several characters (or sequences of characters) resulting in the same glyph</strong>. For example, both Unicode text U+00E0 and U+0061 U+0300 represent the latin letter <code>à</code>. These representations are <a href="https://en.wikipedia.org/wiki/Unicode_equivalence">canonically equivalent</a> in Unicode, which means they must be considered identical. Why not just avoid duplicates instead?</p>
+</div>
+<div class="paragraph">
+<p>Unicode encourages the use of combining characters to define accentuated letters. For example, the combining character U+0300 <code>COMBINING GRAVE ACCENT</code> modifies the base character U+0061 <code>LATIN SMALL LETTER A</code>. But Unicode was introduced after hundreds of incomplete character sets like ASCII. Therefore, texts created before Unicode would have to be converted, and Unicode was designed to make this conversion as simple as possible. If a character (e.g., <code>à</code>) was defined by an existing character set (e.g., Windows-1252), Unicode included this character to support a one-to-one mapping with this character set. But why Python considers the two strings as different?</p>
+</div>
+<div class="paragraph">
+<p>Python, like almost all programming languages, considers two Unicode strings to be equals if they are composed of the same sequence of code points. To solve this problem, <strong>Unicode defines several text normalization algorithms that replace equivalent sequences of characters so that any two texts that are equivalent will be reduced to the same sequence of code points</strong>. Unicode normalization is often implemented by programming languages in special modules:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Python 3</span>
+<span class="keyword">from</span> <span class="include">unicodedata</span> <span class="keyword">import</span> <span class="include">normalize</span>
+print(normalize(<span class="string"><span class="delimiter">&quot;</span><span class="content">NFKC</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="char">\u00E0</span><span class="delimiter">&quot;</span></span>) == normalize(<span class="string"><span class="delimiter">&quot;</span><span class="content">NFKC</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="char">\u0061</span><span class="char">\u0300</span><span class="delimiter">&quot;</span></span>)) <span class="comment"># True</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Normalization is not applied systematically. But you should probably use it when sorting or indexing texts. (Imagine if Google didn&#8217;t normalize texts in its index, you would miss many results when searching for accentuated texts.)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="puzzler_2_encoding">Puzzler 2: Encoding</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unicode is also famous for its emojis. Consider the following program in Go. What is the output?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="comment">// Go</span>
+<span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">func</span> main() {
+    fmt.Println(<span class="predefined">len</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">✋</span><span class="delimiter">&quot;</span></span>))
+    fmt.Println(<span class="predefined">len</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">🤚</span><span class="delimiter">&quot;</span></span>))
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="answer_2">Answer</h3>
+<div class="paragraph">
+<p>The answer is <code>3/4</code> (not <code>1/1</code>). That&#8217;s right. You read correctly. You can try this example in different languages and get different results (Python 3 outputs <code>1/1</code>, Java outputs <code>2/2</code>). Why?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="explanation_2">Explanation</h3>
+<div class="paragraph">
+<p>One million of code points is a lot! Imagine that you are creating a new programming language and must define a string data type to store a sequence of Unicode code points. Computers only work with 0s and 1s, and this sequence of Unicode code points must be converted to bytes. <strong>Each code point must logically be stored using 32 bits</strong> (e.g., 1,000,000<sub>10</sub> = 11110100001001000000<sub>2</sub>), which means a naive implementation would use a variable of type <code>[]int32</code> to store a Unicode text. Right?</p>
+</div>
+<div class="paragraph">
+<p><strong>The fact is almost all characters in everyday use are stored in the first 65,536 code points</strong> (requiring only 16 bits). In addition, the vast majority of characters in Latin languages are still the famous ASCII characters which are the first 128 Unicode characters (required only 8 bits).</p>
+</div>
+<div class="paragraph">
+<p>For example, saving the following Python program in a file encoded in UTF-32 (Note: UTF-32 is one of the encodings defined by Unicode and outputs each code point using 32 bits):</p>
+</div>
+<div class="listingblock">
+<div class="title">hello.py</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">print(<span class="string"><span class="delimiter">&quot;</span><span class="content">Voila</span><span class="char">\u0300</span><span class="content"> </span><span class="char">\N{winking face}</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Produces the following bytes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ hexdump hello.py
+0000000 00 00 fe ff 00 00 00 70 00 00 00 72 00 00 00 69
+0000010 00 00 00 6e 00 00 00 74 00 00 00 28 00 00 00 22
+0000020 00 00 00 56 00 00 00 6f 00 00 00 69 00 00 00 6c
+0000030 00 00 00 61 00 00 00 5c 00 00 00 4e 00 00 00 7b
+0000040 00 00 00 63 00 00 00 6f 00 00 00 6d 00 00 00 62
+0000050 00 00 00 69 00 00 00 6e 00 00 00 69 00 00 00 6e
+0000060 00 00 00 67 00 00 00 20 00 00 00 61 00 00 00 63
+0000070 00 00 00 63 00 00 00 65 00 00 00 6e 00 00 00 74
+0000080 00 00 00 20 00 00 00 67 00 00 00 72 00 00 00 61
+0000090 00 00 00 76 00 00 00 65 00 00 00 7d 00 00 00 20
+00000a0 00 00 00 5c 00 00 00 4e 00 00 00 7b 00 00 00 77
+00000b0 00 00 00 69 00 00 00 6e 00 00 00 6b 00 00 00 69
+00000c0 00 00 00 6e 00 00 00 67 00 00 00 20 00 00 00 66
+00000d0 00 00 00 61 00 00 00 63 00 00 00 65 00 00 00 7d
+00000e0 00 00 00 22 00 00 00 29 00 00 00 0a
+00000ec</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s a lot of <code>00</code>. This is not optimal. Imagine if Go was using this representation internally and your application works mainly with strings. We can do better. How?</p>
+</div>
+<div class="paragraph">
+<p><strong>Programming languages adopt different solutions to represent strings</strong>, which explains why we have different results. For example, Go stores string literals as a <code>[]byte</code> containing the UTF-8 encoding (UTF-8 requires 1 byte for ASCII characters, 3 bytes for most non-ASCII characters, and 4 bytes for most emojis and rare characters). The function <code>len</code> in Go simply returns the number of bytes in the UTF-8 representation of a string. For example, the U+270B <code>RAISED HAND</code> (✋) requires 3 bytes in UTF-8 and U+1F91A <code>RAISED BACK OF HAND EMOJI</code> (🤚) requires 4 bytes in UTF-8 since characters are not stored in the same block inside the vast Unicode table. So, yes, rotating your hand has its importance when working with Unicode 😀.</p>
+</div>
+<div class="paragraph">
+<p>To illustrate the gain of using UTF-8, here is the same file stored using this encoding:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ hexdump hello_UTF-8.py
+0000000 70 72 69 6e 74 28 22 56 6f 69 6c 61 5c 4e 7b 63
+0000010 6f 6d 62 69 6e 69 6e 67 20 61 63 63 65 6e 74 20
+0000020 67 72 61 76 65 7d 20 5c 4e 7b 77 69 6e 6b 69 6e
+0000030 67 20 66 61 63 65 7d 22 29 0a
+000003a</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You now understand why we commonly save our files in UTF-8, and why this encoding is the default on most systems.</p>
+</div>
+<div class="paragraph">
+<p>Other languages like Java use UTF-16 encoding for their internal string data type representation (UTF-16 uses 2 bytes for the first 65,536 characters and 4 bytes for the remaining ones). Python uses a similar approach, but the implementation does not expose these details to the developer. In short, <strong>you must understand how your programming language works</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="puzzler_3_emojis">Puzzler 3: Emojis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here is another program using flags. What is the output?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Python 3</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">🇫🇷</span><span class="delimiter">&quot;</span></span>[<span class="integer">0</span>] == <span class="string"><span class="delimiter">&quot;</span><span class="content">🇫🇮</span><span class="delimiter">&quot;</span></span>[<span class="integer">0</span>])
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">🇫🇷</span><span class="delimiter">&quot;</span></span>[<span class="integer">1</span>] == <span class="string"><span class="delimiter">&quot;</span><span class="content">🇧🇷</span><span class="delimiter">&quot;</span></span>[<span class="integer">1</span>])</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="answer_3">Answer</h3>
+<div class="paragraph">
+<p>The program outputs <code>True</code> and <code>True</code>. That&#8217;s weird. Why would different flags be considered equal? It just doesn&#8217;t make sense. Or maybe it is.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="explanation_3">Explanation</h3>
+<div class="paragraph">
+<p>We have already discussed how accentuated letters can be formed using combining characters like U+0300 <code>COMBINING GRAVE ACCENT</code>. To understand this puzzler, you need to know that <strong>some Emojis are also defined by combining characters</strong>. For example, Unicode defines a series of <code>Regional Indicator Symbol</code> for every letter A-Z. <strong>Emoji country flags combine two regional symbols corresponding to the two-letter country code defined by the <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 standard</a></strong>. For example,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>🇫🇷 (France, <code>FR</code>) is defined by the sequence U+1F1EB <code>Regional Indicator Symbol Letter F</code> <strong>+</strong> U+1F1F7 <code>Regional Indicator Symbol Letter R</code>.</p>
+</li>
+<li>
+<p>🇫🇮 (Finland, <code>FI</code>) is defined by the sequence U+1F1EB <code>Regional Indicator Symbol Letter F</code> <strong>+</strong> U+1F1EE <code>Regional Indicator Symbol Letter I</code>.</p>
+</li>
+<li>
+<p>🇧🇷(Brazil, <code>BR</code>) is defined by the sequence U+1F1E7 <code>Regional Indicator Symbol Letter B</code> <strong>+</strong> U+1F1F7 <code>Regional Indicator Symbol Letter R</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In Python, string indexing returns the <em>i</em>-nth code point in the Unicode sequence. So <code>"🇫🇷"[0]</code> returns the <code>Regional Indicator Symbol Letter F</code> and <code>"🇫🇷"[1]</code> returns the <code>Regional Indicator Symbol Letter R</code>. This explains the output (<strong>F</strong>R=<strong>F</strong>I and F<strong>R</strong>=B<strong>R</strong>).</p>
+</div>
+<div class="paragraph">
+<p><strong>Combining characters are also used by skin tones</strong>. Unicode defines a code point for every color defined by the <a href="https://en.wikipedia.org/wiki/Fitzpatrick_scale">Fitzpatrick scale</a>: U+1F3FF <code>Dark skin tone</code>, U+1F3FE <code>Medium Dark skin tone</code>, U+1F3FD <code>Medium skin tone</code>, U+1F3FC <code>Medium Light skin tone</code>, and U+1F3FB <code>Light skin tone</code>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋</span><span class="char">\N{Emoji Modifier Fitzpatrick Type-1-2}</span><span class="delimiter">&quot;</span></span>) <span class="comment"># 👋🏻</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋</span><span class="char">\N{Emoji Modifier Fitzpatrick Type-3}</span><span class="delimiter">&quot;</span></span>)   <span class="comment"># 👋🏼</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋</span><span class="char">\N{Emoji Modifier Fitzpatrick Type-4}</span><span class="delimiter">&quot;</span></span>)   <span class="comment"># 👋🏽</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋</span><span class="char">\N{Emoji Modifier Fitzpatrick Type-5}</span><span class="delimiter">&quot;</span></span>)   <span class="comment"># 👋🏾</span>
+print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋</span><span class="char">\N{Emoji Modifier Fitzpatrick Type-6}</span><span class="delimiter">&quot;</span></span>)   <span class="comment"># 👋🏿</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comparing Unicode texts containing the same emoji using different skin tones is tricky:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋🏻</span><span class="delimiter">&quot;</span></span> == <span class="string"><span class="delimiter">&quot;</span><span class="content">👋🏿</span><span class="delimiter">&quot;</span></span>) <span class="comment"># False</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unicode normalization that we covered in Puzzler 1 doesn&#8217;t help:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">from</span> <span class="include">unicodedata</span> <span class="keyword">import</span> <span class="include">normalize</span>
+print(normalize(<span class="string"><span class="delimiter">&quot;</span><span class="content">NFKC</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">👋🏻</span><span class="delimiter">&quot;</span></span>) == normalize(<span class="string"><span class="delimiter">&quot;</span><span class="content">NFKC</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">👋🏿</span><span class="delimiter">&quot;</span></span>)) <span class="comment"># False</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As there is no current support in standard libraries, the most obvious solution is to ignore skin tones completely and compare only the base Unicode character:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">print(<span class="string"><span class="delimiter">&quot;</span><span class="content">👋🏻</span><span class="delimiter">&quot;</span></span>[<span class="integer">0</span>] == <span class="string"><span class="delimiter">&quot;</span><span class="content">👋🏿</span><span class="delimiter">&quot;</span></span>[<span class="integer">0</span>]) <span class="comment"># True 🎉</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="puzzler_4_regex">Puzzler 4: Regex</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>What is the output of the following program?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Java</span>
+<span class="keyword">import</span> <span class="include">java.util.regex.Matcher</span>;
+<span class="keyword">import</span> <span class="include">java.util.regex.Pattern</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Regex</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="predefined-type">String</span> s = <span class="string"><span class="delimiter">&quot;</span><span class="content">100 µAh 10 mAh</span><span class="delimiter">&quot;</span></span>;
+        <span class="predefined-type">Pattern</span> p = <span class="predefined-type">Pattern</span>.compile(<span class="string"><span class="delimiter">&quot;</span><span class="char">\\</span><span class="content">d+ </span><span class="char">\\</span><span class="content">wAh</span><span class="delimiter">&quot;</span></span>);
+        <span class="predefined-type">Matcher</span> m = p.matcher(s);
+        <span class="predefined-type">System</span>.out.println(m.results().count();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="answer_4">Answer</h3>
+<div class="paragraph">
+<p>The answer is <code>1</code>. The regex only found one match (<code>10 mAh</code>). Why?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="explanation_4">Explanation</h3>
+<div class="paragraph">
+<p>The metacharacter <code>\w</code> matches a single word character defined by the expression <code>[a-zA-Z_0-9]</code>. It works great with ASCII characters like <code>m</code> but not with Unicode letters like <code>µ</code>.</p>
+</div>
+<div class="paragraph">
+<p>In addition to assigning a unique code point to every single character in use by any language, Unicode also provides a <a href="https://unicode.org/ucd/">database</a> defining a list of properties for every character. One of these properties is <a href="https://unicode.org/reports/tr44/#GC_Values_Table"><code>General_Category</code></a> (<code>Lu</code> for uppercase letter, <code>Nd</code> for decimal number, etc.). Programming languages import this database in their code to implement common functions like <code>isUpper()</code>, <code>toLowerCase()</code>, <code>isLetter()</code>, and also to extend the behavior of their regular-expression engine.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/util/regex/Pattern.html">Java supports other classes</a> like <code>\p{Lu}</code> to match an uppercase letter or just <code>\p{L}</code> to match any Unicode letter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">java.util.regex.Matcher</span>;
+<span class="keyword">import</span> <span class="include">java.util.regex.Pattern</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Regex</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="predefined-type">String</span> s = <span class="string"><span class="delimiter">&quot;</span><span class="content">100 µAh 10 mAh</span><span class="delimiter">&quot;</span></span>;
+        <span class="predefined-type">Pattern</span> p = <span class="predefined-type">Pattern</span>.compile(<span class="string"><span class="delimiter">&quot;</span><span class="char">\\</span><span class="content">d+ </span><span class="char">\\</span><span class="content">p{L}Ah</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="predefined-type">Matcher</span> m = p.matcher(s);
+        <span class="predefined-type">System</span>.out.println(m.results().count(); <span class="comment">// Output: 2</span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We replaced the ASCII-only class <code>\w</code> with the Unicode-compatible class <code>\p{L}</code>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To Go Further</div>
+<div class="paragraph">
+<p><strong>This article introduced some pitfalls when working with Unicode</strong>. There is so much more to cover.</p>
+</div>
+<div class="paragraph">
+<p>If I succeeded in arousing your curiosity, I recommend you to read <a href="/inspect/2021/06/19/unicode-for-curious-developers.html">Unicode for Curious Developers Loving Code 😉</a>. It will take you less than one hour (that&#8217;s a lot for a blog post, I know) but compared to the time spent debugging an issue, one hour is a small price to pay to understand what you are doing. <strong>Learning always pays off</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="puzzler_5_bonus">Puzzler 5: Bonus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>What is the output of this program?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Python 3</span>
+ℌ = <span class="string"><span class="delimiter">&quot;</span><span class="content">Me</span><span class="delimiter">&quot;</span></span>
+H = <span class="string"><span class="delimiter">&quot;</span><span class="content">Funny</span><span class="delimiter">&quot;</span></span>
+print(ℌ == H)</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="answer_5">Answer</h3>
+<div class="paragraph">
+<p>The anwser is <code>True</code>. That&#8217;s right. You read correctly, again. Based on what we covered in this article, you may be able to found the explanation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="explanation_5">Explanation</h3>
+<div class="paragraph">
+<p><a href="https://www.python.org/dev/peps/pep-3131/">Python accepts non-ASCII characters for identifiers</a> like variable names but normalizes them using the NFKC algorithm (one of the four normalization algorithms defined by the Unicode Standard). For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">import</span> <span class="include">unicodedata</span>
+print(unicodedata.normalize(<span class="string"><span class="delimiter">'</span><span class="content">NFKC</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">ℌ</span><span class="delimiter">&quot;</span></span>)) <span class="comment"># &quot;H&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both Unicode characters <code>ℌ</code> and <code>H</code> normalize to the same character. It means both identifiers represent the same variable, which means that when we are updating one of them, we are updating the same, unique variable. But why normalize identifiers?</p>
+</div>
+<div class="paragraph">
+<p>It may seem wrong, but normalizing identifiers is a great idea. Unicode contains a lot of characters, and some different characters are represented visually using very similar glyphs. Compare with this more subtle example (this example can be more or less relevant depending on the fonts available on your system):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">𝛀 = <span class="string"><span class="delimiter">&quot;</span><span class="content">U+1D6C0</span><span class="delimiter">&quot;</span></span>
+Ω = <span class="string"><span class="delimiter">&quot;</span><span class="content">U+03A9</span><span class="delimiter">&quot;</span></span>
+print(𝛀, Ω)
+<span class="comment"># Output &quot;U+03A9 U+03A9&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that Python does not accept any Unicode character in identifiers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># Python 3</span>
+ツ = <span class="string"><span class="delimiter">&quot;</span><span class="content">Letter in Unicode Character Database</span><span class="delimiter">&quot;</span></span> <span class="comment"># OK</span>
+<span class="error">🙂</span> = <span class="string"><span class="delimiter">&quot;</span><span class="content">Symbol in Unicode Character Database</span><span class="delimiter">&quot;</span></span> <span class="comment"># KO</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Only characters belonging to specific categories such as <code>Lu</code> (uppercase letters) or <code>Ll</code> (lowercase letters) are accepted. Emojis could therefore not be used in Python variable names, but some languages like Haskell aren&#8217;t that restrictive.</p>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

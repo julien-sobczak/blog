@@ -1,0 +1,3077 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Spring Boot from Scratch: A Problem-Solving Approach</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2016/08/28/spring-boot-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">August 28, 2016</span>
+
+      
+      <a href="/tags/frameworks" class="label">
+      Frameworks
+      </a>
+      
+
+      
+      <span class="label">
+        Java
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Spring Boot from Scratch: A Problem-Solving Approach</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Spring Boot is just the kind of framework the Java community has been seeking for over a decade</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Andrew Glover<br>
+<cite>Delivery Engineering at Netflix</cite>
+</div>
+</div>
+<div class="ulist TIP content">
+<div class="title">What you will learn</div>
+<ul class="TIP">
+<li>
+<p>The internals of Spring Boot to help you fix bean definition problems that arise in practice.</p>
+</li>
+<li>
+<p>How Spring Boot use the <code>@Conditional</code> annotation to support auto-configuration.</p>
+</li>
+<li>
+<p>Advanced Java techniques like custom <code>ClassLoader</code> writing.</p>
+</li>
+<li>
+<p>Inspect a .class file using the ASM library.</p>
+</li>
+<li>
+<p>Create an uber-jar without using any Maven plugin.</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We will follow the <a href="https://spring.io/guides/gs/spring-boot/">official Getting Started Guide "Building an Application with Spring Boot"</a> and explain the inner working of the framework by recoding its main features. The resulting code has no vocation to be use outside of this post. Let&#8217;s go!</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you are just beginning with Spring Boot, take the time (around 15 minutes) to try the Getting Starting Guide before continuing.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The tutorial is composed of only 3 files: a <code>pom.xml</code> to reference Spring Boot dependencies (starters, Maven Plugin, Parent POM, &#8230;&#8203;), a basic <code>HelloController</code> to exercise the Web Starter and an <code>Application</code> class containing the main method to bootstrap our application. Here is the code source of these files.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;project</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/POM/4.0.0</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+<span class="content">http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;modelVersion&gt;</span>4.0.0<span class="tag">&lt;/modelVersion&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>com.juliensobczak<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-demo<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+
+    <span class="tag">&lt;parent&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;/parent&gt;</span>
+
+    <span class="tag">&lt;dependencies&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+    <span class="tag">&lt;/dependencies&gt;</span>
+
+    <span class="tag">&lt;build&gt;</span>
+        <span class="tag">&lt;plugins&gt;</span>
+            <span class="tag">&lt;plugin&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;/plugin&gt;</span>
+        <span class="tag">&lt;/plugins&gt;</span>
+    <span class="tag">&lt;/build&gt;</span>
+
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RestController</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.bind.annotation.RequestMapping</span>;
+
+<span class="annotation">@RestController</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloController</span> {
+
+    <span class="annotation">@RequestMapping</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> <span class="predefined-type">String</span> index() {
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Greetings from Spring Boot!</span><span class="delimiter">&quot;</span></span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Arrays</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot.SpringApplication</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.SpringBootApplication</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.ApplicationContext</span>;
+
+<span class="annotation">@SpringBootApplication</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Application</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        ApplicationContext ctx = SpringApplication.run(Application.class, args);
+
+        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Let's inspect the beans provided by Spring Boot:</span><span class="delimiter">&quot;</span></span>);
+
+        <span class="predefined-type">String</span><span class="type">[]</span> beanNames = ctx.getBeanDefinitionNames();
+        <span class="predefined-type">Arrays</span>.sort(beanNames);
+        <span class="keyword">for</span> (<span class="predefined-type">String</span> beanName : beanNames) {
+            <span class="predefined-type">System</span>.out.println(beanName);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To launch the application, simply run the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ mvn spring-boot:run</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We now have a fully-functional web application using Spring Boot. We will rewrite it progressively to remove the Spring Boot modules while keeping this example operational. Let&#8217;s go!</p>
+</div>
+<div class="sect2">
+<h3 id="spring_boot_essentials">Spring Boot Essentials</h3>
+<div class="paragraph">
+<p>Spring Boot brings a great deal of magic to Spring application development by performing:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Automatic configuration</strong> — Spring Boot can automatically provide configuration for application functionality common to many Spring applications.</p>
+</li>
+<li>
+<p><strong>Starter dependencies</strong> — You tell Spring Boot what kind of functionality you need, and it will ensure that the libraries needed are added to the build.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Spring Boot brings other interesting features like the <strong>Actuator</strong> (gives you insight into what’s going on inside of the application) and the <strong>command-line interface</strong> (lets you write complete applications with no need for a traditional project build). These features are not described in this post but relied heavily on the two main points.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The rest of this article is splitted into 3 parts, each part focusing on a given aspect of the framework:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Creating your Spring Boot Application</em>, describes why our code compiles though we only have added one dependency. This part inspect the different POM files.</p>
+</li>
+<li>
+<p><em>Running your Spring Boot Application</em>, presents the core logic behind the magic of Spring Boot: how beans are auto-loaded, how a Tomcat instance is automatically bootstrapped.</p>
+</li>
+<li>
+<p><em>Packaging your Spring Boot Application</em>, describes how the Spring Boot Maven plugin works under the hood to create the executable uber-jar.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>According to your interest, you could safely jump from one part to another one.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="part_1_creating_your_spring_boot_application">Part 1: Creating your Spring Boot Application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We all have lost a considerable time trying to understand why a dependency class could not be found, or trying to make two unrelated projects work together although they need two incompatible versions of the same library. Using Maven exclusions helps but it is not a satisfactory solution. These dependency issues are known under the term <a href="https://en.wikipedia.org/wiki/Dependency_hell">Dependency Hell</a> to reflect the frustration of many software developers.</p>
+</div>
+<div class="paragraph">
+<p>Even the most simple Java program needs many dependencies. Here is the list of dependencies for the Getting Started example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>fr.imlovinit:spring-boot-demo:jar:0.0.1-SNAPSHOT
+ +- ch.qos.logback:logback-classic:jar:1.1.5
+ |   +- ch.qos.logback:logback-core:jar:1.1.5
+ |   \- org.slf4j:slf4j-api:jar:1.7.16
+ |       +- org.slf4j:jcl-over-slf4j:jar:1.7.16
+ |       +- org.slf4j:jul-to-slf4j:jar:1.7.16
+ |       \- org.slf4j:log4j-over-slf4j:jar:1.7.16
+ +- org.springframework:spring-core:jar:4.2.5.RELEASE
+ |   \- org.yaml:snakeyaml:jar:1.16
+ +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.0.32
+ +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.0.32
+ +- org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:8.0.32
+ |   \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.0.32
+ +- org.hibernate:hibernate-validator:jar:5.2.4.Final
+ |   +- javax.validation:validation-api:jar:1.1.0.Final
+ |   +- org.jboss.logging:jboss-logging:jar:3.3.0.Final
+ |   \- com.fasterxml:classmate:jar:1.1.0
+ +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.5
+ |   +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.5
+ |   \- com.fasterxml.jackson.core:jackson-core:jar:2.6.5
+ +- org.springframework:spring-web:jar:4.2.5.RELEASE
+ |   +- org.springframework:spring-aop:jar:4.2.5.RELEASE
+ |   |   \- aopalliance:aopalliance:jar:1.0
+ |   +- org.springframework:spring-beans:jar:4.2.5.RELEASE
+ |   \- org.springframework:spring-context:jar:4.2.5.RELEASE
+ \- org.springframework:spring-webmvc:jar:4.2.5.RELEASE
+     \- org.springframework:spring-expression:jar:4.2.5.RELEASE</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s a lot of dependencies for such a simple project!</p>
+</div>
+<div class="sect2">
+<h3 id="problem_i_dont_want_to_specify_all_of_my_dependencies">Problem: I don&#8217;t want to specify all of my dependencies!</h3>
+<div class="paragraph">
+<p>Spring Boot solution is a two-part solution:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Starters are a set of convenient dependency descriptors that you can include in your application. You get a one-stop-shop for all the Spring and related technology that you need without having to hunt through sample code and copy paste loads of dependency descriptors. For example, if you want to get started using Spring and JPA for database access just include the <code>spring-boot-starter-data-jpa</code> dependency in your project, and you are good to go.</p>
+</li>
+<li>
+<p>Provide a curated list of dependencies. In practice, you do not need to provide a version for any of these dependencies in your build configuration as Spring Boot is managing that for you. When you upgrade Spring Boot itself, these dependencies will be upgraded as well in a consistent way. The dependencies versions are known to works together in a seamless way.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s inspect the dependencies on the Getting Started example by running the command <code>mvn dependency:tree</code>. We get the following output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>fr.imlovinit:spring-boot-demo:jar:0.0.1-SNAPSHOT
+ \- org.springframework.boot:spring-boot-starter-web:jar:1.3.3.RELEASE
+    +- org.springframework.boot:spring-boot-starter:jar:1.3.3.RELEASE
+    |  +- org.springframework.boot:spring-boot:jar:1.3.3.RELEASE
+    |  +- org.springframework.boot:spring-boot-autoconfigure:jar:1.3.3.RELEASE
+    |  +- org.springframework.boot:spring-boot-starter-logging:jar:1.3.3.RELEASE
+    |  |  +- ch.qos.logback:logback-classic:jar:1.1.5
+    |  |  |  +- ch.qos.logback:logback-core:jar:1.1.5
+    |  |  |  \- org.slf4j:slf4j-api:jar:1.7.16
+    |  |  +- org.slf4j:jcl-over-slf4j:jar:1.7.16
+    |  |  +- org.slf4j:jul-to-slf4j:jar:1.7.16
+    |  |  \- org.slf4j:log4j-over-slf4j:jar:1.7.16
+    |  +- org.springframework:spring-core:jar:4.2.5.RELEASE
+    |  \- org.yaml:snakeyaml:jar:1.16
+    +- org.springframework.boot:spring-boot-starter-tomcat:jar:1.3.3.RELEASE
+    |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.0.32
+    |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.0.32
+    |  +- org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:8.0.32
+    |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.0.32
+    +- org.springframework.boot:spring-boot-starter-validation:jar:1.3.3.RELEASE
+    |  \- org.hibernate:hibernate-validator:jar:5.2.4.Final
+    |     +- javax.validation:validation-api:jar:1.1.0.Final
+    |     +- org.jboss.logging:jboss-logging:jar:3.3.0.Final
+    |     \- com.fasterxml:classmate:jar:1.1.0
+    +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.5
+    |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.5
+    |  \- com.fasterxml.jackson.core:jackson-core:jar:2.6.5
+    +- org.springframework:spring-web:jar:4.2.5.RELEASE
+    |  +- org.springframework:spring-aop:jar:4.2.5.RELEASE
+    |  |  \- aopalliance:aopalliance:jar:1.0
+    |  +- org.springframework:spring-beans:jar:4.2.5.RELEASE
+    |  \- org.springframework:spring-context:jar:4.2.5.RELEASE
+    \- org.springframework:spring-webmvc:jar:4.2.5.RELEASE
+       \- org.springframework:spring-expression:jar:4.2.5.RELEASE</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All of these dependencies are inherited from the dependency <code>org.springframework.boot:spring-boot-starter-web</code> present in our <code>pom.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;project</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/POM/4.0.0</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+<span class="content">http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>`
+
+    <span class="tag">&lt;modelVersion&gt;</span>4.0.0<span class="tag">&lt;/modelVersion&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>fr.imlovinit<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-demo<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+
+    <span class="tag">&lt;parent&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;/parent&gt;</span>
+
+    <span class="tag">&lt;dependencies&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+    <span class="tag">&lt;/dependencies&gt;</span>
+
+    <span class="tag">&lt;properties&gt;</span>
+        <span class="tag">&lt;java.version&gt;</span>1.8<span class="tag">&lt;/java.version&gt;</span>
+    <span class="tag">&lt;/properties&gt;</span>
+
+    <span class="tag">&lt;build&gt;</span>
+        <span class="tag">&lt;plugins&gt;</span>
+            <span class="tag">&lt;plugin&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;/plugin&gt;</span>
+        <span class="tag">&lt;/plugins&gt;</span>
+    <span class="tag">&lt;/build&gt;</span>
+
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The POM is concise but we could notice we have 3 dependencies on Spring Boot :
+- We inherit from a parent pom <code>spring-boot-starter-parent</code>
+- We depend on the starter <code>spring-boot-starter-web</code>
+- We configure a Maven plugin <code>spring-boot-maven-plugin</code></p>
+</div>
+<div class="paragraph">
+<p>We should analyze each of these components to understand what they are doing exactly.</p>
+</div>
+<div class="sect3">
+<h4 id="the_parent_pom">The parent POM.</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;parent&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/parent&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This <a href="https://github.com/spring-projects/spring-boot/tree/v1.3.3.RELEASE/spring-boot-starters/spring-boot-starter-parent">project</a> is a Maven project of type pom. The only file present is the <code>pom.xml</code>. Here is a simplified version:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;project</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/POM/4.0.0</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+<span class="content">http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;modelVersion&gt;</span>4.0.0<span class="tag">&lt;/modelVersion&gt;</span>
+    <span class="tag">&lt;parent&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;/parent&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;packaging&gt;</span>pom<span class="tag">&lt;/packaging&gt;</span>
+    <span class="tag">&lt;name&gt;</span>Spring Boot Starter Parent<span class="tag">&lt;/name&gt;</span>
+    <span class="tag">&lt;dependencyManagement&gt;</span>
+        <span class="tag">&lt;dependencies&gt;</span>
+            <span class="tag">&lt;dependency&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-core<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>${spring.version}<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;/dependencies&gt;</span>
+    <span class="tag">&lt;/dependencyManagement&gt;</span>
+    <span class="tag">&lt;build&gt;</span>
+        <span class="tag">&lt;pluginManagement&gt;</span>
+            <span class="tag">&lt;plugins&gt;</span>
+                <span class="tag">&lt;plugin&gt;</span>
+                    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                    <span class="tag">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+                    <span class="tag">&lt;version&gt;</span>${spring-boot.version}<span class="tag">&lt;/version&gt;</span>
+                    <span class="tag">&lt;executions&gt;</span>
+                        <span class="tag">&lt;execution&gt;</span>
+                            <span class="tag">&lt;goals&gt;</span>
+                                <span class="tag">&lt;goal&gt;</span>repackage<span class="tag">&lt;/goal&gt;</span>
+                            <span class="tag">&lt;/goals&gt;</span>
+                        <span class="tag">&lt;/execution&gt;</span>
+                    <span class="tag">&lt;/executions&gt;</span>
+                    <span class="tag">&lt;configuration&gt;</span>
+                        <span class="tag">&lt;mainClass&gt;</span>${start-class}<span class="tag">&lt;/mainClass&gt;</span>
+                    <span class="tag">&lt;/configuration&gt;</span>
+                <span class="tag">&lt;/plugin&gt;</span>
+            <span class="tag">&lt;/plugins&gt;</span>
+        <span class="tag">&lt;/pluginManagement&gt;</span>
+    <span class="tag">&lt;/build&gt;</span>
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The full source includes other Maven plugins to package a WAR (useful to deploy on a standalone server), to run the project directly from Maven (<code>maven-exec-plugin</code>), to include information about the last Git commit (<code>git-commit-id-plugin</code>), or an alternative to the <code>spring-boot-maven-plugin</code> based on the <code>maven-shade-plugin</code>.</p>
+</div>
+<div class="paragraph">
+<p>This pom is mainly used to declare the version of the Spring Framework and the version of the Spring Boot Maven Plugin (the subject of the last part of this post). We notice another parent pom but be assured, this is the last pom of the hierarchy:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;parent&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/parent&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The project <code>spring-boot-dependencies</code> is also a project of type pom. This project aims to centralize all of the <a href="http://docs.spring.io/spring-boot/docs/1.3.3.RELEASE/reference/html/appendix-dependency-versions.html">dependency versions that are provided by Spring Boot</a>. This represents more than 400 dependencies (and more than 2000 lines of code!). Here is a shortened version, adapted for our <strong>Hello World</strong> project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;project</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/POM/4.0.0</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+<span class="content">http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;modelVersion&gt;</span>4.0.0<span class="tag">&lt;/modelVersion&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;packaging&gt;</span>pom<span class="tag">&lt;/packaging&gt;</span>
+    <span class="tag">&lt;name&gt;</span>Spring Boot Dependencies<span class="tag">&lt;/name&gt;</span>
+    <span class="tag">&lt;properties&gt;</span>
+        <span class="comment">&lt;!-- Inherited from spring-boot-dependencies --&gt;</span>
+        <span class="tag">&lt;spring-boot.version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/spring-boot.version&gt;</span>
+        <span class="tag">&lt;jersey.version&gt;</span>2.22.2<span class="tag">&lt;/jersey.version&gt;</span>
+        <span class="tag">&lt;logback.version&gt;</span>1.1.5<span class="tag">&lt;/logback.version&gt;</span>
+        <span class="tag">&lt;slf4j.version&gt;</span>1.7.16<span class="tag">&lt;/slf4j.version&gt;</span>
+        <span class="tag">&lt;spring.version&gt;</span>4.2.5.RELEASE<span class="tag">&lt;/spring.version&gt;</span>
+        <span class="comment">&lt;!-- And 400 others dependencies... --&gt;</span>
+    <span class="tag">&lt;/properties&gt;</span>
+    <span class="tag">&lt;prerequisites&gt;</span>
+        <span class="tag">&lt;maven&gt;</span>3.2.1<span class="tag">&lt;/maven&gt;</span>
+    <span class="tag">&lt;/prerequisites&gt;</span>
+    <span class="tag">&lt;dependencyManagement&gt;</span>
+        <span class="tag">&lt;dependencies&gt;</span>
+            <span class="comment">&lt;!-- Spring Boot --&gt;</span>
+            <span class="tag">&lt;dependency&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-boot<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;/dependency&gt;</span>
+            <span class="tag">&lt;dependency&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+                <span class="tag">&lt;exclusions&gt;</span>
+                    <span class="tag">&lt;exclusion&gt;</span>
+                        <span class="tag">&lt;groupId&gt;</span>commons-logging<span class="tag">&lt;/groupId&gt;</span>
+                        <span class="tag">&lt;artifactId&gt;</span>commons-logging<span class="tag">&lt;/artifactId&gt;</span>
+                    <span class="tag">&lt;/exclusion&gt;</span>
+                <span class="tag">&lt;/exclusions&gt;</span>
+            <span class="tag">&lt;/dependency&gt;</span>
+            <span class="tag">&lt;dependency&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;/dependency&gt;</span>
+            <span class="comment">&lt;!-- Third Party --&gt;</span>
+            <span class="tag">&lt;dependency&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>ch.qos.logback<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>logback-classic<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>${logback.version}<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;/dependency&gt;</span>
+            <span class="comment">&lt;!-- Spring Framework --&gt;</span>
+            <span class="tag">&lt;dependency&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.springframework<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-core<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>${spring.version}<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;/dependency&gt;</span>
+            <span class="comment">&lt;!-- 400 others dependencies... --&gt;</span>
+        <span class="tag">&lt;/dependencies&gt;</span>
+    <span class="tag">&lt;/dependencyManagement&gt;</span>
+    <span class="tag">&lt;build&gt;</span>
+        <span class="tag">&lt;pluginManagement&gt;</span>
+            <span class="tag">&lt;plugins&gt;</span>
+                <span class="tag">&lt;plugin&gt;</span>
+                    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+                    <span class="tag">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+                    <span class="tag">&lt;version&gt;</span>${spring-boot.version}<span class="tag">&lt;/version&gt;</span>
+                <span class="tag">&lt;/plugin&gt;</span>
+                <span class="tag">&lt;plugin&gt;</span>
+                    <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
+                    <span class="tag">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="tag">&lt;/artifactId&gt;</span>
+                    <span class="tag">&lt;version&gt;</span>3.1<span class="tag">&lt;/version&gt;</span>
+                <span class="tag">&lt;/plugin&gt;</span>
+            <span class="tag">&lt;/plugins&gt;</span>
+        <span class="tag">&lt;/pluginManagement&gt;</span>
+    <span class="tag">&lt;/build&gt;</span>
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These dependencies are declared in the <code>&lt;dependencyManagement&gt;</code> and <code>&lt;pluginManagement&gt;</code> sections, so no dependency is directly inherited when using this parent POM. This only save you from specifying the version when declaring a dependency in a <code>&lt;dependencies&gt;</code> section, a good start to solve the <a href="https://en.wikipedia.org/wiki/Dependency_hell">dependency hell</a>.</p>
+</div>
+<div class="paragraph">
+<p>Now that we know how the version of dependencies is determined, we should find who is behind these dependencies. Given the output of the previous Maven dependency tree, we know the starters are responsible from these dependencies. But what is a exactly a Starter?</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the_starters">The Starters</h4>
+<div class="paragraph">
+<p>According the official documentation, Spring Boot Starters are a set of convenient dependency descriptors that you can include in your application. In our sample, we want to create a web application, so, we just include the <code>spring-boot-starter-web</code> dependency in our project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The structure of a starter respects the following organization:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring-boot-starter-web
+ +- src/main/resources/META-INF
+ |  \+ spring.provides
+ \+ pom.xml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all. Just one <code>pom.xml</code> (the file <code>spring.provides</code> could be ignored for now). So, let&#8217;s see what contains this <code>pom.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;project</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/POM/4.0.0</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+<span class="content">http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;modelVersion&gt;</span>4.0.0<span class="tag">&lt;/modelVersion&gt;</span>
+    <span class="tag">&lt;parent&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>spring-boot-starters<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>1.3.3.RELEASE<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;/parent&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;name&gt;</span>Spring Boot Web Starter<span class="tag">&lt;/name&gt;</span>
+    <span class="tag">&lt;dependencies&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-validation<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>jackson-databind<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-web<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-webmvc<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+    <span class="tag">&lt;/dependencies&gt;</span>
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We finally find where our dependencies comes from. A starter exploit the <code>&lt;dependencyManagement&gt;</code> section defined previously to omit the version of the artifacts. We also see that a starter could reference other starters to inherit its dependencies transitively. For example, the starter Web depends on the starter Tomcat.</p>
+</div>
+<div class="paragraph">
+<p>The dependency <code>org.springframework.boot:spring-boot-starter</code> is important. All starters depends on it because this is the dependency who load the core Spring Boot dependency (presented in the following part), containing in particular the annotation <code>@SpringBootApplication</code> we used on our main class <code>Application</code>.</p>
+</div>
+<div class="paragraph">
+<p>So, the combination of the Parent POM and the Starters give us all the dependencies we need to write and compiles your application. But what happens when I run my application?</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="part_2_running_your_spring_boot_application">Part 2: Running your Spring Boot Application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In its most basic form, a Spring Application is a simple class annotated with the <code>@SpringBootApplication</code> annotation and declaring a simple main method like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.context.ApplicationContext</span>;
+
+<span class="annotation">@SpringBootApplication</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Application</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Behind this simple API lies the most complex module of the framework, the Spring Boot core module, where the true magic happens: the Auto-configuration feature!</p>
+</div>
+<div class="sect2">
+<h3 id="problem_i_dont_want_to_declare_boilerplate_beans_like_infrastructure_components">Problem: I don&#8217;t want to declare boilerplate beans like infrastructure components!</h3>
+<div class="paragraph">
+<p>Let&#8217;s take the example of Spring MVC. Before writing our controllers, some required beans should be defined first:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.web.servlet.ViewResolver</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.servlet.config.annotation.EnableWebMvc</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.servlet.view.InternalResourceViewResolver</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.servlet.view.JstlView</span>;
+
+<span class="annotation">@Configuration</span>
+<span class="annotation">@EnableWebMvc</span>
+<span class="annotation">@ComponentScan</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloWorldConfiguration</span> {
+
+    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver =
+            <span class="keyword">new</span> InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix(<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/views/</span><span class="delimiter">&quot;</span></span>);
+        viewResolver.setSuffix(<span class="string"><span class="delimiter">&quot;</span><span class="content">.jsp</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> viewResolver;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code is concise thanks to the <code>@EnableWebMvc</code> annotation, who defines a instance of <code>RequestMappingHandlerMapping</code>, a list of <code>HttpMessageConverter</code> converters and many other beans. Before Spring Boot, this annotation was a great time-saver.</p>
+</div>
+<div class="paragraph">
+<p>The last thing we need to to is register the Spring MVC servlet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="keyword">import</span> <span class="include">javax.servlet</span>.*;
+
+<span class="keyword">import</span> <span class="include">o.s.web.WebApplicationInitializer</span>;
+<span class="keyword">import</span> <span class="include">o.s.web.context.support.AnnotationConfigWebApplicationContext</span>;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.DispatcherServlet</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloWorldInitializer</span> <span class="directive">implements</span> WebApplicationInitializer {
+
+    <span class="directive">public</span> <span class="type">void</span> onStartup(ServletContext container) <span class="directive">throws</span> ServletException {
+
+        AnnotationConfigWebApplicationContext ctx =
+            <span class="keyword">new</span> AnnotationConfigWebApplicationContext();
+        ctx.register(HelloWorldConfiguration.class);
+        ctx.setServletContext(container);
+
+        ServletRegistration.Dynamic servlet =
+            container.addServlet(<span class="string"><span class="delimiter">&quot;</span><span class="content">dispatcher</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> DispatcherServlet(ctx));
+
+        servlet.setLoadOnStartup(<span class="integer">1</span>);
+        servlet.addMapping(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An instance of <code>AnnotationConfigWebApplicationContext</code> is created. This class is looking for Spring configuration in classes annotated with the <code>@Configuration</code> annotation. We help it by providing our configuration class directly with the method <code>register</code> before setting the <code>ServletContext</code> to link the <code>WebApplicationContext</code> to the lifecycle of <code>ServletContext</code>.
+<code>DispatcherServlet</code> is then created, initialized, mapped to <code>"/*"</code> and configured to run at application startup. This configuration does what we used to do into the common <code>web.xml</code> file.</p>
+</div>
+<div class="paragraph">
+<p>This basic example illustrates perfectly what we have to do each time we add a new Spring module or a new library to our classpath. Just boring!</p>
+</div>
+<div class="paragraph">
+<p>How could we do to reduce this configuration to nothing?</p>
+</div>
+<div class="paragraph">
+<p>The first step is to define reusable <code>Configuration</code> classes that could be easily imported inside our application.</p>
+</div>
+<div class="paragraph">
+<p>If we look inside the source of the module <a href="https://github.com/spring-projects/spring-boot/tree/v1.3.3.RELEASE/spring-boot-autoconfigure">Spring Boot Autoconfigure</a>, we find one packages for each Spring modules (batch, mvc, integration, &#8230;&#8203;) or supported technology (flyway, hazelcast, cassandra, &#8230;&#8203;) containing dozens of these <code>Configuration</code> classes. The content is very similar to the class we previously wrote:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.web</span>;
+
+<span class="keyword">import</span> <span class="include">o.s.context.annotation</span>.*;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.config.annotation.DelegatingWebMvcConfiguration</span>;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.config.annotation.EnableWebMvc</span>;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.view.InternalResourceViewResolver</span>;
+
+<span class="annotation">@Configuration</span>
+<span class="annotation">@Import</span>(EnableWebMvcConfiguration.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WebMvcAutoConfiguration</span> <span class="directive">extends</span> WebMvcConfigurerAdapter {
+
+    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> InternalResourceViewResolver defaultViewResolver() {
+        InternalResourceViewResolver resolver =
+            <span class="keyword">new</span> InternalResourceViewResolver();
+        resolver.setPrefix(<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/</span><span class="delimiter">&quot;</span></span>);
+        resolver.setSuffix(<span class="string"><span class="delimiter">&quot;</span><span class="content">.jsp</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> resolver;
+    }
+
+    <span class="comment">/**
+     * Configuration equivalent to {@code @EnableWebMvc}.
+     */</span>
+    <span class="annotation">@Configuration</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EnableWebMvcConfiguration</span>
+            <span class="directive">extends</span> DelegatingWebMvcConfiguration {
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use these classes, we just need to add the import declaration like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.context.ApplicationContext</span>;
+
+<span class="annotation">@Import</span>(WebMvcAutoConfiguration.class)
+<span class="annotation">@SpringBootApplication</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Application</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="problem_i_dont_want_to_import_spring_specific_configuration_classes_i_even_do_not_know_about_them">Problem: I don&#8217;t want to <code>@Import</code> Spring specific <code>Configuration</code> classes. I even do not know about them!</h3>
+<div class="paragraph">
+<p>The obvious approach is for Spring Boot to automatically load all the classes. This is what Spring Boot does internally but don&#8217;t panic, not all beans definitions will be loaded (we will talk about conditional beans in the next section).</p>
+</div>
+<div class="paragraph">
+<p>To avoid having a hundred of <code>@Import</code> declarations, Spring Boot exploits a particularity of this annotating. <code>@Import</code> allows as value an implementation of <code>ImportSelector</code>. The declaration of the <code>ImportSelector</code> interface follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.context.annotation</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">ImportSelector</span> {
+
+    <span class="comment">/**
+     * Select and return the names of which class(es) should be imported
+     * based on the {@link AnnotationMetadata} of
+     * the importing @{@link Configuration} class.
+     */</span>
+    <span class="predefined-type">String</span><span class="type">[]</span> selectImports(AnnotationMetadata importingClassMetadata);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this interface, we could easily load a set of <code>@Configuration</code> classes but we still don&#8217;t know how to find them.</p>
+</div>
+<div class="paragraph">
+<p>The solution adopted by Spring Boot is to reuse a Spring Core properties files named <code>spring.factories</code> present under the META-INF folder. Spring Boot add a new property <code>org.springframework.boot.autoconfigure.EnableAutoConfiguration</code>. Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">o.s.boot.autoconfigure.EnableAutoConfiguration=\
+o.s.boot.autoconfigure.web.DispatcherServletAutoConfiguration,\
+o.s.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration,\
+o.s.boot.autoconfigure.web.WebMvcAutoConfiguration, \
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The file lists the configuration classes under the EnableAutoConfiguration key.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+We still have not finished to cover Spring Boot but you already know how create your <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-custom-starter">own starter</a>. Just create a <code>Configuration</code> class and provide a spring.factories file to make your class a candidate to autoloading. That&#8217;s all!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The class <code>EnableAutoConfigurationImportSelector</code> searches across the classpath and loads theses files and registers the classes in the application context. This class implements <code>ImportSelector</code> to be used with the <code>@Import</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure</span>;
+
+<span class="keyword">import</span> <span class="include">java.io</span>.*;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.BeanClassLoaderAware</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.ImportSelector</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.core.io.support.SpringFactoriesLoader</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.core.type.AnnotationMetadata</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EnableAutoConfigurationImportSelector</span>
+        <span class="directive">implements</span> ImportSelector, BeanClassLoaderAware {
+
+    <span class="directive">private</span> <span class="predefined-type">ClassLoader</span> beanClassLoader;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">String</span><span class="type">[]</span> selectImports(AnnotationMetadata metadata) {
+        <span class="keyword">try</span> {
+            <span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt; configurations = getCandidateConfigurations();
+            <span class="keyword">return</span> configurations.toArray(<span class="keyword">new</span> <span class="predefined-type">String</span>[configurations.size()]);
+        }
+        <span class="keyword">catch</span> (<span class="exception">IOException</span> ex) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalStateException</span>(ex);
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt; getCandidateConfigurations() {
+        <span class="keyword">return</span> SpringFactoriesLoader.loadFactoryNames(
+                EnableAutoConfiguration.class, getBeanClassLoader());
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> setBeanClassLoader(<span class="predefined-type">ClassLoader</span> classLoader) {
+        <span class="local-variable">this</span>.beanClassLoader = classLoader;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The class <code>SpringFactoriesLoader</code> is a wrapper around the <code>spring.factories</code> file and provides a method to extract a property value from a Class object. The fully qualified name of the given class is used as the property name. Note: This class is provided by Spring Core and is not Spring Boot specific.</p>
+</div>
+<div class="paragraph">
+<p>Wait a minute. Does it means that all the beans (Flyway, Spring Integration, &#8230;&#8203;) will be loaded even If I do not use the related projects? Let&#8217;s reconsider the Spring MVC autoconfiguration class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.web</span>;
+
+<span class="keyword">import</span> <span class="include">o.s.context.annotation</span>.*;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.config.annotation.DelegatingWebMvcConfiguration</span>;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.config.annotation.EnableWebMvc</span>;
+<span class="keyword">import</span> <span class="include">o.s.web.servlet.view.InternalResourceViewResolver</span>;
+
+<span class="annotation">@Configuration</span>
+<span class="annotation">@Import</span>(EnableWebMvcConfiguration.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WebMvcAutoConfiguration</span> <span class="directive">extends</span> WebMvcConfigurerAdapter {
+
+    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> InternalResourceViewResolver defaultViewResolver() {
+        InternalResourceViewResolver resolver =
+            <span class="keyword">new</span> InternalResourceViewResolver();
+        resolver.setPrefix(<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/</span><span class="delimiter">&quot;</span></span>);
+        resolver.setSuffix(<span class="string"><span class="delimiter">&quot;</span><span class="content">.jsp</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> resolver;
+    }
+
+    <span class="comment">/**
+     * Configuration equivalent to {@code @EnableWebMvc}.
+     */</span>
+    <span class="annotation">@Configuration</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EnableWebMvcConfiguration</span>
+            <span class="directive">extends</span> DelegatingWebMvcConfiguration {
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The class <code>WebMvcConfigurerAdapter</code> is directly referenced by our configuration class. This class is defined by the Spring MVC project and as we have seen in the first part of this article, this dependency is inherited when using the Spring Boot Starter Web.</p>
+</div>
+<div class="paragraph">
+<p>Imagine for a moment that you are writing a command-line application. We do not have the starter web in your dependencies. At startup, if Spring Boot load the <code>WebMvcAutoConfiguration</code> class (and we just saw it does), the JVM will crash with a <code>NoClassDefFoundError</code> because the superclass <code>WebMvcConfigurerAdapter</code> is not in our classpath. So, how does Spring Boot to avoid this error?</p>
+</div>
+<div class="paragraph">
+<p>Here is the solution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.web</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.condition.ConditionalOnClass</span>;
+...
+
+<span class="annotation">@Configuration</span>
+<span class="annotation">@ConditionalOnClass</span>({ DispatcherServlet.class, WebMvcConfigurerAdapter.class })
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WebMvcAutoConfiguration</span> {
+
+    <span class="annotation">@Configuration</span>
+    <span class="annotation">@Import</span>(EnableWebMvcConfiguration.class)
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">WebMvcAutoConfigurationAdapter</span>
+            <span class="directive">extends</span> WebMvcConfigurerAdapter {
+
+        <span class="annotation">@Bean</span>
+        <span class="directive">public</span> InternalResourceViewResolver defaultViewResolver() {
+            InternalResourceViewResolver resolver =
+                <span class="keyword">new</span> InternalResourceViewResolver();
+            resolver.setPrefix(<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/</span><span class="delimiter">&quot;</span></span>);
+            resolver.setSuffix(<span class="string"><span class="delimiter">&quot;</span><span class="content">.jsp</span><span class="delimiter">&quot;</span></span>);
+            <span class="keyword">return</span> resolver;
+        }
+
+    }
+
+    <span class="annotation">@Configuration</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EnableWebMvcConfiguration</span>
+            <span class="directive">extends</span> DelegatingWebMvcConfiguration {
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Did you spot the difference with the previous definition of this class? The solution is a two-part solution.</p>
+</div>
+<div class="paragraph">
+<p>First, we arrange to not have any external dependencies on the outer class definition. As a configuration class could contain other inner configuration classes, the dependency on Spring MVC could be easily pushed down in an inner class. For now, this is a noop operation.</p>
+</div>
+<div class="paragraph">
+<p>Second, we use a new feature in Spring 4, the <code>@Conditional</code> annotation. This annotation indicates that a component is only eligible for registration when all specified conditions match. Otherwise, the component will not be registered and inner classes will never be loaded by the class loader. In this way, no <code>NoClassDefFoundError</code> will be thrown when Spring MVC is not on the classpath.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The inner class technique is only required when extending a third-party library. When defining beans, the <code>@Conditional</code> is enough:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.cassandra</span>;
+
+<span class="keyword">import</span> <span class="include">com.datastax.driver.core.Cluster</span>;
+
+<span class="annotation">@Configuration</span>
+<span class="annotation">@ConditionalOnClass</span>({ Cluster.class })
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CassandraAutoConfiguration</span> {
+
+    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> Cluster cluster() {
+        <span class="keyword">return</span> ...:
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While the method <code>cluster</code> is not called, no error is thrown by the JVM. This is the role of the annotation <code>@ConditionalOnClass</code> to prevent the method from being called. This annotation is provided by Spring Boot but rely heavily on the mechanism provided by Spring Core. Here is its declaration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.condition</span>;
+
+<span class="annotation">@Target</span>({ <span class="predefined-type">ElementType</span>.TYPE, <span class="predefined-type">ElementType</span>.METHOD })
+<span class="annotation">@Retention</span>(<span class="predefined-type">RetentionPolicy</span>.RUNTIME)
+<span class="annotation">@Documented</span>
+<span class="annotation">@Conditional</span>(OnClassCondition.class)
+<span class="directive">public</span> <span class="annotation">@interface</span> ConditionalOnClass {
+
+    <span class="predefined-type">Class</span>&lt;?&gt;<span class="type">[]</span> value() <span class="keyword">default</span> {};
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>ConditionalOnClass</code> is annotated with the Spring Core <code>Conditional</code> annotation whose only required attribute is a reference to an implementation of the <code>org.springframework.context.annotation.Condition</code> class. Here is the implementation of the class <code>OnClassCondition</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.condition</span>;
+
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Condition</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.ConditionContext</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.core.type.AnnotatedTypeMetadata</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.ClassUtils</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.MultiValueMap</span>;
+
+<span class="type">class</span> <span class="class">OnClassCondition</span> <span class="directive">implements</span> <span class="predefined-type">Condition</span> {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">final</span> <span class="type">boolean</span> matches(ConditionContext context,
+            AnnotatedTypeMetadata metadata) {
+        MultiValueMap&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; onClasses = getAttributes(metadata,
+                ConditionalOnClass.class);
+        <span class="keyword">return</span> matches(onClasses, context);
+    }
+
+    <span class="directive">private</span> MultiValueMap&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; getAttributes(
+                AnnotatedTypeMetadata metadata,
+                <span class="predefined-type">Class</span>&lt;?&gt; annotationType) {
+        <span class="keyword">return</span> metadata.getAllAnnotationAttributes(
+            annotationType.getName(), <span class="predefined-constant">true</span>);
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> matches(MultiValueMap&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; attributes,
+            ConditionContext context) {
+        <span class="keyword">for</span> (<span class="predefined-type">Object</span> classObject : attributes.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>)) {
+            <span class="predefined-type">String</span> className = (<span class="predefined-type">String</span>) classObject;
+            <span class="keyword">if</span> (!ClassUtils.isPresent(className, context.getClassLoader())) {
+                <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+            }
+        }
+        <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A new instance of this class will be created for each class annotated with <code>@ConditionalOnClass</code>. Internally, we use the class <code>AnnotatedTypeMetadata</code> provided by Spring Core to access to the annotations of a specific type in a form that does not necessarily require the class-loading. This behavior explains why extending a missing class is problematic but referencing a missing class inside this annotation is not:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Configuration</span>
+<span class="annotation">@ConditionalOnClass</span>({ WebMvcConfigurerAdapter.class }) <span class="comment">// OK.</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WebMvcAutoConfiguration</span> <span class="directive">extends</span> WebMvcConfigurerAdapter { <span class="comment">// KO</span>
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before going to the next problem, let&#8217;s add a little syntactic sugar with the <code>@EnableAutoConfiguration</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure</span>;
+
+<span class="keyword">import</span> <span class="include">java.lang.annotation</span>.*;
+
+<span class="annotation">@Target</span>(<span class="predefined-type">ElementType</span>.TYPE)
+<span class="annotation">@Retention</span>(<span class="predefined-type">RetentionPolicy</span>.RUNTIME)
+<span class="annotation">@Documented</span>
+<span class="annotation">@Inherited</span>
+<span class="annotation">@Import</span>(EnableAutoConfigurationImportSelector.class)
+<span class="directive">public</span> <span class="annotation">@interface</span> EnableAutoConfiguration {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this annotation, users don&#8217;t need to import the <code>EnableAutoConfigurationImportSelector</code> class to load all the configuration classes. We can go further and create the <code>@SpringBootApplication</code> annotation whose definition follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure</span>;
+
+<span class="keyword">import</span> <span class="include">java.lang.annotation</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation</span>.*;
+
+<span class="annotation">@Target</span>(<span class="predefined-type">ElementType</span>.TYPE)
+<span class="annotation">@Retention</span>(<span class="predefined-type">RetentionPolicy</span>.RUNTIME)
+<span class="annotation">@Documented</span>
+<span class="annotation">@Inherited</span>
+<span class="annotation">@Configuration</span>
+<span class="annotation">@EnableAutoConfiguration</span>
+<span class="annotation">@ComponentScan</span>
+<span class="directive">public</span> <span class="annotation">@interface</span> SpringBootApplication {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>@SpringBootApplication</code> is an example of composed annotation, an annotation whose role is to aggregate multiple annotations to provide a more convenient API for the user. Here, we combine the auto-configuration annotation we just defined before, the <code>@ComponentScan</code> to load user bean definitions and the <code>@Configuration</code> to allow the user to define beans directly in the class annotated by <code>@SpringBootApplication</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="problem_sometimes_i_need_to_override_auto_configured_bean_definitions">Problem: Sometimes I need to override auto-configured bean definitions?</h3>
+<div class="paragraph">
+<p>Spring Boot tries to apply common defaults when defining beans but sooner or later, you need to tune this configuration. The good news is it is really easy to do: just defining a bean of the same type (or sometimes of the same name) in your configuration is enough for Spring Boot to detect it and not register its own bean.</p>
+</div>
+<div class="paragraph">
+<p>Spring Boot module makes heavy use of <code>@Conditional</code> annotation. We already saw the <code>@ConditionalOnClass</code> annotation. The other most used annotation is the <code>@ConditionalOnMissingBean</code> annotation, that only matches when the specified bean classes and/or names are not already contained in the <code>BeanFactory</code>. Rather than see the implementation of this annotation that is very close to the implementation of the <code>OnClassCondition</code> class, let&#8217;s look at its use in the <code>WebMvcAutoConfiguration</code> class again:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Configuration</span>
+<span class="annotation">@ConditionalOnClass</span>({
+    Servlet.class,
+    DispatcherServlet.class,
+    WebMvcConfigurerAdapter.class
+})
+<span class="annotation">@ConditionalOnMissingBean</span>(WebMvcConfigurationSupport.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WebMvcAutoConfiguration</span> {
+
+    <span class="annotation">@Configuration</span>
+    <span class="annotation">@Import</span>(EnableWebMvcConfiguration.class)
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">WebMvcAutoConfigurationAdapter</span>
+            <span class="directive">extends</span> WebMvcConfigurerAdapter {
+
+        <span class="annotation">@Bean</span>
+        <span class="annotation">@ConditionalOnMissingBean</span>
+        <span class="directive">public</span> InternalResourceViewResolver defaultViewResolver() {
+            <span class="comment">// same as before</span>
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this class declaration, we have two possibilities if the default configuration does not fit your needs. We could simply define a bean of type <code>InternalResourceViewResolver</code>, for example in our main class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="annotation">@SpringBootApplication</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Application</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> InternalResourceViewResolver viewResolver() {
+        InternalResourceViewResolver resolver =
+            <span class="keyword">new</span> InternalResourceViewResolver();
+        resolver.setPrefix(<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/myfolder/</span><span class="delimiter">&quot;</span></span>);
+        resolver.setSuffix(<span class="string"><span class="delimiter">&quot;</span><span class="content">.view</span><span class="delimiter">&quot;</span></span>);
+        <span class="keyword">return</span> resolver;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The second solution is to completely override the Spring MVC definition by extending from <code>WebMvcConfigurationSupport</code> (see the <code>@ConditionalOnMissingBean(WebMvcConfigurationSupport.class</code> on the class declaration).</p>
+</div>
+<div class="paragraph">
+<p>However, one thing still needs to be resolved. How to be sure our configuration class will be considered before the condition on the missing bean is executed. Indeed, if the condition on the <code>defaultViewResolver</code> method is executed before our class is loaded, there will be not existing bean and the instance of <code>ViewResolver</code> will be created. That will result in two beans of the same type in the final application context.</p>
+</div>
+<div class="paragraph">
+<p>Once again, we will use a feature of Spring Core to help us. When we created the <code>EnableAutoConfigurationImportSelector</code> class, the class responsible to load all auto-configuration classes, we inherited from the <code>ImportSelector</code> interface. Spring Core provides a variation that runs after all <code>@Configuration</code> beans have been processed. This type of selector is particularly useful when imports are <code>@Conditional</code> as with Spring Boot. This interface is <code>DeferredImportSelector</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">EnableAutoConfigurationImportSelector</span>
+       <span class="directive">implements</span> DeferredImportSelector,
+                  BeanClassLoaderAware{
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all there is to change! We now have finished implementing the auto-configuration, probably the most powerful feature of Spring Boot, but also the most obscure one.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="problem_i_want_to_start_my_web_application_from_a_simple_main_method">Problem: I want to start my web application from a simple Main method!</h3>
+<div class="paragraph">
+<p>Popular Web containers like Tomcat and Jetty all supports an embedded mode. This mode let us start a web application without having to install a standalone server before. This is really great for testing and Spring Boot decides to go further by deploying your application along an embedded server, a must for your microservices!</p>
+</div>
+<div class="paragraph">
+<p>This functionality is organized around the <code>EmbeddedServletContainer</code> abstraction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.context.embedded</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">EmbeddedServletContainer</span> {
+
+    <span class="type">void</span> start();
+
+    <span class="type">void</span> stop();
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To support multiple servers, Spring Boot creates another abstraction with the <code>EmbeddedServletContainerFactory</code> class. Its role is to instantiate an <code>EmbeddedServletContainer</code> (there exists an implementation for each supported server). Spring Boot uses the auto-configuration mechanism to retrieve the instance to use at startup. For example, if the tomcat jar is present in the classpath, the <code>TomcatEmbeddedServletContainerFactory</code> will be used to create the server instance. Here is the class responsible to instantiate the factory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.web</span>;
+
+<span class="keyword">import</span> <span class="include">org.apache.catalina.startup.Tomcat</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.jetty.server.Server</span>;
+<span class="keyword">import</span> <span class="include">io.undertow.Undertow</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.condition.ConditionalOnClass</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.context.embedded.tomcat</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.context.embedded.jetty</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.context.embedded.undertow</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation</span>.*;
+
+<span class="annotation">@Configuration</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EmbeddedServletContainerAutoConfiguration</span> {
+
+    <span class="comment">/**
+     * Nested configuration for if Tomcat is being used.
+     */</span>
+    <span class="annotation">@Configuration</span>
+    <span class="annotation">@ConditionalOnClass</span>({ Tomcat.class })
+    <span class="annotation">@ConditionalOnMissingBean</span>(value = EmbeddedServletContainerFactory.class)
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EmbeddedTomcat</span> {
+
+        <span class="annotation">@Bean</span>
+        <span class="directive">public</span> EmbeddedServletContainerFactory
+               tomcatEmbeddedServletContainerFactory() {
+            <span class="keyword">return</span> <span class="keyword">new</span> TomcatEmbeddedServletContainerFactory();
+        }
+
+    }
+
+    <span class="comment">/**
+     * Nested configuration if Jetty is being used.
+     */</span>
+    <span class="annotation">@Configuration</span>
+    <span class="annotation">@ConditionalOnClass</span>({ Server.class })
+    <span class="annotation">@ConditionalOnMissingBean</span>(value = EmbeddedServletContainerFactory.class)
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EmbeddedJetty</span> {
+
+        <span class="annotation">@Bean</span>
+        <span class="directive">public</span> EmbeddedServletContainerFactory
+               jettyEmbeddedServletContainerFactory() {
+            <span class="keyword">return</span> <span class="keyword">new</span> JettyEmbeddedServletContainerFactory();
+        }
+
+    }
+
+    <span class="comment">/**
+     * Nested configuration if Undertow is being used.
+     */</span>
+    <span class="annotation">@Configuration</span>
+    <span class="annotation">@ConditionalOnClass</span>({ Undertow.class })
+    <span class="annotation">@ConditionalOnMissingBean</span>(value = EmbeddedServletContainerFactory.class)
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">EmbeddedUndertow</span> {
+
+        <span class="annotation">@Bean</span>
+        <span class="directive">public</span> EmbeddedServletContainerFactory
+               undertowEmbeddedServletContainerFactory() {
+            <span class="keyword">return</span> <span class="keyword">new</span> UndertowEmbeddedServletContainerFactory();
+        }
+
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For this post, to keep it simple, we create directly an instance of <code>TomcatEmbeddedServletContainer</code>. Internally, this class uses the Tomcat API to start a new server, register web components like servlets and filters. We will not go into detail about the different properties. Please refer to the Tomcat documentation for more information.</p>
+</div>
+<div class="paragraph">
+<p>Here is the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.context.embedded.tomcat</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.File</span>;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">java.util.Collections</span>;
+
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletContainerInitializer</span>;
+
+<span class="keyword">import</span> <span class="include">org.apache.catalina</span>.*;
+<span class="keyword">import</span> <span class="include">org.apache.catalina.connector.Connector</span>;
+<span class="keyword">import</span> <span class="include">org.apache.catalina.core.StandardContext</span>;
+<span class="keyword">import</span> <span class="include">org.apache.catalina.loader.WebappLoader</span>;
+<span class="keyword">import</span> <span class="include">org.apache.catalina.startup.Tomcat</span>;
+<span class="keyword">import</span> <span class="include">org.apache.catalina.startup.Tomcat.FixContextListener</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.context.embedded.EmbeddedServletContainer</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.util.ClassUtils</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">TomcatEmbeddedServletContainer</span>
+        <span class="directive">implements</span> EmbeddedServletContainer {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> CONTEXT_PATH = <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">private</span> <span class="directive">static</span> <span class="type">int</span> PORT = <span class="integer">8080</span>;
+
+    <span class="directive">private</span> <span class="directive">final</span> Tomcat tomcat;
+
+    <span class="directive">public</span> TomcatEmbeddedServletContainer(
+            ServletContainerInitializer ... initializers) {
+        <span class="local-variable">this</span>.tomcat = createTomcat(initializers);
+        initialize();
+    }
+
+    <span class="directive">private</span> Tomcat createTomcat(ServletContainerInitializer ... initializers) {
+        Tomcat tomcat = <span class="keyword">new</span> Tomcat();
+        <span class="predefined-type">File</span> baseDir = createTempDir(<span class="string"><span class="delimiter">&quot;</span><span class="content">tomcat</span><span class="delimiter">&quot;</span></span>);
+        tomcat.setBaseDir(baseDir.getAbsolutePath());
+        Connector connector = <span class="keyword">new</span> Connector(
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">org.apache.coyote.http11.Http11NioProtocol</span><span class="delimiter">&quot;</span></span>);
+        connector.setPort(PORT);
+        connector.setURIEncoding(<span class="string"><span class="delimiter">&quot;</span><span class="content">UTF-8</span><span class="delimiter">&quot;</span></span>);
+        tomcat.getService().addConnector(connector);
+        tomcat.setConnector(connector);
+        tomcat.getHost().setAutoDeploy(<span class="predefined-constant">false</span>);
+        tomcat.getEngine().setBackgroundProcessorDelay(-<span class="integer">1</span>);
+        prepareContext(tomcat.getHost(), initializers);
+        <span class="keyword">return</span> tomcat;
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> prepareContext(Host host,
+                                ServletContainerInitializer<span class="type">[]</span> initializers) {
+        StandardContext context = <span class="keyword">new</span> StandardContext();
+        context.setName(CONTEXT_PATH);
+        context.setPath(CONTEXT_PATH);
+        context.addLifecycleListener(<span class="keyword">new</span> FixContextListener());
+        context.setParentClassLoader(ClassUtils.getDefaultClassLoader());
+        context.setUseRelativeRedirects(<span class="predefined-constant">false</span>);
+        context.setMapperContextRootRedirectEnabled(<span class="predefined-constant">true</span>);
+        context.setLoader(<span class="keyword">new</span> WebappLoader(context.getParentClassLoader()));
+        <span class="keyword">for</span> (ServletContainerInitializer initializer : initializers) {
+            context.addServletContainerInitializer(
+                initializer, <span class="predefined-type">Collections</span>.emptySet());
+        }
+        host.addChild(context);
+    }
+
+    <span class="directive">private</span> <span class="directive">synchronized</span> <span class="type">void</span> initialize() {
+        <span class="keyword">try</span> {
+            tomcat.start();
+        } <span class="keyword">catch</span> (LifecycleException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalStateException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to start Tomcat</span><span class="delimiter">&quot;</span></span>, e);
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> start(){
+        <span class="comment">// already started by initialize method()</span>
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="directive">synchronized</span> <span class="type">void</span> stop() {
+        <span class="keyword">try</span> {
+            <span class="local-variable">this</span>.tomcat.stop();
+            <span class="local-variable">this</span>.tomcat.destroy();
+        }
+        <span class="keyword">catch</span> (LifecycleException ex) {
+            <span class="comment">// swallow and continue</span>
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">File</span> createTempDir(<span class="predefined-type">String</span> prefix) {
+        <span class="keyword">try</span> {
+            <span class="predefined-type">File</span> tempDir = <span class="predefined-type">File</span>.createTempFile(prefix + <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span> + PORT);
+            tempDir.delete();
+            tempDir.mkdir();
+            tempDir.deleteOnExit();
+            <span class="keyword">return</span> tempDir;
+        } <span class="keyword">catch</span> (<span class="exception">IOException</span> ex) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalStateException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Unable to create tempDir</span><span class="delimiter">&quot;</span></span>, ex);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What&#8217;s interesting is that the constructor accept a variable list of <code>ServletContainerInitializer</code> instance. This interface allows a library/runtime to be notified of a web application&#8217;s startup phase and perform any required programmatic registration of servlets, filters, and listeners in response to it. This is exactly what we need to register the entry point of the Spring MVC framework, the <code>DispatcherServlet</code>. Let&#8217;s create another auto-configuration file to declare the Spring MVC servlet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.autoconfigure.web</span>;
+
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletContainerInitializer</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletContext</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletException</span>;
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletRegistration.Dynamic</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.boot.autoconfigure.condition.ConditionalOnClass</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Configuration</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.web.servlet.DispatcherServlet</span>;
+
+<span class="annotation">@Configuration</span>
+<span class="annotation">@ConditionalOnClass</span>(DispatcherServlet.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DispatcherServletAutoConfiguration</span> {
+
+    <span class="annotation">@Bean</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">dispatcherServlet</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> DispatcherServlet dispatcherServlet() {
+        <span class="keyword">return</span> <span class="keyword">new</span> DispatcherServlet();
+    }
+
+    <span class="annotation">@Bean</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">dispatcherServletRegistration</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">public</span> ServletContainerInitializer dispatcherServletRegistration() {
+        <span class="keyword">return</span> <span class="keyword">new</span> ServletContainerInitializer() {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> onStartup(<span class="predefined-type">Set</span>&lt;<span class="predefined-type">Class</span>&lt;?&gt;&gt; c, ServletContext ctx)
+                    <span class="directive">throws</span> ServletException {
+                Dynamic added = ctx.addServlet(
+                    <span class="string"><span class="delimiter">&quot;</span><span class="content">dispatcherServlet</span><span class="delimiter">&quot;</span></span>, dispatcherServlet());
+                added.addMapping(<span class="string"><span class="delimiter">&quot;</span><span class="content">/*</span><span class="delimiter">&quot;</span></span>);
+            }
+        };
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We define two beans: the <code>DispatcherServlet</code>, and an anonymous class implementing <code>ServletContainerInitializer</code>. This implementation retrieves the servlet and registers it in the <code>ServletContext</code> object passed in parameter to the <code>onStartup</code> method. We configure the servlet to intercept all URLs starting from the root path. This class will be injected into the constructor of the previous <code>TomcatEmbeddedServletContainer</code> class.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s recap! We have an instance of Tomcat, we know how to register a servlet, but there is still one thing that is missing but required for any Spring Application: an application context.</p>
+</div>
+<div class="paragraph">
+<p>The implementation to go when using Java Config is <code>AnnotationConfigWebApplicationContext</code>. But for Spring Boot, we need something more. We need to start a web server along the application context. To do this, Spring Boot decides to create a custom application context, <code>EmbeddedWebApplicationContext</code>, based on the superclass <code>GenericWebApplicationContext</code>, a subclass of <code>GenericApplicationContext</code>, suitable for web environments.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.context.embedded</span>;
+
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">javax.servlet</span>.*;
+<span class="keyword">import</span> <span class="include">o.s.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer</span>;
+<span class="keyword">import</span> <span class="include">o.s.context</span>.*;
+<span class="keyword">import</span> <span class="include">o.s.web.context</span>.*;
+<span class="keyword">import</span> <span class="include">o.s.web.context.support</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EmbeddedWebApplicationContext</span> <span class="directive">extends</span> GenericWebApplicationContext
+        <span class="directive">implements</span> ServletContainerInitializer {
+
+    <span class="directive">private</span> <span class="directive">final</span> AnnotatedBeanDefinitionReader reader;
+
+    <span class="directive">private</span> <span class="predefined-type">Class</span>&lt;?&gt; annotatedClass;
+
+    <span class="directive">private</span> <span class="directive">volatile</span> EmbeddedServletContainer embeddedServletContainer;
+
+    <span class="directive">public</span> EmbeddedWebApplicationContext(<span class="predefined-type">Class</span>&lt;?&gt; annotatedClass) {
+        setEnvironment(<span class="keyword">new</span> StandardServletEnvironment());
+        <span class="local-variable">this</span>.reader = <span class="keyword">new</span> AnnotatedBeanDefinitionReader(<span class="local-variable">this</span>);
+        <span class="local-variable">this</span>.annotatedClass = annotatedClass;
+        refresh();
+        <span class="local-variable">this</span>.reader.register(<span class="local-variable">this</span>.annotatedClass);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> onRefresh() {
+        <span class="local-variable">super</span>.onRefresh();
+        <span class="keyword">if</span> (embeddedServletContainer == <span class="predefined-constant">null</span>) {
+            embeddedServletContainer = getEmbeddedServletContainer();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> finishRefresh() {
+        <span class="local-variable">super</span>.finishRefresh();
+        <span class="keyword">if</span> (embeddedServletContainer != <span class="predefined-constant">null</span>) {
+            embeddedServletContainer.start();
+        }
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> onClose() {
+        <span class="local-variable">super</span>.onClose();
+        <span class="keyword">if</span> (embeddedServletContainer != <span class="predefined-constant">null</span>) {
+            embeddedServletContainer.stop();
+            embeddedServletContainer = <span class="predefined-constant">null</span>;
+        }
+    }
+
+    <span class="directive">private</span> EmbeddedServletContainer getEmbeddedServletContainer() {
+        <span class="predefined-type">List</span>&lt;ServletContainerInitializer&gt; initializers = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
+        initializers.add(<span class="local-variable">this</span>);
+        initializers.addAll(getBeanFactory().
+                getBeansOfType(ServletContainerInitializer.class).values());
+
+        <span class="keyword">return</span> <span class="keyword">new</span> TomcatEmbeddedServletContainer(
+                initializers.toArray(<span class="keyword">new</span> ServletContainerInitializer<span class="type">[]</span> {}));
+    }
+
+    <span class="comment">/* ServletContainerInitializer implementation */</span>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onStartup(<span class="predefined-type">Set</span>&lt;<span class="predefined-type">Class</span>&lt;?&gt;&gt; c, ServletContext ctx)
+            <span class="directive">throws</span> ServletException {
+        ctx.setAttribute(ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+                         EmbeddedWebApplicationContext.this);
+        setServletContext(ctx);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Most of the code simply overrides superclass methods to start and stop the web server at the right time. The most interesting code happens in the method of creation of the <code>EmbeddedServletContainer</code>. The application context registers itself as an instance of <code>ServletContainerInitializer</code>. This is useful to gain access to the <code>ServletContext</code> and register itself as the root web application context. This attribute is used by the utility class <code>WebApplicationContextUtils</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">WebApplicationContextUtils</span> {
+    ...
+    public <span class="directive">static</span> WebApplicationContext getWebApplicationContext(
+            ServletContext ctx) {
+        <span class="keyword">return</span> getWebApplicationContext(ctx,
+            WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+    }
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, we also register all other beans implementing the interface <code>EmbeddedServletContainer</code> present in the application context. If you remember, we declared only one bean of this type to register the <code>ServletDispatcher</code>.</p>
+</div>
+<div class="paragraph">
+<p>The last thing to do is provide a facade to hide most of the Spring Boot internal code. This is the aim of the class <code>SpringApplication</code> that we used in our main method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@SpringBootApplication</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Application</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        SpringApplication.run(Application.class, args);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Its implementation simply reuse the <code>EmbeddedWebApplicationContext</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot</span>;
+
+<span class="keyword">import</span> <span class="include">org.springframework.context.ApplicationContext</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.ConfigurableApplicationContext</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SpringApplication</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Object</span> source;
+
+    <span class="directive">public</span> SpringApplication(<span class="predefined-type">Object</span> source) {
+        <span class="local-variable">this</span>.source = source;
+    }
+
+    <span class="directive">public</span> ConfigurableApplicationContext run(<span class="predefined-type">String</span>... args) {
+        <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedWebApplicationContext((<span class="predefined-type">Class</span>&lt;?&gt;) source);
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> ConfigurableApplicationContext run(<span class="predefined-type">Object</span> source,
+                                                     <span class="predefined-type">String</span>... args) {
+        <span class="keyword">return</span> <span class="keyword">new</span> SpringApplication(source).run(args);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cherry on the cake, let&#8217;s add the Spring Banner, displayed in the console when the application starts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">...
+import java.io.ByteArrayOutputStream;
+<span class="keyword">import</span> <span class="include">java.io.PrintStream</span>;
+...
+
+public <span class="type">class</span> <span class="class">SpringApplication</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> Log logger =
+        LogFactory.getLog(SpringApplication.class);
+
+    ...
+
+    public ConfigurableApplicationContext run(<span class="predefined-type">String</span>... args) {
+        logger.info(createStringFromBanner(<span class="keyword">new</span> Banner()));
+        <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedWebApplicationContext((<span class="predefined-type">Class</span>&lt;?&gt;) source);
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> createStringFromBanner(Banner banner) {
+        <span class="predefined-type">ByteArrayOutputStream</span> baos = <span class="keyword">new</span> <span class="predefined-type">ByteArrayOutputStream</span>();
+        banner.printBanner(<span class="keyword">new</span> <span class="predefined-type">PrintStream</span>(baos));
+        <span class="keyword">return</span> baos.toString();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the code for the <code>Banner</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.PrintStream</span>;
+
+<span class="type">class</span> <span class="class">Banner</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span><span class="type">[]</span> BANNER = { <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">  .   ____          _            __ _ _</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content"> /</span><span class="char">\\</span><span class="char">\\</span><span class="content"> / ___'_ __ _ _(_)_ __  __ _ </span><span class="char">\\</span><span class="content"> </span><span class="char">\\</span><span class="content"> </span><span class="char">\\</span><span class="content"> </span><span class="char">\\</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">( ( )</span><span class="char">\\</span><span class="content">___ | '_ | '_| | '_ </span><span class="char">\\</span><span class="content">/ _` | </span><span class="char">\\</span><span class="content"> </span><span class="char">\\</span><span class="content"> </span><span class="char">\\</span><span class="content"> </span><span class="char">\\</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="char">\\</span><span class="char">\\</span><span class="content">/  ___)| |_)| | | | | || (_| |  ) ) ) )</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">  '  |____| .__|_| |_|_| |_</span><span class="char">\\</span><span class="content">__, | / / / /</span><span class="delimiter">&quot;</span></span>,
+            <span class="string"><span class="delimiter">&quot;</span><span class="content"> =========|_|==============|___/=/_/_/_/</span><span class="delimiter">&quot;</span></span> };
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> SPRING_BOOT = <span class="string"><span class="delimiter">&quot;</span><span class="content"> :: Spring Boot :: </span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="type">int</span> STRAP_LINE_SIZE = <span class="integer">42</span>;
+
+    <span class="directive">public</span> <span class="type">void</span> printBanner(<span class="predefined-type">PrintStream</span> printStream) {
+        <span class="keyword">for</span> (<span class="predefined-type">String</span> line : BANNER) {
+            printStream.println(line);
+        }
+        <span class="predefined-type">String</span> padding = <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
+        <span class="keyword">while</span> (padding.length() &lt; STRAP_LINE_SIZE) {
+            padding += <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>;
+        }
+
+        printStream.println(SPRING_BOOT);
+        printStream.println();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Under Eclipse, we just have to Right Click + "Run as Java Application" to starts the application and see the banner appearing in the console. But there is much more to see about Spring Boot. Being able to run your application from a simple main class is really great when developing in your IDE but if we want to deploy our application outside of our local machine, we need to package it. Fortunately, Spring Boot supports many options when it comes to packaging&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="part_3_packaging_your_spring_boot_application">Part 3: Packaging your Spring Boot Application</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="i_want_to_package_my_web_application_as_a_single_executable_jar">I want to package my web application as a single executable jar?</h3>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">What is an uber-jar?</div>
+An uber-jar (or fat jar) is a jar containing the artifact to package, including its dependencies. The classic way to create an uber-jar is to use the Maven Shade Plugin. The plugin allows also to <strong>shade</strong> - i.e. rename - the packages of some of the dependencies.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is an simple example (only two dependencies) using the Maven Shade Plugin :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;project</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/POM/4.0.0</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span>
+<span class="content">http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;modelVersion&gt;</span>4.0.0<span class="tag">&lt;/modelVersion&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>fr.imlovinit<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>maven-shade-plugin-demo<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+
+    <span class="tag">&lt;build&gt;</span>
+        <span class="tag">&lt;plugins&gt;</span>
+            <span class="tag">&lt;plugin&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>maven-shade-plugin<span class="tag">&lt;/artifactId&gt;</span>
+                <span class="tag">&lt;version&gt;</span>2.4.3<span class="tag">&lt;/version&gt;</span>
+                <span class="tag">&lt;executions&gt;</span>
+                    <span class="tag">&lt;execution&gt;</span>
+                        <span class="tag">&lt;phase&gt;</span>package<span class="tag">&lt;/phase&gt;</span>
+                        <span class="tag">&lt;goals&gt;</span>
+                            <span class="tag">&lt;goal&gt;</span>shade<span class="tag">&lt;/goal&gt;</span>
+                        <span class="tag">&lt;/goals&gt;</span>
+                        <span class="tag">&lt;configuration&gt;</span>
+                            <span class="tag">&lt;transformers&gt;</span>
+                                <span class="tag">&lt;transformer</span> <span class="attribute-name">implementation</span>=<span class="error">\</span>
+<span class="string"><span class="delimiter">&quot;</span><span class="content">org.apache.maven.plugins.shade.resource.ManifestResourceTransformer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                                    <span class="tag">&lt;mainClass&gt;</span>demo.Application<span class="tag">&lt;/mainClass&gt;</span>
+                                <span class="tag">&lt;/transformer&gt;</span>
+                            <span class="tag">&lt;/transformers&gt;</span>
+                        <span class="tag">&lt;/configuration&gt;</span>
+                    <span class="tag">&lt;/execution&gt;</span>
+                <span class="tag">&lt;/executions&gt;</span>
+            <span class="tag">&lt;/plugin&gt;</span>
+        <span class="tag">&lt;/plugins&gt;</span>
+    <span class="tag">&lt;/build&gt;</span>
+
+    <span class="tag">&lt;dependencies&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>commons-lang<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>commons-lang<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;version&gt;</span>2.6<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>jackson-databind<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;version&gt;</span>2.7.3<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+    <span class="tag">&lt;/dependencies&gt;</span>
+
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This simple project contains only one class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">demo</span>;
+
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">java.util.Map</span>;
+<span class="keyword">import</span> <span class="include">org.apache.commons.lang.StringUtils</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.core.JsonProcessingException</span>;
+<span class="keyword">import</span> <span class="include">com.fasterxml.jackson.databind.ObjectMapper</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Application</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="keyword">try</span> {
+            <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">I need Commons Lang &amp; Jackson 2</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">catch</span> (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When running the goal <code>package</code>, a new JAR is generated under the <code>target/</code> directory. Here is its directory hierarchy:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>maven-shade-plugin-demo-0.0.1-SNAPSHOT
+ +- com
+ |  \- fasterxml
+ |     \- &lt;jackson source&gt;
+ +- demo
+ |  \- Application.class
+ +- META-INF
+ |  \- MANIFEST.MF &lt;specify the main class to launch by default&gt;
+ \- org
+    \- apache
+       \- &lt;commons lang source&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Maven Shade Plugin expand all the dependencies and repackage them together in a single archive. The META-INF files are merged together if necessary. The result looks like if we have coded all of these projects ourselves in our workspace.</p>
+</div>
+<div class="paragraph">
+<p>Now, if we inspect a jar generated by Spring Boot, we observe Spring uses another approach.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring-boot-demo.jar
+ +- hello
+ |  +- Application.class
+ |  \- HelloController.class
+ +- lib
+ |  +- spring-webmvc-4.2.5.RELEASE.jar
+ |  +- tomcat-embed-core-8.0.32.jar
+ |  \- ...
+ +- META-INF
+ |  \- MANIFEST.mf
+ \- org/springframework/boot/loader
+    |- JarLauncher.class
+    \- ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The application source code is separated from the libraries. We still have a manifest to specify the main class to launch but this class is not our <code>Application</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="properties">Manifest-Version: 1.0
+Created-By: Apache Maven 3.3.9
+Start-Class: hello.Application
+Main-Class: org.springframework.boot.loader.JarLauncher</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note: the <code>Start-Class</code> is not a standard Manifest attribute but an extension of Spring Boot. We will use its value later in this section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how_to_create_a_well_organized_jar_archive">How to create a well-organized JAR archive?</h3>
+<div class="paragraph">
+<p>Unfortunately, there is no off-the-shelf solution. So, Spring Boot creates its own Maven Plugin (and a Gradle Plugin for non-Maven users). The plugin provides goals to package executable jar ou war archives or run the application "in-place":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ mvn help:describe -Dplugin=org.springframework.boot:spring-boot-maven-plugin
+
+spring-boot:help
+  Description: Display help information on spring-boot-maven-plugin.
+    Call mvn spring-boot:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to display
+    parameter details.
+
+spring-boot:repackage
+  Description: Repackages existing JAR and WAR archives so that they can be
+    executed from the command line using java -jar. With layout=NONE can also
+    be used simply to package a JAR with nested dependencies (and no main
+    class, so not executable).
+
+spring-boot:run
+  Description: Run an executable archive application.
+
+spring-boot:start
+  Description: Start a spring application. Contrary to the run goal, this
+    does not block and allows other goal to operate on the application. This
+    goal is typically used in integration test scenario where the application
+    is started before a test suite and stopped after.
+
+spring-boot:stop
+  Description: Stop a spring application that has been started by the 'start'
+    goal. Typically invoked once a test suite has completed.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The goal that interest us is the <code>repackage</code> goal. Let&#8217;s begin by defining the structure of your mojo (Maven term to describe a plugin goal).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.maven</span>;
+
+<span class="keyword">import</span> <span class="include">org.apache.maven.artifact.Artifact</span>;
+<span class="keyword">import</span> <span class="include">org.apache.maven.plugin</span>.*;
+<span class="keyword">import</span> <span class="include">org.apache.maven.plugins.annotations</span>.*;
+<span class="keyword">import</span> <span class="include">org.apache.maven.project.MavenProject</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.loader.tools.Library</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.boot.loader.tools.Repackager</span>;
+
+<span class="annotation">@Mojo</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">repackage</span><span class="delimiter">&quot;</span></span>,
+    defaultPhase = LifecyclePhase.PACKAGE,
+    requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">RepackageMojo</span> <span class="directive">extends</span> AbstractMojo {
+
+    <span class="annotation">@Parameter</span>(defaultValue = <span class="string"><span class="delimiter">&quot;</span><span class="content">${project.build.directory}</span><span class="delimiter">&quot;</span></span>, required = <span class="predefined-constant">true</span>)
+    <span class="directive">private</span> <span class="predefined-type">File</span> outputDirectory;
+
+    <span class="annotation">@Parameter</span>(defaultValue = <span class="string"><span class="delimiter">&quot;</span><span class="content">${project.build.finalName}</span><span class="delimiter">&quot;</span></span>, required = <span class="predefined-constant">true</span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> finalName;
+
+    <span class="annotation">@Parameter</span>(defaultValue = <span class="string"><span class="delimiter">&quot;</span><span class="content">${project}</span><span class="delimiter">&quot;</span></span>, readonly = <span class="predefined-constant">true</span>, required = <span class="predefined-constant">true</span>)
+    <span class="directive">private</span> MavenProject project;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> execute() <span class="directive">throws</span> MojoExecutionException, MojoFailureException {
+        <span class="predefined-type">File</span> source = <span class="local-variable">this</span>.project.getArtifact().getFile();
+        <span class="predefined-type">File</span> target = getTargetFile();
+        Repackager repackager = <span class="keyword">new</span> Repackager(source);
+
+        <span class="keyword">try</span> {
+            repackager.repackage(target, getLibrairies());
+        }
+        <span class="keyword">catch</span> (<span class="exception">IOException</span> ex) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> MojoExecutionException(ex.getMessage(), ex);
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Library&gt; getLibrairies() {
+        <span class="predefined-type">List</span>&lt;Library&gt; result = Lists.newArrayList();
+        <span class="keyword">for</span> (Artifact artifact : <span class="local-variable">this</span>.project.getArtifacts()) {
+            <span class="predefined-type">String</span> name = artifact.getFile().getName();
+            result.add(<span class="keyword">new</span> Library(name, artifact.getFile()));
+        }
+        <span class="keyword">return</span> result;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">File</span> getTargetFile() {
+        <span class="keyword">if</span> (!<span class="local-variable">this</span>.outputDirectory.exists()) {
+            <span class="local-variable">this</span>.outputDirectory.mkdirs();
+        }
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="local-variable">this</span>.outputDirectory, <span class="local-variable">this</span>.finalName + <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+            + <span class="local-variable">this</span>.project.getArtifact().getArtifactHandler().getExtension());
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This mojo asks Maven to inject three dependencies:
+- <code>outputDirectory</code>: The directory containing the generated archive.
+- <code>finalName</code>: The name of the generated archive
+- <code>project</code>: The instance of <code>MavenProject</code>. This object exposes a method to retrieve the list of dependencies of the project calculated by Maven (the same list as the effective pom).</p>
+</div>
+<div class="paragraph">
+<p>The two first properties determine the archive&#8217;s filepath to create. In practice, the value will often be the absolute filepath of the target folder and the nane of the &lt;artifactId&gt;-&lt;version&gt;.jar.</p>
+</div>
+<div class="paragraph">
+<p>To be able to retrieve the list of dependencies through the <code>MavenProject</code> instance, we need to configure our Mojo using the attribute <code>requiresDependencyResolution</code> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Mojo</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">repackage</span><span class="delimiter">&quot;</span></span>,
+    defaultPhase = LifecyclePhase.PACKAGE,
+    requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>requiresDependencyResolution</code> flags indicates this Mojo needs the dependencies in the specified class path to be resolved before it can execute. With this attribute, we can now use the <code>getArtifacts()</code> method on <code>MavenProject</code> to collect the list of dependencies to include in the lib folder. This is the role of the method <code>getLibrary()</code>. The <code>Library</code> class is a simple POJO defined by Spring Boot that contains a <code>File</code> and its name. Then, we create an instance of <code>Repackager</code> by passing it the target file name and the dependencies list.</p>
+</div>
+<div class="paragraph">
+<p>Before showing the code of this <code>Repackager</code> class, you probably notice the wrapper <code>JarWriter</code> around the <code>java.util.jar</code> package. The aim of class present in the source of Spring Boot is to hide the low-level I/O manipulation code required to create a valid <a href="https://en.wikipedia.org/wiki/Zip_(file_format)">Zip Archive</a>. Here is the API of this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.loader.tools</span>;
+
+<span class="keyword">import</span> <span class="include">java.io</span>.*;
+<span class="keyword">import</span> <span class="include">java.net</span>.*;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">java.util.jar</span>.*;
+
+<span class="comment">/**
+ * Writes JAR content, ensuring valid directory entries are always create.
+ */</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">JarWriter</span> {
+
+    <span class="comment">/**
+     * Write the specified manifest.
+     */</span>
+    <span class="type">void</span> writeManifest(<span class="predefined-type">Manifest</span> manifest) <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+    <span class="comment">/**
+     * Write all entries from the specified jar file.
+     */</span>
+    <span class="type">void</span> writeEntries(<span class="predefined-type">JarFile</span> jarFile) <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+    <span class="comment">/**
+     * Writes an entry.
+     * The {@code inputStream} is closed once the entry has been written
+     */</span>
+    <span class="type">void</span> writeEntry(<span class="predefined-type">String</span> entryName, <span class="predefined-type">InputStream</span> inputStream)
+            <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+    <span class="comment">/**
+     * Write a nested library.
+     */</span>
+    <span class="type">void</span> writeNestedLibrary(<span class="predefined-type">String</span> destination, Library library)
+            <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+    <span class="comment">/**
+     * Close the writer.
+     */</span>
+    <span class="type">void</span> close() <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are interested, have a look at the <a href="https://github.com/spring-projects/spring-boot/blob/v1.3.3.RELEASE/spring-boot-tools/spring-boot-loader-tools/src/main/java/org/springframework/boot/loader/tools/JarWriter.java">source</a>.</p>
+</div>
+<div class="paragraph">
+<p>The missing piece is still the <code>Repackager class</code>, but with the <code>JarWriter</code> utility class, its implementation follows naturally. The repackager&#8217;s constructor accepts the standard JAR file created by Maven. By default, the jar produced by the repackager have the same file path, so we need to check first and rename the original file to be able to create the final jar archive. Once the file is created, we add the manifest by calling the method <code>writeManifest()</code> on <code>JarWriter</code>, then the original jar content with the method <code>writeEntries()</code> before iterating over the libraries returned by Maven and calling the method <code>writeNestedLibrary()</code> for each of them. Here is the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.loader.tools</span>;
+
+<span class="keyword">import</span> <span class="include">java.io</span>.*;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">java.util.jar</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Repackager</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">File</span> source;
+
+    <span class="directive">public</span> Repackager(<span class="predefined-type">File</span> source) {
+        <span class="local-variable">this</span>.source = source.getAbsoluteFile();
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> repackage(<span class="predefined-type">File</span> destination, <span class="predefined-type">List</span>&lt;Library&gt; libraries)
+            <span class="directive">throws</span> <span class="exception">IOException</span> {
+        destination = destination.getAbsoluteFile();
+        <span class="predefined-type">File</span> workingSource = <span class="local-variable">this</span>.source;
+        <span class="keyword">if</span> (<span class="local-variable">this</span>.source.equals(destination)) {
+            workingSource = <span class="keyword">new</span> <span class="predefined-type">File</span>(<span class="local-variable">this</span>.source.getParentFile(),
+                    <span class="local-variable">this</span>.source.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">.original</span><span class="delimiter">&quot;</span></span>);
+            workingSource.delete();
+            <span class="local-variable">this</span>.source.renameTo(workingSource);
+        }
+        destination.delete();
+        <span class="predefined-type">JarFile</span> jarFileSource = <span class="keyword">new</span> <span class="predefined-type">JarFile</span>(workingSource);
+        <span class="keyword">try</span> {
+            repackage(jarFileSource, destination, libraries);
+        }
+        <span class="keyword">finally</span> {
+            jarFileSource.close();
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> repackage(<span class="predefined-type">JarFile</span> sourceJar,
+                           <span class="predefined-type">File</span> destination,
+                           <span class="predefined-type">List</span>&lt;Library&gt; libraries)
+            <span class="directive">throws</span> <span class="exception">IOException</span> {
+        JarWriter writer = <span class="keyword">new</span> JarWriter(destination);
+        <span class="keyword">try</span> {
+            writer.writeManifest(buildManifest(sourceJar));
+            writer.writeEntries(sourceJar);
+            <span class="keyword">for</span> (Library library : libraries) {
+                writer.writeNestedLibrary(<span class="string"><span class="delimiter">&quot;</span><span class="content">lib/</span><span class="delimiter">&quot;</span></span>, library);
+            }
+        }
+        <span class="keyword">finally</span> {
+            <span class="keyword">try</span> {
+                writer.close();
+            }
+            <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+                <span class="comment">// Ignore</span>
+            }
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Manifest</span> buildManifest(<span class="predefined-type">JarFile</span> source) <span class="directive">throws</span> <span class="exception">IOException</span> {
+        <span class="predefined-type">String</span> mainClass = MainClassFinder.findSingleMainClass(source, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+        <span class="predefined-type">Manifest</span> manifest = <span class="keyword">new</span> <span class="predefined-type">Manifest</span>();
+        manifest.getMainAttributes().putValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">Manifest-Version</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>);
+        manifest.getMainAttributes().putValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">Main-Class</span><span class="delimiter">&quot;</span></span>, mainClass);
+        <span class="keyword">return</span> manifest;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The building of the Manifest requires the name of the main class if we want to launch the jar archive without having to specify a fully-qualified name. To determine the main class, Spring Boot search in the original jar (contains only .class files) using ASM, the most popular Java bytecode manipulation library. Let&#8217;s build a basic example to illustrate the use of ASM.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">hello</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HelloWorld</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> message;
+
+    <span class="directive">public</span> HelloWorld(<span class="predefined-type">String</span> message) {
+        <span class="local-variable">this</span>.message = message;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getMessage() {
+        <span class="keyword">return</span> message;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>First, we need to compile this class to generate the bytecode. ASM provides a class <code>asm.ClassReader</code> that takes the compiled class as input. We could then register visitors (see pattern <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor</a>) that will be called during the class analysis. Visitors should extends the class <code>asm.ClassVisitor</code> and override the methods that interest them (ex: <code>visitMethod</code> to be notified on each method declaration found in the class). Here is an example using ASM to list the attributes and methods of a class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">InputStream</span> sourceCode = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">target/classes/hello/HelloWorld.class</span><span class="delimiter">&quot;</span></span>);
+ClassReader reader = <span class="keyword">new</span> ClassReader(sourceCode);
+reader.accept(<span class="keyword">new</span> ClassVisitor(Opcodes.ASM4) {
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> FieldVisitor visitField(<span class="type">int</span> access, <span class="predefined-type">String</span> name,
+                                   <span class="predefined-type">String</span> desc, <span class="predefined-type">String</span> signature,
+                                   <span class="predefined-type">Object</span> value) {
+        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Visit field </span><span class="delimiter">&quot;</span></span> + name);
+        <span class="keyword">return</span> <span class="local-variable">super</span>.visitField(access, name, desc, signature, value);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> MethodVisitor visitMethod(<span class="type">int</span> access, <span class="predefined-type">String</span> name,
+                                     <span class="predefined-type">String</span> desc, <span class="predefined-type">String</span> signature,
+                                     <span class="predefined-type">String</span><span class="type">[]</span> exceptions) {
+        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Visit method </span><span class="delimiter">&quot;</span></span> + name);
+        <span class="keyword">return</span> <span class="local-variable">super</span>.visitMethod(access, name, desc, signature, exceptions);
+    }
+
+}, ClassReader.SKIP_CODE);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the console output when running this code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Visit field message
+Visit method &lt;init&gt;
+Visit method getMessage</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we understand the API of the ASM library, let&#8217;s see how Spring Boot does to find the main class. This is the role of the method <code>MainClassFinder.findSingleMainClass()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.loader.tools</span>;
+
+<span class="keyword">import</span> <span class="include">java.io</span>.*;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">java.util.jar</span>.*;
+<span class="keyword">import</span> <span class="include">org.springframework.asm.ClassReader</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.asm.ClassVisitor</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.asm.MethodVisitor</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.asm.Opcodes</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.asm.Type</span>;
+
+<span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">MainClassFinder</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">String</span> findSingleMainClass(<span class="predefined-type">JarFile</span> jarFile)
+            <span class="directive">throws</span> <span class="exception">IOException</span> {
+        <span class="keyword">for</span> (<span class="predefined-type">JarEntry</span> entry : getClassEntries(jarFile)) {
+            <span class="predefined-type">InputStream</span> inputStream = <span class="keyword">new</span> <span class="predefined-type">BufferedInputStream</span>(
+                    jarFile.getInputStream(entry));
+            <span class="keyword">try</span> {
+                <span class="keyword">if</span> (isMainClass(inputStream)) {
+                    <span class="keyword">return</span> convertToClassName(entry.getName());
+                }
+            }
+            <span class="keyword">finally</span> {
+                inputStream.close();
+            }
+        }
+        <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">JarEntry</span>&gt; getClassEntries(<span class="predefined-type">JarFile</span> source) {
+        <span class="predefined-type">Enumeration</span>&lt;<span class="predefined-type">JarEntry</span>&gt; sourceEntries = source.entries();
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">JarEntry</span>&gt; classEntries = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">JarEntry</span>&gt;();
+        <span class="keyword">while</span> (sourceEntries.hasMoreElements()) {
+            <span class="predefined-type">JarEntry</span> entry = sourceEntries.nextElement();
+            <span class="keyword">if</span> (entry.getName().endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">.class</span><span class="delimiter">&quot;</span></span>)) {
+                classEntries.add(entry);
+            }
+        }
+        <span class="keyword">return</span> classEntries;
+    }
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="type">boolean</span> isMainClass(<span class="predefined-type">InputStream</span> inputStream) {
+        <span class="keyword">try</span> {
+            ClassReader classReader = <span class="keyword">new</span> ClassReader(inputStream);
+            MainMethodFinder mainMethodFinder = <span class="keyword">new</span> MainMethodFinder();
+            classReader.accept(mainMethodFinder, ClassReader.SKIP_CODE);
+            <span class="keyword">return</span> mainMethodFinder.isFound();
+        }
+        <span class="keyword">catch</span> (<span class="exception">IOException</span> ex) {
+            <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+        }
+    }
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> convertToClassName(<span class="predefined-type">String</span> name) {
+        name = name.replace(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>);
+        name = name.replace(<span class="string"><span class="delimiter">'</span><span class="char">\\</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">.</span><span class="delimiter">'</span></span>);
+        name = name.substring(<span class="integer">0</span>, name.length() - <span class="string"><span class="delimiter">&quot;</span><span class="content">.class</span><span class="delimiter">&quot;</span></span>.length());
+        <span class="keyword">return</span> name;
+    }
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">MainMethodFinder</span> <span class="directive">extends</span> ClassVisitor {
+
+        <span class="directive">private</span> <span class="type">boolean</span> found;
+
+        MainMethodFinder() {
+            <span class="local-variable">super</span>(Opcodes.ASM4);
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> MethodVisitor visitMethod(<span class="type">int</span> access, <span class="predefined-type">String</span> name, <span class="predefined-type">String</span> desc,
+                <span class="predefined-type">String</span> signature, <span class="predefined-type">String</span><span class="type">[]</span> exceptions) {
+            <span class="predefined-type">Type</span> mainMethodType = <span class="predefined-type">Type</span>.getMethodType(
+                    <span class="predefined-type">Type</span>.VOID_TYPE,
+                    <span class="predefined-type">Type</span>.getType(<span class="predefined-type">String</span><span class="type">[]</span>.class));
+            <span class="keyword">if</span> (isAccess(access, Opcodes.ACC_PUBLIC, Opcodes.ACC_STATIC)
+                    &amp;&amp; <span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>.equals(name)
+                    &amp;&amp; mainMethodType.getDescriptor().equals(desc)) {
+                <span class="local-variable">this</span>.found = <span class="predefined-constant">true</span>;
+            }
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+
+        <span class="directive">private</span> <span class="type">boolean</span> isAccess(<span class="type">int</span> access, <span class="type">int</span>... requiredOpsCodes) {
+            <span class="keyword">for</span> (<span class="type">int</span> requiredOpsCode : requiredOpsCodes) {
+                <span class="keyword">if</span> ((access &amp; requiredOpsCode) == <span class="integer">0</span>) {
+                    <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+                }
+            }
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="directive">public</span> <span class="type">boolean</span> isFound() {
+            <span class="keyword">return</span> <span class="local-variable">this</span>.found;
+        }
+
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We begin by searching all .class files and create an <code>InputStream</code> for each of them. Then, the method <code>isMainClass</code> is called. This method uses ASM like we did previously, registering its visitor represented by the inner class <code>MainMethodFinder</code>. The visitor needs only to be notified when a new method is found, so it only overrides the method <code>visitMethod</code>. The remaining code is low-level ASM code to detect if it is the method main by checking the modifiers, the parameter types, and of course, the method name.</p>
+</div>
+<div class="paragraph">
+<p>Our Maven plugin is now operational. We could update the pom of our project demo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;project&gt;</span>
+    ...
+    <span class="tag">&lt;build&gt;</span>
+        <span class="tag">&lt;plugins&gt;</span>
+            <span class="tag">&lt;plugin&gt;</span>
+                <span class="tag">&lt;groupId&gt;</span>com.juliensobczak<span class="tag">&lt;/groupId&gt;</span>
+                <span class="tag">&lt;artifactId&gt;</span>spring-boot-demo<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;/plugin&gt;</span>
+        <span class="tag">&lt;/plugins&gt;</span>
+    <span class="tag">&lt;/build&gt;</span>
+    ...
+<span class="tag">&lt;/project&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And run the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ mvn clean spring-boot-demo:repackage</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A new JAR is created inside the target directory named <code>spring-boot-demo-0.0.1-SNAPSHOT.jar</code>. But when launching the JAR, an error message is displayed in the console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar
+java.lang.NoClassDefFoundError: org/springframework/context/ApplicationContext
+        at java.lang.Class.getDeclaredMethods0(Native Method)
+        at java.lang.Class.privateGetDeclaredMethods(Unknown Source)
+        at java.lang.Class.privateGetMethodRecursive(Unknown Source)
+        at java.lang.Class.getMethod0(Unknown Source)
+        at java.lang.Class.getMethod(Unknown Source)
+        at sun.launcher.LauncherHelper.validateMainClass(Unknown Source)
+        at sun.launcher.LauncherHelper.checkAndLoadMain(Unknown Source)
+Caused by: java.lang.ClassNotFoundException: o.s.context.ApplicationContext
+        at java.net.URLClassLoader.findClass(Unknown Source)
+        at java.lang.ClassLoader.loadClass(Unknown Source)
+        at sun.misc.Launcher$AppClassLoader.loadClass(Unknown Source)
+        at java.lang.ClassLoader.loadClass(Unknown Source)
+        ... 7 more
+Error: A JNI error has occurred, please check your installation and try again
+Exception in thread "main"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We get an <code>NoClassDefFoundError</code> on <code>org.springframework.context.ApplicationContext</code>. Why? This class is present in the archive <code>spring-context-4.2.5.RELEASE.jar</code> under the lib folder. The problem is that the java command only load the files of type .class and do not search in the eventual jars included in the archive. This explains why the Maven Shade Plugin unzips the dependencies before creating the final archive. In this way, the java command find all the classes to load. So, how does Spring Boot do to load our dependencies? The answer is the module <a href="https://github.com/spring-projects/spring-boot/tree/v1.3.3.RELEASE/spring-boot-tools/spring-boot-loader">Spring Boot Loader</a> and its class <code>JarLauncher</code> (The class that was marked as the <code>Main-Class</code> in the <code>MANIFEST.mf</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="spring_boot_loader">Spring Boot Loader</h3>
+<div class="paragraph">
+<p>The goal of the Loader is to bootstrap the application with all the dependencies present in the classpath. To do so, the Loader needs to create a custom <code>ClassLoader</code> and loads classes from the lib/ folder and then delegate to the original parent ClassLoader if the class could not be found. For example, a class like <code>java.lang.IllegalArgumentException</code> will not be found in the lib folder but the parent class loader could load any class of the JRE.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s decompose the class <code>JarLauncher</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">JarLauncher</span> {
+
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="keyword">new</span> JarLauncher().launch(args);
+    }
+
+    <span class="directive">private</span> <span class="directive">final</span> JarFileArchive archive;
+
+    <span class="directive">public</span> JarLauncher() {
+        <span class="keyword">try</span> {
+            <span class="local-variable">this</span>.archive = createArchive(); (<span class="integer">1</span>)
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalStateException</span>(ex);
+        }
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> launch(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="keyword">try</span> {
+            <span class="predefined-type">ClassLoader</span> classLoader = createClassLoader(); (<span class="integer">2</span>)
+            startRunner(args, <span class="local-variable">this</span>.archive.getMainClass(), classLoader); (<span class="integer">3</span>)
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+            ex.printStackTrace();
+            <span class="predefined-type">System</span>.exit(<span class="integer">1</span>);
+        }
+    }
+
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>JarLauncher</code> contains a <code>main</code> method that simply create an instance of <code>JarLauncher</code> and call the method <code>launch</code>. This class is divided in three sections:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Read the content of the launched JAR to find the dependencies in lib/ folder</p>
+</li>
+<li>
+<p>Create the custom <code>ClassLoader</code> to check this folder first</p>
+</li>
+<li>
+<p>Run the main class using the previously created <code>ClassLoader</code></p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="the_archive">The Archive</h4>
+<div class="paragraph">
+<p>Spring Boot Loader create its own abstraction, extending <a href="https://docs.oracle.com/javase/7/docs/api/java/util/jar/JarFile.html">java.util.jar.JarFile</a> to offer additional functionalities like adding or retrieved a nested archive inside the JAR.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the class <code>JarFileArchive</code> is pointless to understand Spring Boot. Here is its API:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">JarFileArchive</span> {
+
+    <span class="comment">/** Search nested archived using a filter to exclude unwanted files. */</span>
+    <span class="predefined-type">List</span>&lt;JarFileArchive&gt; getNestedArchives(EntryFilter filter)
+        <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+    <span class="comment">/** Return the content of the MANIFEST.MF file. */</span>
+    <span class="predefined-type">Manifest</span> getManifest() <span class="directive">throws</span> <span class="exception">IOException</span>;
+
+    <span class="comment">/**
+     * Return the value of the Start-Class attribute.
+     * This attribute is Spring Boot specific and should not be confused
+     * with the standard Main-Class attribute.
+     */</span>
+    <span class="predefined-type">String</span> getMainClass() <span class="directive">throws</span> <span class="exception">Exception</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How to retrieve the path of the Jar passed to the java command?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="directive">private</span> <span class="directive">final</span> JarFileArchive createArchive() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="keyword">return</span> <span class="keyword">new</span> JarFileArchive(
+                getClass().
+                getProtectionDomain().
+                getCodeSource().
+                getLocation().
+                getPath());
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the_classloader">The ClassLoader</h4>
+<div class="paragraph">
+<p>With the <code>JarFileArchive</code> object, we can now create a special <code>ClassLoader</code>. The class loader is represented by the class <code>LaunchedURLClassLoader</code>, probably the most complex piece of code presented in this post.</p>
+</div>
+<div class="paragraph">
+<p>We will follow the code line by line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">LaunchedURLClassLoader</span> <span class="directive">extends</span> <span class="predefined-type">URLClassLoader</span> {
+
+    <span class="directive">public</span> LaunchedURLClassLoader(<span class="predefined-type">URL</span><span class="type">[]</span> urls, <span class="predefined-type">ClassLoader</span> parent) {
+        <span class="local-variable">super</span>(urls, parent);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spring Boot extends the <code>java.net.URLClassLoader</code>, the standard implementation used to load classes from a search path of URLs referring to both JAR files and directory.  Any URL that ends with a '/' is assumed to refer to a directory. Otherwise, the URL is assumed to refer to a JAR file which will be opened as needed.</p>
+</div>
+<div class="paragraph">
+<p>This class loader understand URLs like the following ones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jar:file:./target/spring-boot-demo.jar</code>
+Load the JAR located at this relative path</p>
+</li>
+<li>
+<p><code>jar:file:./target/spring-boot-demo.jar!/lib/spring-webmvc-4.2.5.RELEASE.jar!/</code>
+Load the root of the JAR <code>spring-webmvc-4.2.5.RELEASE.jar</code> included in the <code>spring-boot-demo.jar</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The constructor expects two arguments:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A list of URLs like the previous ones. Thanks to the <code>JarArchiveFile</code>, we could easily retrieved the URL of the main JAR and all of its dependencies.</p>
+</li>
+<li>
+<p>The parent class loader.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">How many class loaders?</div>
+<div class="paragraph">
+<p>Even the most basic Java program has at least three class loaders:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>bootstrap class loader</strong> loads the core Java libraries located in the <code>$JAVA_HOME/jre/lib</code> directory.</p>
+</li>
+<li>
+<p>The <strong>extensions class loader</strong> loads the code in the extensions directories (<code>$JAVA_HOME/jre/lib/ext</code> by default). It is implemented by the <code>sun.misc.Launcher$ExtClassLoader</code> class.</p>
+</li>
+<li>
+<p>The <strong>system/application class loader</strong> loads code found on <code>java.classpath</code> by default. It is implemented by the <code>sun.misc.Launcher$AppClassLoader class</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These class loaders follow a delegation hierarchy, where each one delegates to its parent before attempting to load a class itself. Our custom class loader will act similarly.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s go back to the implementation of <code>LaunchedURLClassLoader</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">LaunchedURLClassLoader</span> <span class="directive">extends</span> <span class="predefined-type">URLClassLoader</span> {
+
+    ...
+
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="predefined-type">Class</span>&lt;?&gt; loadClass(<span class="predefined-type">String</span> name, <span class="type">boolean</span> resolve)
+            <span class="directive">throws</span> <span class="exception">ClassNotFoundException</span> {
+        <span class="directive">synchronized</span> (getClassLoadingLock(name)) {
+            <span class="predefined-type">Class</span>&lt;?&gt; loadedClass = findLoadedClass(name); (<span class="integer">1</span>)
+            <span class="keyword">if</span> (loadedClass == <span class="predefined-constant">null</span>) {
+                loadedClass = doLoadClass(name);
+            }
+            <span class="keyword">if</span> (resolve) {
+                resolveClass(loadedClass); (<span class="integer">2</span>)
+            }
+            <span class="keyword">return</span> loadedClass;
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Class</span>&lt;?&gt; doLoadClass(<span class="predefined-type">String</span> name) <span class="directive">throws</span> <span class="exception">ClassNotFoundException</span> {
+        <span class="comment">// 1) Try to find locally</span>
+        <span class="keyword">try</span> {
+            findPackage(name);
+            <span class="predefined-type">Class</span>&lt;?&gt; cls = findClass(name);
+            <span class="keyword">return</span> cls;
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+            <span class="comment">// Ignore and continue</span>
+        }
+
+        <span class="comment">// 2) Use standard loading</span>
+        <span class="keyword">return</span> <span class="local-variable">super</span>.loadClass(name, <span class="predefined-constant">false</span>);
+    }
+
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code begins with a guard condition to detect if the class was already loaded previously. The <code>resolveClass</code> method is misleadingly named and is used by a class loader to link a class. All <code>ClassLoader</code> follow these two steps. If the class was not loaded, we go into the method <code>doLoadClass</code>. This method attempts to load classes from the URLs before delegating to the parent loader. Let&#8217;s continue:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">...
+
+private <span class="type">void</span> findPackage(<span class="directive">final</span> <span class="predefined-type">String</span> name) <span class="directive">throws</span> <span class="exception">ClassNotFoundException</span> {
+    <span class="type">int</span> lastDot = name.lastIndexOf(<span class="string"><span class="delimiter">'</span><span class="content">.</span><span class="delimiter">'</span></span>);
+    <span class="keyword">if</span> (lastDot != -<span class="integer">1</span>) {
+        <span class="predefined-type">String</span> packageName = name.substring(<span class="integer">0</span>, lastDot);
+        <span class="keyword">if</span> (getPackage(packageName) == <span class="predefined-constant">null</span>) {
+            <span class="keyword">try</span> {
+                definePackageForFindClass(name, packageName);
+            }
+            <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+                <span class="comment">// Swallow and continue</span>
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We extract the package name from the given name to test if the package was already encountered (All classes in the same package share the same <code>java.lang.Package</code> object). If so, we could continue without loading it; the parent class loader will be able to find the target class. Otherwise, we have to register the new package before a <code>findClass</code> call is made. This is necessary to ensure that the appropriate manifest for nested JARs are associated with the package. This is implemented by the method <code>definePackageForFindClass</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">...
+
+private <span class="type">void</span> definePackageForFindClass(<span class="directive">final</span> <span class="predefined-type">String</span> name,
+                                       <span class="directive">final</span> <span class="predefined-type">String</span> packageName) {
+    <span class="keyword">try</span> {
+        <span class="predefined-type">AccessController</span>.doPrivileged(<span class="keyword">new</span> <span class="predefined-type">PrivilegedExceptionAction</span>&lt;<span class="predefined-type">Object</span>&gt;() {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="predefined-type">Object</span> run() <span class="directive">throws</span> <span class="exception">ClassNotFoundException</span> {
+                <span class="predefined-type">String</span> path = name.replace(<span class="string"><span class="delimiter">'</span><span class="content">.</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>).concat(<span class="string"><span class="delimiter">&quot;</span><span class="content">.class</span><span class="delimiter">&quot;</span></span>);
+                <span class="keyword">for</span> (<span class="predefined-type">URL</span> url : getURLs()) {
+                    <span class="keyword">try</span> {
+                        <span class="keyword">if</span> (url.getContent() <span class="keyword">instanceof</span> <span class="predefined-type">JarFile</span>) {
+                            <span class="predefined-type">JarFile</span> jarFile = (<span class="predefined-type">JarFile</span>) url.getContent();
+                            <span class="keyword">if</span> (jarFile.getJarEntryData(path) != <span class="predefined-constant">null</span>) {
+                                definePackage(packageName,
+                                        jarFile.getManifest(),
+                                        url);
+                                <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+                            }
+
+                        }
+                    }
+                    <span class="keyword">catch</span> (<span class="exception">IOException</span> ex) {
+                        <span class="comment">// Ignore</span>
+                    }
+                }
+                <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+            }
+        }, <span class="predefined-type">AccessController</span>.getContext());
+    }
+    <span class="keyword">catch</span> (java.security.PrivilegedActionException ex) {
+        <span class="comment">// Ignore</span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We now have a valid class loader containing all your dependencies, ready to host our application code.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the_runner">The Runner</h4>
+<div class="paragraph">
+<p>The <code>Runner</code> is an utility class that used by the launcher to call your main method. The problem is our code could not run in the application class loader created by the JVM at startup because no dependency does not exist in this class loader. We have to start our code using the specific class loader <code>LauncherURLClassLoader</code>. This could be easily done by starting a new thread configured with the right class loader:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.springframework.boot.loader</span>;
+
+<span class="keyword">import</span> <span class="include">java.lang.reflect.Method</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">MainMethodRunner</span> <span class="directive">implements</span> <span class="predefined-type">Runnable</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> mainClassName;
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span><span class="type">[]</span> args;
+
+    <span class="directive">public</span> MainMethodRunner(<span class="predefined-type">String</span> mainClass, <span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="local-variable">this</span>.mainClassName = mainClass;
+        <span class="local-variable">this</span>.args = args;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> run() {
+        <span class="keyword">try</span> {
+            <span class="predefined-type">Class</span>&lt;?&gt; mainClass = <span class="predefined-type">Thread</span>.currentThread().getContextClassLoader()
+                    .loadClass(<span class="local-variable">this</span>.mainClassName);
+            <span class="predefined-type">Method</span> mainMethod = mainClass.getDeclaredMethod(
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">main</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">String</span><span class="type">[]</span>.class);
+            mainMethod.invoke(<span class="predefined-constant">null</span>, <span class="keyword">new</span> <span class="predefined-type">Object</span><span class="type">[]</span> { <span class="local-variable">this</span>.args });
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(ex);
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the class loader and the runner, we can now completed the implementation of the class <code>JarLauncher</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">JarLauncher</span> {
+
+    ...
+
+    public <span class="type">void</span> launch(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+        <span class="keyword">try</span> {
+            <span class="predefined-type">JarFile</span>.registerUrlProtocolHandler();
+            <span class="predefined-type">ClassLoader</span> classLoader = createClassLoader();
+            startRunner(args, <span class="local-variable">this</span>.archive.getMainClass(), classLoader);
+        }
+        <span class="keyword">catch</span> (<span class="exception">Exception</span> ex) {
+            ex.printStackTrace();
+            <span class="predefined-type">System</span>.exit(<span class="integer">1</span>);
+        }
+    }
+
+    <span class="comment">// New code follows:</span>
+
+    <span class="directive">private</span> <span class="predefined-type">ClassLoader</span> createClassLoader() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="predefined-type">Set</span>&lt;<span class="predefined-type">URL</span>&gt; urls = <span class="keyword">new</span> <span class="predefined-type">LinkedHashSet</span>&lt;<span class="predefined-type">URL</span>&gt;();
+        urls.addAll(getArtefactURL());
+        urls.addAll(getLibURLs());
+        <span class="keyword">return</span> <span class="keyword">new</span> LaunchedURLClassLoader(urls, getClass().getClassLoader());
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> startRunner(<span class="predefined-type">String</span><span class="type">[]</span> args, <span class="predefined-type">String</span> mainClass,
+            <span class="predefined-type">ClassLoader</span> classLoader) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="comment">// Create a new thread to configure the created ClassLoader</span>
+        <span class="predefined-type">Runnable</span> runner = createMainMethodRunner(mainClass, args, classLoader);
+        <span class="predefined-type">Thread</span> runnerThread = <span class="keyword">new</span> <span class="predefined-type">Thread</span>(runner);
+        runnerThread.setContextClassLoader(classLoader);
+        runnerThread.setName(<span class="predefined-type">Thread</span>.currentThread().getName());
+        runnerThread.start();
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Runnable</span> createMainMethodRunner(<span class="predefined-type">String</span> mainClass, <span class="predefined-type">String</span><span class="type">[]</span> args,
+            <span class="predefined-type">ClassLoader</span> classLoader) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="keyword">return</span> (<span class="predefined-type">Runnable</span>) classLoader.
+                loadClass(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.boot.loader.MainMethodRunner</span><span class="delimiter">&quot;</span></span>).
+                getConstructor(<span class="predefined-type">String</span>.class, <span class="predefined-type">String</span><span class="type">[]</span>.class).
+                newInstance(mainClass, args);
+    }
+
+    ...
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>createClassLoader</code> retrieves the URLs (the URL of the JAR generated by Spring Boot and the URLs of each dependency) before instantiating the class loader. The code to retrieve the URLs simply uses the <code>JarFileArchive</code> API to traverse the nested archives and filter to keep all archives in the lib folder.</p>
+</div>
+<div class="paragraph">
+<p>The method <code>startRunner</code> launch the application using the archive file&#8217;s manifest (the Start-Class Attribute) to determine the main class, and using the fully configured class loader. We should ensure the runner is instantiated in the right class loader. This is the aim of the method <code>createMainMethodRunner</code> who use the reflection API to do the equivalent of <code>new MainMethodRunner(mainClass, args)</code>.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the loader is now completed. If we run the Maven command on your demo application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ mvn clean spring-boot-demo:repackage</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The executable JAR will be regenerated and if we launch it again, the application starts correctly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar spring-boot-demo-0.0.1-SNAPSHOT.jar
+10:27:45.148 [main] INFO  o.s.boot.SpringApplication -
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::
+
+
+Let's inspect the beans provided by Spring Boot:
+application
+beanNameHandlerMapping
+defaultServletHandlerMapping
+defaultViewResolver
+dispatcherServlet
+dispatcherServletRegistration
+handlerExceptionResolver
+helloController
+httpRequestHandlerAdapter
+mvcContentNegotiationManager
+mvcConversionService
+mvcPathMatcher
+mvcResourceUrlProvider
+mvcUriComponentsContributor
+mvcUrlPathHelper
+mvcValidator
+mvcViewResolver
+org.springframework..DispatcherServletAutoConfiguration
+org.springframework..EmbeddedServletContainerAutoConfiguration
+org.springframework..WebMvcAutoConfiguration
+org.springframework..enhancedConfigurationProcessor
+org.springframework..importAwareProcessor
+org.springframework..internalAutowiredAnnotationProcessor
+org.springframework..internalCommonAnnotationProcessor
+org.springframework..internalConfigurationAnnotationProcessor
+org.springframework..internalRequiredAnnotationProcessor
+org.springframework..internalEventListenerFactory
+org.springframework..internalEventListenerProcessor
+requestMappingHandlerAdapter
+requestMappingHandlerMapping
+resourceHandlerMapping
+simpleControllerHandlerAdapter
+tomcatEmbeddedServletContainer
+viewControllerHandlerMapping
+viewResolver</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We’ve come a long way, and have a (almost) usable implementation of Spring Boot. We know why our code compiles without having the declare all the dependencies, how Spring Boot Auto-configuration avoids us to declare boilerplate beans and how Spring Boot package our application as an executable jar archive.</p>
+</div>
+<div class="paragraph">
+<p>There is, of course, a lot more to cover than just this article. Why don&#8217;t fork the project at your turn and see how the actuator works under the hood or how the command line tool does to create a full application with no need for a build file!</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaways</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An uber-jar could be created using the Maven Shade Plugin. All jars are exploded and merged into a unique jar.</p>
+</li>
+<li>
+<p>Spring keep dependencies in its own folder <code>lib/</code> at the root of the JAR hierarchy but need to code custom logic to create a <code>ClassLoader</code> at application startup.</p>
+</li>
+<li>
+<p>Creating a new starter for Spring Boot is easy: one project containing only a <code>pom.xml</code> listing the required dependencies, and one project to contains the bean definitions inside a class annotated with <code>@AutoConfiguration</code>. (everything in a single project is totally fine too)</p>
+</li>
+<li>
+<p>Auto-configuration relies on a new feature of Spring Framework 4, the <code>@Conditional</code> annotation. Spring Boot extends this mechanism to add its own conditions to detect if a bean is already defined or if a class is present in the classpath.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

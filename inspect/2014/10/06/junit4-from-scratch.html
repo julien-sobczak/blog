@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Implementing JUnit 4 from Scratch</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2014/10/06/junit4-from-scratch.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">October 06, 2014</span>
+
+      
+      <a href="/tags/frameworks" class="label">
+      Frameworks
+      </a>
+      
+
+      
+      <span class="label">
+        Java
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Implementing JUnit 4 from Scratch</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are reading a translation of an <a href="https://julien-sobczak.github.io/blog-fr/inspect/2014/10/06/junit-from-scratch-6-octobre-2014-lire.html">old blog post</a> published on my previous blog in French.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Never in the field of software development have so many owed so much to so few lines of code</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Gerard Meszaros, author of book _XUnit Test Patterns_
+</div>
+</div>
+<div class="paragraph">
+<p>According to <a href="http://www.takipiblog.com/we-analyzed-30000-github-projects-here-are-the-top-100-libraries-in-java-js-and-ruby/">a study of 2013</a>, JUnit is the most used library in Java (tied with Slf4j). We can trace the roots of the framework to <a href="http://www.xprogramming.com/testfram.htm">a paper written by Kent Beck</a> in 1989. The Smalltalk version will be published in 1994 by the same author that will be at the origin of the Java version too (with Eric Gamma). If you want to know more about the history of automated testing, I recommend these two excellent articles: <a href="http://c2.com/cgi/wiki?TenYearsOfTestDrivenDevelopment">Ten Years Of Test Driven Development</a> and <a href="http://shebanator.com/2007/08/21/a-brief-history-of-test-frameworks/">A Brief History of Test Frameworks</a>.</p>
+</div>
+<div class="paragraph">
+<p>Now, let&#8217;s check the code. We are going to rewrite a minimal version of JUnit from scratch, trying to stay as close as possible to the original code, even if some compromises will be necessary to keep this article short. The name of classes and methods will follow the same naming as the official JUnit library.</p>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+JUnit is published under the <a href="https://www.eclipse.org/legal/epl-v10.html">Eclipse license</a>. The code presented here has been simplified for obvious reasons and must not be used outside this learning context. This article is based on version 4.11 of JUnit.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="a_first_example">A First Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here is a small suite of basic tests:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">static</span> <span class="include">org.hamcrest.CoreMatchers.is</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertThat</span>;
+<span class="keyword">import</span> <span class="include">java.util.ArrayList</span>;
+<span class="keyword">import</span> <span class="include">org.junit</span>.*;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ArrayListTest</span> {
+
+  <span class="directive">private</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">String</span>&gt; instance;
+
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setUp() {
+    instance = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">String</span>&gt;();
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> newArrayListsHaveNoElements() {
+    assertThat(instance.size(), is(<span class="integer">0</span>));
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> sizeReturnsNumberOfElements() {
+    instance.add(<span class="string"><span class="delimiter">&quot;</span><span class="content">Item 1</span><span class="delimiter">&quot;</span></span>);
+    instance.add(<span class="string"><span class="delimiter">&quot;</span><span class="content">Item 2</span><span class="delimiter">&quot;</span></span>);
+    assertThat(instance.size(), is(<span class="integer">2</span>));
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="annotation">@Ignore</span>
+  <span class="directive">public</span> <span class="type">void</span> removeDeletesTheGivenElement() {
+    instance.remove(<span class="string"><span class="delimiter">&quot;</span><span class="content">Item 1</span><span class="delimiter">&quot;</span></span>);
+    assertThat(instance.size(), is(<span class="integer">0</span>));
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> duplicateElementsAreNotAllowed() {
+    instance.add(<span class="string"><span class="delimiter">&quot;</span><span class="content">Item 1</span><span class="delimiter">&quot;</span></span>);
+    instance.add(<span class="string"><span class="delimiter">&quot;</span><span class="content">Item 1</span><span class="delimiter">&quot;</span></span>);
+    assertThat(instance.size(), is(<span class="integer">1</span>));
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When run with JUnit, these tests fail on the last test method. The goal is now to rerun the same tests, but without depending on the JUnit library.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lets_go">Let&#8217;s Go!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If we ignore the support of our favorite IDE, the easiest way to <a href="https://github.com/junit-team/junit/wiki/Test-runners">launch JUnit</a> on a given class is using the following line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.junit.runner.JUnitCore</span>;
+<span class="keyword">import</span> <span class="include">org.junit.runner.Result</span>;
+
+<span class="predefined-type">Result</span> result = JUnitCore.runClasses(ArrayListTest.class);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We are going to start our implementation with this class. So, we start by removing all <code>import</code> statements and create new versions of these classes (<code>Result</code> and <code>JUnitCode</code>).</p>
+</div>
+<div class="paragraph">
+<p>The class <code>Result</code> groups all information that will be useful to display the result of single test execution, either "Green" or "Red." We logically find fields to keep track of the number of executed tests and the number of failures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Result</span> {
+    <span class="directive">private</span> <span class="type">int</span> count;
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Failure&gt; failures = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;Failure&gt;();
+
+    <span class="directive">public</span> <span class="type">int</span> getCount() {
+        <span class="keyword">return</span> count;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Failure&gt; getFailures() {
+        <span class="keyword">return</span> failures;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For every test failure, we need to save the name of the failing test and the caught exception. It&#8217;s the job of the class <code>Failure</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Failure</span> {
+    <span class="directive">private</span> <span class="directive">final</span> Description description;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Throwable</span> thrownException;
+
+    <span class="directive">public</span> Failure(Description description, <span class="predefined-type">Throwable</span> thrownException) {
+        <span class="local-variable">this</span>.description = description;
+        <span class="local-variable">this</span>.thrownException = thrownException;
+    }
+
+    <span class="directive">public</span> Description getDescription() {
+        <span class="keyword">return</span> description;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Throwable</span> getThrownException() {
+        <span class="keyword">return</span> thrownException;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The class <code>Description</code> describes a single test, including the name, the annotation (<code>@Test</code> with the possible expected exception class), the test suite to which it belongs, etc. For our basic implementation, we will only represent the name but still keep the abstraction represented by <code>Description</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Description</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> displayName;
+
+    <span class="directive">public</span> Description(<span class="predefined-type">String</span> displayName) {
+        <span class="local-variable">this</span>.displayName = displayName;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getDisplayName() {
+        <span class="keyword">return</span> displayName;
+    }
+
+    <span class="comment">/**
+     * Create a &lt;code&gt;Description&lt;/code&gt; of a single test named &lt;code&gt;name&lt;/code&gt;
+     * in the class &lt;code&gt;clazz&lt;/code&gt;.
+     */</span>
+    <span class="directive">public</span> <span class="directive">static</span> Description createTestDescription(<span class="predefined-type">Class</span>&lt;?&gt; clazz, <span class="predefined-type">String</span> name) {
+        <span class="keyword">return</span> <span class="keyword">new</span> Description(<span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%s(%s)</span><span class="delimiter">&quot;</span></span>, name, clazz.getName()));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We are done with the class <code>Result</code>. Now, we have to implement the second class <code>JUnitCore</code>, which is essentially a facade to other classes defined in the JUnit library. Here is the implementation showing the main abstractions we are going to implement just after.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">JUnitCore</span> {
+
+    <span class="directive">private</span> RunNotifier notifier = <span class="keyword">new</span> RunNotifier();
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Result</span> runClass(<span class="predefined-type">Class</span>&lt;?&gt; testClass) {
+        <span class="keyword">return</span> <span class="keyword">new</span> JUnitCore().run(<span class="keyword">new</span> OurSimpleClassRunner(testClass));
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Result</span> run(Runner runner) {
+        <span class="predefined-type">Result</span> result = <span class="keyword">new</span> <span class="predefined-type">Result</span>();
+        RunListener listener = result.createListener();
+        notifier.addListener(listener);
+        runner.run(notifier);
+        <span class="keyword">return</span> result;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The method <code>run</code> exposes some details for the following of this article. The method defines a single parameter of type <code>Runner</code>, the main class of JUnit responsible for executing all tests and report the progression through various events (starting execution, failure, completion, &#8230;&#8203;). There are many supported implementations of <code>Runner</code>, for example, tests written using the JUnit 3 syntax, <a href="https://github.com/junit-team/junit/wiki/Parameterized-tests">parameterized tests</a>, <a href="https://github.com/junit-team/junit/wiki/Theories">theories</a>, etc. It is also possible to implement new runners as did Spring or Mockito by relying on the annotation <a href="http://junit.sourceforge.net/javadoc/org/junit/runner/RunWith.html"><code>@RunWith</code></a>. All runners satisfy the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">Runner</span> {
+
+    <span class="comment">/** Run the tests for this runner. */</span>
+    <span class="type">void</span> run(RunNotifier notifier);
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">How Runners report the result of tests execution?</div>
+<div class="paragraph">
+<p>The class <code>RunNotifier</code> implements <a href="http://en.wikipedia.org/wiki/Observer_pattern">the Observer pattern</a>. For every possible event, the class <code>RunNotifier</code> offers a notification method called by the <code>Runner</code> instance (ex: <code>fireTestStarted</code>). Each registered listener is then notified and can react in consequence. In our case, the object <code>Result</code> listens for these events to build the final result step by step.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the implementation of the class <code>RunNotifier</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RunNotifier</span> {
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;RunListener&gt; listeners = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;RunListener&gt;();
+
+    <span class="directive">public</span> <span class="type">void</span> addListener(RunListener listener) {
+        listeners.add(listener);
+    }
+
+    <span class="comment">/** Invoke to tell listeners that an atomic test is about to start. */</span>
+    <span class="directive">public</span> <span class="type">void</span> fireTestStarted(<span class="directive">final</span> Description description) {
+        <span class="keyword">for</span> (RunListener eachListener : listeners) {
+            eachListener.testStarted(description);
+        }
+    }
+
+    <span class="comment">/** Invoke to tell listeners that an atomic test failed. */</span>
+    <span class="directive">public</span> <span class="type">void</span> fireTestFailure(Failure failure) {
+        <span class="keyword">for</span> (RunListener eachListener : listeners) {
+            eachListener.testFailure(failure);
+        }
+    }
+
+    <span class="comment">/** Invoke to tell listeners that an atomic test finished. */</span>
+    <span class="directive">public</span> <span class="type">void</span> fireTestFinished(<span class="directive">final</span> Description description) {
+        <span class="keyword">for</span> (RunListener eachListener : listeners) {
+            eachListener.testFinished(description);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>RunListener</code> is defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">RunListener</span> {
+
+    <span class="comment">/** Called when an atomic test is about to be started. */</span>
+    <span class="directive">public</span> <span class="type">void</span> testStarted(Description description) {}
+
+    <span class="comment">/** Called when an atomic test has finished, whether the test succeeds or fails. */</span>
+    <span class="directive">public</span> <span class="type">void</span> testFinished(Description description) {}
+
+    <span class="comment">/** Called when an atomic test fails or when a listener throws an exception. */</span>
+    <span class="directive">public</span> <span class="type">void</span> testFailure(Failure failure) {}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For the code to compile again, we need to go back to the class <code>Result</code> to implement the missing method <code>result.createListener()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Result</span> {
+    <span class="directive">private</span> <span class="type">int</span> count;
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Failure&gt; failures = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;Failure&gt;();
+
+    <span class="comment">// ...</span>
+
+    <span class="directive">public</span> RunListener createListener() {
+        <span class="keyword">return</span> <span class="keyword">new</span> Listener();
+    }
+
+    <span class="directive">private</span> <span class="type">class</span> <span class="class">Listener</span> <span class="directive">extends</span> RunListener { <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> testStarted(Description description) {
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> testFinished(Description description) {
+            count++; <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> testFailure(Failure failure) {
+            failures.add(failure); <i class="conum" data-value="3"></i><b>(3)</b>
+        }
+
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We listen to events triggered by the runner.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We memorize every test execution.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We save every failure.</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="the_heart_of_junit_runner">The Heart of JUnit: Runner</h3>
+<div class="paragraph">
+<p>We are getting closer to the final step—the implementation of the class <code>Runner</code>. The official implementation is the class <code>BlockJUnit4ClassRunner</code>, which extends the class <code>ParentRunner</code> to inherit most of the logic. Both classes count more than 1000 lines of code. We will make some compromises.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s get started with a first version supporting only the annotation <code>@Test</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">OurSimpleClassRunner</span> <span class="directive">implements</span> Runner {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Class</span>&lt;?&gt; testClass;
+    <span class="directive">private</span> <span class="directive">final</span> TestIntrospector introspector;
+
+    <span class="directive">public</span> OurSimpleClassRunner2(<span class="predefined-type">Class</span>&lt;?&gt; testClass) {
+        <span class="local-variable">this</span>.testClass = testClass;
+        <span class="local-variable">this</span>.introspector = <span class="keyword">new</span> TestIntrospector(testClass);
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> run(RunNotifier notifier) {
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; testMethods = introspector.getTestMethods(Test.class); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachTestMethod : testMethods) {
+            invokeTestMethod(eachTestMethod, notifier);
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> invokeTestMethod(<span class="predefined-type">Method</span> method, RunNotifier notifier) {
+        Description description =
+            Description.createTestDescription(testClass, method.getName());
+
+        <span class="keyword">try</span> {
+            <span class="predefined-type">Object</span> test = createTest();
+            notifier.fireTestStarted(description); <i class="conum" data-value="2"></i><b>(2)</b>
+
+            method.invoke(test);
+
+        } <span class="keyword">catch</span> (<span class="predefined-type">Throwable</span> t) {
+            Failure failure = <span class="keyword">new</span> Failure(description, t);
+            notifier.fireTestFailure(failure); <i class="conum" data-value="2"></i><b>(2)</b>
+        } <span class="keyword">finally</span> {
+            notifier.fireTestFinished(description); <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">Object</span> createTest() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="keyword">return</span> testClass.getConstructor().newInstance(); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We use a utility class to find the test methods to execute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We notify about the progression after every step.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We create a new instance of our test class before every test method execution (see explanations below).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s explain these points a little more.</p>
+</div>
+<div class="paragraph">
+<p>The class <code>Runner</code> uses the class <code>TestIntrospector</code> to extract the test methods, making sure to ignore methods with the annotation <code>@Ignore</code>. Here is the implementation of this utility class (inspired from Junit 4.1):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">TestIntrospector</span> {
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Class</span>&lt; ?&gt; testClass;
+
+    <span class="directive">public</span> TestIntrospector(<span class="predefined-type">Class</span>&lt;?&gt; testClass) {
+        <span class="local-variable">this</span>.testClass = testClass;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; getTestMethods(<span class="predefined-type">Class</span>&lt;? <span class="directive">extends</span> <span class="predefined-type">Annotation</span>&gt; annotationClass) {
+        <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; results = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">Method</span>&gt;();
+        <span class="predefined-type">Method</span><span class="type">[]</span> methods = testClass.getDeclaredMethods();
+        <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachMethod : methods) {
+            <span class="predefined-type">Annotation</span> annotation = eachMethod.getAnnotation(annotationClass);
+            <span class="keyword">if</span> (annotation != <span class="predefined-constant">null</span> &amp;&amp; !isIgnored(eachMethod)) {
+                results.add(eachMethod);
+            }
+        }
+        <span class="keyword">return</span> results;
+    }
+
+    <span class="directive">private</span> <span class="type">boolean</span> isIgnored(<span class="predefined-type">Method</span> eachMethod) {
+        <span class="keyword">return</span> eachMethod.getAnnotation(Ignore.class) != <span class="predefined-constant">null</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Do tests are executed in a predictable order?</div>
+<div class="paragraph">
+<p>The truth is that the test methods are well ordered but not by their position in our code. JUnit uses the method <code>java.lang.Class.getDeclaredMethods()</code> to extract the annotated methods. The Javadoc is explicit on this point: "The elements in the array returned are not sorted and are not in any particular order."</p>
+</div>
+<div class="paragraph">
+<p>In practice, the order was the order of methods like defined in our code, but <a href="https://wikis.oracle.com/display/GlassFish/Method+Ordering+from+Class.getMethods">it changes since Java 7</a>. To ensure tests are reproducible, JUnit imposes a specific order by default. It is implemented by <code>org.junit.internal.MethodSorter.DEFAULT</code>, which is an instance of <code>Comparator</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Comparator</span>&lt;<span class="predefined-type">Method</span>&gt; DEFAULT = <span class="keyword">new</span> <span class="predefined-type">Comparator</span>&lt;<span class="predefined-type">Method</span>&gt;() {
+    <span class="directive">public</span> <span class="type">int</span> compare(<span class="predefined-type">Method</span> m1, <span class="predefined-type">Method</span> m2) {
+        <span class="type">int</span> i1 = m1.getName().hashCode();
+        <span class="type">int</span> i2 = m2.getName().hashCode();
+        <span class="keyword">if</span> (i1 != i2) {
+            <span class="keyword">return</span> i1 &lt; i2 ? -<span class="integer">1</span> : <span class="integer">1</span>;
+        }
+        <span class="keyword">return</span> NAME_ASCENDING.compare(m1, m2);
+    }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code relies on the <code>hashCode</code> defined by the method <code>String</code>. The final order is not alphabetic, nor the one in our source code, but is still predictable and repeatable, which is essential.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The other point concerns the creation of a new instance before each execution of a test method. The motivation is described in <a href="http://martinfowler.com/bliki/JunitNewInstance.html">a post by Martin Fowler</a> and is better illustrated through an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert</span>.*;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">WhyNewInstanceTest</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt; list = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">String</span>&gt;();
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> testFirst() {
+        list.add(<span class="string"><span class="delimiter">&quot;</span><span class="content">one</span><span class="delimiter">&quot;</span></span>);
+        assertEquals(<span class="integer">1</span>, list.size());
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> testSecond() {
+        assertEquals(<span class="integer">0</span>, list.size());
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With JUnit, both tests are successful, independently of their execution order. A new instance creation of our test class guarantees that every test method works on its list, without being affected by previous tests. This behavior has not been implemented by NUnit, the .Net version of JUnit, probably due to misunderstanding, and now, it&#8217;s impossible to revert without causing regression in existing test suites.</p>
+</div>
+<div class="admonitionblock note congratulations">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Congratulations!</div>
+<div class="paragraph">
+<p><strong>Less than 300 lines of code have been necessary to make our tests run again</strong>. The result is identical: we still have the same number of passing tests and only one failing test.</p>
+</div>
+<div class="paragraph">
+<p>The complete code source is available <a href="https://github.com/julien-sobczak/junit-from-scratch">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is the final version also supporting the annotations <code>@Before</code> and <code>@After</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">java.lang.annotation.Annotation</span>;
+<span class="keyword">import</span> <span class="include">java.lang.reflect.Method</span>;
+<span class="keyword">import</span> <span class="include">java.util.ArrayList</span>;
+<span class="keyword">import</span> <span class="include">java.util.List</span>;
+
+<span class="keyword">import</span> <span class="include">org.junit.After</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Ignore</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">JUnitLite</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+        <span class="predefined-type">Result</span> result = JUnitCore.runClass(ArrayListTest.class);
+        <span class="predefined-type">System</span>.out.println(result);
+
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">JUnitCore</span> {
+
+        <span class="directive">private</span> RunNotifier notifier = <span class="keyword">new</span> RunNotifier();
+
+        <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Result</span> runClass(<span class="predefined-type">Class</span>&lt;?&gt; testClass) {
+            <span class="keyword">return</span> <span class="keyword">new</span> JUnitCore().run(<span class="keyword">new</span> OurSimpleClassRunner(testClass));
+        }
+
+        <span class="directive">private</span> <span class="predefined-type">Result</span> run(Runner runner) {
+            <span class="predefined-type">Result</span> result = <span class="keyword">new</span> <span class="predefined-type">Result</span>();
+            RunListener listener = result.createListener();
+            notifier.addListener(listener);
+            runner.run(notifier);
+            <span class="keyword">return</span> result;
+        }
+
+    }
+
+
+    <span class="directive">public</span> <span class="type">interface</span> <span class="class">Runner</span> {
+
+        <span class="comment">/** Run the tests for this runner. */</span>
+        <span class="type">void</span> run(RunNotifier notifier);
+    }
+
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">TestIntrospector</span> {
+        <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Class</span>&lt; ?&gt; testClass;
+
+        <span class="directive">public</span> TestIntrospector(<span class="predefined-type">Class</span>&lt;?&gt; testClass) {
+            <span class="local-variable">this</span>.testClass = testClass;
+        }
+
+        <span class="directive">public</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; getTestMethods(
+          <span class="predefined-type">Class</span>&lt;? <span class="directive">extends</span> <span class="predefined-type">Annotation</span>&gt; annotationClass) {
+            <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; results = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;<span class="predefined-type">Method</span>&gt;();
+            <span class="predefined-type">Method</span><span class="type">[]</span> methods = testClass.getDeclaredMethods();
+            <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachMethod : methods) {
+                <span class="predefined-type">Annotation</span> annotation =
+                  eachMethod.getAnnotation(annotationClass);
+                <span class="keyword">if</span> (annotation != <span class="predefined-constant">null</span> &amp;&amp; !isIgnored(eachMethod)) {
+                    results.add(eachMethod);
+                }
+            }
+            <span class="keyword">return</span> results;
+        }
+
+        <span class="directive">private</span> <span class="type">boolean</span> isIgnored(<span class="predefined-type">Method</span> eachMethod) {
+            <span class="keyword">return</span> eachMethod.getAnnotation(Ignore.class) != <span class="predefined-constant">null</span>;
+        }
+
+    }
+
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">OurSimpleClassRunner</span> <span class="directive">implements</span> Runner {
+
+        <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Class</span>&lt;?&gt; testClass;
+        <span class="directive">private</span> <span class="directive">final</span> TestIntrospector introspector;
+        <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; beforeMethods;
+        <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; afterMethods;
+
+        <span class="directive">public</span> OurSimpleClassRunner(<span class="predefined-type">Class</span>&lt;?&gt; testClass) {
+            <span class="local-variable">this</span>.testClass = testClass;
+            <span class="local-variable">this</span>.introspector = <span class="keyword">new</span> TestIntrospector(testClass);
+            <span class="local-variable">this</span>.beforeMethods = introspector.getTestMethods(Before.class);
+            <span class="local-variable">this</span>.afterMethods = introspector.getTestMethods(After.class);
+        }
+
+        <span class="directive">public</span> <span class="type">void</span> run(RunNotifier notifier) {
+            <span class="predefined-type">List</span>&lt;<span class="predefined-type">Method</span>&gt; testMethods = introspector.getTestMethods(Test.class);
+
+            <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachTestMethod : testMethods) {
+                invokeTestMethod(eachTestMethod, notifier);
+            }
+        }
+
+        <span class="directive">private</span> <span class="type">void</span> invokeTestMethod(<span class="predefined-type">Method</span> method, RunNotifier notifier) {
+            Description description = Description.createTestDescription(
+              testClass, method.getName());
+
+            <span class="keyword">try</span> {
+                <span class="predefined-type">Object</span> test = createTest();
+                notifier.fireTestStarted(description);
+
+                invokeBeforeMethods(test);
+                method.invoke(test);
+                invokeAfterMethods(test); <span class="comment">// should be run in finally</span>
+
+            } <span class="keyword">catch</span> (<span class="predefined-type">Throwable</span> t) {
+                Failure failure = <span class="keyword">new</span> Failure(description, t);
+                notifier.fireTestFailure(failure);
+            } <span class="keyword">finally</span> {
+                notifier.fireTestFinished(description);
+            }
+        }
+
+        <span class="directive">private</span> <span class="predefined-type">Object</span> createTest() <span class="directive">throws</span> <span class="exception">Exception</span> {
+            <span class="keyword">return</span> testClass.getConstructor().newInstance();
+        }
+
+        <span class="directive">private</span> <span class="type">void</span> invokeBeforeMethods(<span class="predefined-type">Object</span> test) <span class="directive">throws</span> <span class="exception">Exception</span> {
+            <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachBeforeMethod : beforeMethods) {
+                eachBeforeMethod.invoke(test);
+            }
+        }
+
+        <span class="directive">private</span> <span class="type">void</span> invokeAfterMethods(<span class="predefined-type">Object</span> test) <span class="directive">throws</span> <span class="exception">Exception</span> {
+            <span class="keyword">for</span> (<span class="predefined-type">Method</span> eachAfterMethod : afterMethods) {
+                eachAfterMethod.invoke(test);
+            }
+        }
+
+    }
+
+
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">Result</span> {
+        <span class="directive">private</span> <span class="type">int</span> count;
+        <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Failure&gt; failures = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;Failure&gt;();
+
+        <span class="directive">public</span> <span class="type">int</span> getCount() {
+            <span class="keyword">return</span> count;
+        }
+
+        <span class="directive">public</span> <span class="predefined-type">List</span>&lt;Failure&gt; getFailures() {
+            <span class="keyword">return</span> failures;
+        }
+
+
+        <span class="directive">private</span> <span class="type">class</span> <span class="class">Listener</span> <span class="directive">extends</span> RunListener {
+
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> testStarted(Description description) {
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> testFinished(Description description) {
+                count++;
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> testFailure(Failure failure) {
+                failures.add(failure);
+            }
+
+        }
+
+        <span class="directive">public</span> RunListener createListener() {
+            <span class="keyword">return</span> <span class="keyword">new</span> Listener();
+        }
+
+    }
+
+
+    <span class="directive">public</span> <span class="directive">abstract</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">RunListener</span> {
+
+        <span class="comment">/** Called when an atomic test is about to be started. */</span>
+        <span class="directive">public</span> <span class="type">void</span> testStarted(Description description) {}
+
+        <span class="comment">/** Called when an atomic test has finished,
+            whether the test succeeds or fails. */</span>
+        <span class="directive">public</span> <span class="type">void</span> testFinished(Description description) {}
+
+        <span class="comment">/** Called when an atomic test fails or when a listener
+            throws an exception. */</span>
+        <span class="directive">public</span> <span class="type">void</span> testFailure(Failure failure) {}
+
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">Failure</span> {
+        <span class="directive">private</span> <span class="directive">final</span> Description description;
+        <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">Throwable</span> thrownException;
+
+        <span class="directive">public</span> Failure(Description description, <span class="predefined-type">Throwable</span> thrownException) {
+            <span class="local-variable">this</span>.description = description;
+            <span class="local-variable">this</span>.thrownException = thrownException;
+        }
+
+        <span class="directive">public</span> Description getDescription() {
+            <span class="keyword">return</span> description;
+        }
+
+        <span class="directive">public</span> <span class="predefined-type">Throwable</span> getThrownException() {
+            <span class="keyword">return</span> thrownException;
+        }
+
+    }
+
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">Description</span> {
+
+        <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> displayName;
+
+        <span class="directive">public</span> Description(<span class="predefined-type">String</span> displayName) {
+            <span class="local-variable">this</span>.displayName = displayName;
+        }
+
+        <span class="directive">public</span> <span class="predefined-type">String</span> getDisplayName() {
+            <span class="keyword">return</span> displayName;
+        }
+
+        <span class="directive">public</span> <span class="directive">static</span> Description createTestDescription(
+          <span class="predefined-type">Class</span>&lt;?&gt; clazz, <span class="predefined-type">String</span> name) {
+            <span class="keyword">return</span> <span class="keyword">new</span> Description(
+            <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%s(%s)</span><span class="delimiter">&quot;</span></span>, name, clazz.getName()));
+        }
+
+    }
+
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">RunNotifier</span> {
+        <span class="directive">private</span> <span class="predefined-type">List</span>&lt;RunListener&gt; listeners = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;RunListener&gt;();
+
+        <span class="directive">public</span> <span class="type">void</span> addListener(RunListener listener) {
+            listeners.add(listener);
+        }
+
+        <span class="comment">/** Invoke to tell listeners that an atomic test is about to start. */</span>
+        <span class="directive">public</span> <span class="type">void</span> fireTestStarted(<span class="directive">final</span> Description description) {
+            <span class="keyword">for</span> (RunListener eachListener : listeners) {
+                eachListener.testStarted(description);
+            }
+        }
+
+        <span class="comment">/** Invoke to tell listeners that an atomic test failed. */</span>
+        <span class="directive">public</span> <span class="type">void</span> fireTestFailure(Failure failure) {
+            <span class="keyword">for</span> (RunListener eachListener : listeners) {
+                eachListener.testFailure(failure);
+            }
+        }
+
+        <span class="comment">/** Invoke to tell listeners that an atomic test finished. */</span>
+        <span class="directive">public</span> <span class="type">void</span> fireTestFinished(<span class="directive">final</span> Description description) {
+            <span class="keyword">for</span> (RunListener eachListener : listeners) {
+                eachListener.testFinished(description);
+            }
+        }
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">What about IDE support?</div>
+<div class="paragraph">
+<p>Let&#8217;s consider Eclipse and its plugin <a href="http://www.eclipse.org/jdt/">Java Development Tools (JDT)</a> that implement the JUnit support. This plugin reuses the JUnit library and exploits the extension points supported by the class <code>RunNotifier</code>. The plugin implements <a href="http://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/tree/org.eclipse.jdt.junit4.runtime/src/org/eclipse/jdt/internal/junit4/runner/JUnit4TestListener.java">a custom listener</a> that will still consolidate the test results but also updates the JUnit view in the Eclipse UI.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note experiment">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Try for yourself!</div>
+<div class="paragraph">
+<p>We took a few shortcuts in our implementation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The determination of the runner to use is more complex than a simple class instanciation. To know more: <code>org.junit.runner.JUnitCore</code>, <code>org.junit.runner.Computer</code>, <code>org.junit.runner.Request</code>.</p>
+</li>
+<li>
+<p>Our Runner implementation doesn&#8217;t reflect the complexity found in the real runners, which must, for example, support many other annotations such as <code>@BeforeClass</code> and <code>@AfterClass</code> but also <a href="https://github.com/junit-team/junit/wiki/Assumptions-with-assume">assumptions</a>, <a href="https://github.com/junit-team/junit/wiki/Categories">categories</a>, &#8230;&#8203; Why not have a look at the JUnit source code to discover how these features have been implemented.</p>
+</li>
+<li>
+<p>The tests can be <a href="https://github.com/junit-team/junit/wiki/Developing-with-fast-tests">run in parallel</a>. The actual implementations of the classes introduced in this article are thread-safe. When some objects could not be made immutable, we have to use concurrency building blocks defined in the package <code>java.util.concurrent</code>: <code>AtomicInteger</code>, <code>CopyOnWriteArrayList</code>, <code>Executors</code>, &#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To Remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Only <strong>a few hundred lines of code can have a major impact</strong> in the software development landscape.</p>
+</li>
+<li>
+<p>The <strong>design</strong> of well-defined abstractions (<code>Result</code>, <code>Failure</code>, <code>Description</code>) ensures the code is <strong>simple to grasp</strong> and extend.</p>
+</li>
+<li>
+<p>The <strong>use of design patterns</strong> brings a lot of <strong>flexibility</strong> required for the library to be used in many contexts.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

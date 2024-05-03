@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Anki Scripting for Non-Programmers</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/write/2020/12/26/anki-scripting-for-non-programmers.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-write">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">December 26, 2020</span>
+
+      
+      <a href="/tags/tools" class="label">
+      Tools
+      </a>
+      
+      <a href="/tags/learning" class="label">
+      Learning
+      </a>
+      
+
+      
+      <span class="label">
+        Flashcards
+      </span>
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Anki Scripting for Non-Programmers</h2>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container sticky-container">
+
+    
+    <article>
+    
+
+      <div class="content">
+      <div class="sect1">
+<h2 id="anki_scripting_for_non_programmers">Anki Scripting for Non-Programmers</h2>
+<div class="sectionbody">
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This post revises an old post that I wrote four years ago, <a href="/write/2016/12/26/anki-scripting.html">Anki Scripting</a>. My motivation at that time was just to publish my notes mainly for myself. I have not anticipated that so many learners were trying to automate their flashchards creation.</p>
+</div>
+<div class="paragraph">
+<p>I finished memorizing the thousands of flashcards I created programmatically. I need to create new ones, and I thought revising my old post could be useful.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This post is written for an audience with minimal programming skills. I&#8217;ve tried to keep it small, and provide basic solutions to automate your flashcards easily.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">My Environnement</div>
+<div class="paragraph">
+<p>The code present in this article was tested on MacOS using Python 3.8 and Anki 2.1.35. Future versions must be working but if you encounter errors, differences with your environment may explain why I didn&#8217;t get the same error.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="under_the_hood">Under the Hood</h3>
+<div class="paragraph">
+<p>Anki is packaged as a Desktop application for Windows/MacOS/Linux. Additional applications exist for Android and iOS but the core of Anki resides in the desktop version.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/anki-components.png" alt="anki components">
+</div>
+</div>
+<div class="paragraph">
+<p>The Anki source code is available on <a href="https://github.com/ankitects/anki">GitHub</a>, the largest code hosting platform used by millions of developers to share their work. The majority of code you use in your daily life, on your computer, tablet, or phone, has home in GitHub.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Python, the programming language</div>
+<div class="paragraph">
+<p>Anki is written in Python (at least at the time of writing), which is great because <strong>Python is the main programming language to initiate new coders</strong>. Python syntax is intuitive and excels for small programs like we are going to write in this article. If you are curious about programming, starting with Python is a great choice. Learning Python is not just useful for interacting with Anki. <strong>Learning Python is a fun way to get starting with programming.</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To automate the creation of our flashcards, several strategies are possible:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Insert new cards directly inside the SQL database</strong> (think of a SQL database like a spreadsheet file with many tabs, columns, and lines). This approach requires a perfect comprehension of the schema. Each column need to be specified or Anki will complain at startup when trying the read our changes.</p>
+</li>
+<li>
+<p><strong>Create new cards using the Anki Python API</strong> (think of an API as a list of capabilities that we can ask Anki to perform). This approach requires to write Python code (the API speaks only in Python, so you have to speak in Python if you want to be understood). Contrary to the first approach, the API contains the logic to initialize most columns automatically. We can focus exclusively on the content of our flashcards.</p>
+</li>
+<li>
+<p><strong>Use a bot to simulate inputs and clicks using the Anki GUI</strong>. My experience with such tools is not so great. Future changes in the UI can easily break everything and you will have to repeat the process from scratch. Like the previous approach, code is required using this strategy too, and will be even more challenging than using the Anki API.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Consequently, like for my previous post, <strong>I think the best approach is to use the Python API to create our flashcards</strong>. Interacting with the SQL database or the GUI is brittle as every new version of Anki may change the schema or the UI. The Python API is the more stable component. This explains why I think it&#8217;s preferable to rely on it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using_the_anki_python_library">Using the Anki Python Library</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Not feeling the programmer in you?</div>
+<div class="paragraph">
+<p>If you don&#8217;t want to get your hands dirty in code, <strong>you can safely jump to the next section</strong> where I will explain how to load flashcards into Anki without writing a single line of code.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When using the Desktop application, the Graphical User Interface (GUI) validates your inputs and uses the Anki API (a Python module) to create your cards, which hides the details about the underlying database. In this tutorial, we are going to create a script that, like the Desktop application, will interact with the Anki Python API.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/anki-scripting.png" alt="anki scripting">
+</div>
+</div>
+<div class="paragraph">
+<p>But first, we need to create a safe environment. Writing code means writing bugs. And bugs can make irreversible damages. You don&#8217;t want to lose your Anki collection, so let&#8217;s create a sandbox environnement. The trick is to start Anki from your terminal and pass the option <code>-b</code> to specify a <a href="https://docs.ankiweb.net/#/files?id=startup-options">custom directory</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On Windows: <code>"C:\Program Files\Anki\anki.exe" -b "%PWD%/AnkiTest"</code></p>
+</li>
+<li>
+<p>On MacOS: <code>open /Applications/Anki.app --args -b $PWD/AnkiTest</code></p>
+</li>
+<li>
+<p>On Linux: <code>anki -b $PWD/AnkiTest</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Great. The directory <code>~/AnkiTest/</code> is now a valid Anki directory.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to install the Python package <code>aqt</code> (which installs automatically the core package <code>anki</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ pip3 install aqt</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Command not found</div>
+<div class="paragraph">
+<p>If the previous command ends with the error <code>command not found</code>, it means Python 3 is not installed on your machine. You can download Python directly on the <a href="https://www.python.org/downloads/">project website</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We now create a file <code>demo.py</code> in the current directory containing the following script. This script creates a single flashcard.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="keyword">import</span> <span class="include">os</span>
+
+<span class="keyword">from</span> <span class="include">anki.storage</span> <span class="keyword">import</span> <span class="include">Collection</span> <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="comment"># Find the Anki directory </span><i class="conum" data-value="2"></i><b>(2)</b>
+anki_home = <span class="string"><span class="delimiter">'</span><span class="content">/Users/julien/AnkiTest/User 1</span><span class="delimiter">'</span></span>
+anki_collection_path = os.path.join(anki_home, <span class="string"><span class="delimiter">&quot;</span><span class="content">collection.anki2</span><span class="delimiter">&quot;</span></span>)
+
+<span class="comment"># 1. Load the anki collection </span><i class="conum" data-value="3"></i><b>(3)</b>
+col = Collection(anki_collection_path, log=<span class="predefined-constant">True</span>)
+
+<span class="comment"># 2. Select the deck </span><i class="conum" data-value="4"></i><b>(4)</b>
+
+<span class="comment"># Find the model to use (Basic, Basic with reversed, ...)</span>
+modelBasic = col.models.byName(<span class="string"><span class="delimiter">'</span><span class="content">Basic</span><span class="delimiter">'</span></span>)
+<span class="comment"># Set the deck</span>
+deck = col.decks.byName(<span class="string"><span class="delimiter">'</span><span class="content">Default</span><span class="delimiter">'</span></span>)
+col.decks.select(deck[<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>])
+col.decks.current()[<span class="string"><span class="delimiter">'</span><span class="content">mid</span><span class="delimiter">'</span></span>] = modelBasic[<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>]
+
+<span class="comment"># 3. Create a new card </span><i class="conum" data-value="5"></i><b>(5)</b>
+note = col.newNote()
+note.fields[<span class="integer">0</span>] = <span class="string"><span class="delimiter">&quot;</span><span class="content">Bonjour</span><span class="delimiter">&quot;</span></span> <span class="comment"># The Front input field in the UI</span>
+note.fields[<span class="integer">1</span>] = <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello</span><span class="delimiter">&quot;</span></span>   <span class="comment"># The Back input field in the UI</span>
+col.add_note(note, deck[<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>])
+
+<span class="comment"># 4. Save changes </span><i class="conum" data-value="6"></i><b>(6)</b>
+col.save()</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This code references the Python module that we installed with the previous command <code>pip3</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This code determines the Anki directory to use. For this test, we use the path to our sandbox environnement. Make sure the path you specify really exists and use an absolute path (not a path like <code>./AnkiTest</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This code is equivalent to opening the Anki application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This code is equivalent to clicking on a deck on the main screen. This way, when we will create new flashcards, they will belong to this deck.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This code has the same effect as clicking on the button "Add" and fill in the form.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>This code has the same effect as exiting the Anki application.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then, run the script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ python3 demo.py</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Our Anki collection has been updated. You can reopen Anki from the terminal as before to select your sandbox environment. A new flashcard will be present!</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/anki-new-flashcard.png" alt="anki new flashcard">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Help! Anki Desktop failed at startup.</div>
+<div class="paragraph">
+<p>The Python script uses the Anki Python module installed using the command <code>pip3</code>. This command has installed the latest version of the Anki package. This installation is completely independent of the Anki Desktop installation.</p>
+</div>
+<div class="paragraph">
+<p>If your version of Anki Desktop is outdated, Anki may complain. Indeed, this version may not understand the changes done by a later Anki version. This problem is well known among developers and is called <a href="https://en.wikipedia.org/wiki/Forward_compatibility">forward compatibility</a>. In practice, most programs support backward compatibility (Anki knows how to load a collection created by an older version) but few support forward compatibility (Anki ignores how to load a collection created by a future version).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/anki-compatibility.png" alt="anki compatibility">
+</div>
+</div>
+<div class="paragraph">
+<p>If Anki complain at startup, try to update Anki Desktop to the latest available version so you can read any collection created by any version of Anki.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Great! We created a single flashcard. Using basic Python syntax, it is possible to extend the script to create a lot of flashcards. Here is a different version using a global array containing the flashcards to create:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="comment"># batch.py</span>
+<span class="keyword">import</span> <span class="include">os</span>
+
+<span class="keyword">from</span> <span class="include">anki.storage</span> <span class="keyword">import</span> <span class="include">Collection</span>
+
+notes = [ <i class="conum" data-value="1"></i><b>(1)</b>
+  {
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">Front</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Bonjour</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">Back</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello</span><span class="delimiter">&quot;</span></span>,
+  },
+  {
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">Front</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Merci</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">Back</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Thank you</span><span class="delimiter">&quot;</span></span>,
+  },
+  <span class="comment"># Thousands of additional notes...</span>
+]
+
+<span class="comment"># Find the Anki directory</span>
+anki_home = <span class="string"><span class="delimiter">'</span><span class="content">/Users/julien/AnkiTest/User 1</span><span class="delimiter">'</span></span>
+anki_collection_path = os.path.join(anki_home, <span class="string"><span class="delimiter">&quot;</span><span class="content">collection.anki2</span><span class="delimiter">&quot;</span></span>)
+
+<span class="comment"># 1. Load the anki collection</span>
+col = Collection(anki_collection_path, log=<span class="predefined-constant">True</span>)
+
+<span class="comment"># 2. Select the deck</span>
+modelBasic = col.models.byName(<span class="string"><span class="delimiter">'</span><span class="content">Basic</span><span class="delimiter">'</span></span>)
+deck = col.decks.byName(<span class="string"><span class="delimiter">'</span><span class="content">Default</span><span class="delimiter">'</span></span>)
+col.decks.select(deck[<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>])
+col.decks.current()[<span class="string"><span class="delimiter">'</span><span class="content">mid</span><span class="delimiter">'</span></span>] = modelBasic[<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>]
+
+<span class="comment"># 3. Create the cards</span>
+<span class="keyword">for</span> current_note <span class="keyword">in</span> notes: <i class="conum" data-value="2"></i><b>(2)</b>
+  note = col.newNote()
+  note.fields[<span class="integer">0</span>] = current_note[<span class="string"><span class="delimiter">&quot;</span><span class="content">Front</span><span class="delimiter">&quot;</span></span>]
+  note.fields[<span class="integer">1</span>] = current_note[<span class="string"><span class="delimiter">&quot;</span><span class="content">Back</span><span class="delimiter">&quot;</span></span>]
+  col.add_note(note, deck[<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>])
+
+<span class="comment"># 4. Save changes</span>
+col.save()</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create a variable containing all the notes to create.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Iterate over this variable and create the notes as before.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Run the script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ python3 batch.py</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Reopen Anki. You now have more cards to review!</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all for the programming stuff. The next section applies the same logic and presents a small utility I created so that you don&#8217;t need to write Python code.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="hiding_the_anki_python_library_behind_a_cli">Hiding the Anki Python Library behind a CLI</h3>
+<div class="paragraph">
+<p>The Anki library code is published as a Python package, a way for developers to share and reuse code. When we run the command <code>pip3 install</code> in the previous section, we use the de facto standard tool in Python to install a package locally. This means we can now create a Python program reusing the Anki code as we did in the previous section.</p>
+</div>
+<div class="paragraph">
+<p>To avoid writing the same code every time, I published another package that I named <a href="https://pypi.org/project/anki-cli-unofficial/"><code>anki-cli-unofficial</code></a>. A package can use other packages, which is called dependencies in programming jargon and is probably the biggest challenge for any developers. My package depends logically on the package <code>anki</code> and instead of storing the content of the flashcards directly in the code, the script asks for an input file. Let&#8217;s try it!</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect</a> is another project you may find interesting. AnkiConnect is an community add-on that exposes the internal Python API through a simple HTTP API. The motivation is similar by allowing users to script their flashcard creation. This approach is probably less fragile compared to what I will explain in this section, even if using the Python API directly can be more powerful in some cases.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To install the pip package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ pip install anki-cli-unofficial</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Dependency Hell</div>
+<div class="paragraph">
+<p>When installing this package, you will also install its dependencies like <code>anki</code>. If the command fails, it probably means one of the dependencies had changed in an unexpected way. For example, at the time of writing, this command is broken using Python 3.9 as Anki hasn&#8217;t still published a package compatible with this newer version of Python. This problem will probably be solved at the time you are reading this post.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After installation, a new command <code>anki-cli-unofficial</code> is available from your terminal. You don&#8217;t need to launch <code>python3</code> as we did until now. We called such a program a command-line interface (CLI).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ anki-cli-unofficial load -h
+
+usage: anki-cli-unofficial load [-h]
+                                [--anki-dir ANKI_DIR]
+                                [--media-dir MEDIA_DIR]
+                                [--deck DECK]
+                                input_file
+                                output_file
+
+positional arguments:
+  input_file            file containing the flashcards to create
+  output_file           Anki generated archive filepath
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --anki-dir ANKI_DIR   Anki user directory (Default to a temp directory)
+  --media-dir MEDIA_DIR local directory containing the medias referenced in
+                        input_file
+  --deck DECK           deck name in which to create flashcards</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The CLI supports a single command <code>load</code>. This command accepts various arguments but for this article, we can focus only on the two required ones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>input_file</code>: A YAML file containing the content of your flashcards to create. (This file must exist.)</p>
+</li>
+<li>
+<p><code>output_file</code>: The filename that the CLI will use to create the Anki archive. (This file doesn&#8217;t have to exist and be will overriden otherwise.)</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="editing_the_input_file">Editing the input file</h4>
+<div class="paragraph">
+<p>Here is an example of a valid input file containing French words and expressions (the file is named <code>french.yml</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="comment"># An example using only text</span>
+- <span class="string"><span class="content">type: Basic</span></span>
+  <span class="key">tags</span>: <span class="string"><span class="content">[idiom]</span></span>
+  <span class="key">fields</span>:
+    <span class="key">Front</span>: <span class="string"><span class="content">'Avoir la banane! &lt;small&gt;idiom&lt;/small&gt;'</span></span>
+    <span class="key">Back</span>: <span class="string"><span class="content">'To feel great. (literally: &lt;em&gt;to have the banana&lt;em&gt;)'</span></span>
+
+<span class="comment"># An example playing a sound when the back card is displayed</span>
+- <span class="string"><span class="content">type: Basic</span></span>
+  <span class="key">tags</span>: <span class="string"><span class="content">[word]</span></span>
+  <span class="key">fields</span>:
+    <span class="key">Front</span>: <span class="string"><span class="content">'Bonjour &lt;small&gt;interj.&lt;/small&gt;'</span></span>
+    <span class="key">Back</span>: <span class="string"><span class="delimiter">&gt;</span><span class="content">
+      [sound:bonjour.mp3]
+      Hello &lt;small&gt;interj.&lt;/small&gt;</span></span>
+
+<span class="comment"># An example using a picture</span>
+- <span class="string"><span class="content">type: Basic</span></span>
+  <span class="key">tags</span>: <span class="string"><span class="content">[word]</span></span>
+  <span class="key">fields</span>:
+    <span class="key">Front</span>: <span class="string"><span class="content">'&lt;img src=&quot;car.jpg&quot; /&gt;'</span></span>
+    <span class="key">Back</span>: <span class="string"><span class="content">Voiture &lt;small&gt;n.&lt;/small&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The note fields can reference medias using the usual Anki syntax (<code>&lt;img src="&#8230;&#8203;"/&gt;</code> for images and <code>[sound:&#8230;&#8203;]</code> for sounds). The CLI will try to load these files into the Anki medias database.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The file is a <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> file. YAML is popular among developers and can be considered like a supercharged CSV or TXT file. Check <a href="https://en.wikipedia.org/wiki/YAML">the Wikipedia page</a> if you have never used this format before. The syntax is easy to grasp if you have a good text editor, which will ensure only spaces are used and not tabulations.</p>
+</div>
+<div class="paragraph">
+<p>The CLI expects the YAML file to respect a given format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml">- <span class="string"><span class="content">type: Basic</span></span>        <span class="comment"># Required (the name of the note type as displayed in Anki)</span>
+  <span class="key">tags</span>: <span class="string"><span class="content">[tag1, tag2]</span></span> <span class="comment"># Optional (a list of tags to add to this note)</span>
+  <span class="key">fields</span>:            <span class="comment"># Required (the ORDERED fields as listed in Anki Desktop)</span>
+    <span class="key">Field1</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">The content of the field named Field1. &lt;i&gt;HTML is supported&lt;/i&gt;.</span><span class="delimiter">&quot;</span></span>
+    <span class="key">Field2</span>: <span class="string"><span class="delimiter">&gt;</span><span class="content">
+      The content of the field named Field2.
+      YAML has several syntaxes to include a large text value.
+      Check this website https://yaml-multiline.info/ for more information.</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are several strategies to create your input file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Manually</strong>. Open your favorite text editor, and start writing, copying/pasting text from the Internet, and editing the content.</p>
+</li>
+<li>
+<p><strong>Programmatically</strong>. Open your favorite code editor, and write a small program to generate the YAML file. You can use any language, not just Python, even if personally, I love using Python for such scripts.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="running_the_cli">Running the CLI</h4>
+<div class="paragraph">
+<p>Let&#8217;s load the file <code>french.yml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ anki-cli-unofficial load french.yml french.apkg</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When running this command, the CLI creates a new temporary Anki directory. It does not work directly on your Anki collection. There are limitations with such an approach. For example, you are limited to the default Anki note types (<code>Basic</code>, <code>Basic (with reversed card)</code>, <code>Basic (optional reversed card)</code>, <code>Cloze</code>). The main advantage is the command is safe. It will not trash your flashcards due to a bug.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Bypassing the sandbox environment</div>
+<div class="paragraph">
+<p>The option <code>--anki-dir</code> can be used to specify your main Anki directory (and thus reference your custom note types). Use it only if you are confident in what you are doing and if you have done a complete backup of your whole Anki directory!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The command outputs useful informations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ anki-cli-unofficial load french.yaml french.apkg
+
+📂 Opening Anki collection...
+🔍 Loading 'french.yaml' into the deck 'Default'...
+        - copying media file 'bonjour.mp3'
+        - copying media file 'car.jpg'
+💾 Saving Anki collection...
+👍 Done
+👉 Anki collection can be opened using the following command:
+        open /Applications/Anki.app --args -b /var/folders/tmpn8rl4l2w <i class="conum" data-value="1"></i><b>(1)</b>
+👉 Anki Archive is available here: ./french.apkg <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The CLI displays a valid command to run locally if you want to inspect the sandbox directory using the Anki Desktop application. This is a good way to validate that your flashcards have correctly been generated.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The CLI displays the location of the Anki archive file containing your flashcards. This is the file to import in your collection when running Anki without option.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We also notice based on the command output that the CLI tries to load the media files referenced in our input file. By default, the CLI expects the file to be present in the current directory. You can specifiy a different directory using the option <code>--media-dir</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ ls path/to/medias
+bonjour.mp3   car.jpg
+
+$ anki-cli-unofficial load --media-dir path/to/medias/ french.yaml french.apkg</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The generation process is summarized in the following video:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<video src="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/cli.mp4" width="800" controls>
+Your browser does not support the video tag.
+</video>
+</div>
+</div>
+<div class="paragraph">
+<p><em>(<a href="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/cli.mp4">Download the video</a>)</em></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="importing_the_output_file">Importing the output file</h4>
+<div class="paragraph">
+<p>The CLI generates a new file in the current directory (<code>french.apkg</code> in the previous example). This file is a valid Anki package like the ones you can download from the <a href="https://ankiweb.net/shared/decks/">Anki website</a>.</p>
+</div>
+<div class="paragraph">
+<p>To import your flashcards, open Anki without option to load your main collection. From the main screen, use the "Import file" button to load the file <code>french.apkg</code> into Anki.</p>
+</div>
+<div class="paragraph">
+<p>Note that when importing an archive, Anki expects the archive to be self-containing. For example, if you have generated flashcards using the note type <code>Basic</code>, Anki will recreate a new type <code>Basic-XXXX</code> when importing the archive. You may have to do post-processing as illustrated in the following video:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<video src="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/import.mp4" width="800" controls>
+Your browser does not support the video tag.
+</video>
+</div>
+</div>
+<div class="paragraph">
+<p><em>(<a href="/posts_resources/2020-12-26-anki-scripting-for-non-programmers/import.mp4">Download the video</a>)</em></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="next_step">Next Step</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The next step for you is to find something to learn that requires automation. Don&#8217;t create too many flashcards if you are not sure to review them. Observing the number of cards to review increasing with time is the best way to completely stop using Anki. Learn what is interesting you the most at the present moment. And repeat.</p>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+<section id="recommendations">
+  <div class="container">
+    <h2>You may also <strong>&hearts;</strong></h2>
+    <hr class="star-light">
+    <ul>
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/inspect/2022/05/30/anki-srs.html">Anki SRS Algorithm</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Flashcards
+            </span>
+          
+
+          
+            <span class="subtitle">Spaced Repetition Explained with Code</span>
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2018/12/30/should-i-create-a-flashcard.html">Should I Create a Flashcard?</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+            <a href="/tags/productivity"
+              class="label">
+              Productivity
+            </a>
+          
+          
+
+          
+            <span class="subtitle">A case-by-case approach</span>
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+        <li>
+          <a class="title" href="/write/2018/12/01/10-rules-for-better-flashcards.html">10 Rules for Better Flashcards</a>
+
+          
+            <a href="/tags/learning"
+              class="label">
+              Learning
+            </a>
+          
+          
+            <span
+              class="label">
+              Flashcards
+            </span>
+          
+
+          
+        </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    </ul>
+  </div>
+</section>
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>

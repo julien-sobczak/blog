@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Julien Sobczak">
+<meta name="robots" content="index,follow,noodp">
+<meta name="googlebot" content="index,follow">
+<meta name="subject" content="Programming">
+
+
+    <title>Linux System Calls Under The Hood</title>
+
+    <!-- To make search engines use the HTTPS url -->
+<link rel="canonical" href="https://www.juliensobczak.com/inspect/2021/08/10/linux-system-calls-under-the-hood.html">
+<link rel="alternate" type="application/atom+xml" title="I'm Lovin' I.T. - Julien Sobczak" href="https://www.juliensobczak.com/feed.xml">
+
+<!-- Asciidoctor assets -->
+<link href="/css/coderay.css" rel="stylesheet" />
+
+<!-- Theme CSS -->
+<link href="/css/app.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nothing+You+Could+Do" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+</head>
+
+<body id="page-post">
+  <!-- Custom loader -->
+<div id="loader-wrapper">
+  <div id="loader"></div>
+</div>
+
+
+  <!-- Navigation -->
+
+  <nav id="mainNav" class="navbar-default">
+
+    
+    
+    <div id="reading-bar"></div>
+    
+    
+
+    <div class="container">
+      <a class="navbar-brand" href="/index.html">I'm lovin' I.T.</a>
+      <div class="navbar-collabsible">
+        <input id="collapsible" class="navbar-checkbox-toggle" type="checkbox">
+        <label for="collapsible" class="navbar-label-toggle">Menu <i class="fas fa-bars"></i></label>
+        <div class="navbar-collapse">
+          <ul>
+
+            
+            <li>
+            
+                <a href="/categories/read.html">I'm readin' I.T.</a>
+            </li>
+
+            
+            <li>
+            
+                <a href="/categories/write.html">I'm writin' I.T.</a>
+            </li>
+
+            
+            <li class="active">
+            
+                <a href="/categories/inspect.html">I'm inspectin' I.T.</a>
+            </li>
+
+            <li class="page-scroll">
+                <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">About Me</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button id="zen-mode-in"><i class="fas fa-minus"></i></button>
+      <button id="zen-mode-out"><i class="fas fa-plus"></i></button>
+    </div>
+  </nav>
+
+
+  <header class="post-title post-inspect">
+  <!-- see https://www.elastic.co/blog/elasticsearch-5-0-0-released -->
+  <div class="container">
+
+    <div class="icon-category">
+    </div>
+
+    <div class="metadata">
+      <span class="date">August 10, 2021</span>
+
+      
+
+      
+
+      <ul class="language">
+        <li class="current-language"><a class="active" href="#">EN</a></li>
+      </ul>
+
+      <h2>Linux System Calls Under The Hood</h2>
+      
+      <h3>Crossing the Border Between Userland and the Kernel</h3>
+      
+
+      <p class="author-name">
+        
+        <span>By </span>
+        
+        <a href="/#about-me">Julien Sobczak</a>
+      </p>
+
+     </div>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="container">
+
+    <article>
+
+      <div class="content">
+      <div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>There are lots of Linux users who don&#8217;t care how the kernel works, but only want to use it. That is a tribute to how good Linux is.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Linus Torvalds
+</div>
+</div>
+<div class="paragraph lead">
+<p>Operating systems run different programs at the same time. As these programs are often written by different developers, the operating system guarantees the correct use of resources. One program cannot use all the memory or read data written by another program.</p>
+</div>
+<div class="paragraph lead">
+<p>Whenever your program wants to execute a privileged action like printing a text on screen, it requests that the kernel perform the action on its behalf. How does it work? This post will show the underlying code executed when you call a Linux system call.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">What You Will Learn</div>
+<div class="ulist">
+<ul>
+<li>
+<p>What is the difference between a library call and a system call.</p>
+</li>
+<li>
+<p>Why system calls are less performant than function calls.</p>
+</li>
+<li>
+<p>What are the steps when executing a system call.</p>
+</li>
+<li>
+<p>What is the difference between an API and an ABI.</p>
+</li>
+<li>
+<p>How to execute a system call in assembly language.</p>
+</li>
+<li>
+<p>How programming languages expose system calls.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution license">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The article presents code from different OSS projects: <a href="https://github.com/torvalds/linux">Linux</a> is published under <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a>, <a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git">glibc</a> is published under <a href="https://www.gnu.org/licenses/lgpl-3.0.html">LGPL</a>, <a href="https://github.com/golang/go">Go</a> is published under <a href="https://github.com/golang/go/blob/master/LICENSE">BSD-style license</a>, and <a href="https://github.com/openjdk/jdk">Java</a> is published under <a href="https://github.com/openjdk/jdk/blob/master/LICENSE">GPLv2</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="overview">Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All programs running on Linux use system calls. System calls are the interface between your application and the Linux kernel. If you need a service provided by the Kernel, you need a system call. You use them every time you read a file on disk (<code>open</code>, <code>read</code>, <code>close</code>), allocate a new block of memory (<code>sbrk</code>, <code>mmap</code>), communicate with another process (<code>kill</code>, <code>listen</code>), start a new process (<code>fork</code>, <code>wait</code>), or simply when your program stops (<code>exit</code>).</p>
+</div>
+<div class="paragraph">
+<p>The command <code>man 2 syscalls</code> lists all system calls:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$ apt install manpages-dev
+$ man 2 syscalls
+...
+System call                Kernel        Notes
+───────────────────────────────────────────────────────────────────────
+
+_llseek(2)                 1.2
+_newselect(2)              2.0
+_sysctl(2)                 2.0
+accept(2)                  2.0           See notes on socketcall(2)
+accept4(2)                 2.6.28
+access(2)                  1.0
+acct(2)                    1.0
+add_key(2)                 2.6.10
+adjtimex(2)                1.0
+alarm(2)                   1.0
+alloc_hugepages(2)         2.5.36        Removed in 2.5.44
+arc_gettls(2)              3.9           ARC only
+arc_settls(2)              3.9           ARC only
+arc_usr_cmpxchg(2)         4.9           ARC only
+arch_prctl(2)              2.6           x86_64, x86 since 4.12
+atomic_barrier(2)          2.6.34        m68k only
+atomic_cmpxchg_32(2)       2.6.34        m68k only
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command returns 467 different system calls on my Ubuntu 20.04 server. Not all of them are actively in use. Some system calls are deprecated and only kept to preserve compatibility with old binaries.</p>
+</div>
+<div class="paragraph">
+<p>System calls are unavoidable, but in practice, we rarely interact directly with them.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Library Function vs System Call</div>
+<div class="paragraph">
+<p>A library function is simply one of the functions that constitute the standard C library.</p>
+</div>
+<div class="paragraph">
+<p>Many library functions don’t use system calls (e.g., string-manipulation functions like <code>strcmp()</code>). On the other hand, some library functions are layered on top of system calls. For example, the <code>fopen()</code> library function uses the <code>open</code> system call to actually open a file. Often, library functions are designed to provide a more user-friendly interface than the underlying system call. For example, the <code>printf()</code> library function provides output formatting and data buffering, whereas the <code>write</code> system call just outputs a block of bytes. Sometimes, library functions and system calls have the same name. For example, <code>man 2 exit</code> prints the manual for the <code>exit</code> system call and <code>man 3 exit</code> prints the manual for the <code>exit()</code> library function.</p>
+</div>
+<div class="paragraph">
+<p>System calls are implemented by your kernel and are an integral part of Linux. On the contrary, different implementations of the standard C library exist. The most commonly installed is the GNU C library (<a href="http://www.gnu.org/software/libc/">glibc</a>), and is the one we will cover in this article.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-08-10-linux-system-calls-under-the-hood/system-calls.png" alt="system calls" width="500px">
+</div>
+<div class="title">Figure 1. System calls are the border between your application and the Linux kernel</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For example, in C, the PID of your program is accessible using the function <code>getpid()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">getpid.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="preprocessor">#include</span> <span class="include">&lt;stdio.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;sys/types.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;unistd.h&gt;</span>
+
+<span class="predefined-type">int</span> main(<span class="directive">void</span>)
+{
+    pid_t pid;
+    pid = getpid(); <i class="conum" data-value="1"></i><b>(1)</b>
+    printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">PID=%d</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, pid);
+    <span class="keyword">return</span> <span class="integer">0</span>;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>getpid()</code> library function is defined in <code>unistd.h</code> and returns the PID of the current process using the <code>getpid</code> system call.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Retrieving the PID of the current process is one of the most basic system calls. It simply returns the value stored in memory inside a data structure maintained by the kernel. It takes no arguments. It always succeeds. But calling <code>getpid()</code> is not like calling any other function.</p>
+</div>
+<div class="paragraph">
+<p>Here is a minimal benchmark illustrating this difference:</p>
+</div>
+<div class="listingblock">
+<div class="title">benchmark.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="preprocessor">#include</span> <span class="include">&lt;stdio.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;sys/types.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;unistd.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;time.h&gt;</span>
+
+pid_t getdummyid() { <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="keyword">return</span> <span class="integer">1</span>;
+}
+
+<span class="predefined-type">int</span> main(<span class="directive">void</span>)
+{
+    pid_t pid;
+
+    clock_t start_time;
+    <span class="predefined-type">double</span> elapsed_time;
+
+    start_time = clock();
+    <span class="keyword">for</span> (<span class="predefined-type">int</span> i=<span class="integer">0</span>; i&lt;<span class="integer">10000000</span>; i++) { <i class="conum" data-value="2"></i><b>(2)</b>
+        pid = getdummyid();
+    }
+    elapsed_time = (<span class="predefined-type">double</span>)(clock() - start_time) / CLOCKS_PER_SEC;
+    printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">Done getdummyid in %f seconds</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, elapsed_time);
+
+    start_time = clock();
+    <span class="keyword">for</span> (<span class="predefined-type">int</span> i=<span class="integer">0</span>; i&lt;<span class="integer">10000000</span>; i++) { <i class="conum" data-value="2"></i><b>(2)</b>
+        pid = getpid(); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+    elapsed_time = (<span class="predefined-type">double</span>)(clock() - start_time) / CLOCKS_PER_SEC;
+    printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">Done getpid     in %f seconds</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, elapsed_time);
+
+
+
+    <span class="keyword">return</span> <span class="integer">0</span>;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We defined a basic function returning an integer literal. Retrieving the PID of a process doesn&#8217;t interact with a hardware device. Simply returning this integer is relatively close to reading this value from a data structure kept in memory.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We call the two functions 1,000,000 times and measure how long it takes.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are the results on my laptop using Ubuntu 20.04 in a virtual server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code># gcc -o benchmark benchmark.c
+# ./benchmark
+Done getdummyid in 0.022424 seconds
+Done getpid     in 4.141334 seconds</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Calling a system call is, on this example, 200 times slower than calling a simple function. Indeed, a system call is not a simple function call. When you call the function <code>getpid()</code>, you use a wrapper implemented by glibc hiding the actual logic to execute a system call. Under the hood, this wrapper function does a lot of work:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Step 1</strong>: The library function copies its arguments into registers. It also copies a number identifying the system call into a specific register. The library function then forces the processor to switch from user mode to kernel mode.</p>
+</li>
+<li>
+<p><strong>Step 2</strong>: The kernel executes the system call:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The kernel saves the state of the CPU (the register values).</p>
+</li>
+<li>
+<p>The kernel checks the validity of the system call number.</p>
+</li>
+<li>
+<p>The kernel invokes the right system call routine based on this number. This routine checks the validity of arguments and executes the logic of the system call.</p>
+</li>
+<li>
+<p>The kernel restores the state of the CPU and places the return value and the possible error in specific registers.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Step 3</strong>: The library function checks for an error and set the global variable <code>errno</code>. The library returns to the caller.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That&#8217;s a lot of work, for sure, and provides the beginning of an explanation for why system calls are more expensive.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="step_by_step">Step By Step</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s time to show the code behind system calls. We will use glibc (v2.33) and Linux kernel (v5.13) to illustrate the lines of code running between the user and kernel modes. We will continue with the <code>getpid</code> example.</p>
+</div>
+<div class="sect2">
+<h3 id="user_mode_glibc">User Mode (glibc)</h3>
+<div class="sect3">
+<h4 id="the_objective">The Objective</h4>
+<div class="paragraph">
+<p>For this first step, the objective is to execute the system call <code>getpid</code> from the viewpoint of a user process. Concretely, we will have to specify values in specific CPU registers before calling a specific CPU instruction, and as different CPU architectures have different registers and different instructions set, the logic will be, of course, different 🙂 (based on your computer architecture).</p>
+</div>
+<div class="paragraph">
+<p>For example, here is the assembly code to execute the <code>getpid</code> system call for the <code>amd64</code> architecture:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asm">mov rax, 39
+syscall</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the same code for the <code>arm64</code> architecture:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asm">mov r8, 172
+svc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These two instructions are enough to request the kernel to returns the PID of the current process.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">API vs ABI</div>
+<div class="paragraph">
+<p>Linux system calls are accessible using an <em>application binary interface</em> (ABI). An ABI defines how a routine is accessed in machine code (hardware-dependent) whereas an API defines a similar access in source code (hardware-independent).</p>
+</div>
+<div class="paragraph">
+<p>If Linux system calls were implemented using a standard C API, every program would have to call them like C functions. An ABI removes this restriction by asking the compiler or interpreter of your favorite language to generate the machine code (i.e., initializing the registers). ABI is for hardware what API is for software.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://wiki.osdev.org/System_V_ABI">System V Application Binary Interface</a> is the reference specification used by major Unix-like operating systems such as Linux. If we want to understand the previous code sample, we need to have a look in particular at the <a href="https://refspecs.linuxfoundation.org/elf/x86_64-abi-0.99.pdf">System V Application Binary Interface for AMD64</a>. This document is 100-page long, but only the section about the calling conventions are interesting:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>User-level applications use as integer registers for passing the sequence <code>%rdi</code>, <code>%rsi</code>, <code>%rdx</code>, <code>%rcx</code>, <code>%r8</code> and <code>%r9</code>. The kernel interface uses <code>%rdi</code>, <code>%rsi</code>, <code>%rdx</code>, <code>%r10</code>, <code>%r8</code> and <code>%r9</code>.</p>
+</li>
+<li>
+<p>A system-call is done via the <code>syscall</code> instruction. This clobbers <code>%rcx</code> and <code>%r11</code> as well as the <code>%rax</code> return value, but other registers are preserved.</p>
+</li>
+<li>
+<p>The number of the syscall has to be passed in register <code>%rax</code>.</p>
+</li>
+<li>
+<p>System-calls are limited to six arguments, no argument is passed directly on the stack.</p>
+</li>
+<li>
+<p>Returning from the <code>syscall</code>, register <code>%rax</code> contains the result of the system-call. A value in the range between -4095 and -1 indicates an error, it is <code>-errno</code>.</p>
+</li>
+<li>
+<p>Only values of class INTEGER or class MEMORY are passed to the kernel.</p>
+</li>
+</ol>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>In our example, we don&#8217;t have arguments to pass, but we still need to specify which system call we want to execute. Under the hood, a Linux system call is just a number. For <code>amd64</code>, the number 39 represents the <code>getpid</code> system call and must be specified in the register <code>rax</code> before calling the CPU instruction <code>syscall</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the_code">The Code</h4>
+<div class="paragraph">
+<p>Glibc implements the <code>getpid()</code> library function and many other similar functions to make accessible system calls in a friendly manner to C programs. Calling the <code>getpid</code> system call is not so different from calling any other system call. The number of arguments varies, and some calls do not return errors, but the logic is similar. Basically, glibc must put values in registers and call an instruction to delegate to the kernel. Therefore, to avoid code duplication, glibc adopts a declarative approach to implement these library functions.</p>
+</div>
+<div class="paragraph">
+<p>For example, if you look inside the code source, you will only find the declaration of the function <code>getpid()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">include/unistd.h</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="directive">extern</span> __pid_t __getpid (<span class="directive">void</span>);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will not find the implementation directly, at least not in an obvious manner.</p>
+</div>
+<div class="paragraph">
+<p>System calls are defined in various <code>syscalls.list</code> files reflecting the differences between machine architectures. These files are then merged in a precise order. The format looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>.
+----
+# File name Caller  Syscall name    Args    Strong name Weak names
+...
+execve  - execve  i:spp __execve  execve
+flock   - flock   i:ii  __flock   flock
+getpid  - getpid  Ei:   __getpid  getpid
+...
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These files contain the metadata required to generate thin assembly wrappers around the corresponding system calls. For example, <code>getpid</code> arguments are defined as <code>Ei:</code>, which means:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>E</code> → <code>errno</code> is not set by the call (i.e., the system call never fails).</p>
+</li>
+<li>
+<p><code>i</code> → returns a scalar value (i.e., a integer representing the <code>pid_t</code>)</p>
+</li>
+<li>
+<p><code>:</code> → separates the return context from the arguments. As there are no letters after it, it means the system call takes no argument.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These files are then read by the script <code>make-syscalls.sh</code>, launched by the <code>Makefile</code> when <a href="https://stackoverflow.com/a/68153847">building glibc</a>. This script outputs one rule for every system call:</p>
+</div>
+<div class="listingblock">
+<div class="title">sysd-syscalls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>#### CALL=getpid NUMBER=39 ARGS=i: SOURCE=-
+ifeq (,$(filter getpid,$(unix-syscalls)))
+unix-syscalls += getpid
+$(foreach p,$(sysd-rules-targets), \
+$(foreach o,$(object-suffixes),$(objpfx)$(patsubst %,$p,getpid)$o)): \
+                $(..)sysdeps/unix/make-syscalls.sh
+        $(make-target-directory)
+        (echo '#define SYSCALL_NAME getpid'; \
+         echo '#define SYSCALL_NARGS 0'; \
+         echo '#define SYSCALL_ULONG_ARG_1 0'; \
+         echo '#define SYSCALL_ULONG_ARG_2 0'; \
+         echo '#define SYSCALL_SYMBOL __getpid'; \
+         echo '#define SYSCALL_NOERRNO 1'; \
+         echo '#define SYSCALL_ERRVAL 0'; \
+         echo '#include &lt;syscall-template.S&gt;'; \
+         echo 'weak_alias (__getpid, getpid)'; \
+         echo 'hidden_weak (getpid)'; \
+        ) | $(compile-syscall) \
+        $(foreach p,$(patsubst %getpid,%,$(basename $(@F))),$($(p)CPPFLAGS))
+endif</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of command when all of the pieces are put together:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>(echo '#define SYSCALL_NAME getpid'; \
+ echo '#define SYSCALL_NARGS 0'; \
+ echo '#define SYSCALL_ULONG_ARG_1 0'; \
+ echo '#define SYSCALL_ULONG_ARG_2 0'; \
+ echo '#define SYSCALL_SYMBOL __getpid'; \
+ echo '#define SYSCALL_NOERRNO 1'; \
+ echo '#define SYSCALL_ERRVAL 0'; \
+ echo '#include &lt;syscall-template.S&gt;'; \
+ echo 'weak_alias (__getpid, getpid)'; \
+ echo 'hidden_weak (getpid)'; \
+) | /usr/bin/gcc -c  -I../include \
+ -I$HOME/glibc/build/x86_64-linux-gnu/getpid \
+ -I$HOME/glibc/build/x86_64-linux-gnu \
+ -I../sysdeps/unix/sysv/linux/x86_64/64 \
+ -I../sysdeps/unix/sysv/linux/x86_64 \
+ -I../sysdeps/unix/sysv/linux/x86 \
+ -I../sysdeps/x86/nptl \
+ -I../sysdeps/unix/sysv/linux/wordsize-64 \
+ -I../sysdeps/x86_64/nptl \
+ -I../sysdeps/unix/sysv/linux/include \
+ -I../sysdeps/unix/sysv/linux \
+ -I../sysdeps/nptl \
+ -I../sysdeps/pthread \
+ -I../sysdeps/gnu \
+ -I../sysdeps/unix/inet \
+ -I../sysdeps/unix/sysv \
+ -I../sysdeps/unix/x86_64 \
+ -I../sysdeps/unix \
+ -I../sysdeps/posix \
+ -I../sysdeps/x86_64/64 \
+ -I../sysdeps/x86_64/fpu/multiarch \
+ -I../sysdeps/x86_64/fpu \
+ -I../sysdeps/x86/fpu/include \
+ -I../sysdeps/x86/fpu \
+ -I../sysdeps/x86_64/multiarch \
+ -I../sysdeps/x86_64  -I../sysdeps/x86 \
+ -I../sysdeps/ieee754/float128 \
+ -I../sysdeps/ieee754/ldbl-96/include \
+ -I../sysdeps/ieee754/ldbl-96 \
+ -I../sysdeps/ieee754/dbl-64/wordsize-64 \
+ -I../sysdeps/ieee754/dbl-64 \
+ -I../sysdeps/ieee754/flt-32 \
+ -I../sysdeps/wordsize-64 \
+ -I../sysdeps/ieee754 \
+ -I../sysdeps/generic \
+ -I.. -I../libio -I. \
+ -D_LIBC_REENTRANT -include $HOME/glibc/build/libc-modules.h \
+ -DMODULE_NAME=libc -include ../include/libc-symbols.h \
+ -DPIC -DSHARED \
+ -DTOP_NAMESPACE=glibc \
+ -DASSEMBLER  \
+ -g -Werror=undef -Wa,--noexecstack \
+ -o $HOME/glibc/build/poxis/getpid.os -x assembler-with-cpp - \
+ -MD -MP -MF $HOME/glibc/build/posix/getpid.os.dt -MT \
+ $HOME/glibc/build/posix/getpid.os</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command compiles a C snippet from <code>stdin</code> using many directories containing header files, in particular, files named <code>sysdep.h</code>. These files declare macros representing the real assembly code for all supported architectures. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">sysdeps/unix/sysv/linux/x86_64/sysdep.h</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="comment">/* The Linux/x86-64 kernel expects the system call parameters in
+   registers according to the following table:
+
+    syscall number  rax
+    arg 1       rdi
+    arg 2       rsi
+    arg 3       rdx
+    arg 4       r10
+    arg 5       r8
+    arg 6       r9
+*/</span>
+
+<span class="preprocessor">#undef</span> INTERNAL_SYSCALL
+<span class="preprocessor">#define</span> INTERNAL_SYSCALL(name, nr, args...)              \
+    internal_syscall<span class="preprocessor">#</span><span class="preprocessor">#nr</span> (SYS_ify (name), args)
+
+<span class="preprocessor">#undef</span> internal_syscall0
+<span class="preprocessor">#define</span> internal_syscall0(number, dummy...)              \
+({                                                       \
+    <span class="predefined-type">unsigned</span> <span class="predefined-type">long</span> <span class="predefined-type">int</span> resultvar;                         \
+    <span class="keyword">asm</span> <span class="directive">volatile</span> (                                       \
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">syscall</span><span class="char">\n</span><span class="char">\t</span><span class="delimiter">&quot;</span></span>                                        \
+    : <span class="string"><span class="delimiter">&quot;</span><span class="content">=a</span><span class="delimiter">&quot;</span></span> (resultvar)                                   \
+    : <span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span> (number)                                       \
+    : <span class="string"><span class="delimiter">&quot;</span><span class="content">memory</span><span class="delimiter">&quot;</span></span>, REGISTERS_CLOBBERED_BY_SYSCALL);         \
+    (<span class="predefined-type">long</span> <span class="predefined-type">int</span>) resultvar;                                \
+})
+
+<span class="preprocessor">#undef</span> internal_syscall1
+<span class="preprocessor">#define</span> internal_syscall1(number, arg1)                  \
+({                                                       \
+    <span class="predefined-type">unsigned</span> <span class="predefined-type">long</span> <span class="predefined-type">int</span> resultvar;                         \
+    TYPEFY (arg1, __arg1) = ARGIFY (arg1);               \
+    <span class="directive">register</span> TYPEFY (arg1, _a1) <span class="keyword">asm</span> (<span class="string"><span class="delimiter">&quot;</span><span class="content">rdi</span><span class="delimiter">&quot;</span></span>) = __arg1;    \
+    <span class="keyword">asm</span> <span class="directive">volatile</span> (                                       \
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">syscall</span><span class="char">\n</span><span class="char">\t</span><span class="delimiter">&quot;</span></span>                                        \
+    : <span class="string"><span class="delimiter">&quot;</span><span class="content">=a</span><span class="delimiter">&quot;</span></span> (resultvar)                                   \
+    : <span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span> (number), <span class="string"><span class="delimiter">&quot;</span><span class="content">r</span><span class="delimiter">&quot;</span></span> (_a1)                            \
+    : <span class="string"><span class="delimiter">&quot;</span><span class="content">memory</span><span class="delimiter">&quot;</span></span>, REGISTERS_CLOBBERED_BY_SYSCALL);         \
+    (<span class="predefined-type">long</span> <span class="predefined-type">int</span>) resultvar;                                \
+})
+
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result of the previous rule command is an object file. Let&#8217;s inspect its content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$ objdump -ldr posix/getpid.o
+
+posix/getpid.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;__getpid&gt;:
+__getpid():
+/glibc/posix/../sysdeps/unix/syscall-template.S:91
+   0:   f3 0f 1e fa             endbr64
+   4:   b8 27 00 00 00          mov    $0x27,%eax
+   9:   0f 05                   syscall
+/glibc/posix/../sysdeps/unix/syscall-template.S:93
+   b:   c3                      retq</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To sum up, when we are calling the <code>getpid()</code> library function, the alias <code>__getpid()</code> is really called. This function is implemented in assembly language and executes the same instructions we presented before.</p>
+</div>
+<div class="paragraph">
+<p>In practice, not all system calls can be generated like this. A prior version of the <code>getpid()</code> library function used a cache to limit system calls since the PID of a process never changes. This cache was removed by <a href="https://repo.or.cz/glibc.git/commit/c579f48edba88380635ab98cb612030e3ed8691e">this commit</a>, but if we move back in Git history, we can have a look at <a href="https://sourceware.org/glibc/wiki/SyscallWrappers">a different technique</a> used by glibc to implement library functions.</p>
+</div>
+<div class="listingblock">
+<div class="title">/sysdeps/unix/sysv/linux/getpid.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="preprocessor">#include</span> <span class="include">&lt;unistd.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;tls.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="include">&lt;sysdep.h&gt;</span>
+
+
+<span class="directive">static</span> <span class="directive">inline</span> __attribute__((always_inline)) pid_t really_getpid (pid_t oldval);
+
+<span class="directive">static</span> <span class="directive">inline</span> __attribute__((always_inline)) pid_t
+really_getpid (pid_t oldval)
+{
+  <span class="keyword">if</span> (__glibc_likely (oldval == <span class="integer">0</span>))
+    {
+      pid_t selftid = THREAD_GETMEM (THREAD_SELF, tid);
+      <span class="keyword">if</span> (__glibc_likely (selftid != <span class="integer">0</span>))
+        <span class="keyword">return</span> selftid;
+    }
+
+  INTERNAL_SYSCALL_DECL (err);
+  pid_t result = INTERNAL_SYSCALL (getpid, err, <span class="integer">0</span>);
+
+  <span class="comment">/* We do not set the PID field in the TID here since we might be
+     called from a signal handler while the thread executes fork.  */</span>
+  <span class="keyword">if</span> (oldval == <span class="integer">0</span>)
+    THREAD_SETMEM (THREAD_SELF, tid, result);
+  <span class="keyword">return</span> result;
+}
+
+pid_t
+__getpid (<span class="directive">void</span>) <i class="conum" data-value="1"></i><b>(1)</b>
+{
+  pid_t result = THREAD_GETMEM (THREAD_SELF, pid); <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="keyword">if</span> (__glibc_unlikely (result &lt;= <span class="integer">0</span>))
+    result = really_getpid (result); <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="keyword">return</span> result;
+}
+
+libc_hidden_def (__getpid)
+weak_alias (__getpid, getpid)
+libc_hidden_def (getpid)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The function <code>__getpid()</code> is implemented as a C function.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The code checks for the <code>pid</code> in the thread-local memory area to determine if the function has already been called.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If the cache is empty, the code delegates to <code>really_getpid()</code> that checks the cache again before calling the macro <code>INTERNAL_SYSCALL</code> we have just covered before.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Of course, When a file like <code>getpid.c</code> is present, the script <code>make-syscalls.sh</code> does not override it:</p>
+</div>
+<div class="listingblock">
+<div class="title">sysd-syscalls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>#### CALL=getpid NUMBER=39 ARGS=Ei: SOURCE=sysdeps/unix/sysv/linux/getpid.c <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>No rule is generated.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The code will simply be compiled with the rest of the glibc source code, reusing the same macros as the current implementation, which means the code always ends up with the <code>syscall</code> instruction to give control to the kernel.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="kernel_mode_linux">Kernel Mode (Linux)</h3>
+<div class="sect3">
+<h4 id="the_objective_2">The Objective</h4>
+<div class="paragraph">
+<p>The user process has just requested a service from the kernel. It filled the registers and called a special instruction to jump to a different location. Enter the kernel.</p>
+</div>
+<div class="paragraph">
+<p>For this second step, the objective is for the kernel to register a procedure at this location. This procedure reads the system call number and looks at the table of system calls to find the address of the kernel function to call. Then after this function returns, it does a few checks and then returns to the user process.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the_code_2">The Code</h4>
+<div class="paragraph">
+<p>First, we will look at the implementation of the <code>getpid()</code> system call.</p>
+</div>
+<div class="sect4">
+<h5 id="implementing_a_system_call">Implementing a System Call</h5>
+<div class="paragraph">
+<p>The main entry point for the <code>getpid</code> system call is called <code>sys_getpid()</code>, but you would not find the function declaration as such. System call functions are defined using the <code>SYSCALL_DEFINEn()</code> macro rather than explicitly, where <code>n</code> indicates the number of arguments. This macro takes the system call name followed by the <code>(type, name)</code> pairs for the parameters as arguments. The motivation is to make metadata available for other tools like tracing.</p>
+</div>
+<div class="paragraph">
+<p>Here is the definition of the <code>getpid</code> system call :</p>
+</div>
+<div class="listingblock">
+<div class="title">kernel/sys.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="comment">/**
+ * sys_getpid - return the thread group id of the current process
+ *
+ * Note, despite the name, this returns the tgid not the pid.  The tgid and
+ * the pid are identical unless CLONE_THREAD was specified on clone() in
+ * which case the tgid is the same in all threads of the same group.
+ *
+ * This is SMP safe as current-&gt;tgid does not change.
+ */</span>
+SYSCALL_DEFINE0(getpid)
+{
+    <span class="keyword">return</span> task_tgid_vnr(current); <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The code uses the <code>current</code> pointer representing the current task, which is issuing the syscall. The PID is then extracted from this struct. We will not cover it further.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This entry point also needs a corresponding function prototype in the reference file <code>include/linux/syscalls.h</code>. This prototype is marked as <code>asmlinkage</code> to match the way that system calls are invoked:</p>
+</div>
+<div class="listingblock">
+<div class="title">include/linx/syscalls.h</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="comment">/* kernel/sys.c */</span>
+asmlinkage <span class="predefined-type">long</span> sys_getpid(<span class="directive">void</span>);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, the system call must be registered in the system call table, so that the kernel can found it from its number.</p>
+</div>
+<div class="paragraph">
+<p>Most architectures share a generic system call table:</p>
+</div>
+<div class="listingblock">
+<div class="title">include/uapi/asm-generic/unistd.h</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="comment">/* kernel/sys.c */</span>
+<span class="preprocessor">#define</span> __NR_getpid <span class="integer">172</span>
+__SYSCALL(__NR_getpid, sys_getpid)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But some architectures (e.g. x86) have their own architecture-specific system call tables. For <code>amd64</code>, the system call table looks like:</p>
+</div>
+<div class="listingblock">
+<div class="title">arch/x86/entry/syscalls/syscall_64.tbl</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>#
+# 64-bit system call numbers and entry vectors
+#
+# The format is:
+# &lt;number&gt; &lt;abi&gt; &lt;name&gt; &lt;entry point&gt;
+...
+39  common  getpid          sys_getpid <i class="conum" data-value="1"></i><b>(1)</b>
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We find again the number 39 representing the <code>getpid</code> system call on <code>amd64</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>That&#8217;s pretty much all the steps required when <a href="https://www.kernel.org/doc/html/v4.12/process/adding-syscalls.html">adding a new system call in Linux</a>.</p>
+</div>
+<div class="paragraph">
+<p>Now, we must look at the glue between the <code>syscall</code> CPU instruction and the system call function we have just presented.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="initializing_the_system_call_entry">Initializing the System Call Entry</h5>
+<div class="paragraph">
+<p>On <code>amd64</code>, the instruction <code>syscall</code> put the address present in the register <code>IA32_LSTAR</code> into the register <code>RIP</code>, the instruction pointer. After this step, the handler at that location will be executed in a CPU privileged mode. It means that the kernel needs to put the system call entry address into the <code>IA32_LSTAR</code> register during its initialization.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title"><code>int 0x80</code> vs <code>syscall</code></div>
+<div class="paragraph">
+<p>Many online code examples use the <code>int 0x80</code> instruction instead of <code>syscall</code>. This instruction was the only option on <code>i386</code> architecture (<code>x86</code>) and is still available on <code>amd64</code> architecture (<code>x86-64</code>) since this latter is a superset of the former for backward-compatibility reasons (i.e., code compiled to <code>x86</code> is portable to <code>x86-64</code>).</p>
+</div>
+<div class="paragraph">
+<p>For example, the <code>getpid</code> system call can be executed in two different ways on <code>amd64</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asm">; getpid (x86)
+mov eax, 20
+int 0x80
+
+; getpid (x86-64)
+mov rax, 39
+syscall</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similar instructions exist for other architectures too. The motivation is always to transition from user to kernel mode in a secure way—an application cannot just jump to arbitrary kernel code.</p>
+</div>
+<div class="paragraph">
+<p>For an implementation viewpoint:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>int 0x80</code> relies on software interrupts. The idea is to use the same method to enter the kernel as hardware interrupts do (ex: when pressing a key on your keyboard).</p>
+</li>
+<li>
+<p><code>syscall</code> (and <code>sysenter</code>) relies on specific CPU instructions designed for the specific use case of system calls and thus comes with optimizations.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>syscall</code> is more performant because it does less operations (<code>syscall</code> does not generate a software interrupt) and based on <a href="https://x86.lol/generic/2019/07/04/kernel-entry.html">some benchmarks</a>, using <code>syscall</code> is a magnitude faster (~5 times faster), which is fast compared to <code>int 0x80</code> but still slow compared to calling a local function.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The kernel starts when the function <code>start_kernel</code> defined in <code>init/main.c</code> is called. This function installs various interrupt handlers using the function <code>trap_init</code>, which called <code>cpu_init</code>, which called <code>syscall_init</code>. Let&#8217;s look at the implementation of this last function (for <code>amd64</code>):</p>
+</div>
+<div class="listingblock">
+<div class="title">arch/x86/kernel/cpu/common.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="directive">void</span> syscall_init(<span class="directive">void</span>)
+{
+    wrmsr(MSR_STAR, <span class="integer">0</span>, (__USER32_CS &lt;&lt; <span class="integer">16</span>) | __KERNEL_CS); <i class="conum" data-value="1"></i><b>(1)</b>
+    wrmsrl(MSR_LSTAR, (<span class="predefined-type">unsigned</span> <span class="predefined-type">long</span>)entry_SYSCALL_64); <i class="conum" data-value="2"></i><b>(2)</b>
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>MSR_*</code> are <a href="https://en.wikipedia.org/wiki/Model-specific_register">Model-specific Register</a> and can only be written by the privileged CPU instruction <code>wrmsr</code>. This first line is low-level code to ensure that we return to user code with the related privilege.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>entry_SYSCALL_64</code> is the system call entry. We store the address of this function.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now that the system call entry is ready, we are ready too to see what happens when the <code>syscall</code> instruction is called, but first, we still have to introduce the system call table.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="initializing_the_system_calls_table">Initializing the System Calls Table</h5>
+<div class="paragraph">
+<p>Any system call will trigger the execution of the system call entry we have just configured. This function determines which system call routine to execute by looking into the system call table for the system call number.</p>
+</div>
+<div class="paragraph">
+<p>This table is represented by the <code>sys_call_table</code> array in the Linux kernel:</p>
+</div>
+<div class="listingblock">
+<div class="title">arch/x86/entry/syscall_64.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c">asmlinkage <span class="directive">const</span> sys_call_ptr_t sys_call_table[__NR_syscall_max+<span class="integer">1</span>] = {
+    [<span class="integer">0</span> ... __NR_syscall_max] = &amp;__x64_sys_ni_syscall, <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="preprocessor">#include</span> <span class="include">&lt;asm/syscalls_64.h&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+};</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>All elements point initially to the <code>sys_ni_syscall</code> function, which is a fallback function simply returning <code>-ENOSYS</code> (<code>Function not implemented</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The header file <code>asm/syscalls_64.h</code> is generated dynamically from the list of system calls on your system and overrides the default handler for all defined system calls.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This <code>asm/syscalls_64.h</code> file is generated by the script <code>arch/x86/entry/syscalls/syscalltbl.sh</code> and the result looks like:</p>
+</div>
+<div class="listingblock">
+<div class="title">asm/syscalls_64.h</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c">__SYSCALL_COMMON(<span class="integer">0</span>, sys_read, sys_read)
+__SYSCALL_COMMON(<span class="integer">1</span>, sys_write, sys_write)
+...
+__SYSCALL_COMMON(<span class="integer">39</span>, sys_getpid, sys_getpid)
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we evaluate the macros, our system call table initialization looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c">asmlinkage <span class="directive">const</span> sys_call_ptr_t sys_call_table[__NR_syscall_max+<span class="integer">1</span>] = {
+  [<span class="integer">0</span> ... __NR_syscall_max] = &amp;__x64_sys_ni_syscall,
+  [<span class="integer">0</span>] = sys_read,
+  [<span class="integer">1</span>] = sys_write,
+  ...
+  [<span class="integer">39</span>] = sys_getpid,
+  ...
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At this point, we have already configured the system call entry, and the system call table is ready for this handler to determine the system call to execute. Let&#8217;s do it.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="entering_a_system_call">Entering a System Call</h5>
+<div class="paragraph">
+<p>As we have seen, the system call entry is defined by the <code>entry_SYSCALL_64</code> function defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">arch/x86/entry/entry_64.S</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c">.code64
+.section .entry.text, <span class="string"><span class="delimiter">&quot;</span><span class="content">ax</span><span class="delimiter">&quot;</span></span>
+
+<span class="comment">/*
+ * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
+ *
+ * This is the only entry point used for 64-bit system calls.  The
+ * hardware interface is reasonably well designed and the register to
+ * argument mapping Linux uses fits well with the registers that are
+ * available when SYSCALL is used.
+ *
+ * Registers on entry:
+ * rax  system call number
+ * rcx  return address
+ * r11  saved rflags
+ * rdi  arg0
+ * rsi  arg1
+ * rdx  arg2
+ * r10  arg3
+ * r8   arg4
+ * r9   arg5
+ *
+ * Only called from user space.
+ */</span>
+SYM_CODE_START(entry_SYSCALL_64)
+    ...
+
+    <span class="comment">/* IRQs are off. */</span>
+    movq    %rax, %rdi
+    movq    %rsp, %rsi
+    call    do_syscall_64
+
+    movq    RCX(%rsp), %rcx
+    movq    RIP(%rsp), %r11
+
+    cmpq    %rcx, %r11
+    jne swapgs_restore_regs_and_return_to_usermode
+
+    ...
+SYM_CODE_END(entry_SYSCALL_64)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The line that interests us is the system call execution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>call    do_syscall_64</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where the function <code>do_syscall_64</code> is defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">arch/x86/entry/common.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c">__visible noinstr <span class="directive">void</span> do_syscall_64(<span class="predefined-type">unsigned</span> <span class="predefined-type">long</span> nr, <span class="keyword">struct</span> pt_regs *regs)
+{
+    nr = syscall_enter_from_user_mode(regs, nr);
+
+    <span class="keyword">if</span> (likely(nr &lt; NR_syscalls)) { <i class="conum" data-value="1"></i><b>(1)</b>
+        nr = array_index_nospec(nr, NR_syscalls); <i class="conum" data-value="2"></i><b>(2)</b>
+        regs-&gt;ax = sys_call_table[nr](regs); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+    syscall_exit_to_user_mode(regs);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Check the system call number is valid. The value of <code>NR_syscalls</code> is determined at compile time.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Clamp the index within <code>[0..NR_syscalls]</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Execute the function present in the system call table with the specified number.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After a system call handler returns, the system call entry restores registers, flags and pushes the return address of the user process before exiting with the <code>sysretq</code> instruction. Then, the user program continues where it left off. Our long journey in Linux system calls is finished.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-08-10-linux-system-calls-under-the-hood/system-call-steps.png" alt="system call steps" width="650px">
+</div>
+<div class="title">Figure 2. Steps when executing a system call</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Try It Out!</div>
+<div class="paragraph">
+<p>The code was tested on Ubuntu 20.04. You can recreate the same environment using a local virtual machine if you are running on a different operating system. I use <a href="https://www.vagrantup.com/">Vagrant</a> on my machine:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">$ mkdir sandbox/
+$ cd sandbox
+$ cat &gt; Vagrantfile &lt;&lt; EOF
+cat Vagrantfile
+# -*- mode: ruby -*-
+Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;bento/ubuntu-20.04&quot;
+end
+EOF
+$ vagrant up
+$ vagrant ssh
+vagrant@vagrant:~$ lsb_release -a
+Distributor ID: Ubuntu
+Description:    Ubuntu 20.04.1 LTS
+Release:    20.04
+Codename:   focal</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using a virtual machine, calling a system call is no different from what we have presented. As the processors are virtual, the hypervisor is responsible for converting machine code generated to the host architecture. <a href="https://stackoverflow.com/questions/14415050/how-are-system-calls-handled-in-a-virtual-machine/25485159">Several techniques exist</a> to handle this. A naive approach is for the hypervisor to trap system calls and delegate to the guest OS using different system calls specific to this OS and its architecture.</p>
+</div>
+<div class="paragraph">
+<p>What follows is a basic program written in Assembly for <code>amd64</code> architecture and executing the system calls <code>getpid</code> and <code>exit</code>. (The second is required if you don&#8217;t want your program to crash abruptly at the end.)</p>
+</div>
+<div class="listingblock">
+<div class="title">getpid.asm</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asm">section .data      ; Section containing initialised data
+
+section .bss       ; Section containing uninitialised data
+
+section .text      ; Section containig code
+
+global _start      ; Linker needs this to find the entry point
+
+_start:
+    ; getpid
+    mov rax, 0x27
+    syscall
+
+    ; exit
+    mov rax, 60
+    xor edi, edi
+    syscall</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What we have is still a text file with assembly language instructions. It is not a format that a computer can run. Assembly language is text (source code) that must be converted into bytes (machine code). Therefore, we need to run a few commands first:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>nasm</code>: The assembler "assembles" the instructions to machine code bytes to create an object file.</p>
+</li>
+<li>
+<p><code>ld</code>: The linker turns this object file into an executable file that the operating system can run. (As we have only one object file, the linker does almost nothing but is a mandatory step.)</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/posts_resources/2021-08-10-linux-system-calls-under-the-hood/compilation.png" alt="compilation" width="600px">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create the executable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$ nasm -f elf64 -g -F dwarf getpid.asm
+$ ld -o getpid getpid.o
+$ ./getpid</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The program outputs nothing. We haven&#8217;t write code for that. We can solve this problem using a debugger to inspect registers but first, let&#8217;s dump some information about our object file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$ objdump -d getpid
+
+getpid:     file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000401000 &lt;_start&gt;:
+  401000:   b8 27 00 00 00          mov    $0x27,%eax
+  401005:   0f 05                   syscall
+  401007:   b8 3c 00 00 00          mov    $0x3c,%eax
+  40100c:   31 ff                   xor    %edi,%edi
+  40100e:   0f 05                   syscall</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result of the <code>getpid</code> system call will be available starting with the address <code>401007</code> in the register <code>rax</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code># gdb getpid
+Reading symbols from getpid...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s output some information about our file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>(gdb) info files
+Symbols from &quot;/home/vagrant/getpid&quot;.
+Local exec file:
+    `/home/vagrant/getpid', file type elf64-x86-64.
+    Entry point: 0x401000 <i class="conum" data-value="1"></i><b>(1)</b>
+    0x0000000000401000 - 0x0000000000401010 is .text</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We retrieve the initial address <code>0x401000</code> as reported previously by the command <code>objdump</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add a breakpoint to stop after the system call execution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>(gdb) break *0x401007
+Breakpoint 1 at 0x401007: file getpid.asm, line 15.
+(gdb) run
+Starting program: /home/vagrant/getpid
+
+Breakpoint 1, _start () at getpid.asm:15
+15      mov eax,60</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Print the value of the register <code>rax</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>(gdb) info register rax
+rax            0xfdb               4066</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In a second terminal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code># ps fauxww | grep getpid
+root        4064  0.1  2.2  36168 22884 pts/0    S+   \_ gdb getpid
+root        4066  0.0  0.0    156    16 pts/0    t        \_ /home/vagrant/getpid</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output confirms that the PID of our program is <code>4066</code>. We successfully executed our first system call using assembly code!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="case_studies">Case Studies</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="go">Go</h3>
+<div class="paragraph">
+<p>We will use the Go programming language and explain using code how the language makes system calls accessible to Go developers. We will still use the <code>getpid</code> system call for the example.</p>
+</div>
+<div class="paragraph">
+<p>The function <code>Getpid</code> is implemented by the package <code>os</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/os/exec.go</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> os
+
+<span class="keyword">import</span> (
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">syscall</span><span class="delimiter">&quot;</span></span>
+)
+
+<span class="keyword">func</span> Getpid() <span class="predefined-type">int</span> { <span class="keyword">return</span> syscall.Getpid() }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code simply delegates to the package <code>syscall</code>. This package contains files implementing system calls for every supported architecture. For example, the file <code>zsyscall_linux_amd64</code> provides the implementation of system calls for the <code>amd64</code> architecture. Other files such as <code>zsyscall_linux_arm64</code> exist in the same package. Go build constraints are used to determine which file is finally included when building the binary:</p>
+</div>
+<div class="listingblock go">
+<div class="title">src/syscall/zsycall_linux_amd64.go</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>//go:build linux &amp;&amp; amd64
+// +build linux,amd64</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the definition of <code>Getpid</code> for <code>amd64</code> architecture:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/syscall/zsycall_linux_amd64.go</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="comment">// THIS FILE IS GENERATED BY THE COMMAND AT THE TOP; DO NOT EDIT</span>
+
+<span class="keyword">func</span> Getpid() (pid <span class="predefined-type">int</span>) {
+    r0, _ := rawSyscallNoError(SYS_GETPID, <span class="integer">0</span>, <span class="integer">0</span>, <span class="integer">0</span>)
+    pid = <span class="predefined-type">int</span>(r0)
+    <span class="keyword">return</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As visible from the code, this file was generated from the template file <code>syscall_linux_amd64.go</code>. Here is a snippet from this file:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/syscall/syscall_linux.go</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go">...
+<span class="comment">//sysnb Getpid() (pid int)</span>
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This prototype definition of the <code>getpid</code> system call specifies the number of arguments, if errors can be returned, and also if the current goroutine must be suspended during the execution of the system call (<code>sys</code> vs <code>sysnb</code> = suspend vs continue). The utility program <a href="https://github.com/golang/go/blob/go1.16.6/src/syscall/mksyscall.pl"><code>mksyscall.pl</code></a> present in the same package reads this template file to generate the implementations of system call wrappers like <code>Getpid()</code>.</p>
+</div>
+<div class="paragraph">
+<p>What remains to cover is the code behind this line included in the generated code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go">r0, _ := rawSyscallNoError(SYS_GETPID, <span class="integer">0</span>, <span class="integer">0</span>, <span class="integer">0</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This function <code>rawSyscallNoError</code> is defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/syscall/syscall_linux.go</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> syscall
+
+<span class="keyword">func</span> rawSyscallNoError(trap, a1, a2, a3 <span class="predefined-type">uintptr</span>) (r1, r2 <span class="predefined-type">uintptr</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In Go, a function declaration may omit the body. Such a declaration provides the signature for a function implemented outside Go, such as an assembly routine.</p>
+</div>
+<div class="paragraph">
+<p>The code belongs in the <a href="https://godoc.org/golang.org/x/sys/unix"><code>sys/unix</code> package</a>. This package regroups the assembly code to execute system calls. Porting Go to a new architecture/OS combination or supporting a new syscall implies changes in this package like updating the hand-written assembly files at <code>asm_${GOOS}_${GOARCH}.s</code>, which are parsed by the Go tooling to build the final code.</p>
+</div>
+<div class="paragraph">
+<p>Here is the native implementation for Linux of the function <code>rawSyscallNoError</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/cmd/vendor/golang.org/x/sys/unix/asm_linux_amd64.s</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asm">TEXT ·RawSyscallNoError(SB),NOSPLIT,$0-48
+    MOVQ    a1+8(FP), DI
+    MOVQ    a2+16(FP), SI
+    MOVQ    a3+24(FP), DX
+    MOVQ    $0, R10
+    MOVQ    $0, R8
+    MOVQ    $0, R9
+    MOVQ    trap+0(FP), AX  // syscall entry
+    SYSCALL
+    MOVQ    AX, r1+32(FP)
+    MOVQ    DX, r2+40(FP)
+    RET</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The logic should look familiar if you remember the calling conventions in the System V ABI specification.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Concerning the <code>getpid</code> system call, the const <code>SYS_GETPID</code> is defined like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/cmd/vendor/golang.org/x/sys/unix/zsysnum_linux_amd64.go</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go">SYS_GETPID                 = <span class="integer">39</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And now, the native implementation of the <code>getpid</code> system call:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/runtime/sys_linux_amd64.s</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asm">#define SYS_getpid      39
+
+TEXT ·getpid(SB),NOSPLIT,$0-8
+    MOVL    $SYS_getpid, AX
+    SYSCALL
+    MOVQ    AX, ret+0(FP)
+    RET</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For comparison, here is the same code for the <code>arm64</code> architecture:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/runtime/sys_linux_arm64.s</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>#define SYS_getpid      172
+
+TEXT ·getpid(SB),NOSPLIT|NOFRAME,$0-8
+    MOVD    $SYS_getpid, R8
+    SVC
+    MOVD    R0, ret+0(FP)
+    RET</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all. You have reviewed the standard Go code to execute a system call on Linux.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="java">Java</h3>
+<div class="paragraph">
+<p>Since Java 9, the process API can be used to get the current process ID.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">long</span> pid = ProcessHandle.current().pid(); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We grab a handle to the current process and then query the PID.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This method is implemented in the type <a href="https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/share/classes/java/lang/ProcessHandleImpl.java"><code>ProcessHandlerImpl</code></a> like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">java/lang/ProcessHandleImpl.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">java.lang</span>;
+
+<span class="comment">/**
+ * ProcessHandleImpl is the implementation of ProcessHandle.
+ *
+ * @see Process
+ * @since 9
+ */</span>
+<span class="annotation">@jdk</span>.internal.ValueBased
+<span class="directive">final</span> <span class="type">class</span> <span class="class">ProcessHandleImpl</span> <span class="directive">implements</span> ProcessHandle {
+
+    <span class="directive">static</span> {
+        <span class="type">long</span> pid = getCurrentPid0();
+    }
+
+    <span class="comment">/**
+     * The pid of this ProcessHandle.
+     */</span>
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">long</span> pid;
+
+    <span class="comment">/**
+     * Returns the native process ID.
+     * A {@code long} is used to be able to fit the system specific binary values
+     * for the process.
+     *
+     * @return the native process ID
+     */</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">long</span> pid() {
+        <span class="keyword">return</span> pid;
+    }
+
+    <span class="comment">/**
+     * Return the pid of the current process.
+     *
+     * @return the pid of the  current process
+     */</span>
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">native</span> <span class="type">long</span> getCurrentPid0();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code delegates to the <code>native</code> function <code>getCurrentPid0</code> implemented in C in <a href="https://github.com/openjdk/jdk/blob/jdk-16+36/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c"><code>ProcessHandleImpl_unix.c</code></a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="preprocessor">#include</span> <span class="include">&quot;jni.h&quot;</span>
+<span class="preprocessor">#include</span> <span class="include">&quot;jni_util.h&quot;</span>
+<span class="preprocessor">#include</span> <span class="include">&quot;java_lang_ProcessHandleImpl.h&quot;</span>
+<span class="preprocessor">#include</span> <span class="include">&quot;java_lang_ProcessHandleImpl_Info.h&quot;</span>
+
+<span class="preprocessor">#include</span> <span class="include">&quot;ProcessHandleImpl_unix.h&quot;</span>
+
+<span class="preprocessor">#include</span> <span class="include">&lt;unistd.h&gt;</span>
+
+<span class="comment">/*
+ * Class:     java_lang_ProcessHandleImpl
+ * Method:    getCurrentPid0
+ * Signature: ()J
+ */</span>
+JNIEXPORT jlong JNICALL
+Java_java_lang_ProcessHandleImpl_getCurrentPid0(JNIEnv *env, jclass clazz) {
+    pid_t pid = getpid(); <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="keyword">return</span> (jlong) pid;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <a href="https://linux.die.net/man/3/getpid">function <code>getpid()</code></a> is defined by glibc.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As Java native methods are implemented in C, the code can reuse existing function libraries supported by glibc that we have already covered. We are back to square one. It&#8217;s time to close this blog post.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mov_rax_60"><code>mov rax, 60</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As we have seen through this article, a system call is definitively not a simple function call. A lot of code is executed to delegate the responsibility to the kernel to ensure we are privileged to run it.</p>
+</div>
+<div class="paragraph">
+<p>System calls are essential for developers. They define the capabilities of your system. For example, the <a href="https://man7.org/linux/man-pages/man7/epoll.7.html"><code>epoll</code> system call</a> helped <a href="https://www.nginx.com/">Nginx</a> to solve the <a href="https://en.wikipedia.org/wiki/C10k_problem">C10k problem</a> by offering a event-driven I/O model, the <a href="https://man7.org/linux/man-pages/man2/inotify_init.2.html"><code>inotify_*</code> system calls</a> allows <a href="https://github.com/facebook/create-react-app/blob/v4.0.0/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error"><code>react-scripts</code></a> to automatically rerun your tests when you are making a code change, the <a href="https://man7.org/linux/man-pages/man2/sendfile.2.html"><code>sendfile</code> system call</a> supports the <a href="https://en.wikipedia.org/wiki/Zero-copy">Zero-Copy</a> optimization used by <a href="https://kafka.apache.org/08/documentation.html">Kafka</a>, which is one of the main reasons explaining its performance, the <a href="https://man7.org/linux/man-pages/man2/ptrace.2.html"><code>ptrace</code> system call</a> is <a href="https://unix.stackexchange.com/questions/6933/how-does-a-debugger-work-in-linux/375257">used by debugguers</a> like gdb to inspect your program using breakpoints, and so on. The question is, therefore, what are you going to build using these system calls? 😉</p>
+</div>
+<div class="admonitionblock note remember">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">To Remember</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>System calls are doors to the kernel</strong>. They act like a security guard that must check your identity before executing your action. This could not be as fast as staying in the same room and executing the action yourself.</p>
+</li>
+<li>
+<p><strong>System calls are dependent on your architecture</strong>. The ABI defines which registers and which instructions must be used on your architecture.</p>
+</li>
+<li>
+<p><strong>System calls are accessible in the standard library of your programming language</strong>. But as modern languages are often implemented in their own language, they cannot interact directly with registers and must implement workarounds like rewriting the logic in Assembly and relying on the compiler to merge it with the rest of the compiled code.</p>
+</li>
+<li>
+<p><strong>System calls are often implemented in a generic way</strong>. Glibc lists most system calls in metadata files and uses a build tool to generate the source files. Similar toolings exist in Go and inside the Linux kernel.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+      </div>
+
+      <div class="author-bio">
+  <img src="/img/me.jpg" />
+  <p><strong>About the author</strong></p>
+  <p>Julien Sobczak works as a software developer for Scaleway, a French cloud provider. He is a passionate reader who likes to see the world differently to measure the extent of his ignorance. His main areas of interest are productivity (doing less and better), human potential, and everything that contributes in being a better person (including a better dad and a better developer).</p>
+  <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91">Read Full Profile</a>
+</div>
+
+    </article>
+
+  </div>
+</section>
+
+
+
+
+
+  
+<section id="labels" class="labels">
+  <div class="container">
+
+  <div>
+    <h2>Tags</h2>
+    <hr class="star-light">
+  </div>
+
+
+  <ul class="labels">
+    <!-- TODO refactor remove useless tags and rename them. Ex: agile => people -->
+    <!-- <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/agile.html"><span class="label-icon label-team-icon label-white-icon"></span><span class="label-text">People<span class="label-count">0</span></span></a>
+      </div>
+    </li> -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/architecture.html"><span class="label-icon label-architecture-icon label-white-icon"></span><span class="label-text">Architecture<span class="label-count">13</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/classics.html"><span class="label-icon label-classics-icon label-white-icon"></span><span class="label-text">Classics<span class="label-count">3</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/craftsmanship.html"><span class="label-icon label-craftsmanship-icon label-white-icon"></span><span class="label-text">Craftsmanship<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/computer-science.html"><span class="label-icon label-computer-science-icon label-white-icon"></span><span class="label-text">Computer Science<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/data.html"><span class="label-icon label-data-icon label-white-icon"></span><span class="label-text">Data<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/devops.html"><span class="label-icon label-devops-icon label-white-icon"></span><span class="label-text">Devops<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/frameworks.html"><span class="label-icon label-frameworks-icon label-white-icon"></span><span class="label-text">Frameworks<span class="label-count">10</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/human.html"><span class="label-icon label-human-icon label-white-icon"></span><span class="label-text">Human<span class="label-count">11</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/languages.html"><span class="label-icon label-languages-icon label-white-icon"></span><span class="label-text">Languages<span class="label-count">6</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/learning.html"><span class="label-icon label-reversing-icon label-white-icon"></span><span class="label-text">Learning<span class="label-count">31</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/management.html"><span class="label-icon label-management-icon label-white-icon"></span><span class="label-text">Management<span class="label-count">28</span></span></a>
+      </div>
+    </li>
+    <!-- Not pertinent
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/popular.html"><span class="label-icon label-popular-icon label-white-icon"></span><span class="label-text">Popular<span class="label-count">0</span></span></a>
+      </div>
+    </li>
+    -->
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/productivity.html"><span class="label-icon label-productivity-icon label-white-icon"></span><span class="label-text">Productivity<span class="label-count">16</span></span></a>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="sunshine"></span><a href="/tags/tools.html"><span class="label-icon label-tools-icon label-white-icon"></span><span class="label-text">Tools<span class="label-count">9</span></span></a>
+      </div>
+    </li>
+  </ul>
+
+  </div>
+</section>
+
+  <footer id="footer">
+    <img src="/img/me-torso-scaleway.png" class="footer-me" />
+    <div class="footer-above">
+        <div class="footer-col">
+            <h3>Location</h3>
+            <p>Lille<br>France</p>
+        </div>
+        <div class="footer-col">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+                <!-- <li>
+                    <a href="https://www.goodreads.com/user/show/104485538-sobczak-julien" alt="Goodreads" title="Goodreads" class="btn-social btn-outline"><i class="fab fa-goodreads-g"></i></a>
+                </li> -->
+                <li>
+                    <a href="https://literal.club/julien-sobczak" alt="Goodreads" title="Library.club" class="btn-social btn-outline"><i class="fa fa-book"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/julien-sobczak" alt="GitHub" title="GitHub" class="btn-social btn-outline"><i class="fab fa-github"></i></a>
+                </li>
+                <li>
+                    <a href="https://fr.linkedin.com/in/julien-sobczak-56780a91" alt="LinkedIn" title="LinkedIn" class="btn-social btn-outline"><i class="fab fa-linkedin"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-below">
+        <span>Opinions are my own and don't reflect the views of my employer.</span><br/>
+        <span class="manuscript">In addition, as anybody with an open mind, my opinions are likely to change from time to time...</span><br/><br/>
+        <small class="copyright">Copyright &copy; 2024 Julien Sobczak</small><br/>
+    </div>
+</footer>
+
+  <div id="easter-egg">
+  <div id="water"></div>
+  <div id="bikini-bottom">
+    <img id="spongebob" src="/img/easter-egg/spongebob.png" width="20%">
+  </div>
+</div>
+  <!-- Font Awesome CDN -->
+<!-- <script src="https://kit.fontawesome.com/d54861fcaa.js" crossorigin="anonymous"></script> -->
+<script src="/js/index.js"></script>
+
+<!-- Masonry effect -->
+<!-- <script src="https://unpkg.com/colcade@0/colcade.js"></script> -->
+<script src="/vendor/fontawesome.js"></script>
+
+<!-- Custom logic -->
+<script src="/vendor/colcade.js"></script>
+
+
+</body>
+</html>
